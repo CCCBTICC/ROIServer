@@ -1,0 +1,1214 @@
+####################################################################################################################
+# RegressionModel.SpendRange: R Tool For Optimization                                                              #
+#                                                                                                                  #                            
+# Objective: This function scans the channel spend file and returns the min and max channel spend                  #
+#            from PlanStartingMonth to PanEndingMonth for historical Year                                          #
+#                                                                                                                  # 
+# RegressionModel.SpendRange(Datafile, Date, Revenue, Channel, PlanYear, PlanStartingMonth, PlanEndingMonth)       #
+# Parameters:                                                                                                      #
+# wd:  Working directory                                                                                           #
+# Datafile: Channel spend file                                                                                     #
+# Date:  Name of Date column                                                                                       #
+# Channel: Name of channel spend                                                                                   #
+# PlanYear:  The year of channel spend to be optimized                                                             #
+# PlanStartingMonth:  Starting month of PlanYear                                                                   #
+# PlanEndingMonth:    Ending month of PlanYear                                                                     #
+#                                                                                                                  # 
+# Output:                                                                                                          #
+# PlanBudget:             Sum of spends across channels, from PlanStartingMonth to PanEndingMonth for PlanYear     #
+# Spend_SEM_Min_Dollars:  Channel minimum spend dollars in historical Year                                         #
+# Spend_SEM_Max_Dollars:  Channel maximum spend dollars in historical Year                                         #
+# Spend_SEM_Min_Percent:  Channel minimum spend percent in historical Year                                         #
+# Spend_SEM_Max_Percent:  Channel maximum spend percent in historical Year                                         #
+####################################################################################################################
+
+RegressionModel.SpendRange <- function(
+  #wd                = "C:/jimzh_work/Shutterfly_ROI",
+  wd                = ".",
+  Datafile          = "roi_revenue_costColG.csv",
+  Date              = "DATE",
+  Revenue           = "TOTALREVENUE",
+  Channel           = c("SEMCOST", "DISPLAYCOST", "PARTNERCOST", "AFFILIATECOST", "DIRECTMAILCOST"),
+  PlanYear          = 2013, 
+  PlanStartingMonth = 3,
+  PlanEndingMonth   = 3
+)
+  
+{
+  
+  setwd(wd)
+  
+  start.time<-Sys.time()
+  
+  require.package<-function(pckg)
+  {
+    package.installed<-try(require(pckg, character.only =TRUE))
+    if (!package.installed) {
+      cat(paste("Installing", pckg,  "from CRAN\n", sep=" "))
+      install.packages(pckg,  repos = "http://cran.r-project.org")
+      require(pckg, character.only =TRUE)
+    }#if
+  }#require.package
+  
+  #require.package("ROI")
+  require.package("XLConnect")
+  require.package("Rsolnp")
+  require.package("gmm")
+  require.package("TSA")
+  require.package("mvtnorm")
+  require.package("MASS")
+  require.package("plyr")
+  require.package("shrink")
+  require.package("stringr")
+  
+  chan_cnt <- length(Channel)
+  
+  
+  
+  ################################################ Daily Data Begins ####################################################
+  
+  data=read.csv(Datafile,header=T)
+  data<-data[-nrow(data),]  #last week only has one day 2013-12-31 delete
+  names(data)<- toupper(names(data))
+  data <- data[, c(Date, Revenue, Channel)]
+  data[data==0]<-1
+  dim(data) #1096 23
+  head(data)
+  
+  data[, Date] <-  as.Date(data[, Date], "%m/%d/%Y") #strptime(data[, Date], "%m/%d/%Y") 
+  DAY <- julian(data[, Date]) - julian(as.Date(cut(data[, Date], "years"))) +1             # day of year: 1-365
+  WEEK <- (julian(data[, Date]) - julian(as.Date(cut(data[, Date], "years"))) ) %/% 7 +1   # week of year: 1-53
+  cmonth <- format(data[, Date],'%b')
+  MONTH <- factor(cmonth,levels=unique(cmonth),ordered=TRUE)  #Jan, Feb, Mar, ...
+  QUARTER <- factor(quarters(data[, Date]),ordered=TRUE)          #Q1, Q2, Q3, Q4
+  YEAR <-  factor(format(data[, Date],'%Y'),ordered=TRUE)         # 2011: 365  2012: 366  2013: 365
+  TOTALCOST <- apply(data[, Channel], 1,sum)
+  table(WEEK)
+  table(MONTH)
+  table(QUARTER)
+  table(YEAR)
+  
+  data <- cbind(DAY, WEEK, MONTH, QUARTER, YEAR, data, TOTALCOST)
+  
+  ################################################ Daily Data Ends ####################################################
+  
+  
+  
+  
+  ####################################### SpendRange from Daily Data Begins #######################################
+  
+  temp <- data[ as.numeric(data$MONTH) >= PlanStartingMonth & as.numeric(data$MONTH) <= PlanEndingMonth,]
+  dim(temp)
+  
+  temp <-aggregate(temp[, c(Channel, "TOTALCOST")], list(YEAR=temp$YEAR), FUN=function(x) sum(x, na.rm=TRUE))
+  dim(temp)
+  
+  
+  LB <- apply(temp[, Channel], 2, min)
+  LB <- ifelse(LB<=0, 1, LB)
+  
+  UB = apply(temp[, Channel], 2, max)
+  
+  LB_pct <- apply(temp[, Channel]/temp$TOTALCOST, 2, min)
+  LB_pct <- ifelse(LB_pct<=0, 0.001, LB_pct)
+  
+  UB_pct <- apply(temp[, Channel]/temp$TOTALCOST, 2, max)
+  UB_pct <- ifelse(UB_pct>=1, 0.999, UB_pct)
+  
+  
+  
+  PlanBudget <- temp[temp$YEAR == PlanYear, ]$TOTALCOST 
+  
+  newChannel <- Channel
+  newChannel <- str_replace(newChannel, "SEMCOST",        "SEM")
+  newChannel <- str_replace(newChannel, "DISPLAYCOST",    "Display")
+  newChannel <- str_replace(newChannel, "PARTNERCOST",    "Partner")
+  newChannel <- str_replace(newChannel, "AFFILIATECOST",  "Affiliate")
+  newChannel <- str_replace(newChannel, "DIRECTMAILCOST", "DirectMail")
+  
+  names(LB) <- paste0("Spend_", newChannel, "_Min_Dollars")
+  names(UB) <- paste0("Spend_", newChannel, "_Max_Dollars")
+  names(LB_pct) <- paste0("Spend_", newChannel, "_Min_Percent")
+  names(UB_pct) <- paste0("Spend_", newChannel, "_Max_Percent")
+  
+  SpendRange <- data.frame(PlanBudget, t(LB), t(UB), t(LB_pct), t(UB_pct), row.names=NULL)
+  
+  print(SpendRange)
+  cat("Total Time Used: ", format(Sys.time()-start.time), "\n\n")
+  
+  
+  return(SpendRange)
+  #################################### SpendRange from Daily Data Ends #######################################
+  
+} #RegressionModel.SpendRange
+
+
+####################################################################################################################
+# RegressionModel: R Tool For Optimization                                                                         #
+#                                                                                                                  #                            
+# Objective: This function optimizes the channel spend under the PlanBudget                                        #
+#            from PlanStartingMonth to PanEndingMonth for PlanYear                                                 #
+#                                                                                                                  # 
+# RegressionModel(Datafile, Date, Revenue, Channel, PlanYear, PlanStartingMonth, PlanEndingMonth)                  #
+# Parameters:                                                                                                      #
+# wd:  Working directory                                                                                           #
+# Datafile: Channel spend file                                                                                     #
+# Date:  Name of Date column                                                                                       #
+# Channel: Name of channel spend                                                                                   #
+# PlanYear:  The year of channel spend to be optimized                                                             #
+# PlanStartingMonth:  Starting month of PlanYear                                                                   #
+# PlanEndingMonth:    Ending month of PlanYear                                                                     #
+#                                                                                                                  # 
+# Output:                                                                                                          #
+# PlanBudget:             Sum of spends across channels, from PlanStartingMonth to PanEndingMonth for PlanYear     #
+# Spend_SEM_Min_Dollars:  Channel minimum spend dollars in historical Year                                         #
+# Spend_SEM_Max_Dollars:  Channel maximum spend dollars in historical Year                                         #
+# Spend_SEM_Min_Percent:  Channel minimum spend percent in historical Year                                         #
+# Spend_SEM_Max_Percent:  Channel maximum spend percent in historical Year                                         #
+####################################################################################################################
+
+RegressionModel <- function(
+  #wd                      = "C:/jimzh_work/Shutterfly_ROI",
+  wd                      = ".",
+  Datafile                = "roi_revenue_costColG.csv",
+  Date                    = "DATE",
+  Revenue                 = "TOTALREVENUE",
+  Channel                 = c("SEMCOST", "DISPLAYCOST", "PARTNERCOST", "AFFILIATECOST", "DIRECTMAILCOST"),
+  
+  PlanYear                = 2013, 
+  PlanBudget              = 3000000, 
+  PlanStartingMonth       = 3, 
+  PlanEndingMonth         = 3, 
+  
+  Spend_SEM_Min           = 784265.3, 
+  Spend_SEM               = -1,
+  Spend_SEM_Max           = 925000.2,  
+  Spend_Display_Min       = 520714,  
+  Spend_Display           = -1, 
+  Spend_Display_Max       = 859543,  
+  Spend_Partner_Min       = 467500,  
+  Spend_Partner           = -1, 
+  Spend_Partner_Max       = 708641,
+  Spend_Affiliate_Min     = 67696,
+  Spend_Affiliate         = -1,
+  Spend_Affiliate_Max     = 85553,
+  Spend_DirectMail_Min    = 349897,   
+  Spend_DirectMail        = -1,     
+  Spend_DirectMail_Max    = 510570,
+  
+  Out_CSV_File_name       = "Out_CSV_File_name.csv"
+)
+
+{
+  
+  Budget            <- PlanBudget
+  Beg_Date          <- "2013-01-01"
+  End_Date          <- "2013-12-30"  # if last week only has one or two days, sometimes need delete it for by week model fitting
+  Month_Or_Quarter  <- "Quarter"    # response model by month or quarter
+  Gorep             <- 3   # of times to repeat gsolnp so as to have multiple runs of optimization
+  weekly_daily      <- 'week'  # or 'day'   weekly or daily data
+  lambda            <- 7 # penalty constant for shrinkage with shrinkage factor=d2/(d2+lambda)
+  nMon              <- 1   # optimization by nMon (each 1, 2, 3 months)
+  spend_pct_adj     <- c(0.10, 0.10, 0.02, 0.05, 0.05)   #spend percentage in total spend +/- spend_pct_adj
+  
+  
+  LastYear <- PlanYear -1
+  Beg_Date <- paste0(PlanYear, "-0", PlanStartingMonth,"-01")
+  if (PlanEndingMonth %in% c(1,3,5,7,8,10,12) )  End_Date <- paste0(PlanYear, "-0", PlanEndingMonth,  "-31")
+  if (PlanEndingMonth %in% c(4,6,9,11) )         End_Date <- paste0(PlanYear, "-0", PlanEndingMonth,  "-30")
+  if (PlanEndingMonth %in% c(2) )                End_Date <- paste0(PlanYear, "-0", PlanEndingMonth,  "-28")
+  
+  
+  Spend_Min <- c(Spend_SEM_Min, Spend_Display_Min, Spend_Partner_Min, Spend_Affiliate_Min, Spend_DirectMail_Min) 
+  Spend_Max <- c(Spend_SEM_Max, Spend_Display_Max, Spend_Partner_Max, Spend_Affiliate_Max, Spend_DirectMail_Max) 
+  Spend     <- c(Spend_SEM, Spend_Display, Spend_Partner, Spend_Affiliate, Spend_DirectMail) 
+  
+  setwd(wd)
+  
+  start.time<-Sys.time()
+  
+  require.package<-function(pckg)
+  {
+    package.installed<-try(require(pckg, character.only =TRUE))
+    if (!package.installed) {
+      cat(paste("Installing", pckg,  "from CRAN\n", sep=" "))
+      install.packages(pckg,  repos = "http://cran.r-project.org")
+      require(pckg, character.only =TRUE)
+    }#if
+  }#require.package
+  
+  
+  #require.package("ROI")
+  require.package("XLConnect")
+  require.package("Rsolnp")
+  require.package("gmm")
+  require.package("TSA")
+  require.package("mvtnorm")
+  require.package("MASS")
+  require.package("plyr")
+  require.package("shrink")
+  require.package("stringr")
+  
+  chan_cnt <- length(Channel)
+  
+  ################################################ Daily Data Begins ####################################################
+  
+  data=read.csv(Datafile,header=T)
+  data<-data[-nrow(data),]  #last week only has one day 2013-12-31 delete
+  names(data)<- toupper(names(data))
+  data <- data[, c(Date, Revenue, Channel)]
+  data[data==0]<-1
+  dim(data) #1096 23
+  head(data)
+  
+  data[, Date] <-  as.Date(data[, Date], "%m/%d/%Y") #strptime(data[, Date], "%m/%d/%Y") 
+  DAY <- julian(data[, Date]) - julian(as.Date(cut(data[, Date], "years"))) +1             # day of year: 1-365
+  WEEK <- (julian(data[, Date]) - julian(as.Date(cut(data[, Date], "years"))) ) %/% 7 +1   # week of year: 1-53
+  cmonth <- format(data[, Date],'%b')
+  MONTH <- factor(cmonth,levels=unique(cmonth),ordered=TRUE)  #Jan, Feb, Mar, ...
+  QUARTER <- factor(quarters(data[, Date]),ordered=TRUE)          #Q1, Q2, Q3, Q4
+  YEAR <-  factor(format(data[, Date],'%Y'),ordered=TRUE)         # 2011: 365  2012: 366  2013: 365
+  TOTALCOST <- apply(data[, Channel], 1,sum)
+  table(WEEK)
+  table(MONTH)
+  table(QUARTER)
+  table(YEAR)
+  
+  data <- cbind(DAY, WEEK, MONTH, QUARTER, YEAR, data, TOTALCOST)
+  
+  ################################################ Daily Data Ends ####################################################
+  
+  
+  ##########by week data ########
+  temp1<-aggregate(data[,-(1:6)], list(WEEK=WEEK,  YEAR=YEAR), FUN=function(x) sum(x, na.rm=TRUE))
+  dim(temp1)
+  head(temp1)
+  sum(temp1$TOTALREVENUE)
+  temp2<-aggregate(data[, names(data) %in% c("DATE", "MONTH", "QUARTER")], list(WEEK=WEEK,  YEAR=YEAR), FUN=function(x) min(x, na.rm=TRUE))
+  dim(temp2)
+  head(temp2)
+  temp3<-merge(temp1, temp2,  all.x=T, sort=F) 
+  #subset(temp3,  select=c(WEEK, "MONTH, QUARTER, YEAR, DATE, Revenue, Channel, TOTALCOST)
+  data <-temp3
+  
+  rawdata <- data
+  dim(data)
+  head(data)
+  ##########by week data ########
+  
+  temp<-apply(data[, c( Channel)], 2, sum)
+  #par(mfrow=c(1,1))
+  pct <- round(temp/sum(temp)*100, 1)
+  pct <- paste(paste(Channel, pct), "%",sep="")  # add percents to labels 
+  #pie(temp,labels = pct,  main="Channel Cost 2011-2013", col=rainbow(5))
+  #pie3D(temp,labels = pct, explode=0.1, main="Channel Cost 2011-2013", col=rainbow(5))
+  #barplot(temp, legend.text = pct, main="Channel Cost 2011-2013",   beside=TRUE, col=rainbow(5))
+  
+  
+  ######### Response Model ##############
+  fmla <- paste0(paste0("log(", Revenue, ")~"), paste0("log(", Channel, ")",collapse="+"))
+  #ResponseModel <- with(data, by(data, QUARTER,   function(x)  
+  #                            lm(as.formula(fmla),data=x), simplify = TRUE))
+  
+  #shrink
+  #ResponseModel <- with(data, by(data, QUARTER,   function(x)  
+  #                     shrink(lm(as.formula(fmla),data=x, x = TRUE,  y = TRUE), type = "global", method = "dfbeta"), simplify = TRUE))
+  
+  
+  #lm.ridge {MASS}
+  ResponseModel <- with(data, by(data, QUARTER,   function(x)  
+    lm.ridge(as.formula(fmla),data=x, lambda=lambda), simplify = TRUE))
+  
+  ResponseModel
+  
+  # Data to be optimized
+  
+  DATE <- as.Date(seq(from=as.Date(Beg_Date),to=as.Date(End_Date),by=weekly_daily ))
+  DAY <- julian(DATE) - julian(as.Date(cut(DATE, "years"))) +1             # day of year: 1-365
+  WEEK <- (julian(DATE) - julian(as.Date(cut(DATE, "years"))) ) %/% 7 +1   # week of year: 1-53
+  cmonth <- format(DATE,'%b')
+  MONTH <- factor(cmonth,levels=unique(cmonth),ordered=TRUE)  #Jan, Feb, Mar, ...
+  QUARTER <- factor(quarters(DATE),ordered=TRUE)          #Q1, Q2, Q3, Q4
+  YEAR <-  factor(format(DATE,'%Y'),ordered=TRUE)         # 2011: 365 days, 53 weeks, 12 months,  2012: 366  2013: 365
+  
+  # the number of days/weeks
+  period <- length(DATE)
+  
+  
+  
+  if (class(Budget)=='numeric') {
+    data <- rawdata[rawdata$WEEK %in% WEEK, ]
+  }
+  
+  
+  if (class(Budget)=='character') {
+    data <- rawdata[rawdata$DATE %in% DATE, ]
+  }
+  dim(data)
+  head(data)
+  
+  # repeat each channel coef mutiple times (# of days(weeks) of one month or quarter)
+  b  <- resp_coef <- t(sapply(ResponseModel, coef, simplify = TRUE))
+  b <- b[rownames(b)==unique(QUARTER), ,drop=FALSE]
+  rows <- rep( 1:nrow(b), times=table(QUARTER))
+  bb <- b[rows,]
+  dim(bb)
+  head(bb)
+  
+  
+  ############################ Optimization ###################################
+  ### Optimization by nMon (each 1, 2, 3 months)################
+  opt.start.time<-Sys.time()
+  
+  opt_seq <- ceiling(as.numeric(MONTH)/nMon)
+  
+  
+  ######### At each step, only optimizte nMon months ###########
+  
+  result1 <- NULL
+  for (opt_i in 1:max(opt_seq))
+  {
+    
+    
+    #pars:  starting parameter vector for solnp, not for gosolnp
+    pars <- rep(0, period*chan_cnt)
+    pars <- rep((Spend_Min+Spend_Max)/2, each=period)
+    
+    # gofn: optimization objective function
+    # x: length= period * chan_cnt
+    gofn = function(x)
+    {
+      #x: length=chan_cnt*period, first repeat period then channel
+      one <-rep(1, period)
+      xx <- matrix(log(x), ncol=chan_cnt)
+      xx <- cbind(one, xx)
+      optrev <- exp(apply(bb*xx, 1, sum))[opt_seq==opt_i]
+      optrev <- (-1)*sum(optrev)
+      return(optrev)
+    }
+    x0 =x= unlist(data[data$YEAR==LastYear, Channel])
+    by(rawdata, rawdata$YEAR, function(x) sum(x[, Revenue]))  # 2011: 246775870, 2012: 463196852  2013: 526003320
+    sum(data[, Revenue])   #TOTALREVENUE of reality  526,003,320 
+    sum(data$TOTALCOST)    #TOTALCOST of reality      48,805,703
+    gofn(x0)     # TOTALREVENUE of response model 462113009 , 445518018,  -445654355  -472577428  -426945128  -405064547
+    
+    
+    
+    ##### gofn2: function to get the optimal TOTALREVENUE by period
+    gofn2 = function(x)
+    {
+      #x: length=chan_cnt*period, first repeat period then channel
+      one <-rep(1, period)
+      xx <- matrix(log(x), ncol=chan_cnt)
+      xx <- cbind(one, xx)
+      optrev <- exp(apply(bb*xx, 1, sum))[opt_seq==opt_i]
+      #optrev <- (-1)*sum(optrev)
+      return(optrev)
+    }
+    
+    
+    gofn2(x0)     # TOTALREVENUE of response model by period
+    
+    
+    # Constraints
+    
+    #eqfun = eqB
+    #ineqLB <= ineqfun <= ineqUB
+    #LB <= x <= UB
+    
+    
+    if (class(Budget)=='numeric') {
+      
+      #eqfun: total spend
+      eqfun <-  function(x) {
+        sum(x)
+      }
+      
+      if (any(Spend >=0)) {
+        eqfun  <- function(x) {
+          xx <- matrix(x, ncol=chan_cnt)
+          c(sum(x), apply(xx[, Spend >=0, drop=FALSE] , 2,sum))
+        }
+      }# if (any(Spend >=0))
+      
+      #eqB: total spend budget
+      eqB = Budget
+      if (any(Spend >=0)) eqB = c(Budget, Spend[Spend >=0])
+      
+      #ineqfun: total channel spend
+      ineqfun <- function(x) {
+        xx <- matrix(x, ncol=chan_cnt)
+        apply(xx, 2,sum)
+      }
+      
+      #ineqLB : total channel spend 
+      ineqLB  = Spend_Min
+      ineqUB  = Spend_Max
+      
+      #x=rep(1 each=period*chan_cnt)/(period*chan_cnt)
+      #ineqfun(x) <=ineqLB 
+      
+      # opt channel daily spend between historical lowest pct and highest pct of actual daily spend
+      
+      # channel pct limits, limit for model time window,  used for defining LB, UB
+      temp = by(data, data$WEEK,   function(x)  apply(x[, Channel]/x$TOTALCOST, 2, min))
+      temp = matrix(unlist(temp), ncol=chan_cnt, byrow=TRUE)
+      temp <-  temp - rep(spend_pct_adj, each=period)
+      rows <- rep( 1:nrow(temp), times=table(WEEK))
+      LB_pct <- as.vector(temp[rows,])
+      LB_pct <- ifelse(LB_pct<0, 0.01, LB_pct)
+      
+      temp = by(data, data$WEEK,   function(x)  apply(x[, Channel]/x$TOTALCOST, 2, max))
+      temp = matrix(unlist(temp), ncol=chan_cnt, byrow=TRUE)
+      temp <-  temp + rep(spend_pct_adj, each=period)
+      rows <- rep( 1:nrow(temp), times=table(WEEK))
+      UB_pct <- as.vector(temp[rows,])
+      UB_pct <- ifelse(UB_pct>1, 0.99, UB_pct)
+      
+      LB = LB_pct* Budget/period  #?
+      UB = UB_pct* Budget/period  #?
+      
+    }#if (class(Budget)=='numeric') 
+    
+    
+    if (class(Budget)=='character')  {
+      
+      #eqfun: opt daily spend
+      eqfun <- function(x) {
+        xx <- matrix(x, ncol=chan_cnt)
+        apply(xx, 1,sum)
+      }
+      
+      #eqB: opt daily spend equals actual daily spend
+      eqB =  apply(data[, Channel], 1,sum)
+      
+      ###SHOULD WE ADD SINGLE CHANNEL'S QUARTERLY SUM CONSTRAINTS?
+      
+      #ineqfun: total channel spend
+      ineqfun <- NULL
+      
+      #ineqLB : total channel spend 
+      ineqLB  = NULL
+      ineqUB  = NULL
+      
+      #x=rep(1 each=period*chan_cnt)/(period*chan_cnt)
+      #ineqfun(x) <=ineqLB 
+      
+      # opt channel daily spend between historical lowest pct and highest pct of actual daily spend
+      
+      # channel pct limits, limit for model time window,  used for defining LB, UB
+      temp = by(data, data$WEEK,   function(x)  apply(x[, Channel]/x$TOTALCOST, 2, min))
+      temp = matrix(unlist(temp), ncol=chan_cnt, byrow=TRUE)
+      temp <-  temp - rep(spend_pct_adj, each=period)
+      rows <- rep( 1:nrow(temp), times=table(WEEK))
+      LB_pct <- as.vector(temp[rows,])
+      LB_pct <- ifelse(LB_pct<0, 0.01, LB_pct)
+      
+      temp = by(data, data$WEEK,   function(x)  apply(x[, Channel]/x$TOTALCOST, 2, max))
+      temp = matrix(unlist(temp), ncol=chan_cnt, byrow=TRUE)
+      temp <-  temp + rep(spend_pct_adj, each=period)
+      rows <- rep( 1:nrow(temp), times=table(WEEK))
+      UB_pct <- as.vector(temp[rows,])
+      UB_pct <- ifelse(UB_pct>1, 0.99, UB_pct)
+      
+      LB = LB_pct*rep(data$TOTALCOST,  times=chan_cnt)
+      UB = UB_pct*rep(data$TOTALCOST,  times=chan_cnt)
+      
+      
+    }#if (class(Budget)=='character') 
+    
+    
+    
+    result0 = NULL
+    for(i in 1:Gorep)
+    {
+      print(paste("Start",i))
+      gs0 = gosolnp(            fun = gofn, eqfun = eqfun, eqB = eqB, ineqfun = ineqfun, ineqLB = ineqLB, ineqUB = ineqUB, LB = LB, UB = UB)
+      # gs0 =   solnp(pars=pars, fun = gofn, eqfun = eqfun, eqB = eqB, ineqfun = ineqfun, ineqLB = ineqLB, ineqUB = ineqUB, LB = LB, UB = UB)
+      #result = c(gs0$par, gofn2(gs0$par))
+      result = c(gs0$par[rep(opt_seq==opt_i, times=chan_cnt)], gofn2(gs0$par))
+      if (gs0$convergence ==0 ) { result0 = cbind(result0, result)}
+    }
+    
+    #gs0$par: length=period*chan_cnt,  first repeat period then channel
+    ## result0 ((Channel + TOTALREVENE)*period)*Gorep matrix
+    
+    gofn(gs0$par) 
+    
+    result0 <- log(result0)
+    MU <- apply(result0, 1, mean)
+    SD <- apply(result0, 1, sd)
+    LB <- MU - qnorm(0.95) * SD/sqrt(ncol(result0))
+    UB <- MU + qnorm(0.95) * SD/sqrt(ncol(result0))
+    
+    OPT            <- data.frame(matrix(exp(MU), ncol=chan_cnt+1))
+    names(OPT )    <- paste0(c(Channel, Revenue), "_OPT")
+    OPT_LB         <- data.frame(matrix(exp(LB), ncol=chan_cnt+1))
+    names(OPT_LB ) <- paste0(c(Channel, Revenue), "_OPT_LB")
+    OPT_UB         <- data.frame(matrix(exp(UB), ncol=chan_cnt+1))
+    names(OPT_UB ) <- paste0(c(Channel, Revenue), "_OPT_UB")
+    
+    #OPT: (Channel + TOTALREVENE)*period
+    
+    
+    result1 = rbind(result1, data.frame(OPT))
+    
+    
+  } #for (opt_i in 1:max(opt_seq))
+  
+  
+  write.csv(result1, Out_CSV_File_name, row.names = FALSE)
+  
+  
+  newChannel <- Channel
+  newChannel <- str_replace(newChannel, "SEMCOST",        "SEM")
+  newChannel <- str_replace(newChannel, "DISPLAYCOST",    "Display")
+  newChannel <- str_replace(newChannel, "PARTNERCOST",    "Partner")
+  newChannel <- str_replace(newChannel, "AFFILIATECOST",  "Affiliate")
+  newChannel <- str_replace(newChannel, "DIRECTMAILCOST", "DirectMail")
+  
+  Opt_Spend <- apply(result1, 2, sum)[1:chan_cnt]
+  names(Opt_Spend) <- paste0("Opt_Spend_", newChannel)
+  Opt_Spend_Total <- sum(Opt_Spend)
+  
+  
+  Opt_Rev_Total <- rev(apply(result1, 2, sum))[1]
+  Opt_Rev <- Opt_Spend/Opt_Spend_Total*Opt_Rev_Total
+  names(Opt_Rev) <- paste0("Opt_Rev_", newChannel)
+  
+  Actual_Rev_Total <- sum(data[data$YEAR == LastYear, Revenue]) *0.85
+  Rev_Range = ( Opt_Rev_Total - Actual_Rev_Total ) / Actual_Rev_Total * 100
+  Projected_ROI = Opt_Rev_Total / Actual_Rev_Total * 100
+  ROI_Range = Opt_Rev_Total / Actual_Rev_Total * 100
+  
+  
+  Opt_Spend_Rev <- data.frame(t(Opt_Spend), Opt_Spend_Total, t(Opt_Rev), Opt_Rev_Total, Actual_Rev_Total, Rev_Range, Projected_ROI, ROI_Range, row.names=NULL)
+  
+  
+  cat("Total Time Used: ", format(Sys.time()-start.time), "\n\n")
+  
+  print(Opt_Spend_Rev)
+  return(Opt_Spend_Rev)
+  
+} #RegressionModel
+
+# sudo R CMD BATCH --no-save --no-restore  '--args 1398903969_6.cfg' /home/zhangw/projects/roi/regression/RM.R 
+
+library(rjson)
+
+roDgt <- 0
+curCallerFolder <- getwd()
+
+jsonIOFolder <- "/var/www/deniX/webroot/ROI/"
+#rCodeFolder <- "/home/zhangw/projects/roi/regression/"
+rCodeFolder <- "/var/www/deniX/webroot/ROI/algorithms/"
+
+setwd(rCodeFolder)
+
+args=(commandArgs(TRUE))
+
+if(length(args)==0){
+  #supply default values
+  #inJsonFile <-"1400544192_31.cfg"
+  inJsonFile <- "1402432675_49.cfg"
+  #print("no args")
+} else {
+  inJsonFile <- args[[1]]
+  print(inJsonFile)
+}    
+
+inJsonFileFullPath <- paste(jsonIOFolder,"input/",inJsonFile,sep="")
+
+print (inJsonFileFullPath )
+inJsonData <- fromJSON(paste(readLines(inJsonFileFullPath), collapse="")) 
+
+outJsonFileFullPath <- paste(jsonIOFolder,"output/",inJsonFile,sep="")
+
+if ( inJsonData$Algorithm == 0 || inJsonData$Algorithm == 1 ) {
+
+  SpendRange <- 
+    RegressionModel.SpendRange(
+      wd                = ".",
+      Datafile          = "roi_revenue_costColG.csv",
+      Date              = "DATE",
+      Revenue           = "TOTALREVENUE",
+      Channel           = c("SEMCOST", "DISPLAYCOST", "PARTNERCOST", "AFFILIATECOST", "DIRECTMAILCOST"),
+      PlanYear          = 2013, 
+      PlanStartingMonth = 3,
+      PlanEndingMonth   = 3
+    )
+
+  #start outputting json file  
+  sink(outJsonFileFullPath, append=FALSE, split=FALSE)
+  
+  cat(paste("{","\n",sep=""))
+  
+  cat(paste('"UserName"',":",'"','"',",\n",sep=""))        
+  cat(paste('"Brand"',":",'"',inJsonData$Brand, '"',",\n",sep=""))        
+  cat(paste('"Spend"',":",'"', inJsonData$Spend, '"',",\n",sep=""))
+  cat(paste('"StartingTime"',":",'"', inJsonData$StartingTime,'"',",\n",sep=""))
+  cat(paste('"PlanMonths"',":",'"', inJsonData$PlanMonths, '"',",\n",sep=""))
+  cat(paste('"EndingTime"',":",'"', inJsonData$EndingTime, '"',",\n",sep=""))
+  cat(paste('"lmTouch"',":",'"', inJsonData$lmTouch, '"',",\n",sep=""))
+      
+  cat(paste('"Algorithm"',":",'"',inJsonData$Algorithm, '"',",\n",sep=""))
+  cat(paste('"AlgStartingTime"',":",'"',0.0, '"',",\n",sep=""))
+  cat(paste('"AlgEndingTime"',":",'"',0.0, '"',",\n",sep=""))
+  cat(paste('"AlgDuration"',":",'"',0.0, '"',",\n",sep=""))
+    
+  cat(paste('"semCLB"',":", '"', round (0.4 * SpendRange$Spend_SEM_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semPLB"',":", '"', round (0.2 * SpendRange$Spend_SEM_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semOLB"',":", '"', round (0.3 * SpendRange$Spend_SEM_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semBLB"',":", '"', round (0.5 * SpendRange$Spend_SEM_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"disLB"',":", '"', round (SpendRange$Spend_Display_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"socLB"',":", '"', round (0.6 * SpendRange$Spend_Display_Min_Dollars,roDgt),'"',",\n",sep=""))
+  cat(paste('"affLB"',":", '"', round (SpendRange$Spend_Affiliate_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"parLB"',":", '"', round (SpendRange$Spend_Partner_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"dirLB"',":", '"', round (SpendRange$Spend_DirectMail_Min_Dollars,roDgt), '"',",\n",sep=""))  
+    
+  cat(paste('"semCMin"',":", '"', round (0.4 * SpendRange$Spend_SEM_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semPMin"',":", '"', round (0.2 * SpendRange$Spend_SEM_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semOMin"',":", '"', round (0.3 * SpendRange$Spend_SEM_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semBMin"',":", '"', round (0.5 * SpendRange$Spend_SEM_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"disMin"',":", '"', round (SpendRange$Spend_Display_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"socMin"',":", '"', round (0.6 * SpendRange$Spend_Display_Min_Dollars,roDgt), '"',",\n", sep=""))
+  cat(paste('"affMin"',":", '"',round (SpendRange$Spend_Affiliate_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"parMin"',":", '"',round (SpendRange$Spend_Partner_Min_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"dirMin"',":", '"',round (SpendRange$Spend_DirectMail_Min_Dollars,roDgt), '"',",\n",sep=""))  
+    
+  cat(paste('"semCMax"',":", '"', round (0.4 * SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semPMax"',":", '"', round (0.2 * SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semOMax"',":", '"', round (0.3 * SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semBMax"',":", '"', round (0.5 * SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"disMax"',":", '"', round (SpendRange$Spend_Display_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"socMax"',":",'"',  round (0.6 * SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"affMax"',":", '"', round (SpendRange$Spend_Affiliate_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"parMax"',":", '"', round (SpendRange$Spend_Partner_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"dirMax"',":", '"', round (SpendRange$Spend_DirectMail_Max_Dollars,roDgt), '"',",\n",sep=""))
+    
+  cat(paste('"semCUB"',":", '"', round (SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semPUB"',":", '"', round (SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semOUB"',":", '"', round (SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"semBUB"',":", '"', round (SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"disUB"',":", '"', round (SpendRange$Spend_Display_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"socUB"',":",'"', round (0.6 * SpendRange$Spend_SEM_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"affUB"',":", '"', round (SpendRange$Spend_Affiliate_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"parUB"',":", '"', round (SpendRange$Spend_Partner_Max_Dollars,roDgt), '"',",\n",sep=""))
+  cat(paste('"dirUB"',":", '"', round (SpendRange$Spend_DirectMail_Max_Dollars,roDgt), '"',",\n",sep=""))
+    
+  cat(paste('"semCSF"',":",'"',"1.0", '"',",\n",sep=""))
+  cat(paste('"semPSF"',":",'"',"1.0", '"',",\n",sep=""))
+  cat(paste('"semOSF"',":",'"',"1.0", '"',",\n",sep=""))
+  cat(paste('"semBSF"',":",'"',"1.0", '"',",\n",sep=""))
+  cat(paste('"disSF"',":",'"',"1.0", '"',",\n",sep=""))
+  cat(paste('"socSF"',":",'"', "1.0",'"',",\n",sep=""))
+  cat(paste('"affSF"',":",'"',"1.0", '"',",\n",sep=""))
+  cat(paste('"parSF"',":",'"',"1.0", '"',",\n",sep=""))
+  cat(paste('"dirSF"',":",'"',"1.0", '"',",\n",sep=""))
+  
+  cat(paste('"tvBeginDate"',":",'"', "",'"',",\n",sep=""))
+  cat(paste('"tvEndDate"',":",'"', "", '"',",\n",sep=""))
+  cat(paste('"tvImpressions"',":",'"', "1300000",'"', ",\n",sep=""))
+  cat(paste('"tvSpend"',":",'"', "200000",'"',",\n",sep=""))
+    
+  cat(paste('"semSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semCSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semPSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semOSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semBSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"affSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirSR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"totSR"',":",'"', '"',",\n",sep=""))
+    
+  cat(paste('"semPR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disPR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socPR"',":",'"', '"',",\n",sep=""))  
+  cat(paste('"affPR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parPR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirPR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"totPR"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"run1RevRange"',":",'"', '"',",\n",sep=""))
+  cat(paste('"run1ProjROI"',":",'"',  '"',",\n",sep=""))
+  cat(paste('"run1ROIRange"',":",'"', '"',",\n",sep=""))
+
+  cat(paste('"semCSlideLeft"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semPSlideLeft"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semOSlideLeft"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semBSlideLeft"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disSlideLeft"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socSlideLeft"',":",'"', '"',",\n",sep=""))
+  cat(paste('"affSlideLeft"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parSlideLeft"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirSlideLeft"',":",'"', '"',",\n",sep=""))
+
+  cat(paste('"semCSlide"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semPSlide"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semOSlide"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semBSlide"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disSlide"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socSlide"',":",'"', '"',",\n",sep=""))
+  cat(paste('"affSlide"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parSlide"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirSlide"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"semCSlideRight"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semPSlideRight"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semOSlideRight"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semBSlideRight"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disSlideRight"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socSlideRight"',":",'"', '"',",\n",sep=""))
+  cat(paste('"affSlideRight"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parSlideRight"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirSlideRight"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"semCSlideDivMin"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semPSlideDivMin"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semOSlideDivMin"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semBSlideDivMin"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disSlideDivMin"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socSlideDivMin"',":",'"', '"',",\n",sep=""))
+  cat(paste('"affSlideDivMin"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parSlideDivMin"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirSlideDivMin"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"semCSlideDivMax"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semPSlideDivMax"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semOSlideDivMax"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semBSlideDivMax"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disSlideDivMax"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socSlideDivMax"',":",'"', '"',",\n",sep=""))
+  cat(paste('"affSlideDivMax"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parSlideDivMax"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirSlideDivMax"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"semAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semCAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semPAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semOAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"semBAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"affAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirAS"',":",'"', '"',",\n",sep=""))
+  cat(paste('"totAS"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"semAR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"disAR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"socAR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"affAR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"parAR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"dirAR"',":",'"', '"',",\n",sep=""))
+  cat(paste('"totAR"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"run2ProjROI"',":",'"', '"',"\n",sep=""))
+      
+  cat(paste("}","\n",sep=""))
+  
+  #end outputting json file
+  sink()
+
+  } else if ( inJsonData$Algorithm == 2 ) {
+
+    #start outputting json file  
+    sink(outJsonFileFullPath, append=FALSE, split=FALSE)
+    
+    cat(paste("{","\n",sep=""))
+    
+    cat(paste('"UserName"',":",'"','"',",\n",sep=""))        
+    cat(paste('"Brand"',":",'"',inJsonData$Brand, '"',",\n",sep=""))        
+    cat(paste('"Spend"',":",'"', inJsonData$Spend, '"',",\n",sep=""))
+    cat(paste('"StartingTime"',":",'"', inJsonData$StartingTime,'"',",\n",sep=""))
+    cat(paste('"PlanMonths"',":",'"', inJsonData$PlanMonths, '"',",\n",sep=""))
+    cat(paste('"EndingTime"',":",'"', inJsonData$EndingTime, '"',",\n",sep=""))
+    cat(paste('"lmTouch"',":",'"', inJsonData$lmTouch, '"',",\n",sep=""))
+    
+    cat(paste('"Algorithm"',":",'"', inJsonData$Algorithm, '"',",\n",sep=""))
+    cat(paste('"AlgStartingTime"',":",'"', 0.0, '"',",\n",sep=""))
+    cat(paste('"AlgEndingTime"',":",'"', 0.0, '"',",\n",sep=""))
+    cat(paste('"AlgDuration"',":",'"', 0.0, '"',",\n",sep=""))
+    
+    cat(paste('"semCLB"',":", '"', inJsonData$semCLB, '"',",\n",sep=""))
+    cat(paste('"semPLB"',":", '"', inJsonData$semPLB, '"',",\n",sep=""))
+    cat(paste('"semOLB"',":", '"', inJsonData$semOLB, '"',",\n",sep=""))
+    cat(paste('"semBLB"',":", '"', inJsonData$semBLB, '"',",\n",sep=""))    
+    cat(paste('"disLB"',":", '"',inJsonData$disLB, '"',",\n",sep=""))
+    cat(paste('"socLB"',":", '"',inJsonData$socLB, '"',",\n",sep=""))
+    cat(paste('"affLB"',":", '"',inJsonData$affLB, '"',",\n",sep=""))
+    cat(paste('"parLB"',":", '"',inJsonData$parLB, '"',",\n",sep=""))
+    cat(paste('"dirLB"',":", '"',inJsonData$dirLB, '"',",\n",sep=""))  
+    
+    cat(paste('"semCMin"',":", '"', inJsonData$semCMin, '"',",\n",sep=""))
+    cat(paste('"semPMin"',":", '"', inJsonData$semPMin, '"',",\n",sep=""))
+    cat(paste('"semOMin"',":", '"', inJsonData$semOMin, '"',",\n",sep=""))
+    cat(paste('"semBMin"',":", '"', inJsonData$semBMin, '"',",\n",sep=""))
+    cat(paste('"disMin"',":", '"', inJsonData$disMin, '"',",\n",sep=""))
+    cat(paste('"socMin"',":", '"', inJsonData$socMin, '"',",\n", sep=""))
+    cat(paste('"affMin"',":", '"', inJsonData$affMin, '"',",\n",sep=""))
+    cat(paste('"parMin"',":", '"', inJsonData$parMin, '"',",\n",sep=""))
+    cat(paste('"dirMin"',":", '"', inJsonData$dirMin, '"',",\n",sep=""))      
+    
+    cat(paste('"semCMax"',":", '"', inJsonData$semCMax, '"',",\n",sep=""))
+    cat(paste('"semPMax"',":", '"', inJsonData$semPMax, '"',",\n",sep=""))
+    cat(paste('"semOMax"',":", '"', inJsonData$semOMax, '"',",\n",sep=""))
+    cat(paste('"semBMax"',":", '"', inJsonData$semBMax, '"',",\n",sep=""))    
+    cat(paste('"disMax"',":", '"', inJsonData$disMax, '"',",\n",sep=""))
+    cat(paste('"socMax"',":",'"', inJsonData$socMax, '"',",\n",sep=""))
+    cat(paste('"affMax"',":", '"', inJsonData$affMax, '"',",\n",sep=""))
+    cat(paste('"parMax"',":", '"', inJsonData$parMax, '"',",\n",sep=""))
+    cat(paste('"dirMax"',":", '"', inJsonData$dirMax, '"',",\n",sep=""))
+    
+    cat(paste('"semCUB"',":", '"', inJsonData$semCUB, '"',",\n",sep=""))
+    cat(paste('"semPUB"',":", '"', inJsonData$semPUB, '"',",\n",sep=""))
+    cat(paste('"semOUB"',":", '"', inJsonData$semOUB, '"',",\n",sep=""))
+    cat(paste('"semBUB"',":", '"', inJsonData$semBUB, '"',",\n",sep=""))
+    cat(paste('"disUB"',":", '"', inJsonData$disUB, '"',",\n",sep=""))
+    cat(paste('"socUB"',":",'"', inJsonData$socUB, '"',",\n",sep=""))
+    cat(paste('"affUB"',":", '"', inJsonData$affUB, '"',",\n",sep=""))
+    cat(paste('"parUB"',":", '"', inJsonData$parUB, '"',",\n",sep=""))
+    cat(paste('"dirUB"',":", '"', inJsonData$dirUB, '"',",\n",sep=""))
+    
+    cat(paste('"semCSF"',":",'"',inJsonData$semCSF, '"',",\n",sep=""))
+    cat(paste('"semPSF"',":",'"',inJsonData$semPSF, '"',",\n",sep=""))
+    cat(paste('"semOSF"',":",'"',inJsonData$semOSF, '"',",\n",sep=""))
+    cat(paste('"semBSF"',":",'"',inJsonData$semBSF, '"',",\n",sep=""))
+    cat(paste('"disSF"',":",'"',inJsonData$disSF, '"',",\n",sep=""))
+    cat(paste('"socSF"',":",'"', inJsonData$socSF, '"',",\n",sep=""))
+    cat(paste('"affSF"',":",'"',inJsonData$affSF, '"',",\n",sep=""))
+    cat(paste('"parSF"',":",'"',inJsonData$parSF, '"',",\n",sep=""))
+    cat(paste('"dirSF"',":",'"',inJsonData$dirSF, '"',",\n",sep=""))
+    
+    cat(paste('"tvBeginDate"',":",'"', inJsonData$tvBeginDate,'"',",\n",sep=""))
+    cat(paste('"tvEndDate"',":",'"', inJsonData$tvEndDate,'"',",\n",sep=""))
+    cat(paste('"tvImpressions"',":",'"', inJsonData$tvImpressions, '"', ",\n",sep=""))
+    cat(paste('"tvSpend"',":",'"', inJsonData$tvSpend, '"',",\n",sep=""))
+
+    semCSRVal <- round (runif(1,min=as.numeric(inJsonData$semCLB),max=as.numeric(inJsonData$semCUB)),roDgt)
+    semPSRVal <- round (runif(1,min=as.numeric(inJsonData$semPLB),max=as.numeric(inJsonData$semPUB)),roDgt)
+    semOSRVal <- round (runif(1,min=as.numeric(inJsonData$semOLB),max=as.numeric(inJsonData$semOUB)),roDgt)
+    semBSRVal <- round (runif(1,min=as.numeric(inJsonData$semBLB),max=as.numeric(inJsonData$semBUB)),roDgt)
+    semSR <- semCSRVal + semPSRVal + semOSRVal + semBSRVal
+    disSRVal <- round (runif(1,min=as.numeric(inJsonData$disLB),max=as.numeric(inJsonData$disUB)),roDgt)
+    socSRVal <- round (runif(1,min=as.numeric(inJsonData$socLB),max=as.numeric(inJsonData$socUB)),roDgt)
+    affSRVal <- round (runif(1,min=as.numeric(inJsonData$affLB),max=as.numeric(inJsonData$affUB)),roDgt)
+    parSRVal <- round (runif(1,min=as.numeric(inJsonData$parLB),max=as.numeric(inJsonData$parUB)),roDgt)
+    dirSRVal <- round (runif(1,min=as.numeric(inJsonData$dirLB),max=as.numeric(inJsonData$dirUB)),roDgt)
+
+    cat(paste('"semSR"',":",'"', semSRVal,'"',",\n",sep=""))    
+    cat(paste('"semCSR"',":",'"', semCSRVal,'"',",\n",sep=""))
+    cat(paste('"semPSR"',":",'"', semPSRVal,'"',",\n",sep=""))
+    cat(paste('"semOSR"',":",'"', semOSRVal,'"',",\n",sep=""))
+    cat(paste('"semBSR"',":",'"', semBSRVal,'"',",\n",sep=""))
+    cat(paste('"disSR"',":",'"', disSRVal,'"',",\n",sep=""))
+    cat(paste('"socSR"',":",'"', socSRVal,'"',",\n",sep=""))
+    cat(paste('"affSR"',":",'"', affSRVal,'"',",\n",sep=""))
+    cat(paste('"parSR"',":",'"', parSRVal,'"',",\n",sep=""))
+    cat(paste('"dirSR"',":",'"', dirSRVal,'"',",\n",sep=""))
+    cat(paste('"totSR"',":",'"', '"',",\n",sep=""))
+    
+    cat(paste('"semPR"',":",'"', round (runif(1,min=0,max=100000),roDgt),'"',",\n",sep=""))
+    cat(paste('"disPR"',":",'"', round (runif(1,min=0,max=100000),roDgt),'"',",\n",sep=""))
+    cat(paste('"socPR"',":",'"', round (runif(1,min=0,max=100000),roDgt),'"',",\n",sep=""))  
+    cat(paste('"affPR"',":",'"', round (runif(1,min=0,max=100000),roDgt),'"',",\n",sep=""))
+    cat(paste('"parPR"',":",'"', round (runif(1,min=0,max=100000),roDgt),'"',",\n",sep=""))
+    cat(paste('"dirPR"',":",'"', round (runif(1,min=0,max=100000),roDgt),'"',",\n",sep=""))
+    cat(paste('"totPR"',":",'"', '"',",\n",sep=""))
+    
+    cat(paste('"run1RevRange"',":",'"', "-/+3%",'"',",\n",sep=""))
+    cat(paste('"run1ProjROI"',":",'"',  "250%",'"',",\n",sep=""))
+    cat(paste('"run1ROIRange"',":",'"', "230/275%",'"',",\n",sep=""))
+
+    cat(paste('"semCSlideLeft"',":",'"', inJsonData$semCLB,'"',",\n",sep=""))
+    cat(paste('"semPSlideLeft"',":",'"', inJsonData$semPLB,'"',",\n",sep=""))
+    cat(paste('"semOSlideLeft"',":",'"', inJsonData$semOLB,'"',",\n",sep=""))
+    cat(paste('"semBSlideLeft"',":",'"', inJsonData$semBLB,'"',",\n",sep=""))
+    cat(paste('"disSlideLeft"',":",'"', inJsonData$disLB, '"',",\n",sep=""))
+    cat(paste('"socSlideLeft"',":",'"', inJsonData$socLB, '"',",\n",sep=""))
+    cat(paste('"affSlideLeft"',":",'"', inJsonData$affLB, '"',",\n",sep=""))
+    cat(paste('"parSlideLeft"',":",'"', inJsonData$parLB, '"',",\n",sep=""))
+    cat(paste('"dirSlideLeft"',":",'"', inJsonData$dirLB, '"',",\n",sep=""))
+    
+    cat(paste('"semCSlide"',":",'"', semCSRVal, '"',",\n",sep=""))
+    cat(paste('"semPSlide"',":",'"', semPSRVal, '"',",\n",sep=""))
+    cat(paste('"semOSlide"',":",'"', semOSRVal, '"',",\n",sep=""))
+    cat(paste('"semBSlide"',":",'"', semBSRVal, '"',",\n",sep=""))
+    cat(paste('"disSlide"',":",'"',  disSRVal, '"',",\n",sep=""))
+    cat(paste('"socSlide"',":",'"', socSRVal,'"',",\n",sep=""))
+    cat(paste('"affSlide"',":",'"', affSRVal, '"',",\n",sep=""))
+    cat(paste('"parSlide"',":",'"', parSRVal, '"',",\n",sep=""))
+    cat(paste('"dirSlide"',":",'"', dirSRVal, '"',",\n",sep=""))    
+
+    cat(paste('"semCSlideRight"',":",'"', inJsonData$semCUB, '"',",\n",sep=""))
+    cat(paste('"semPSlideRight"',":",'"', inJsonData$semPUB, '"',",\n",sep=""))
+    cat(paste('"semOSlideRight"',":",'"', inJsonData$semOUB, '"',",\n",sep=""))
+    cat(paste('"semBSlideRight"',":",'"', inJsonData$semBUB, '"',",\n",sep=""))
+    cat(paste('"disSlideRight"',":",'"', inJsonData$dirUB, '"',",\n",sep=""))
+    cat(paste('"socSlideRight"',":",'"', inJsonData$socUB, '"',",\n",sep=""))
+    cat(paste('"affSlideRight"',":",'"', inJsonData$affUB, '"',",\n",sep=""))
+    cat(paste('"parSlideRight"',":",'"', inJsonData$parUB, '"',",\n",sep=""))
+    cat(paste('"dirSlideRight"',":",'"', inJsonData$dirUB, '"',",\n",sep=""))
+
+    cat(paste('"semCSlideDivMin"',":",'"', inJsonData$semCLB, '"',",\n",sep=""))
+    cat(paste('"semPSlideDivMin"',":",'"', inJsonData$semPLB, '"',",\n",sep=""))
+    cat(paste('"semOSlideDivMin"',":",'"', inJsonData$semOLB, '"',",\n",sep=""))
+    cat(paste('"semBSlideDivMin"',":",'"', inJsonData$semBLB, '"',",\n",sep=""))
+    cat(paste('"disSlideDivMin"',":",'"', inJsonData$disLB, '"',",\n",sep=""))
+    cat(paste('"socSlideDivMin"',":",'"', inJsonData$socLB,  '"',",\n",sep=""))
+    cat(paste('"affSlideDivMin"',":",'"', inJsonData$affLB, '"',",\n",sep=""))
+    cat(paste('"parSlideDivMin"',":",'"', inJsonData$parLB, '"',",\n",sep=""))
+    cat(paste('"dirSlideDivMin"',":",'"', inJsonData$dirLB, '"',",\n",sep=""))
+    
+    cat(paste('"semCSlideDivMax"',":",'"', inJsonData$semCUB, '"',",\n",sep=""))
+    cat(paste('"semPSlideDivMax"',":",'"', inJsonData$semPUB, '"',",\n",sep=""))
+    cat(paste('"semOSlideDivMax"',":",'"', inJsonData$semOUB, '"',",\n",sep=""))
+    cat(paste('"semBSlideDivMax"',":",'"', inJsonData$semBUB, '"',",\n",sep=""))
+    cat(paste('"disSlideDivMax"',":",'"', inJsonData$disUB, '"',",\n",sep=""))
+    cat(paste('"socSlideDivMax"',":",'"', inJsonData$socUB, '"',",\n",sep=""))
+    cat(paste('"affSlideDivMax"',":",'"', inJsonData$affUB, '"',",\n",sep=""))
+    cat(paste('"parSlideDivMax"',":",'"', inJsonData$parUB, '"',",\n",sep=""))
+    cat(paste('"dirSlideDivMax"',":",'"', inJsonData$dirUB, '"',",\n",sep=""))
+
+    cat(paste('"semAS"',":",'"', semSRVal, '"',",\n",sep=""))    
+    cat(paste('"semCAS"',":",'"', semCSRVal, '"',",\n",sep=""))
+    cat(paste('"semPAS"',":",'"', semPSRVal, '"',",\n",sep=""))
+    cat(paste('"semOAS"',":",'"', semOSRVal, '"',",\n",sep=""))
+    cat(paste('"semBAS"',":",'"', semBSRVal, '"',",\n",sep=""))
+    cat(paste('"disAS"',":",'"', disSRVal, '"',",\n",sep=""))
+    cat(paste('"socAS"',":",'"', socSRVal,'"',",\n",sep=""))
+    cat(paste('"affAS"',":",'"', affSRVal, '"',",\n",sep=""))
+    cat(paste('"parAS"',":",'"', parSRVal, '"',",\n",sep=""))
+    cat(paste('"dirAS"',":",'"', dirSRVal, '"',",\n",sep=""))
+    cat(paste('"totAS"',":",'"', '"',",\n",sep=""))
+    
+    cat(paste('"semAR"',":",'"', '"',",\n",sep=""))
+    cat(paste('"disAR"',":",'"', '"',",\n",sep=""))
+    cat(paste('"socAR"',":",'"', '"',",\n",sep=""))
+    cat(paste('"affAR"',":",'"', '"',",\n",sep=""))
+    cat(paste('"parAR"',":",'"', '"',",\n",sep=""))
+    cat(paste('"dirAR"',":",'"', '"',",\n",sep=""))
+    cat(paste('"totAR"',":",'"', '"',",\n",sep=""))
+        
+    cat(paste('"run2ProjROI"',":",'"', '"',"\n",sep=""))
+
+    cat(paste("}","\n",sep=""))
+    
+    #end outputting json file
+    sink()
+    
+} else if ( inJsonData$Algorithm == 3 ) {
+    
+  #start outputting json file  
+  sink(outJsonFileFullPath, append=FALSE, split=FALSE)
+  
+  cat(paste("{","\n",sep=""))
+  
+  cat(paste('"UserName"',":",'"','"',",\n",sep=""))        
+  cat(paste('"Brand"',":",'"',inJsonData$Brand, '"',",\n",sep=""))        
+  cat(paste('"Spend"',":",'"', inJsonData$Spend, '"',",\n",sep=""))
+  cat(paste('"StartingTime"',":",'"', inJsonData$StartingTime,'"',",\n",sep=""))
+  cat(paste('"PlanMonths"',":",'"', inJsonData$PlanMonths, '"',",\n",sep=""))
+  cat(paste('"EndingTime"',":",'"', inJsonData$EndingTime, '"',",\n",sep=""))
+  cat(paste('"lmTouch"',":",'"', inJsonData$lmTouch, '"',",\n",sep=""))
+  
+  cat(paste('"Algorithm"',":",'"',inJsonData$Algorithm, '"',",\n",sep=""))
+  cat(paste('"AlgStartingTime"',":",'"', 0.0, '"',",\n",sep=""))
+  cat(paste('"AlgEndingTime"',":",'"', 0.0, '"',",\n",sep=""))
+  cat(paste('"AlgDuration"',":",'"', 0.0, '"',",\n",sep=""))
+  
+  cat(paste('"semCLB"',":", '"', inJsonData$semCLB, '"',",\n",sep=""))
+  cat(paste('"semPLB"',":", '"', inJsonData$semPLB, '"',",\n",sep=""))
+  cat(paste('"semOLB"',":", '"', inJsonData$semOLB, '"',",\n",sep=""))
+  cat(paste('"semBLB"',":", '"', inJsonData$semBLB, '"',",\n",sep=""))    
+  cat(paste('"disLB"',":", '"', inJsonData$disLB, '"',",\n",sep=""))
+  cat(paste('"socLB"',":", '"', inJsonData$socLB, '"',",\n",sep=""))
+  cat(paste('"affLB"',":", '"',inJsonData$affLB, '"',",\n",sep=""))
+  cat(paste('"parLB"',":", '"',inJsonData$parLB, '"',",\n",sep=""))
+  cat(paste('"dirLB"',":", '"',inJsonData$dirLB, '"',",\n",sep=""))  
+  
+  cat(paste('"semCMin"',":", '"', inJsonData$semCMin, '"',",\n",sep=""))
+  cat(paste('"semPMin"',":", '"', inJsonData$semPMin, '"',",\n",sep=""))
+  cat(paste('"semOMin"',":", '"', inJsonData$semOMin, '"',",\n",sep=""))
+  cat(paste('"semBMin"',":", '"', inJsonData$semBMin, '"',",\n",sep=""))
+  cat(paste('"disMin"',":", '"', inJsonData$disMin, '"',",\n",sep=""))
+  cat(paste('"socMin"',":", '"', inJsonData$socMin, '"',",\n", sep=""))
+  cat(paste('"affMin"',":", '"', inJsonData$affMin, '"',",\n",sep=""))
+  cat(paste('"parMin"',":", '"', inJsonData$parMin, '"',",\n",sep=""))
+  cat(paste('"dirMin"',":", '"', inJsonData$dirMin, '"',",\n",sep=""))      
+  
+  cat(paste('"semCMax"',":", '"', inJsonData$semCMax, '"',",\n",sep=""))
+  cat(paste('"semPMax"',":", '"', inJsonData$semPMax, '"',",\n",sep=""))
+  cat(paste('"semOMax"',":", '"', inJsonData$semOMax, '"',",\n",sep=""))
+  cat(paste('"semBMax"',":", '"', inJsonData$semBMax, '"',",\n",sep=""))    
+  cat(paste('"disMax"',":", '"', inJsonData$disMax, '"',",\n",sep=""))
+  cat(paste('"socMax"',":",'"', inJsonData$socMax, '"',",\n",sep=""))
+  cat(paste('"affMax"',":", '"', inJsonData$affMax, '"',",\n",sep=""))
+  cat(paste('"parMax"',":", '"', inJsonData$parMax, '"',",\n",sep=""))
+  cat(paste('"dirMax"',":", '"', inJsonData$dirMax, '"',",\n",sep=""))
+  
+  cat(paste('"semCUB"',":", '"', inJsonData$semCUB, '"',",\n",sep=""))
+  cat(paste('"semPUB"',":", '"', inJsonData$semPUB, '"',",\n",sep=""))
+  cat(paste('"semOUB"',":", '"', inJsonData$semOUB, '"',",\n",sep=""))
+  cat(paste('"semBUB"',":", '"', inJsonData$semBUB, '"',",\n",sep=""))
+  cat(paste('"disUB"',":", '"', inJsonData$disUB, '"',",\n",sep=""))
+  cat(paste('"socUB"',":",'"', inJsonData$socUB, '"',",\n",sep=""))
+  cat(paste('"affUB"',":", '"', inJsonData$affUB, '"',",\n",sep=""))
+  cat(paste('"parUB"',":", '"', inJsonData$parUB, '"',",\n",sep=""))
+  cat(paste('"dirUB"',":", '"', inJsonData$dirUB, '"',",\n",sep=""))
+  
+  cat(paste('"semCSF"',":",'"',inJsonData$semCSF, '"',",\n",sep=""))
+  cat(paste('"semPSF"',":",'"',inJsonData$semPSF, '"',",\n",sep=""))
+  cat(paste('"semOSF"',":",'"',inJsonData$semOSF, '"',",\n",sep=""))
+  cat(paste('"semBSF"',":",'"',inJsonData$semBSF, '"',",\n",sep=""))
+  cat(paste('"disSF"',":",'"', inJsonData$disSF, '"',",\n",sep=""))
+  cat(paste('"socSF"',":",'"', inJsonData$socSF, '"',",\n",sep=""))
+  cat(paste('"affSF"',":",'"',inJsonData$affSF, '"',",\n",sep=""))
+  cat(paste('"parSF"',":",'"',inJsonData$parSF, '"',",\n",sep=""))
+  cat(paste('"dirSF"',":",'"',inJsonData$dirSF, '"',",\n",sep=""))
+  
+  cat(paste('"tvBeginDate"',":",'"', inJsonData$tvBeginDate,'"',",\n",sep=""))
+  cat(paste('"tvEndDate"',":",'"', inJsonData$tvEndDate,'"',",\n",sep=""))
+  cat(paste('"tvImpressions"',":",'"', inJsonData$tvImpressions, '"', ",\n",sep=""))
+  cat(paste('"tvSpend"',":",'"', inJsonData$tvSpend, '"',",\n",sep=""))
+  
+  cat(paste('"semSR"',":",'"', inJsonData$semSR,'"',",\n",sep=""))
+  cat(paste('"semCSR"',":",'"', inJsonData$semCSR,'"',",\n",sep=""))
+  cat(paste('"semPSR"',":",'"', inJsonData$semPSR,'"',",\n",sep=""))
+  cat(paste('"semOSR"',":",'"', inJsonData$semOSR,'"',",\n",sep=""))
+  cat(paste('"semBSR"',":",'"', inJsonData$semBSR,'"',",\n",sep=""))
+  cat(paste('"disSR"',":",'"', inJsonData$disSR,'"',",\n",sep=""))
+  cat(paste('"socSR"',":",'"', inJsonData$socSR,'"',",\n",sep=""))
+  cat(paste('"affSR"',":",'"', inJsonData$affSR,'"',",\n",sep=""))
+  cat(paste('"parSR"',":",'"', inJsonData$parSR,'"',",\n",sep=""))
+  cat(paste('"dirSR"',":",'"', inJsonData$dirSR,'"',",\n",sep=""))
+  cat(paste('"totSR"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"semPR"',":",'"', inJsonData$semPR,'"',",\n",sep=""))
+  cat(paste('"disPR"',":",'"', inJsonData$disPR, '"',",\n",sep=""))
+  cat(paste('"socPR"',":",'"', inJsonData$socPR, '"',",\n",sep=""))  
+  cat(paste('"affPR"',":",'"', inJsonData$affPR,'"',",\n",sep=""))
+  cat(paste('"parPR"',":",'"', inJsonData$parPR,'"',",\n",sep=""))
+  cat(paste('"dirPR"',":",'"', inJsonData$dirPR,'"',",\n",sep=""))
+  cat(paste('"totPR"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"run1RevRange"',":",'"', "-/+3%",'"',",\n",sep=""))
+  cat(paste('"run1ProjROI"',":",'"',  "250%",'"',",\n",sep=""))
+  cat(paste('"run1ROIRange"',":",'"', "230/275%",'"',",\n",sep=""))
+  
+  cat(paste('"semCSlideLeft"',":",'"', inJsonData$semCSlideLeft,'"',",\n",sep=""))
+  cat(paste('"semPSlideLeft"',":",'"', inJsonData$semPSlideLeft,'"',",\n",sep=""))
+  cat(paste('"semOSlideLeft"',":",'"', inJsonData$semOSlideLeft,'"',",\n",sep=""))
+  cat(paste('"semBSlideLeft"',":",'"', inJsonData$semBSlideLeft,'"',",\n",sep=""))
+  cat(paste('"disSlideLeft"',":",'"', inJsonData$disSlideLeft, '"',",\n",sep=""))
+  cat(paste('"socSlideLeft"',":",'"', inJsonData$socSlideLeft, '"',",\n",sep=""))
+  cat(paste('"affSlideLeft"',":",'"', inJsonData$affSlideLeft, '"',",\n",sep=""))
+  cat(paste('"parSlideLeft"',":",'"', inJsonData$parSlideLeft, '"',",\n",sep=""))
+  cat(paste('"dirSlideLeft"',":",'"', inJsonData$dirSlideLeft, '"',",\n",sep=""))
+  
+  semCASVal <- round (runif(1,min=as.numeric(inJsonData$semCLB),max=as.numeric(inJsonData$semCUB)),roDgt)
+  semPASVal <- round (runif(1,min=as.numeric(inJsonData$semPLB),max=as.numeric(inJsonData$semPUB)),roDgt)
+  semOASVal <- round (runif(1,min=as.numeric(inJsonData$semOLB),max=as.numeric(inJsonData$semOUB)),roDgt)
+  semBASVal <- round (runif(1,min=as.numeric(inJsonData$semBLB),max=as.numeric(inJsonData$semBUB)),roDgt)
+  semASVal <- semCASVal + semPASVal + semOASVal + semBASVal
+  disASVal <- round (runif(1,min=as.numeric(inJsonData$disLB),max=as.numeric(inJsonData$disUB)),roDgt)
+  socASVal <- round (runif(1,min=as.numeric(inJsonData$socLB),max=as.numeric(inJsonData$socUB)),roDgt)
+  affASVal <- round (runif(1,min=as.numeric(inJsonData$affLB),max=as.numeric(inJsonData$affUB)),roDgt)
+  parASVal <- round (runif(1,min=as.numeric(inJsonData$parLB),max=as.numeric(inJsonData$parUB)),roDgt)
+  dirASVal <- round (runif(1,min=as.numeric(inJsonData$dirLB),max=as.numeric(inJsonData$dirUB)),roDgt)
+  
+  cat(paste('"semCSlide"',":",'"', semCASVal, '"',",\n",sep=""))
+  cat(paste('"semPSlide"',":",'"', semPASVal, '"',",\n",sep=""))
+  cat(paste('"semOSlide"',":",'"', semOASVal, '"',",\n",sep=""))
+  cat(paste('"semBSlide"',":",'"', semBASVal, '"',",\n",sep=""))
+  cat(paste('"disSlide"',":",'"',  disASVal, '"',",\n",sep=""))
+  cat(paste('"socSlide"',":",'"', socASVal, '"',",\n",sep=""))
+  cat(paste('"affSlide"',":",'"', affASVal, '"',",\n",sep=""))
+  cat(paste('"parSlide"',":",'"', parASVal, '"',",\n",sep=""))
+  cat(paste('"dirSlide"',":",'"', dirASVal, '"',",\n",sep=""))    
+  
+  cat(paste('"semCSlideRight"',":",'"', inJsonData$semCSlideRight, '"',",\n",sep=""))
+  cat(paste('"semPSlideRight"',":",'"', inJsonData$semPSlideRight, '"',",\n",sep=""))
+  cat(paste('"semOSlideRight"',":",'"', inJsonData$semOSlideRight, '"',",\n",sep=""))
+  cat(paste('"semBSlideRight"',":",'"', inJsonData$semBSlideRight, '"',",\n",sep=""))
+  cat(paste('"disSlideRight"',":",'"', inJsonData$disSlideRight, '"',",\n",sep=""))
+  cat(paste('"socSlideRight"',":",'"', inJsonData$socSlideRight, '"',",\n",sep=""))
+  cat(paste('"affSlideRight"',":",'"', inJsonData$affSlideRight, '"',",\n",sep=""))
+  cat(paste('"parSlideRight"',":",'"', inJsonData$parSlideRight, '"',",\n",sep=""))
+  cat(paste('"dirSlideRight"',":",'"', inJsonData$dirSlideRight, '"',",\n",sep=""))
+  
+  cat(paste('"semCSlideDivMin"',":",'"', inJsonData$semCSlideDivMin, '"',",\n",sep=""))
+  cat(paste('"semPSlideDivMin"',":",'"', inJsonData$semPlideDivMin, '"',",\n",sep=""))
+  cat(paste('"semOSlideDivMin"',":",'"', inJsonData$semOlideDivMin, '"',",\n",sep=""))
+  cat(paste('"semBSlideDivMin"',":",'"', inJsonData$semBSlideDivMin, '"',",\n",sep=""))
+  cat(paste('"disSlideDivMin"',":",'"', inJsonData$disSlideDivMin, '"',",\n",sep=""))
+  cat(paste('"socSlideDivMin"',":",'"', inJsonData$socSlideDivMin, '"',",\n",sep=""))
+  cat(paste('"affSlideDivMin"',":",'"', inJsonData$affSlideDivMin, '"',",\n",sep=""))
+  cat(paste('"parSlideDivMin"',":",'"', inJsonData$parSlideDivMin, '"',",\n",sep=""))
+  cat(paste('"dirSlideDivMin"',":",'"', inJsonData$dirSlideDivMin, '"',",\n",sep=""))
+  
+  cat(paste('"semCSlideDivMax"',":",'"', inJsonData$semCSlideDivMax, '"',",\n",sep=""))
+  cat(paste('"semPSlideDivMax"',":",'"', inJsonData$semPSlideDivMax, '"',",\n",sep=""))
+  cat(paste('"semOSlideDivMax"',":",'"', inJsonData$semOSlideDivMax, '"',",\n",sep=""))
+  cat(paste('"semBSlideDivMax"',":",'"', inJsonData$semBSlideDivMax, '"',",\n",sep=""))
+  cat(paste('"disSlideDivMax"',":",'"', inJsonData$disSlideDivMax, '"',",\n",sep=""))
+  cat(paste('"socSlideDivMax"',":",'"', inJsonData$socSlideDivMax, '"',",\n",sep=""))
+  cat(paste('"affSlideDivMax"',":",'"', inJsonData$affSlideDivMax, '"',",\n",sep=""))
+  cat(paste('"parSlideDivMax"',":",'"', inJsonData$parSlideDivMax, '"',",\n",sep=""))
+  cat(paste('"dirSlideDivMax"',":",'"', inJsonData$dirSlideDivMax, '"',",\n",sep=""))
+
+  cat(paste('"semCSlide"',":",'"', semCASVal, '"',",\n",sep=""))
+  cat(paste('"semPSlide"',":",'"', semPASVal, '"',",\n",sep=""))
+  cat(paste('"semOSlide"',":",'"', semOASVal, '"',",\n",sep=""))
+  cat(paste('"semBSlide"',":",'"', semBASVal, '"',",\n",sep=""))
+  cat(paste('"disSlide"',":",'"',  disASVal, '"',",\n",sep=""))
+  cat(paste('"socSlide"',":",'"', socASVal, '"',",\n",sep=""))
+  cat(paste('"affSlide"',":",'"', affASVal, '"',",\n",sep=""))
+  cat(paste('"parSlide"',":",'"', parASVal, '"',",\n",sep=""))
+  cat(paste('"dirSlide"',":",'"', dirASVal, '"',",\n",sep=""))    
+
+  cat(paste('"semAS"',":",'"', semASVal, '"',",\n",sep=""))  
+  cat(paste('"semCAS"',":",'"', semCASVal, '"',",\n",sep=""))
+  cat(paste('"semPAS"',":",'"', semPASVal, '"',",\n",sep=""))
+  cat(paste('"semOAS"',":",'"', semOASVal, '"',",\n",sep=""))
+  cat(paste('"semBAS"',":",'"', semBASVal, '"',",\n",sep=""))
+  cat(paste('"disAS"',":",'"', disASVal, '"',",\n",sep=""))
+  cat(paste('"socAS"',":",'"', socASVal, '"',",\n",sep=""))
+  cat(paste('"affAS"',":",'"', affASVal, '"',",\n",sep=""))
+  cat(paste('"parAS"',":",'"', parASVal, '"',",\n",sep=""))
+  cat(paste('"dirAS"',":",'"', dirASVal, '"',",\n",sep=""))
+  cat(paste('"totAS"',":",'"', '"',",\n",sep=""))
+    
+  semARVal <- round (runif(1,min=0,max=1000000),roDgt)
+  disARVal <- round (runif(1,min=0,max=1000000),roDgt)
+  socARVal <- round (runif(1,min=0,max=1000000),roDgt)
+  affARVal <- round (runif(1,min=0,max=1000000),roDgt)
+  parARVal <- round (runif(1,min=0,max=1000000),roDgt)
+  dirARVal <- round (runif(1,min=0,max=1000000),roDgt)
+  
+  cat(paste('"semAR"',":",'"', semARVal, '"',",\n",sep=""))
+  cat(paste('"disAR"',":",'"', disARVal, '"',",\n",sep=""))
+  cat(paste('"socAR"',":",'"', socARVal, '"',",\n",sep=""))
+  cat(paste('"affAR"',":",'"', affARVal, '"',",\n",sep=""))
+  cat(paste('"parAR"',":",'"', parARVal, '"',",\n",sep=""))
+  cat(paste('"dirAR"',":",'"', dirARVal, '"',",\n",sep=""))
+  cat(paste('"totAR"',":",'"', '"',",\n",sep=""))
+  
+  cat(paste('"run2ProjROI"',":",'"', '"',"\n",sep=""))
+  
+  cat(paste("}","\n",sep=""))
+  
+  #end outputting json file
+  sink()
+  
+} else {
+  
+} # if inJsonData$Algorithm
+
+setwd(curCallerFolder)
+
+#prettyNum(12345.678,big.mark=",",scientific=F)
+#gsub(",", "", "1,234,567", fixed = TRUE)
+

@@ -1,0 +1,79 @@
+<div class="container-fluid">
+    <!--nav bar-->
+    <div class="row">
+        <ol class="breadcrumb path path-myscenarios">
+            <li><a href="#dashBoard">Home</a></li>
+            <li><a href="#myscenarios">My Scenarios</a></li>
+            <li>Share</li>
+        </ol>
+    </div>
+    <!--end nav bar-->
+    <!--form-->
+    <form class="form-horizontal">
+        <!--Scenario id-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Scenario ID:</label>
+
+            <div class="col-sm-4">
+                <div class="well well-sm">
+                    SFLY-May2015-LTA-X-O-001-R1
+                </div>
+            </div>
+        </div>
+        <!--Scenario name-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Scenario Name:</label>
+
+            <div class="col-sm-4">
+                <div class="well well-sm">
+                    SFLY May 2015 Optimized
+                </div>
+            </div>
+        </div>
+        <!--Scenario notes-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Notes about the scenario:</label>
+
+            <div class="col-sm-4">
+                <div class="well well-sm">
+                    This is the first scenario with Spend and no constraints and using MTA as attribution method
+                </div>
+            </div>
+        </div>
+        <!--input share with email-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Share With:</label>
+
+            <div class="col-sm-4">
+                <label for="shareId" class="sr-only">share list</label>
+                <input id="shareId" class="form-control" type="email">
+            </div>
+            <div class="col-sm-1 help-info">
+                <i class="fa fa-question-circle" tooltip-placement="right" tooltip="tooltip"></i>
+            </div>
+        </div>
+        <!--textarea message to recipient-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Message to recipient:</label>
+
+            <div class="col-sm-4">
+                <label>
+                    <textarea class="form-control"></textarea>
+                </label>
+            </div>
+            <div class="col-sm-1 help-info">
+                <i class="fa fa-question-circle" tooltip-placement="right" tooltip="tooltip"></i>
+            </div>
+        </div>
+        <!--button share and cancel-->
+        <div class="form-group">
+            <div class="col-xs-offset-0 col-sm-2 col-sm-offset-2">
+                <button type="button" class="btn btn-default">Share</button>
+            </div>
+            <div class="col-sm-2">
+                <a href="#myscenarios"><button type="button" class="btn btn-default">Cancel</button></a>
+            </div>
+        </div>
+    </form>
+    <!--end of form-->
+</div>

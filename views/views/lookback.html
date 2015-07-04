@@ -1,0 +1,381 @@
+<div class="container-fluid" id="Initial Input" ng-if="nav.current==='Initial Input'">
+    <div class="row">
+        <ol class="breadcrumb path path-lookback">
+            <li><a href="#/">Home</a></li>
+            <li><a href="javascript:void(0)" ng-click="nav.current='Initial Input'">Look Back</a></li>
+            <li>Initial Input</li>
+        </ol>
+    </div>
+    <div class="row">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">Brand:</label>
+                <div class="col-sm-4">
+                    <select id="lookBackBrand" class="form-control" ng-model="lookBack.brand" ng-options="b for b in brands"></select>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{brandTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackAttribution" class="col-sm-3 control-label">Attribution:</label>
+
+                <div class="col-sm-4" id="lookBackAttribution">
+                    <label class="btn btn-default" ng-model="lookBack.attribution" btn-radio="'LTA'" uncheckable>
+                        LTA
+                    </label>
+                    <label class="btn btn-default" ng-model="lookBack.attribution" btn-radio="'MTA'" uncheckable>
+                        MTA
+                    </label>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{attrTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackBeginPeriod" class="col-sm-3 control-label">Begin Period:</label>
+
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input id="lookBackBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
+                               ng-model="lookBack.beginPeriod" is-open="opened.lookBackBeginPeriod"
+                               datepicker-options="dateOptions" datepicker-mode="'month'" max-date="{{maxDate}}"
+                               ng-required="true" close-text="Close" disabled>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"
+                                    ng-click="open($event, 'lookBackBeginPeriod')">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{beginPeriodTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackEndPeriod" class="col-sm-3 control-label">End Period:</label>
+
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input id="lookBackEndPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
+                               ng-model="lookBack.endPeriod" is-open="opened.lookBackEndPeriod" ng-change="getLastDate()"
+                               min-date="lookBack.beginPeriod" datepicker-options="dateOptions"
+                               datepicker-mode="'month'" disabled max-date="{{maxDate}}" ng-required="true" close-text="Close">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event, 'lookBackEndPeriod')">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{endPeriodTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5 col-sm-offset-3">
+                    <button type="button" class="btn btn-default" ng-click="nav.current='Additional Input'">Next
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container-fluid" id="Additional Input" ng-if="nav.current==='Additional Input'">
+    <div class="row">
+        <ol class="breadcrumb path path-lookback">
+            <li><a href="#/">Home</a></li>
+            <li><a href="javascript:void(0)" ng-click="nav.current='Initial Input'">Look Back</a></li>
+            <li><a href="javascript:void(0)" ng-click="nav.current='Initial Input'">Initial Input</a></li>
+            <li>Additional Input</li>
+        </ol>
+    </div>
+    <div class="row">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">Brand:</label>
+                <div class="col-sm-4">
+                    <div class="well well-sm">
+                        {{lookBack.brand}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">Attribution:</label>
+                <div class="col-sm-4">
+                    <div class="well well-sm">
+                        {{lookBack.attribution}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">Begin Period:</label>
+                <div class="col-sm-4">
+                    <div class="well well-sm">
+                        {{lookBack.beginPeriod | date: 'MMM-dd-yyyy'}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">End Period:</label>
+                <div class="col-sm-4">
+                    <div class="well well-sm">
+                        {{lookBack.endPeriod | date: 'MMM-dd-yyyy'}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackSpend" class="col-sm-3 control-label">Portfolio Spend :</label>
+
+                <div class="col-sm-4">
+                    <input class="form-control" id="lookBackSpend" type="text" ng-model="lookBack.spend" format-input>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{spendTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    Include data through:
+                </label>
+                <div class="col-sm-3">
+                    <div class="well well-sm">
+                        {{lookBack.endPeriod | date: 'MMM-dd-yyyy'}}
+                    </div>
+                </div>
+                <div class="col-sm-1">
+                    <button id="lookBackInclude" type="button" class="btn btn-default btn-block" ng-model="lookBack.include" btn-checkbox>
+                        <span ng-if="lookBack.include">Yes</span>
+                        <span ng-if="!(lookBack.include)">No</span>
+                    </button>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{includeTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 col-sm-offset-3">
+                    <button type="button" class="btn btn-default" ng-click="nav.current='Initial Input'">Prev</button>
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-default" ng-click="calculate()">Next</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container-fluid" id="Output" ng-if="nav.current==='Output'">
+    <div class="row">
+        <ol class="breadcrumb path path-lookback">
+            <li><a href="#/">Home</a></li>
+            <li><a href="javascript:void(0)" ng-click="nav.current='Initial Input'">Look Back</a></li>
+            <li><a href="javascript:void(0)" ng-click="nav.current='Initial Input'">Initial Input</a></li>
+            <li><a href="javascript:void(0)" ng-click="nav.current='Additional Input'">Additional Input</a></li>
+            <li>Output</li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="well well-sm">
+            <label>Scenario ID:</label>{{lookBack.output.ScenarioID}} <br>
+            <label>Brand</label>: {{lookBack.brand}}
+            <label>Attribution</label>: {{lookBack.attribution}}
+            <label>Begin Period</label>: {{lookBack.beginPeriod | date: 'MMM-dd-yyyy'}}
+            <label>End Period</label>: {{lookBack.endPeriod | date: 'MMM-dd-yyyy'}}
+            <label>Portfolio Spend </label>: {{lookBack.spend | formatCurrency}}
+            <label>Data through</label>: {{lookBack.dataThrough | date: 'MMM-dd-yyyy'}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed roi-table">
+                    <thead>
+                    <tr>
+                        <th class="col-1" rowspan="2">Portfolio Channels</th>
+                        <th class="col-2" colspan="2">Actuals</th>
+                        <th class="col-4" colspan="4">{{lookBack.beginPeriod | date: 'MMM-dd-yyyy'}} Optimized</th>
+                        <th class="col-2" colspan="2">Difference</th>
+                    </tr>
+                    <tr>
+                        <th class="col-1">Spend</th>
+                        <th class="col-1">Revenue</th>
+                        <th class="col-1">Lower</th>
+                        <th class="col-1">Spend</th>
+                        <th class="col-1">Upper</th>
+                        <th class="col-1">Revenue</th>
+                        <th class="col-1">Spend</th>
+                        <th class="col-1">Revenue</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="td-title" ng-click="hideSemItems = !hideSemItems">SEM Total<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
+                        <td>{{lookBack.output.semSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semTLB | formatCurrency}}</td>
+                        <td>{{lookBack.input.semTSB | formatCurrency}}</td>
+                        <td>{{lookBack.output.semTUB | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semTSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Brand</td>
+                        <td>{{lookBack.output.semBSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semBLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="lookBack.input.semBSB" min="lookBack.output.semBLB" max="lookBack.output.semBUB"></range-input>
+                        </td>
+                        <td>{{lookBack.output.semBUB | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semBSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Cards</td>
+                        <td>{{lookBack.output.semCSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semCLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="lookBack.input.semCSB" min="lookBack.output.semCLB" max="lookBack.output.semCUB"></range-input>
+                        </td>
+                        <td>{{lookBack.output.semCUB | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semCSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Photobook</td>
+                        <td>{{lookBack.output.semPSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semPLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="lookBack.input.semPSB" min="lookBack.output.semPLB" max="lookBack.output.semPUB"></range-input>
+                        </td>
+                        <td>{{lookBack.output.semPUB | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semPSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Others</td>
+                        <td>{{lookBack.output.semOSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semOLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="lookBack.input.semOSB" min="lookBack.output.semOLB" max="lookBack.output.semOUB"></range-input>
+                        </td>
+                        <td>{{lookBack.output.semOUB | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semOSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Display</td>
+                        <td>{{lookBack.output.disSR | formatCurrency}}</td>
+                        <td>{{lookBack.output.disPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.disLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="lookBack.input.disSB" min="lookBack.output.disLB" max="lookBack.output.disUB"></range-input>
+                        </td>
+                        <td>{{lookBack.output.disUB | formatCurrency}}</td>
+                        <td>{{lookBack.output.disAR | formatCurrency}}</td>
+                        <td>{{lookBack.output.disSD | formatCurrency}}</td>
+                        <td>{{lookBack.output.disAR - lookBack.output.disPR | formatCurrency}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Social(FB)</td>
+                        <td>{{lookBack.output.socSR | formatCurrency}}</td>
+                        <td>{{lookBack.output.socPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.socLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="lookBack.input.socSB" min="lookBack.output.socLB" max="lookBack.output.socUB"></range-input>
+                        </td>
+                        <td>{{lookBack.output.socUB | formatCurrency}}</td>
+                        <td>{{lookBack.output.socAR | formatCurrency}}</td>
+                        <td>{{lookBack.output.socSD | formatCurrency}}</td>
+                        <td>{{lookBack.output.socAR - lookBack.output.socPR | formatCurrency}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Affiliates</td>
+                        <td>{{lookBack.output.affSR | formatCurrency}}</td>
+                        <td>{{lookBack.output.affPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.affLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="lookBack.input.affSB" min="lookBack.output.affLB" max="lookBack.output.affUB"></range-input>
+                        </td>
+                        <td>{{lookBack.output.affUB | formatCurrency}}</td>
+                        <td>{{lookBack.output.affAR | formatCurrency}}</td>
+                        <td>{{lookBack.output.affSD | formatCurrency}}</td>
+                        <td>{{lookBack.output.affAR - lookBack.output.affPR | formatCurrency}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Partners</td>
+                        <td>{{lookBack.output.parSR | formatCurrency}}</td>
+                        <td>{{lookBack.output.parPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.parLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="lookBack.input.parSB" min="lookBack.output.parLB" max="lookBack.output.parUB"></range-input>
+                        </td>
+                        <td>{{lookBack.output.parUB | formatCurrency}}</td>
+                        <td>{{lookBack.output.parAR | formatCurrency}}</td>
+                        <td>{{lookBack.output.parSD | formatCurrency}}</td>
+                        <td>{{lookBack.output.parAR - lookBack.output.parPR | formatCurrency}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Portfolio Total</td>
+                        <td>{{lookBack.output.totSR | formatCurrency}}</td>
+                        <td>{{lookBack.output.totPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.totLB | formatCurrency}}</td>
+                        <td>{{lookBack.input.totSB | formatCurrency}}</td>
+                        <td>{{lookBack.output.totUB | formatCurrency}}</td>
+                        <td>{{lookBack.output.totAR | formatCurrency}}</td>
+                        <td>{{lookBack.output.totSD | formatCurrency}}</td>
+                        <td>{{lookBack.output.totAR - lookBack.output.totPR | formatCurrency}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Portfolio ROI</td>
+                        <td colspan="2">%</td>
+                        <td colspan="4">%</td>
+                        <td colspan="2">%</td>
+                    </tr>
+                    <tr>
+                        <td colspan="9"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="8">Change in Brand Total Revenue</td>
+                        <td>%</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row table-buttons">
+        <div class="col-sm-10 col-sm-offset-2">
+            <div class="col-sm-3">
+                <div class="btn-group" dropdown>
+                    <button type="button" class="btn btn-default" ng-click="saveGet()">Save</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+                        <span class="caret"></span>
+                        <span class="sr-only">Split button!</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="javascript:void(0)" ng-click="">Export</a></li>
+                        <li><a href="javascript:void(0)" ng-click="">Share</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-default" ng-click="">Re-run</button>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-default" ng-click="resetForm()">Reset</button>
+            </div>
+        </div>
+    </div>
+</div>

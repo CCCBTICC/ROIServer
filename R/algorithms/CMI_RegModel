@@ -1,0 +1,5 @@
+#CMD BATCH --no-save --no-restore '--args /home/zhangw/RAnalytics/Sentiment/SP500/haSP500FinSource.txt' /home/zhangw/RAnalytics/Sentiment/SP500/haSentiSP500.R
+
+R CMD BATCH --no-save --no-restore '--args 1400544192_31.cfg' /var/www/deniX/webroot/ROI/algorithms/RM.R &
+
+

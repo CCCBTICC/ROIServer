@@ -1,0 +1,534 @@
+/*************************************************
+ *************************************************
+ *****                                       *****
+ *****                 index                 *****
+ *****  0 - General settings                 *****
+ *****      0.1 - body header footer         *****
+ *****      0.2 - customer button setting    *****
+ *****      0.3 - customer range input       *****
+ *****  1 - Login Page                       *****
+ *****  2 - Shell Page                       *****
+ *****      2.1 - Navigation bar             *****
+ *****      2.2 - Side bar and views         *****
+ *****          2.2.1 - Side bar             *****
+ *****          2.2.2 - Side bar show & hide *****
+ *****          2.2.2 - Content show & hide  *****
+ *****  3 - View Settings                    *****
+ *****      3.1 - General settings           *****
+ *****      3.2 - Table settings             *****
+ *****  4 - Footer                           *****
+ *****                                       *****
+ *****  f - Customer animate                 *****
+ *****                                       *****
+ *****                                       *****
+ *************************************************
+ *************************************************/
+
+/*************************************************
+ ******                                     ******
+ ******           General settings          ******
+ ******                                     ******
+ *************************************************/
+body {
+    background-color: #fafafa;
+    font-size: 13px;
+    overflow-x: hidden;
+}
+
+footer {
+    height: 100px;
+    margin-top: 60px;
+}
+
+/*  Button settings  */
+.btn-orange, .btn-orange:focus {
+    margin-right: 15px;
+    text-transform: uppercase;
+    background-color: #F05323;
+    color: #f8f8f8;
+    border: #F05323 solid 1px;
+    border-bottom: #F05323 solid 3px;
+}
+
+.btn-orange:hover {
+    background-color: #f8f8f8;
+    color: #F05323;
+    -webkit-transition: background-color 0.5s, color 0.5s;
+    -moz-transition: background-color 0.5s, color 0.5s;
+    -o-transition: background-color 0.5s, color 0.5s;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.btn-orange:active {
+    border-bottom: #F05323 solid 1px;
+    border-top: #F05323 solid 3px;
+}
+
+/*  Input type='range'  */
+/*  General  */
+input[type=range] {
+    -webkit-appearance: none;
+    border: 1px solid white;
+    width: 100%;
+    height: 19px;
+    padding: 0;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+/*  For Chrome, Safari, and Opera  */
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    border: 1px solid #F05323;
+    background: #fff;
+    margin-top: -5px;
+}
+
+input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+
+/*  For FireFox  */
+input[type=range]::-moz-range-thumb {
+    border: 1px solid #F05323;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+input[type=range]:-moz-focusring {
+    outline: 1px solid white;
+    outline-offset: -1px;
+}
+
+/* For IE  */
+input[type=range]::-ms-track {
+    width: 100%;
+    height: 5px;
+    background: transparent;
+    border-color: transparent;
+    border-width: 6px 0;
+    color: transparent;
+}
+
+input[type=range]::-ms-fill-lower {
+    background: #777;
+    border-radius: 10px;
+}
+
+input[type=range]::-ms-fill-upper {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+input[type=range]::-ms-thumb {
+    border: 1px solid #F05323;
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+/*************************************************
+ ******                                     ******
+ ******              Login Page             ******
+ ******                                     ******
+ *************************************************/
+.login-title {
+    height: 200px;
+    margin-bottom: 100px;
+    background: #e3e3e3;
+    border-bottom: #fff solid 5px;
+    position: relative;
+}
+
+.login-title h1 {
+    position: absolute;
+    left: 50px;
+    bottom: 30px;
+}
+
+.login-form {
+    width: 700px;
+    margin: 0 auto;
+}
+
+/*************************************************
+ ******                                     ******
+ ******              Shell Page             ******
+ ******                                     ******
+ *************************************************/
+/*  navigation bar  */
+.navbar-dark {
+    height: 90px;
+    border-bottom: #fff solid 3px;
+    background: #e3e3e3;
+    padding: 5px 15px 20px 15px;
+}
+
+.navbar-dark a {
+    position: absolute;
+    left: 25px;
+    bottom: 0;
+}
+
+.navbar-right li {
+    float: none;
+    text-align: right;
+    padding-right: 30px;
+}
+
+.navbar-btn {
+    margin: 10px -3px 10px 12px;
+    padding: 6px 15px;
+    width: 150px;
+    text-transform: uppercase;
+    color: #222;
+}
+
+/*  side bar and view  */
+.shell {
+    margin-top: 70px;
+    padding-top: 30px;
+}
+
+/*  side bar  */
+.sidebar {
+    text-align: right;
+    margin-top: -30px;
+    padding-top: 30px;
+    width: 190px;
+    position: fixed;
+    height: 100%;
+    font-size: 16px;
+    box-shadow: 2px 2px 10px grey;
+    -webkit-transition: width .5s;
+    -moz-transition: width .5s;
+    -o-transition: width .5s;
+    transition: width .5s;
+    overflow: hidden;
+}
+
+.sidebar > a {
+    width: 100%;
+    padding-right: 20px;
+}
+
+.sidebar > a > i {
+    color: #F05323;
+    cursor: pointer;
+    font-size: 25px;
+    width: 25px;
+    height: 25px;
+    margin: 20px 0;
+}
+
+.sidebar li {
+    background: #F05323;
+    height: auto;
+}
+
+.sidebar li a, .sidebar li a:focus {
+    color: #3c3c3c;
+    width: 190px;
+    border-left: none;
+    text-align: left;
+    padding-right: 20px;
+    padding-left: 26px;
+    padding-top: 19px;
+    background: #fafafa;
+    height: 60px;
+    vertical-align: middle;
+}
+
+.sidebar li a:hover {
+    background-color: #eee;
+}
+
+.sidebar li:hover a {
+    color: #F05323;
+    border-left: 6px solid #F05323;
+    padding-left: 20px;
+    -webkit-transition: border-left 0.3s, padding-left 0.3s;
+    -moz-transition: border-left 0.3s, padding-left 0.3s;
+    -o-transition: border-left 0.3s, padding-left 0.3s;
+    transition: border-left 0.3s, padding-left 0.3s;
+}
+
+.sidebar li a img, .sidebar li a i {
+    color: #F05323;
+    cursor: pointer;
+    font-size: 25px;
+    width: 25px;
+    height: 25px;
+    float: right;
+}
+
+.views {
+    padding-left: 200px;
+}
+
+/*  side bar hide and show  */
+.slide-bar-hide.sidebar {
+    -webkit-transform: translateX(-125px);
+    -moz-transform: translateX(-125px);
+    -ms-transform: translateX(-125px);
+    -o-transform: translateX(-125px);
+    transform: translateX(-125px);
+    -webkit-transition: -webkit-transform .3s;
+    -moz-transition: -moz-transform .3s;
+    -o-transition: -o-transform .3s;
+    transition: transform .3s;
+}
+
+.slide-bar-hide i {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+    -webkit-transition: -webkit-transform .3s;
+    -moz-transition: -moz-transform .3s;
+    -o-transition: -o-transform .3s;
+    transition: transform .3s;
+}
+
+.slide-bar-show.sidebar {
+    -webkit-transform: translateX(0px);
+    -moz-transform: translateX(0px);
+    -ms-transform: translateX(0px);
+    -o-transform: translateX(0px);
+    transform: translateX(0px);
+    -webkit-transition: -webkit-transform .3s;
+    -moz-transition: -moz-transform .3s;
+    -o-transition: -o-transform .3s;
+    transition: transform .3s;
+}
+
+.slide-bar-show i {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transition: -webkit-transform .3s;
+    -moz-transition: -moz-transform .3s;
+    -o-transition: -o-transform .3s;
+    transition: transform .3s;
+}
+
+/*  main content show and hide  */
+.content-show {
+    padding-left: 200px;
+    -webkit-transition: padding-left .3s;
+    -moz-transition: padding-left .3s;
+    -o-transition: padding-left .3s;
+    transition: padding-left .3s;
+}
+
+.content-hide {
+    padding-left: 70px;
+    -webkit-transition: padding-left .3s;
+    -moz-transition: padding-left .3s;
+    -o-transition: padding-left .3s;
+    transition: padding-left .3s;
+}
+
+/*************************************************
+ ******                                     ******
+ ******            Views Settings           ******
+ ******                                     ******
+ *************************************************/
+.path > li + li:before {
+    color: #444;
+}
+
+.path {
+    margin-bottom: 30px;
+}
+
+.path a {
+    color: #3c3c3c;
+}
+
+.path a:hover {
+    color: #F05323;
+    -webkit-transition: color 0.3s;
+    -moz-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    transition: color 0.3s;
+}
+
+.well {
+    padding: 7px 0 7px 10px;
+    margin: 0;
+}
+
+.well label {
+    padding-left: 10px;
+}
+
+.help-info {
+    text-align: left;
+    padding-top: 7px;
+    vertical-align: middle;
+}
+
+.help-info .fa {
+    font-size: 25px;
+    padding-top: 0;
+}
+
+/*  Tables setting  */
+table.roi-table {
+    margin-top: 20px;
+    margin-right: 20px;
+    text-align: right;
+}
+
+.table-buttons {
+    margin-top: 30px;
+}
+
+table.roi-table tr > th {
+    vertical-align: middle;
+    text-align: center;
+}
+
+table.roi-table tr:first-child > th:first-child {
+    padding: 5px 0 5px 15px;
+    text-align: left;
+}
+
+table.roi-table tr > th.col-1 {
+    min-width: 100px;
+    max-width: 160px;
+    overflow: hidden;
+}
+
+table.roi-table tr > th.col-2 {
+    min-width: 200px;
+    max-width: 320px;
+    overflow: hidden;
+}
+
+table.roi-table tr > th.col-3 {
+    min-width: 300px;
+    max-width: 480px;
+    overflow: hidden;
+}
+
+table.roi-table tr > th.col-4 {
+    min-width: 400px;
+    max-width: 640px;
+    overflow: hidden;
+}
+
+table.roi-table tr > th.col-5 {
+    min-width: 500px;
+    max-width: 800px;
+    overflow: hidden;
+}
+
+table.roi-table tr > th.col-6 {
+    min-width: 600px;
+    max-width: 960px;
+    overflow: hidden;
+}
+
+table.roi-table tr > td {
+    vertical-align: middle;
+    padding: 5px 15px 5px 0;
+}
+
+table.roi-table tr > td.td-title {
+    padding: 5px 0 5px 15px;
+    min-width: 150px;
+    position: relative;
+    text-align: left;
+}
+
+table.roi-table tr > td.td-title button {
+    float: right;
+    margin-right: 10px;
+}
+
+table.roi-table tr > td.td-subtitle {
+    text-align: left;
+    padding-left: 30px;
+}
+
+table.roi-table tr > td.range-input {
+    height: 50px;
+    min-width: 150px;
+    width: 160px;
+    padding: 0;
+}
+
+table.roi-table tr > td.check {
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
+
+table.roi-table tr > td.disabled {
+    padding-left: 15px;
+    text-align: center;
+    background-color: #e3e3e3;
+}
+
+table.roi-table tr.active-row > td {
+    background-color: #F05323;
+    color: #f8f8f8;
+}
+
+table.roi-table tr > td.non-number {
+    padding-left: 15px;
+    text-align: left;
+}
+
+table.roi-table tr > td input {
+    text-align: right;
+}
+
+table.roi-table tr > td.compare-chart {
+    vertical-align: top;
+}
+
+/*  LookBack  */
+.path-lookback {
+    background: #FFFFC0;
+}
+
+/*  PlanForward  */
+.path-palnforward {
+    background: #FFC0C0;
+}
+
+.path-myscenarios {
+    background: #CCEBFF;
+}
+
+/*************************************************
+ ******                                     ******
+ ******         Customer animate            ******
+ ******                                     ******
+ *************************************************/
