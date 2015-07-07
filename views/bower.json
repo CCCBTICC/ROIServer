@@ -1,0 +1,25 @@
+{
+  "name": "ROIClient",
+  "version": "0.0.0",
+  "authors": [
+    "ypling <leoanrd.li.pub@gmail.com>"
+  ],
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.4",
+    "angular": "~1.3.15",
+    "angular-route": "~1.3.15",
+    "font-awsome": "~4.3.0",
+    "angular-sanitize": "~1.3.15",
+    "angular-bootstrap": "~0.13.0",
+    "d3": "~3.5.5"
+  }
+}

@@ -31,27 +31,44 @@ module.exports = function(app, passport,express) {
     //  home page 
     app.get('/api/PlanInitOutput',function(req,res){
         //use commend line via R to compute the data and generate the file.
+        var data= fs.readFileSync('R/output/input_temp.json', 'utf-8');
+        var jsonData = JSON.parse(data);
+        res.send(jsonData);
+    });
+
+    app.post('/api/PlanInitOutput',function(req,res){
+        //write file and put the update data into temp file
+        fs.writeFile('R/output/input_temp.json',JSON.stringify(req.body));
+        /*
         var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
-            var exec = require('child_process').exec;
-            var last = exec(cmd);
-            last.stdout.on('data', function (data) {
-            console.log('standard output：' + data);
-            });
-            last.on('exit', function (code) {
-            console.log('child_process exit. code：' + code);
-            }); 
-            
-            setTimeout(
-                    function() {
-                            var data= fs.readFileSync('R/output/input_temp.json', 'utf-8');
-                            var jsonData = JSON.parse(data);
-                            res.send(jsonData);
-                                },500); 
+        var exec = require('child_process').exec;
+        var last = exec(cmd);
+        last.stdout.on('data', function (data) {
+        console.log('standard output：' + data);
+        });
+        last.on('exit', function (code) {
+        console.log('child_process exit. code：' + code);
+        }); 
+        res.send("run step processing ");
+        */
+        setTimeout(function(){
+            res.send(JSON.parse(fs.readFileSync('R/output/input_temp.json', 'utf-8')));
+        },500);
         
     });
 
+    //send the temp_run.json to front
     app.get('/api/PlanRunOutput',function(req,res){
+        var data= fs.readFileSync('R/output/input_temp_run.json', 'utf-8');
+        var jsonData = JSON.parse(data);
+        res.send(jsonData);
+    });
+
+    app.post('/api/PlanRunOutput',function(req,res){
+        //write file and put the update data into temp file
+        fs.writeFile('R/output/input_temp_run.json',JSON.stringify(req.body));
         //use commend line via R to compute the data and generate the file.
+        /*
         var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
             var exec = require('child_process').exec;
             var last = exec(cmd);
@@ -61,16 +78,13 @@ module.exports = function(app, passport,express) {
             last.on('exit', function (code) {
             console.log('child_process exit. code：' + code);
             }); 
-            res.send("run step processing ");
-            /*
-            setTimeout(
-                    function() {
-                            var data= fs.readFileSync('R/output/input_temp_run.json', 'utf-8');
-                            var jsonData = JSON.parse(data);
-                            res.send(jsonData);
-                                },1500); 
-            */
-        
+        */
+        setTimeout(function(){
+            res.send(JSON.parse(fs.readFileSync('R/output/input_temp_run.json', 'utf-8')));
+        },500);
+        //init as defult
+        tmpFileCheck = false;
+        data.test = false;
     });
 
     app.get('/api/testGet', function(req, res) {

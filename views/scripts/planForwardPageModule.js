@@ -13,6 +13,9 @@ angular.module("ROIClientApp")
         $scope.spendTooltips = 'spendTooltips';
         $scope.includeTooltips = 'includeTooltips';
 
+        //init get json checked
+        $scope.getJson = false;
+
         // Calendar settings
         $scope.opened = {};
         $scope.format = 'MMMM-dd-yyyy';
@@ -75,7 +78,7 @@ angular.module("ROIClientApp")
         $scope.resetForm();
 
         $scope.CInput = function () {
-            var length = ($scope.planForward.endPeriod.getFullYear() - $scope.planForward.beginPeriod.getFullYear()) * 12 + ($scope.planForward.endPeriod.getMonth() - $scope.planForward.beginPeriod.getMonth()) + 1;
+            var length = Number($scope.planForward.endPeriod.getFullYear() - $scope.planForward.beginPeriod.getFullYear()) * 12 + ($scope.planForward.endPeriod.getMonth() - $scope.planForward.beginPeriod.getMonth()) + 1;
             $scope.planForward.ControlChannels = [];
             for (var i = 0; i < length; i++) {
                 var d = new Date($scope.planForward.beginPeriod);
@@ -96,16 +99,31 @@ angular.module("ROIClientApp")
             $scope.planForward.selectPlan.affiliates = true;
             $scope.planForward.selectPlan.partners = true;
 
-            // get data
-
+            
+            //get the input and send input data to the server via post method
+            
+            //get the temp var the api to init Algorithm obj
             $http.get('/api/PlanInitOutput').success(function (data) {
-                $scope.planForward.output = data;
-                $scope.planForward.dataThrough = new Date($scope.planForward.endPeriod);
-                $scope.planForward.dataThrough.setMonth($scope.planForward.include ? $scope.planForward.endPeriod.getMonth() : $scope.planForward.endPeriod.getMonth() - 1);
+            //pass the value to  the output object
+                $scope.planForward.output               = data;
 
+                $scope.planForward.output.brand         = $scope.planForward.brand;
+                $scope.planForward.output.lmTouch       = $scope.planForward.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch'; 
+                $scope.planForward.output.StartingTime  = $scope.planForward.beginPeriod.getFullYear() + '-' + Number(Number($scope.planForward.beginPeriod.getMonth())+1);
+                $scope.planForward.output.EndingTime    = $scope.planForward.endPeriod.getFullYear() + '-' + Number(Number($scope.planForward.endPeriod.getMonth())+1);
+                $scope.planForward.output.Spend         = $scope.planForward.spend; 
+                $scope.planForward.output.PlanMonths    = length;
+                //  update within the input data and init , ready to send to server
+                // send the post request to server with input init
+            
+                $http.post('/api/PlanInitOutput', $scope.planForward.output).success(function(data){
+                    console.log(data);
+                //get the response from the server side
+                $scope.planForward.output        = data;
+                $scope.planForward.dataThrough   = new Date($scope.planForward.endPeriod);
+                $scope.planForward.dataThrough.setMonth($scope.planForward.include ? $scope.planForward.endPeriod.getMonth() : $scope.planForward.endPeriod.getMonth() - 1);
                 $scope.planForward.output.semTLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
                 $scope.planForward.output.semTUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
-
                 // set default value of input
                 $scope.planForward.input.semMin = $scope.planForward.output.semTLB;
                 $scope.planForward.input.semMax = $scope.planForward.output.semTUB;
@@ -125,7 +143,11 @@ angular.module("ROIClientApp")
                 $scope.planForward.input.affMax = Number($scope.planForward.output.affUB);
                 $scope.planForward.input.parMin = Number($scope.planForward.output.parLB);
                 $scope.planForward.input.parMax = Number($scope.planForward.output.parUB);
+
+                });
+
             });
+
             $scope.nav.current = 'Constraints Input';
         };
 
@@ -145,6 +167,8 @@ angular.module("ROIClientApp")
             $scope.planForward.selectPlan.semTotal = !!($scope.planForward.selectPlan.semBrand && $scope.planForward.selectPlan.semCard && $scope.planForward.selectPlan.semPhotobook && $scope.planForward.selectPlan.semOthers);
         };
 
+        var count;
+
         $scope.calculate = function () {
             // init data
             $scope.planForward.input.semAS = Number($scope.planForward.output.semTLB);
@@ -154,9 +178,46 @@ angular.module("ROIClientApp")
             $scope.planForward.input.parAS = Number($scope.planForward.output.parLB);
 
             
+            //update the data with max min and send the file to server to get res 
+            //change the data  with min max scroll value
+            
+                $scope.planForward.output.semBMin    =   $scope.planForward.input.semBMin;
+                $scope.planForward.output.semBMax    =   $scope.planForward.input.semBMax; 
+                $scope.planForward.output.semCMin    =   $scope.planForward.input.semCMin;
+                $scope.planForward.output.semCMax    =   $scope.planForward.input.semCMax;
+                $scope.planForward.output.semPMin    =   $scope.planForward.input.semPMin; 
+                $scope.planForward.output.semPMax    =   $scope.planForward.input.semPMax;
+                $scope.planForward.output.semOMin    =   $scope.planForward.input.semOMin;
+                $scope.planForward.output.semOMax    =   $scope.planForward.input.semOMax;
+                $scope.planForward.output.disMin     =   $scope.planForward.input.disMin +   "";
+                $scope.planForward.output.disMax     =   $scope.planForward.input.disMax +   "";
+                $scope.planForward.output.socMin     =   $scope.planForward.input.socMin +   "";
+                $scope.planForward.output.socMax     =   $scope.planForward.input.socMax +   "";
+                $scope.planForward.output.affMin     =   $scope.planForward.input.affMin +   "";
+                $scope.planForward.output.affMax     =   $scope.planForward.input.affMax +   "";
+                $scope.planForward.output.parMin     =   $scope.planForward.input.parMin +   "";
+                $scope.planForward.output.parMax     =   $scope.planForward.input.parMax +   "";
+            
+            //add strategies on this post request within more than 5 mins waiting 
+            count = setInterval(doGet,4000);
 
-            $http.get('/dummy_data/output/1431639870_70.json').success(function (data) {
-                //console.log("success load json");
+            function doGet(){
+                //console.log("inner");
+            if($scope.getJson === false){
+                   $http.get('/api/testGet').success(function (data) {
+                        console.log(JSON.stringify(data));
+                        console.log(data.test);
+                        if(data.test === true){
+                            $scope.getJson = true;
+                        }
+                    });
+            }
+            else{
+                clearInterval(count);
+                
+                $http.post('/api/PlanInitOutput', $scope.planForward.output).success(function(data){
+                console.log(data);
+
                 $scope.planForward.output = data;
                 $scope.planForward.input.semBAS = Number($scope.planForward.output.semBAS);
                 $scope.planForward.input.semCAS = Number($scope.planForward.output.semCAS);
@@ -194,12 +255,18 @@ angular.module("ROIClientApp")
                 $scope.planForward.output.PTUB = Number($scope.planForward.output.semTUB) + Number($scope.planForward.output.disUB) + Number($scope.planForward.output.socUB) + Number($scope.planForward.output.affUB) + Number($scope.planForward.output.parUB);
                 $scope.planForward.output.PTSR = Number($scope.planForward.output.semTSR) + Number($scope.planForward.output.disSR) + Number($scope.planForward.output.socSR) + Number($scope.planForward.output.affSR) + Number($scope.planForward.output.parSR);
                 $scope.planForward.output.PTPR = Number($scope.planForward.output.disPR) + Number($scope.planForward.output.socPR) + Number($scope.planForward.output.affPR) + Number($scope.planForward.output.parPR);
-                
 
-                
+                });   
 
-            });
-        
+                //init the check for later use
+                $scope.getJson = false;                   
+                }
+               // console.log($scope.getJson);
+            }
+
+            
+
+
         };
 
         $scope.$watch('planForward', function () {
