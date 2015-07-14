@@ -138,6 +138,7 @@ module.exports = function(app, passport,express) {
         console.log(data.test);
         res.json(data); 
     });
+
     app.get('/api/test',function(req,res){
         var data;
 
@@ -157,6 +158,9 @@ module.exports = function(app, passport,express) {
 
             res.json(scenarios);
         });
+    });
+    app.post('/api/compareScenarios', function(req, res){
+        
     });
 
 
@@ -239,7 +243,7 @@ module.exports = function(app, passport,express) {
     });
 
     app.post('/scenarios',function(req,res){
-        var data = fs.readFileSync('dummy_data/output/1431639870_70.json', 'utf-8');
+        var data = fs.readFileSync('R/output/input_temp_run.json', 'utf-8');
         console.log(data);
 
         var scenario = new Scenario(JSON.parse(data));

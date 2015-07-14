@@ -1,8 +1,8 @@
 /**
  * Created by ypling on 5/11/15.
  */
-angular.module("ROIClientApp")
-    .controller("scenariosCtrl", function ($scope, $location,$http) {
+var scenariosApp = angular.module("ROIClientApp")
+    .controller("scenariosCtrl", function ($scope, $location,$http,actionObjInfo) {
         //vars
         var viewNames = ['list', 'export', 'retrieve', 'share'];
 
@@ -46,9 +46,9 @@ angular.module("ROIClientApp")
             */
             
             $scope.scenarios = data;
-            console.log(JSON.stringify(data));
+            //console.log(JSON.stringify(data));
             console.log($scope.scenarios);
-            console.log ($scope.scenarios [0]._id);
+            console.log ($scope.scenarios[0]._id);
         });
         
         /*
@@ -221,8 +221,21 @@ angular.module("ROIClientApp")
             $location.path("myscenarios/" + viewName);
         };
 
+        //var actionObjInfo = [];
+
         $scope.selectRow = function (obj) {
             obj.isActive = !obj.isActive;
+            
+            if(obj.isActive){ actionObjInfo.push(obj._id);
+            }else{
+                for (var i = actionObjInfo.length - 1; i >= 0; i--) {
+                    if(actionObjInfo[i] === obj._id){
+                    delete actionObjInfo[i];
+                    }
+                };
+            }
+            console.log(actionObjInfo);
+
             switch (activeCount($scope.scenarios)) {
                 case 0:
                     Object.keys($scope.operations).forEach(function (key) {
@@ -275,9 +288,25 @@ angular.module("ROIClientApp")
 
         //scope functions
     })
-    .controller("scenariosCompareCtrl", function ($scope) {
+    .controller("scenariosCompareCtrl", function ($scope,$http,actionObjInfo) {
         //vars
         $scope.compareChart = {};
+        console.log(actionObjInfo);
+        var compareObj = [];
+        $http.get('/scenarios/'+actionObjInfo[0]).success(function(data){
+            compareObj[0]=data;
+            console.log(compareObj);
+        });
+        $http.get('/scenarios/'+actionObjInfo[1]).success(function(data){
+            compareObj[1]=data;
+            console.log(compareObj);
+        });
+        $scope.compareChart.first =  compareObj[0];
+        $scope.compareChart.second =  compareObj[1];
+        $scope.compareChart.actionObjInfo = actionObjInfo;
+
+        //console.log(compareObj);
+
         $scope.compareChart.data = [
             {title: "SEM", value: -109009},
             {title: "SEM-Bord", value: -8002},
@@ -300,4 +329,9 @@ angular.module("ROIClientApp")
         //scope vars
 
         //scope functions
+    });
+
+    scenariosApp.factory('actionObjInfo',function(){
+        var actionObjInfo = [];
+        return actionObjInfo;
     });

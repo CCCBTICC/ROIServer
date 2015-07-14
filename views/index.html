@@ -24,11 +24,11 @@
 </div>
 <div class="container">
     <div class="row">
-        <form class="form-horizontal login-form">
+        <form class="form-horizontal login-form" method="post" action="/api/login">
             <div class="form-group">
                 <label for="username" class="col-sm-3 control-label">Email</label>
                 <div class="col-sm-5">
-                    <input ng-model="login.username" type="email" class="form-control" id="username" placeholder="Username">
+                    <input ng-model="login.username" type="text" class="form-control" id="username" placeholder="Username" name="email">
                 </div>
                 <label class="col-sm-4 help-info">
                     <a href="javascript:void(0)" ng-click="">Forget Username</a>
@@ -37,7 +37,7 @@
             <div class="form-group">
                 <label for="password" class="col-sm-3 control-label">Password</label>
                 <div class="col-sm-5">
-                    <input ng-model="login.password" type="password" class="form-control" id="password" placeholder="Password">
+                    <input ng-model="login.password" type="password" class="form-control" id="password" placeholder="Password" name="password">
                 </div>
                 <label class="col-sm-4 help-info">
                     <a href="javascript:void(0)" ng-click="">Forget Password</a>
@@ -55,7 +55,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-9">
                     <a href="mailto:lhz_work@hotmail.com" class="btn btn-orange" ng-click="">Request Access</a>
-                    <a href="home.html" class="btn btn-orange" ng-click="">Sign in</a>
+                    <input class="btn btn-orange" type="submit" value="Sign in">
                 </div>
             </div>
         </form>

@@ -26,14 +26,14 @@
                 <tbody>
                 <tr ng-click="selectRow(scenario)" ng-repeat="scenario in scenarios"
                     ng-class="{'active-row':scenario.isActive}">
-                    <td class="non-number">{{scenario.id}}</td>
-                    <td class="non-number">{{scenario.createDate}}</td>
-                    <td class="non-number">{{scenario.beginMonth}}</td>
-                    <td class="non-number">{{scenario.endMonth}}</td>
-                    <td class="non-number">{{scenario.AM}}</td>
-                    <td>{{scenario.plannedSpend | formatCurrency}}</td>
-                    <td>{{scenario.revenue| formatCurrency}}</td>
-                    <td>{{scenario.ROI}}%</td>
+                    <td class="non-number">{{scenario._id}}</td>
+                    <td class="non-number">{{scenario.AlgEndingTime}}</td>
+                    <td class="non-number">{{scenario.StartingTime}}</td>
+                    <td class="non-number">{{scenario.EndingTime}}</td>
+                    <td class="non-number">{{scenario.lmTouch}}</td>
+                    <td>{{scenario.Spend | formatCurrency}}</td>
+                    <td>{{scenario.totAR| formatCurrency}}</td>
+                    <td>{{scenario.run2ProjROI}}</td>
                 </tr>
                 </tbody>
             </table>

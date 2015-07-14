@@ -32,19 +32,31 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
             })
             .when('/lookback/save', {
                 templateUrl: './views/lookback/save.html',
-                controller: 'saveCtrl'
+                controller: 'saveLookCtrl'
             })
             .when('/planforward/save', {
                 templateUrl: './views/planforward/save.html',
-                controller: 'saveCtrl'
+                controller: 'savePlanCtrl'
             })
             .otherwise({
                 templateUrl: './views/dashboard.html',
                 controller: ''
             })
     });
+
 app.controller("indexCtrl", function ($scope) {
     $scope.users = {};
     $scope.users.name = "Ed";
     $scope.users.recentlyLoginDate = new Date();
+});
+
+app.controller("savePlanCtrl", function ($scope,$http) {
+    console.log('saveCtrl work');
+    $scope.savePlanForward = function(){
+        var sendData = {};
+        $http.post('/scenarios',sendData).success(function(data){
+            if(data) console.log("saved!");
+    });
+    };  
+    
 });
