@@ -304,4 +304,173 @@ angular.module("ROIClientApp")
         $scope.save = function () {
             $location.path('planforward/save');
         }
+
+        $scope.showme = false;
+        $scope.planforwardContentSize = 'col-sm-12';
+        $scope.showGraph = 'Show Graph';
+
+        $scope.toggle = function() {
+            if ($scope.showme == false) {
+                $scope.planforwardContentSize = 'col-sm-8';
+                $scope.showme = true;
+                $scope.showGraph = 'Hide Graph';
+            }
+            else {
+                $scope.planforwardContentSize = 'col-sm-12';
+                $scope.showme = false;
+                $scope.showGraph = 'Show Graph';
+            }
+        };
+        
+        // added by david
+        $scope.reRun = function() {
+
+            $scope.reRunSem();
+            $scope.reRunDis();
+            $scope.reRunSoc();
+            $scope.reRunAff();
+            $scope.reRunPar();
+
+            $scope.planForward.input.totAS = Number($scope.planForward.input.semAS)+ Number($scope.planForward.input.disAS) +
+                Number($scope.planForward.input.socAS) + Number($scope.planForward.input.affAS) + Number($scope.planForward.input.parAS);
+
+            $scope.planForward.output.totAR = $scope.planForward.output.semAR + $scope.planForward.output.disAR +
+                $scope.planForward.output.socAR + $scope.planForward.output.affAR + $scope.planForward.output.parAR;
+
+            $scope.planForward.output.totSD = $scope.planForward.input.totAS - $scope.planForward.output.totSR;
+            $scope.planForward.output.totRD = $scope.planForward.output.totAR - $scope.planForward.output.totPR;
+
+            $scope.planForward.output.optimizedROI = parseInt((($scope.planForward.output.totAR - $scope.planForward.input.totAS) /
+                $scope.planForward.input.totAS) * 100);
+
+            $scope.planForward.output.differenceROI= $scope.planForward.output.optimizedROI - $scope.planForward.output.actualROI;
+
+            $scope.planForward.spend = $scope.planForward.input.totAS;
+
+            $scope.compareChartData = [
+                {title: "SEM", value: $scope.planForward.output.semSD},
+                {title: "Display", value: $scope.planForward.output.disSD},
+                {title: "Social", value: $scope.planForward.output.socSD},
+                {title: "Affiliates", value: $scope.planForward.output.affSD},
+                {title: "Partners", value: $scope.planForward.output.parSD},
+                {title: "Portfolio Total", value: $scope.planForward.output.totSD}
+            ];
+        };
+
+        $scope.reRunSem = function() {
+
+            var numSemSR = 0;
+            var numSemPR = 0;
+            var numSemAS = 0;
+            var numSemAR = 0;
+            var numSemSD = 0;
+            var numSemRD = 0;
+
+            numSemSR = Number($scope.planForward.output.semSR);
+            numSemPR = Number($scope.planForward.output.semPR);
+            numSemAS = Number($scope.planForward.input.semAS);
+
+            numSemAR = parseInt(numSemPR + (numSemAS - numSemSR) * 4);
+            numSemSD = numSemAS - numSemSR;
+            numSemRD = numSemAR - numSemPR;
+
+            $scope.planForward.output.semAR = numSemAR;
+            $scope.planForward.output.semSD = numSemSD;
+            $scope.planForward.output.semRD = numSemRD;
+        };
+
+        $scope.reRunDis = function() {
+
+            var numDisSR = 0;
+            var numDisPR = 0;
+            var numDisAS = 0;
+            var numDisAR = 0;
+            var numDisSD = 0;
+            var numDisRD = 0;
+
+            numDisSR = Number($scope.planForward.output.disSR);
+            numDisPR = Number($scope.planForward.output.disPR);
+            numDisAS = Number($scope.planForward.input.disAS);
+
+            numDisAR = parseInt(numDisPR + (numDisAS - numDisSR) * 4);
+            numDisSD = numDisAS - numDisSR;
+            numDisRD = numDisAR - numDisPR;
+
+            $scope.planForward.output.disAR = numDisAR;
+            $scope.planForward.output.disSD = numDisSD;
+            $scope.planForward.output.disRD = numDisRD;
+        };
+
+        $scope.reRunSoc = function() {
+
+            var numSocSR = 0;
+            var numSocPR = 0;
+            var numSocAS = 0;
+            var numSocAR = 0;
+            var numSocSD = 0;
+            var numSocRD = 0;
+
+            numSocSR = Number($scope.planForward.output.socSR);
+            numSocPR = Number($scope.planForward.output.socPR);
+            numSocAS = Number($scope.planForward.input.socAS);
+
+            numSocAR = parseInt(numSocPR + (numSocAS - numSocSR) * 4);
+            numSocSD = numSocAS - numSocSR;
+            numSocRD = numSocAR - numSocPR;
+
+            $scope.planForward.output.socAR = numSocAR;
+            $scope.planForward.output.socSD = numSocSD;
+            $scope.planForward.output.socRD = numSocRD;
+        };
+
+        $scope.reRunAff = function() {
+
+            var numAffSR = 0;
+            var numAffPR = 0;
+            var numAffAS = 0;
+            var numAffAR = 0;
+            var numAffSD = 0;
+            var numAffRD = 0;
+
+            numAffSR = Number($scope.planForward.output.affSR);
+            numAffPR = Number($scope.planForward.output.affPR);
+            numAffAS = Number($scope.planForward.input.affAS);
+
+            numAffAR = parseInt(numAffPR + (numAffAS - numAffSR) * 4);
+            numAffSD = numAffAS - numAffSR;
+            numAffRD = numAffAR - numAffPR;
+
+            $scope.planForward.output.affAR = numAffAR;
+            $scope.planForward.output.affSD = numAffSD;
+            $scope.planForward.output.affRD = numAffRD;
+        };
+
+        $scope.reRunPar = function() {
+
+            var numParSR = 0;
+            var numParPR = 0;
+            var numParAS = 0;
+            var numParAR = 0;
+            var numParSD = 0;
+            var numParRD = 0;
+
+            numParSR = Number($scope.planForward.output.parSR);
+            numParPR = Number($scope.planForward.output.parPR);
+            numParAS = Number($scope.planForward.input.parAS);
+
+            numParAR = parseInt(numParPR + (numParAS - numParSR) * 4);
+            numParSD = numParAS - numParSR;
+            numParRD = numParAR - numParPR;
+
+            $scope.planForward.output.parAR = numParAR;
+            $scope.planForward.output.parSD = numParSD;
+            $scope.planForward.output.parRD = numParRD;
+        };
+
+        $scope.reset = function() {
+
+            $scope.planForward.spend = $scope.planForward.output.totSR;
+            $scope.calculate();
+        }
+
     }]);

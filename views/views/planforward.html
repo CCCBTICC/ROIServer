@@ -370,7 +370,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="{{planforwardContentSize}}">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-condensed roi-table">
                     <thead>
@@ -605,6 +605,12 @@
                 </table>
             </div>
         </div>
+        <div class="col-sm-4" ng-show="showme">
+            <br/>
+            <h4 style="text-align:center">Spend Difference between optimized and what-if</h4>
+            <compare-chart></compare-chart>
+            <h4 style="text-align:center">(-)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</h4>
+        </div>
     </div>
     <div class="row table-buttons">
         <div class="col-sm-10 col-sm-offset-2">
@@ -626,6 +632,9 @@
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="resetForm()">Reset</button>
+            </div>
+            <div class="col-sm-2">
+                <button type="button" class="btn btn-default" ng-click="toggle()">{{showGraph}}</button>
             </div>
         </div>
     </div>

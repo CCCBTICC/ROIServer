@@ -46,7 +46,7 @@ angular.module("ROIClientApp")
             */
             
             $scope.scenarios = data;
-            console.log(data);
+            console.log(JSON.stringify(data));
             console.log($scope.scenarios);
             console.log ($scope.scenarios [0]._id);
         });
