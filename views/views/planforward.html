@@ -24,12 +24,21 @@
                 <label for="planForwardAttribution" class="col-sm-3 control-label">Attribution:</label>
 
                 <div class="col-sm-4" id="planForwardAttribution">
+                    <label class="radio-inline">
+                    <input type="radio" ng-model="planForward.attribution" value="LTA">LTA
+                    </label>
+                    <label class="radio-inline">
+                    <input type="radio" ng-model="planForward.attribution" value="MTA">MTA
+                    </label>
+
+                    <!--
                     <label class="btn btn-default" ng-model="planForward.attribution" btn-radio="'LTA'" uncheckable>
                         LTA
                     </label>
                     <label class="btn btn-default" ng-model="planForward.attribution" btn-radio="'MTA'" uncheckable>
                         MTA
                     </label>
+                    -->
                 </div>
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{attrTooltips}}"></i>

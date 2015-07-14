@@ -2,7 +2,7 @@
  * Created by ypling on 5/11/15.
  */
 angular.module("ROIClientApp")
-    .controller("scenariosCtrl", function ($scope, $location) {
+    .controller("scenariosCtrl", function ($scope, $location,$http) {
         //vars
         var viewNames = ['list', 'export', 'retrieve', 'share'];
 
@@ -27,6 +27,31 @@ angular.module("ROIClientApp")
         };
 
         $scope.scenarios = [];
+        
+        $http.get('api/scenariosList').success(function (data){
+            
+            //console.log(data[0]._id);
+            /*
+            for (var key in data) {
+             
+              var tempObj = {};
+              tempObj[key] = data[key];
+              $scope.scenarios.push(tempObj);
+            }
+            */
+            /*
+            angular.forEach(data, function(value, key){
+                this.push(key + ':' + value);
+            }, $scope.scenarios);
+            */
+            
+            $scope.scenarios = data;
+            console.log(data);
+            console.log($scope.scenarios);
+            console.log ($scope.scenarios [0]._id);
+        });
+        
+        /*
         $scope.scenarios.push({
             isActive: false,
             id: "May2015-06-PF-LTA-001",
@@ -188,6 +213,8 @@ angular.module("ROIClientApp")
             DataThrough: "",
             shared: ""
         });
+        console.log($scope.scenarios);
+        */
         //scope functions
 
         $scope.switchToView = function (viewName) {

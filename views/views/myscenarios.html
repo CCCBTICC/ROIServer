@@ -10,6 +10,7 @@
     <!--table view-->
     <div class="row">
         <div class="table-responsive">
+
             <table class="table table-bordered table-hover roi-table">
                 <thead>
                 <tr>
@@ -24,10 +25,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-click="selectRow(scenario)" ng-repeat="scenario in scenarios"
+                <tr ng-click="selectRow(scenario)" ng-repeat="scenario in scenarios track by $index"
                     ng-class="{'active-row':scenario.isActive}">
-                    <td class="non-number">{{scenario.id}}</td>
-                    <td class="non-number">{{scenario.createDate}}</td>
+                    <td class="non-number">{{$index}}</td>
+                    <td class="non-number">{{scenario.AlgEndingTime}}</td>
                     <td class="non-number">{{scenario.beginMonth}}</td>
                     <td class="non-number">{{scenario.endMonth}}</td>
                     <td class="non-number">{{scenario.AM}}</td>

@@ -170,6 +170,10 @@ input[type=range]::-ms-thumb {
     width: 700px;
     margin: 0 auto;
 }
+.navbar-brand{
+    font-size: 13px;
+    padding: 20px;
+}
 
 /*************************************************
  ******                                     ******

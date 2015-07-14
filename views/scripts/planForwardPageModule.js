@@ -28,7 +28,9 @@ angular.module("ROIClientApp")
             var date = new Date();
             $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
             $scope.planForward.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-            $scope.minDate = new Date();
+            //adjust the date for the R Algorithm version 1.0
+            $scope.minDate = new Date('2010','01','01');
+
         };
         $scope.open = function ($event, model) {
             $event.preventDefault();
@@ -48,6 +50,9 @@ angular.module("ROIClientApp")
             $scope.planForward.endPeriod = new Date($scope.planForward.endPeriod.getFullYear(), $scope.planForward.endPeriod.getMonth() + 1, 0);
         };
 
+
+
+
         // init data default
         $scope.resetForm = function () {
             // Nav bar
@@ -58,7 +63,7 @@ angular.module("ROIClientApp")
             $scope.planForward = {};
 
             // Brand
-            $scope.brands = ['Brilent'];
+            $scope.brands = ['Shutterfly'];
             $scope.planForward.brand = $scope.brands[0];
 
             // Attribution
@@ -198,8 +203,15 @@ angular.module("ROIClientApp")
                 $scope.planForward.output.parMin     =   $scope.planForward.input.parMin +   "";
                 $scope.planForward.output.parMax     =   $scope.planForward.input.parMax +   "";
             
+
+
+            $http.post('/api/sendR', $scope.planForward.output).success(function(data){
+                if(data.post) console.log('R running');
+            });
             //add strategies on this post request within more than 5 mins waiting 
             count = setInterval(doGet,4000);
+
+            
 
             function doGet(){
                 //console.log("inner");
@@ -215,7 +227,7 @@ angular.module("ROIClientApp")
             else{
                 clearInterval(count);
                 
-                $http.post('/api/PlanInitOutput', $scope.planForward.output).success(function(data){
+                $http.get('/api/PlanRunOutput').success(function(data){
                 console.log(data);
 
                 $scope.planForward.output = data;

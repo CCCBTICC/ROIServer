@@ -16,7 +16,7 @@ watcher
 watcher.on('change', function(path,stats){
      if (stats) console.log('File', path, 'changed size to', stats.size);
 });
-watcher.add('input_temp.json');
+watcher.add('R/output/input_temp_run.json');
 
 
 
@@ -31,16 +31,17 @@ module.exports = function(app, passport,express) {
     //  home page 
     app.get('/api/PlanInitOutput',function(req,res){
         //use commend line via R to compute the data and generate the file.
-        var data= fs.readFileSync('R/output/input_temp.json', 'utf-8');
+        var data= fs.readFileSync('C:/Users/Administrator/Desktop/ccc/ROIServer/R/temp/input_temp.json', 'utf-8');
         var jsonData = JSON.parse(data);
         res.send(jsonData);
     });
 
     app.post('/api/PlanInitOutput',function(req,res){
         //write file and put the update data into temp file
-        fs.writeFile('R/output/input_temp.json',JSON.stringify(req.body));
-        /*
-        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json',JSON.stringify(req.body));
+
+        
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
         var exec = require('child_process').exec;
         var last = exec(cmd);
         last.stdout.on('data', function (data) {
@@ -49,27 +50,42 @@ module.exports = function(app, passport,express) {
         last.on('exit', function (code) {
         console.log('child_process exit. code：' + code);
         }); 
-        res.send("run step processing ");
-        */
+        //res.send("run step processing ");
+        
+
         setTimeout(function(){
-            res.send(JSON.parse(fs.readFileSync('R/output/input_temp.json', 'utf-8')));
-        },500);
+            var initData = JSON.parse(fs.readFileSync('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json'));
+            res.send(initData);
+            //move the input file to output file
+            fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json',initData);
+        },1000);
         
     });
 
     //send the temp_run.json to front
     app.get('/api/PlanRunOutput',function(req,res){
-        var data= fs.readFileSync('R/output/input_temp_run.json', 'utf-8');
-        var jsonData = JSON.parse(data);
-        res.send(jsonData);
+        res.send(JSON.parse(fs.readFileSync('R/output/input_temp_run.json', 'utf-8')));
+        //init as defult
+        tmpFileCheck = false;
+        //data.test = false;
+
     });
 
     app.post('/api/PlanRunOutput',function(req,res){
-        //write file and put the update data into temp file
-        fs.writeFile('R/output/input_temp_run.json',JSON.stringify(req.body));
-        //use commend line via R to compute the data and generate the file.
         /*
-        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+        var data;
+        setTimeout(function(){
+            data= fs.readFileSync('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json', 'utf-8');
+        },2000);
+        */
+        //write file and put the update data into temp file
+        
+        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp_run.json',JSON.stringify(req.body));
+        
+        
+        //use commend line via R to compute the data and generate the file.
+        
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
             var exec = require('child_process').exec;
             var last = exec(cmd);
             last.stdout.on('data', function (data) {
@@ -78,7 +94,7 @@ module.exports = function(app, passport,express) {
             last.on('exit', function (code) {
             console.log('child_process exit. code：' + code);
             }); 
-        */
+        
         setTimeout(function(){
             res.send(JSON.parse(fs.readFileSync('R/output/input_temp_run.json', 'utf-8')));
         },500);
@@ -86,12 +102,38 @@ module.exports = function(app, passport,express) {
         tmpFileCheck = false;
         data.test = false;
     });
+    
+    app.post('/api/sendR', function(req, res){
+
+        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp_run.json',JSON.stringify(req.body));
+        
+        
+        //use commend line via R to compute the data and generate the file.
+        
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+            var exec = require('child_process').exec;
+            var last = exec(cmd);
+            last.stdout.on('data', function (data) {
+            console.log('standard output：' + data);
+            });
+            last.on('exit', function (code) {
+            console.log('child_process exit. code：' + code);
+            }); 
+
+
+        res.send({post:"ture"});
+        
+
+
+    });
 
     app.get('/api/testGet', function(req, res) {
         var data;
         data = {'test':false};
         if(tmpFileCheck){
             data.test = true;
+        }else{
+            data.test = false;
         }
         console.log(data.test);
         res.json(data); 
@@ -108,14 +150,13 @@ module.exports = function(app, passport,express) {
     });
 
 
-    app.get('/api/getJsonDelay',function(req,res){
-        var data;
-        data = fs.readFileSync('dummy_data/output/1431639870_70.json', 'utf-8');
-        var jsonData = JSON.parse(data);
-        setTimeout(function(){
-            res.send(jsonData);
-        },1000*60);
-        
+    app.get('/api/scenariosList',function(req,res){
+        Scenario.find(function(err, scenarios) {
+            if (err)
+                res.send(err);
+
+            res.json(scenarios);
+        });
     });
 
 

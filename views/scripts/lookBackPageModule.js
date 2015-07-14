@@ -58,7 +58,7 @@ angular.module("ROIClientApp")
             $scope.lookBack = {};
 
             // Brand
-            $scope.brands = ['Brilent'];
+            $scope.brands = ['shutterfly'];
             $scope.lookBack.brand = $scope.brands[0];
 
             // Attribution
