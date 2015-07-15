@@ -31,17 +31,17 @@ module.exports = function(app, passport,express) {
     //  home page 
     app.get('/api/PlanInitOutput',function(req,res){
         //use commend line via R to compute the data and generate the file.
-        var data= fs.readFileSync('C:/Users/Administrator/Desktop/ccc/ROIServer/R/temp/input_temp.json', 'utf-8');
+        var data= fs.readFileSync('R/temp/input_temp.json', 'utf-8');
         var jsonData = JSON.parse(data);
         res.send(jsonData);
     });
 
     app.post('/api/PlanInitOutput',function(req,res){
         //write file and put the update data into temp file
-        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json',JSON.stringify(req.body));
+        fs.writeFile('R/input/input_temp.json',JSON.stringify(req.body));
 
         
-        var cmd = 'R CMD BATCH --no-save --no-restore "--args C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
         var exec = require('child_process').exec;
         var last = exec(cmd);
         last.stdout.on('data', function (data) {
@@ -80,12 +80,12 @@ module.exports = function(app, passport,express) {
         */
         //write file and put the update data into temp file
         
-        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp_run.json',JSON.stringify(req.body));
+        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp_run.json',JSON.stringify(req.body));
         
         
         //use commend line via R to compute the data and generate the file.
         
-        var cmd = 'R CMD BATCH --no-save --no-restore "--args C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
             var exec = require('child_process').exec;
             var last = exec(cmd);
             last.stdout.on('data', function (data) {
@@ -105,12 +105,12 @@ module.exports = function(app, passport,express) {
     
     app.post('/api/sendR', function(req, res){
 
-        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp_run.json',JSON.stringify(req.body));
+        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp_run.json',JSON.stringify(req.body));
         
         
         //use commend line via R to compute the data and generate the file.
         
-        var cmd = 'R CMD BATCH --no-save --no-restore "--args C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
             var exec = require('child_process').exec;
             var last = exec(cmd);
             last.stdout.on('data', function (data) {

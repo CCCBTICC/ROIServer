@@ -29,7 +29,7 @@ angular.module("ROIClientApp")
             $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
             $scope.planForward.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
             //adjust the date for the R Algorithm version 1.0
-            $scope.minDate = new Date('2010','01','01');
+            $scope.minDate = new Date('2010','07','01');
 
         };
         $scope.open = function ($event, model) {
@@ -91,6 +91,7 @@ angular.module("ROIClientApp")
                 d.setFullYear($scope.planForward.beginPeriod.getFullYear() + Math.floor(($scope.planForward.beginPeriod.getMonth() + i) / 12));
                 $scope.planForward.ControlChannels.push(d);
             }
+            
 
             // init plan forward select plan all checked
             $scope.planForward.selectPlan = {};
@@ -148,6 +149,20 @@ angular.module("ROIClientApp")
                 $scope.planForward.input.affMax = Number($scope.planForward.output.affUB);
                 $scope.planForward.input.parMin = Number($scope.planForward.output.parLB);
                 $scope.planForward.input.parMax = Number($scope.planForward.output.parUB);
+
+
+
+                //add the DM data and TV data
+                $scope.planForward.ControlChannelsDM = [];
+                if($scope.planForward.output.dirSpendM1) {
+                    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM1);
+                }
+                if($scope.planForward.output.dirSpendM2) {
+                    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM2);
+                }
+                if($scope.planForward.output.dirSpendM3) {
+                    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM3);
+                }
 
                 });
 

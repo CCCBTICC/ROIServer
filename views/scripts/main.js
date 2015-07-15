@@ -52,10 +52,11 @@ app.controller("indexCtrl", function ($scope) {
 
 app.controller("savePlanCtrl", function ($scope,$http) {
     console.log('saveCtrl work');
+
     $scope.savePlanForward = function(){
         var sendData = {};
         $http.post('/scenarios',sendData).success(function(data){
-            if(data) console.log("saved!");
+            if(data) alert("saved!");
     });
     };  
     
