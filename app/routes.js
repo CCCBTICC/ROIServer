@@ -57,7 +57,7 @@ module.exports = function(app, passport,express) {
             var initData = JSON.parse(fs.readFileSync('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json'));
             res.send(initData);
             //move the input file to output file
-            fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json',initData);
+            fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json',JSON.stringify(initData));
         },1000);
         
     });
