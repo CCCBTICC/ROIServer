@@ -21,12 +21,22 @@
                 <label for="lookBackAttribution" class="col-sm-3 control-label">Attribution:</label>
 
                 <div class="col-sm-4" id="lookBackAttribution">
+                   
+                    <label class="radio-inline">
+                    <input type="radio" ng-model="lookBack.attribution" value="LTA">LTA
+                    </label>
+                    <label class="radio-inline">
+                    <input type="radio" ng-model="lookBack.attribution" value="MTA">MTA
+                    </label>
+                    <!--
                     <label class="btn btn-default" ng-model="lookBack.attribution" btn-radio="'LTA'" uncheckable>
                         LTA
                     </label>
                     <label class="btn btn-default" ng-model="lookBack.attribution" btn-radio="'MTA'" uncheckable>
                         MTA
                     </label>
+                    -->
+                    
                 </div>
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{attrTooltips}}"></i>
