@@ -81,6 +81,7 @@ angular.module("ROIClientApp")
             $scope.planForward.input = {};
             $scope.planForward.output = {};
             $scope.planForward.init = {};
+            $scope.planForward.run = {};
         };
         $scope.resetForm();
 
@@ -394,15 +395,60 @@ angular.module("ROIClientApp")
                 $scope.planForward.output.parMin     =   $scope.planForward.input.parMin +   "";
                 $scope.planForward.output.parMax     =   $scope.planForward.input.parMax +   "";
             
+                // should add the control channel and TV date .
+                $scope.planForward.run.dirSpendM1 = $scope.planForward.output.dirSpendM1;
+                $scope.planForward.run.dirSpendM2 = $scope.planForward.output.dirSpendM2;
+                $scope.planForward.run.dirSpendM3 = $scope.planForward.output.dirSpendM3;
+
+                $scope.planForward.run.tvBeginDate = $scope.planForward.input.tvBeginDate;
+                $scope.planForward.run.tvEndDate = $scope.planForward.input.tvEndDate;
+                $scope.planForward.run.tvImpressions = $scope.planForward.input.tvImpressions;
+                $scope.planForward.run.tvSpend = $scope.planForward.input.tvSpend;
+                // end of adding the control channel and TV date 
+
+                $scope.planForward.run = $scope.planForward.output;
+                $scope.planForward.run.Algorithm = 2;
+                $scope.planForward.run.AlgStartingTime = "";
+                $scope.planForward.run.AlgEndingTime = "";
+                $scope.planForward.run.AlgDuration = "";
 
 
-            $http.post('/api/sendR', $scope.planForward.output).success(function(data){
+                // add the scenario id
+                var scenarioId = {};
+                   scenarioId.brandShort    =  "SLFY";
+                   scenarioId.StartingTime  =  myformat($scope.planForward.beginPeriod);
+                   scenarioId.EndingTime    =  myformat($scope.planForward.endPeriod);
+                   scenarioId.lmTouch       =  shortLmTouch($scope.planForward.run.lmTouch);
+                   scenarioId.CreateTime    =  new Date().getTime();
+
+                $scope.planForward.run.scenarioId = scenarioId.brandShort+"-"+scenarioId.StartingTime+"-"+scenarioId.EndingTime+"-"+scenarioId.lmTouch+"-"+scenarioId.CreateTime ;
+                console.log($scope.planForward.run.scenarioId);
+                function myformat(t){
+                    return t.toDateString().slice(4,7)+t.toDateString().slice(11,15);;
+                }
+                function shortLmTouch(l){
+                    return l.charAt(0)==="L" ? "LTA" : "MTA";
+                }
+                //end of add the scenario id
+
+            $http.post('/api/sendR', $scope.planForward.run).success(function(data){
                 if(data.post) console.log('R running');
             });
             //add strategies on this post request within more than 5 mins waiting 
-            count = setInterval(doGet,4000);
+            count = setInterval(doGet,1000*3);
 
-            
+            //adjust the chart
+
+            $scope.compareChartData = [
+                {title: "SEM", value: $scope.planForward.output.semSD},
+                {title: "Display", value: $scope.planForward.output.disSD},
+                {title: "Social", value: $scope.planForward.output.socSD},
+                {title: "Affiliates", value: $scope.planForward.output.affSD},
+                {title: "Partners", value: $scope.planForward.output.parSD},
+                {title: "Portfolio Total", value: $scope.planForward.output.totSD}
+            ];
+
+            //end of adjust the chart
 
             function doGet(){
                 //console.log("inner");
@@ -664,4 +710,76 @@ angular.module("ROIClientApp")
             $scope.calculate();
         }
 
-    }]);
+    }])
+    .directive('formatInput', ['$filter', function ($filter) {
+        return {
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ngModel) {
+                if (!ngModel) return;
+
+                ngModel.$formatters.unshift(function (a) {
+                    return $filter('formatCurrency')(ngModel.$modelValue)
+                });
+
+                ngModel.$parsers.unshift(function (viewValue) {
+                    var plainNumber = viewValue.replace(/[^\d|\-+|\.+]/g, '');
+                    elem.val($filter('formatCurrency')(plainNumber));
+                    return plainNumber;
+                });
+            }
+        };
+    }])
+    .directive('stringToNumber', function () {
+        return {
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                ngModel.$parsers.push(function (value) {
+                    return '' + value;
+                });
+                ngModel.$formatters.push(function (value) {
+                    return parseFloat(value, 10);
+                });
+            }
+        };
+    })
+    .filter('formatDate', function () {
+        function format(element, input) {
+            switch (element) {
+                case 'Month':
+                    return input.toDateString().split(' ')[1];
+                case 'MM':
+                    return input.getMonth() + 1;
+                case 'yyyy':
+                    return input.getFullYear();
+                case 'yy':
+                    return input.getYear();
+                default :
+                    return input.toDateString().split(' ')[1] + "-" + input.getFullYear();
+            }
+        }
+
+        return function (input, formatStr) {
+            input = input || new Date();
+            var formatDetail = formatStr ? formatStr.split('-') : ['default'];
+            var output = "";
+            formatDetail.forEach(function (element) {
+                output = output + " " + format(element, input);
+            });
+            return output;
+        };
+    })
+    .filter('formatCurrency', function () {
+        return function (input) {
+            input = input || 0;
+            if (typeof input === 'string') {
+                input = input.split(',').join('');
+            }
+            var output = Number(input).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString();
+            return "$" + output.substr(0, output.length - 3);
+        }
+    })
+    .value('compareChartConfig', {
+        width: 360,
+        height: 450,
+        margin: {left: 0, top: 80, right: 0, bottom: 30}
+    });

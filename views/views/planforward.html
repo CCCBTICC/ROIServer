@@ -331,8 +331,12 @@
                     <tr>
                         <td>{{planForward.output.tvBeginDate}}</td>
                         <td>{{planForward.output.tvEndDate}}</td>
-                        <td>{{planForward.output.tvSpend}}</td>
-                        <td>{{planForward.output.tvImpressions}}</td>
+                        <td>
+                           <input type="text" ng-model="planForward.output.tvSpend">
+                            </td>
+                        <td>
+                            <input type="text" ng-model="planForward.output.tvImpressions">
+                            </td>
                     </tr>
                 </table>
             </div>
@@ -608,7 +612,7 @@
         <div class="col-sm-4" ng-show="showme">
             <br/>
             <h4 style="text-align:center">Spend Difference between optimized and what-if</h4>
-            <compare-chart></compare-chart>
+            <compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>
             <h4 style="text-align:center">(-)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</h4>
         </div>
     </div>

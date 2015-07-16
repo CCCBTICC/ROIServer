@@ -77,10 +77,10 @@ package 'lubridate' was built under R version 3.0.3
 > inJsonData <- fromJSON(paste(readLines(inJsonFileFullPath), collapse="")) 
 Warning message:
 In readLines(inJsonFileFullPath) :
-  incomplete final line found on 'C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json'
+  incomplete final line found on 'C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp_run.json'
 > outJsonFileFullPath <- paste(jsonIOFolder,"output/",inJsonFile,sep="")
 > inJsonData$Algorithm
-[1] "1"
+[1] 2
 > 
 > 
 > 
@@ -146,41 +146,41 @@ $UserName
 [1] ""
 
 $Brand
-[1] "Shutterfly"
+[1] ""
 
 $Spend
-[1] "78907890"
+[1] "88888888"
 
 $StartingTime
-[1] "2014-7"
+[1] "2014-1"
 
 $PlanMonths
-[1] 3
+[1] "3"
 
 $EndingTime
-[1] "2014-9"
+[1] "2014-3"
 
 $lmTouch
 [1] "Multi-Touch"
 
 $Algorithm
-[1] "1"
+[1] 2
 
 > a<-cbind(LB=as.numeric(inJsonData[ paste0(ChannelOut, 'LB' )]),as.numeric(inJsonData[ paste0(ChannelOut, 'Min' )]), as.numeric(inJsonData[ paste0(ChannelOut, 'Max' )]), as.numeric(inJsonData[ paste0(ChannelOut, 'UB' )]))
 > colnames(a) <- c('LB', 'Min', 'Max', 'UB')
 > print(a)
-         LB    Min     Max      UB
-[1,]  81531  81531  894995  894995
-[2,]  70002  70002  546803  546803
-[3,]  27534  27534  295893  295893
-[4,]  41100  41100  575086  575086
-[5,] 123442 123442 1065450 1065450
-[6,]  10228  10228  328592  328592
-[7,]  24722  24722  314278  314278
-[8,] 179118 179118 2082704 2082704
+         LB    Min      Max       UB
+[1,] 299511 299511  4559712  4559712
+[2,] 132746 132746  1542054  1542054
+[3,]  80178  80178  3414455  3414455
+[4,] 127358 127358  2095262  2095262
+[5,] 445911 445911  9871816  9871816
+[6,]  20775  20775  4030302  4030302
+[7,]  49005  49005   861840   861840
+[8,] 721755 721755 24307920 24307920
 > print(colSums(a))
-     LB     Min     Max      UB 
- 557677  557677 6103801 6103801 
+      LB      Min      Max       UB 
+ 1877239  1877239 50683361 50683361 
 > 
 > ###########################################################################################################################				
 > ############################################## Run Run_0, Run_1, Run_2 ####################################################
@@ -194,21 +194,51 @@ $Algorithm
 + source("RROI_Run_2.R")
 + } else {
 + } # if inJsonData$Algorithm
-[1] "sum of LB: $1,872,753"
-[1] "sum of UB: $26,938,546"
-              LB Actuala_LastYear Actual_ThisYear      UB
-semCLB 283946.35         992923.1              NA 4054844
-semPLB 207748.27         568683.3              NA 1693172
-semOLB  87976.31         283129.7              NA 1060245
-semBLB 135449.95         389039.5              NA 2313007
-disLB  433550.55        1504395.4              NA 6649968
-socLB   30355.22         316606.8              NA 2061149
-affLB   77234.00         255104.0              NA 1153312
-parLB  616492.00        2192101.0              NA 7952848
-> 
->   
-> setwd(curCallerFolder)
-> 
-> proc.time()
-   user  system elapsed 
-   1.67    0.14    1.81 
+############# Optimization Starts #################
+Loading required package: Rsolnp
+Loading required package: truncnorm
+Loading required package: parallel
+Loading required package: caTools
+Loading required package: compiler
+Loading required package: nloptr
+[1] "The optimization does not converge!!! The solution is not reliable."
+[1] 286695 219825 378572
+MONTH
+Jan Feb Mar 
+ 31  28  31 
+[1] 90  8
+[1] 90  8
+[1] 1 1
+[1] 720
+[1] 721
+[1] "Total Spend Last Year: $6,758,603"
+[1] "Total Spend This Year: $6,891,562"
+[1] "Total Budget: $88,888,888"
+[1] "Total Opt Spend: $50,683,361"
+[1] "Total Revenue Last Year: $75,865,278"
+[1] "Total Revenue This Year: $86,899,007"
+[1] "Total Opt Revenue: $526,284,498"
+[1] "Total Revenue ROI: 505.63%"
+   semSR   semCSR   semPSR   semOSR   semBSR    disSR    socSR    affSR 
+11611483  4559712  1542054  3414455  2095262  9871816  4030302   861840 
+   parSR    totSR 
+24307920 88888888 
+   semSR   semCSR   semPSR   semOSR   semBSR    disSR    socSR    affSR 
+11611483  4559712  1542054  3414455  2095262  9871816  4030302   861840 
+   parSR    totSR 
+24307920 88888888 
+############# Optimization Ends #################
+############# Forecast Starts #################
+Note: no visible binding for global variable 'AS' 
+Note: no visible binding for global variable 'AS' 
+Note: no visible binding for global variable 'AS' 
+NULL
+NULL
+Error in `$<-.data.frame`(`*tmp*`, "revAdj", value = numeric(0)) : 
+  replacement has 0 rows, data has 37
+Calls: source ... SimModel4Forecast_singlechannel -> SimModel4Forecast -> $<- -> $<-.data.frame
+In addition: Warning messages:
+1: package 'Rsolnp' was built under R version 3.0.3 
+2: package 'caTools' was built under R version 3.0.3 
+3: package 'nloptr' was built under R version 3.0.3 
+Execution halted

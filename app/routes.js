@@ -49,17 +49,23 @@ module.exports = function(app, passport,express) {
         });
         last.on('exit', function (code) {
         console.log('child_process exit. code：' + code);
+            setTimeout(function(){
+            var initData = JSON.parse(fs.readFileSync('R/output/input_temp.json'));
+            res.send(initData);
+            },500);
+            //move the input file to output file
+            //fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json',JSON.stringify(initData));
         }); 
         //res.send("run step processing ");
         
-
+        /*
         setTimeout(function(){
             var initData = JSON.parse(fs.readFileSync('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json'));
             res.send(initData);
             //move the input file to output file
             fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json',JSON.stringify(initData));
         },1000);
-        
+        */
     });
 
     //send the temp_run.json to front
@@ -117,7 +123,8 @@ module.exports = function(app, passport,express) {
             console.log('standard output：' + data);
             });
             last.on('exit', function (code) {
-            console.log('child_process exit. code：' + code);
+            console.log('R computing finished. code:' + code);
+
             }); 
 
 
