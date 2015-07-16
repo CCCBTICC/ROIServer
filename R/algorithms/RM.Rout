@@ -149,19 +149,19 @@ $Brand
 [1] ""
 
 $Spend
-[1] "88888888"
+[1] "78990898"
 
 $StartingTime
-[1] "2014-1"
+[1] "2013-1"
 
 $PlanMonths
 [1] "3"
 
 $EndingTime
-[1] "2014-3"
+[1] "2013-3"
 
 $lmTouch
-[1] "Multi-Touch"
+[1] "Last Touch"
 
 $Algorithm
 [1] 2
@@ -170,17 +170,17 @@ $Algorithm
 > colnames(a) <- c('LB', 'Min', 'Max', 'UB')
 > print(a)
          LB    Min      Max       UB
-[1,] 299511 299511  4559712  4559712
-[2,] 132746 132746  1542054  1542054
-[3,]  80178  80178  3414455  3414455
-[4,] 127358 127358  2095262  2095262
-[5,] 445911 445911  9871816  9871816
-[6,]  20775  20775  4030302  4030302
-[7,]  49005  49005   861840   861840
-[8,] 721755 721755 24307920 24307920
+[1,] 311903 311903  7570912  7570912
+[2,] 194738 194738  2244796  2244796
+[3,]  68209  68209  1963116  1963116
+[4,]  47940  47940   835471   835471
+[5,] 709221 709221 12338212 12338212
+[6,]  89550  89550  6622920  6622920
+[7,]  77579  77579  1416117  1416117
+[8,] 452835 452835 13299840 13299840
 > print(colSums(a))
       LB      Min      Max       UB 
- 1877239  1877239 50683361 50683361 
+ 1951975  1951975 46291384 46291384 
 > 
 > ###########################################################################################################################				
 > ############################################## Run Run_0, Run_1, Run_2 ####################################################
@@ -201,44 +201,3 @@ Loading required package: parallel
 Loading required package: caTools
 Loading required package: compiler
 Loading required package: nloptr
-[1] "The optimization does not converge!!! The solution is not reliable."
-[1] 286695 219825 378572
-MONTH
-Jan Feb Mar 
- 31  28  31 
-[1] 90  8
-[1] 90  8
-[1] 1 1
-[1] 720
-[1] 721
-[1] "Total Spend Last Year: $6,758,603"
-[1] "Total Spend This Year: $6,891,562"
-[1] "Total Budget: $88,888,888"
-[1] "Total Opt Spend: $50,683,361"
-[1] "Total Revenue Last Year: $75,865,278"
-[1] "Total Revenue This Year: $86,899,007"
-[1] "Total Opt Revenue: $526,284,498"
-[1] "Total Revenue ROI: 505.63%"
-   semSR   semCSR   semPSR   semOSR   semBSR    disSR    socSR    affSR 
-11611483  4559712  1542054  3414455  2095262  9871816  4030302   861840 
-   parSR    totSR 
-24307920 88888888 
-   semSR   semCSR   semPSR   semOSR   semBSR    disSR    socSR    affSR 
-11611483  4559712  1542054  3414455  2095262  9871816  4030302   861840 
-   parSR    totSR 
-24307920 88888888 
-############# Optimization Ends #################
-############# Forecast Starts #################
-Note: no visible binding for global variable 'AS' 
-Note: no visible binding for global variable 'AS' 
-Note: no visible binding for global variable 'AS' 
-NULL
-NULL
-Error in `$<-.data.frame`(`*tmp*`, "revAdj", value = numeric(0)) : 
-  replacement has 0 rows, data has 37
-Calls: source ... SimModel4Forecast_singlechannel -> SimModel4Forecast -> $<- -> $<-.data.frame
-In addition: Warning messages:
-1: package 'Rsolnp' was built under R version 3.0.3 
-2: package 'caTools' was built under R version 3.0.3 
-3: package 'nloptr' was built under R version 3.0.3 
-Execution halted
