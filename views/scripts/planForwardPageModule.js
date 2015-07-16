@@ -82,6 +82,7 @@ angular.module("ROIClientApp")
             $scope.planForward.output = {};
             $scope.planForward.init = {};
             $scope.planForward.run = {};
+            $scope.compareChart = {};
         };
         $scope.resetForm();
 
@@ -709,6 +710,26 @@ angular.module("ROIClientApp")
             $scope.planForward.spend = $scope.planForward.output.totSR;
             $scope.calculate();
         }
+
+
+        $scope.compareChart.data = [
+            {title: "SEM", value: -109009},
+            {title: "SEM-Bord", value: -8002},
+            {title: "SEM-Card", value: -24321},
+            {title: "SEM-Photobook", value: -25422},
+            {title: "SEM-Others", value: -45621},
+            {title: "Display", value: -127765},
+            {title: "Social", value: 462326},
+            {title: "Affiliates", value: -26445},
+            {title: "Partners", value: -199106},
+            {title: "Portfolio Total", value: 0}
+        ];
+        $scope.compareChart.config = {
+            width: 800,
+            height: 313,
+            margin: {left: 100, top: 0, right: 100, bottom: 30}
+        };
+
 
     }])
     .directive('formatInput', ['$filter', function ($filter) {
