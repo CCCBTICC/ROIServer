@@ -44,6 +44,21 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
             })
     });
 
+
+
+
+
+app.factory('actionObjInfo',function(){
+    var actionObjInfo = [];
+    return actionObjInfo;
+});
+
+app.factory('planforwardSaveInfo',function(){
+    var planforwardSaveInfo = {};
+    return planforwardSaveInfo;
+});
+
+
 app.controller("indexCtrl", function ($scope) {
     $scope.users = {};
     $scope.users.name = "Ed";
@@ -52,7 +67,8 @@ app.controller("indexCtrl", function ($scope) {
 
 app.controller("savePlanCtrl", function ($scope,$http) {
     console.log('saveCtrl work');
-
+    //$scope.savePlanForwardId = planforwardSaveInfo.id;
+    $scope.message = "hello";
     $scope.savePlanForward = function(){
         var sendData = {};
         $http.post('/scenarios',sendData).success(function(data){
@@ -60,4 +76,15 @@ app.controller("savePlanCtrl", function ($scope,$http) {
     });
     };  
     
+});
+
+
+app.controller("scenariosCompareCtrl", function ($scope,$http,actionObjInfo) {
+    var compareList = {};
+    $http.get('/scenarios/'+actionObjInfo[0]).success(function(data){
+           compareList.first = data;
+    });
+    $http.get('/scenarios/'+actionObjInfo[1]).success(function(data){
+           compareList.second = data;
+    });
 });

@@ -1,11 +1,13 @@
 
 R version 3.0.2 (2013-09-25) -- "Frisbee Sailing"
 Copyright (C) 2013 The R Foundation for Statistical Computing
-Platform: x86_64-w64-mingw32/x64 (64-bit)
+Platform: x86_64-pc-linux-gnu (64-bit)
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
 Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
 
 R is a collaborative project with many contributors.
 Type 'contributors()' for more information and
@@ -27,16 +29,16 @@ Type 'q()' to quit R.
 > ################################ Load JSON Data From JSON Input file ######################################################				
 > ###########################################################################################################################	
 > 
-> jsonIOFolder  <- "C:/Users/Administrator/Desktop/ccc/ROIServer/R/"
-> rCodeFolder   <- "C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms"
-> rOutputFolder <- "C:/Users/Administrator/Desktop/ccc/ROIServer/R/output"
+> jsonIOFolder  <- "/home/daviddong/ROI_V2/20150715/ROIServer/R/"
+> rCodeFolder   <- "/home/daviddong/ROI_V2/20150715/ROIServer/R/algorithms"
+> rOutputFolder <- "/home/daviddong/ROI_V2/20150715/ROIServer/R/output"
 > 
 > 
 > 
 > options(scipen=999) #positive towards fixed and negative towards scientific notation
 > Sys.setenv(TZ='America/Los_Angeles')  #Set time zone as Pacific time
 > Sys.timezone()   #PDT
-[1] "PDT"
+[1] "America/Los_Angeles"
 > 
 > setwd(".")
 > curCallerFolder <- getwd()
@@ -57,12 +59,8 @@ Type 'q()' to quit R.
 > 
 > require.package("rjson")
 Loading required package: rjson
-Warning message:
-package 'rjson' was built under R version 3.0.3 
 > require.package("lubridate")
 Loading required package: lubridate
-Warning message:
-package 'lubridate' was built under R version 3.0.3 
 > 
 > library(rjson)
 > args=(commandArgs(TRUE))
@@ -77,7 +75,7 @@ package 'lubridate' was built under R version 3.0.3
 > inJsonData <- fromJSON(paste(readLines(inJsonFileFullPath), collapse="")) 
 Warning message:
 In readLines(inJsonFileFullPath) :
-  incomplete final line found on 'C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp_run.json'
+  incomplete final line found on '/home/daviddong/ROI_V2/20150715/ROIServer/R/input/input_temp_run.json'
 > outJsonFileFullPath <- paste(jsonIOFolder,"output/",inJsonFile,sep="")
 > inJsonData$Algorithm
 [1] 2
@@ -146,22 +144,22 @@ $UserName
 [1] ""
 
 $Brand
-[1] ""
+[1] "Shutterfly"
 
 $Spend
-[1] "88888888"
+[1] "5000000"
 
 $StartingTime
-[1] "2014-1"
+[1] "2015-07"
 
 $PlanMonths
-[1] "3"
+[1] 1
 
 $EndingTime
-[1] "2014-3"
+[1] "2015-07"
 
 $lmTouch
-[1] "Multi-Touch"
+[1] "Last Touch"
 
 $Algorithm
 [1] 2
@@ -169,18 +167,18 @@ $Algorithm
 > a<-cbind(LB=as.numeric(inJsonData[ paste0(ChannelOut, 'LB' )]),as.numeric(inJsonData[ paste0(ChannelOut, 'Min' )]), as.numeric(inJsonData[ paste0(ChannelOut, 'Max' )]), as.numeric(inJsonData[ paste0(ChannelOut, 'UB' )]))
 > colnames(a) <- c('LB', 'Min', 'Max', 'UB')
 > print(a)
-         LB    Min      Max       UB
-[1,] 299511 299511  4559712  4559712
-[2,] 132746 132746  1542054  1542054
-[3,]  80178  80178  3414455  3414455
-[4,] 127358 127358  2095262  2095262
-[5,] 445911 445911  9871816  9871816
-[6,]  20775  20775  4030302  4030302
-[7,]  49005  49005   861840   861840
-[8,] 721755 721755 24307920 24307920
+         LB    Min     Max      UB
+[1,]  53072  53072 1124246 1124246
+[2,]  51972  51972  491226  491226
+[3,]  65984  65984  624774  624774
+[4,]  37464  37464  567796  567796
+[5,] 157278 157278 1261080 1261080
+[6,]  51258  51258  310744  310744
+[7,]  30194  30194  462396  462396
+[8,] 161293 161293 3954918 3954918
 > print(colSums(a))
-      LB      Min      Max       UB 
- 1877239  1877239 50683361 50683361 
+     LB     Min     Max      UB 
+ 608515  608515 8797180 8797180 
 > 
 > ###########################################################################################################################				
 > ############################################## Run Run_0, Run_1, Run_2 ####################################################
@@ -201,44 +199,7 @@ Loading required package: parallel
 Loading required package: caTools
 Loading required package: compiler
 Loading required package: nloptr
-[1] "The optimization does not converge!!! The solution is not reliable."
-[1] 286695 219825 378572
-MONTH
-Jan Feb Mar 
- 31  28  31 
-[1] 90  8
-[1] 90  8
-[1] 1 1
-[1] 720
-[1] 721
-[1] "Total Spend Last Year: $6,758,603"
-[1] "Total Spend This Year: $6,891,562"
-[1] "Total Budget: $88,888,888"
-[1] "Total Opt Spend: $50,683,361"
-[1] "Total Revenue Last Year: $75,865,278"
-[1] "Total Revenue This Year: $86,899,007"
-[1] "Total Opt Revenue: $526,284,498"
-[1] "Total Revenue ROI: 505.63%"
-   semSR   semCSR   semPSR   semOSR   semBSR    disSR    socSR    affSR 
-11611483  4559712  1542054  3414455  2095262  9871816  4030302   861840 
-   parSR    totSR 
-24307920 88888888 
-   semSR   semCSR   semPSR   semOSR   semBSR    disSR    socSR    affSR 
-11611483  4559712  1542054  3414455  2095262  9871816  4030302   861840 
-   parSR    totSR 
-24307920 88888888 
-############# Optimization Ends #################
-############# Forecast Starts #################
-Note: no visible binding for global variable 'AS' 
-Note: no visible binding for global variable 'AS' 
-Note: no visible binding for global variable 'AS' 
-NULL
-NULL
-Error in `$<-.data.frame`(`*tmp*`, "revAdj", value = numeric(0)) : 
-  replacement has 0 rows, data has 37
-Calls: source ... SimModel4Forecast_singlechannel -> SimModel4Forecast -> $<- -> $<-.data.frame
-In addition: Warning messages:
-1: package 'Rsolnp' was built under R version 3.0.3 
-2: package 'caTools' was built under R version 3.0.3 
-3: package 'nloptr' was built under R version 3.0.3 
+Error in rep(c(TwoMonthPriorDM, dm), times = c(30, 30, dayOfMonth)) : 
+  invalid 'times' argument
+Calls: source ... withVisible -> eval -> eval -> Run_1_Optimization -> runmean
 Execution halted

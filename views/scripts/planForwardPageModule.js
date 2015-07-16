@@ -28,9 +28,7 @@ angular.module("ROIClientApp")
             var date = new Date();
             $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
             $scope.planForward.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-            //adjust the date for the R Algorithm version 1.0
-            $scope.minDate = new Date('2010','07','01');
-
+            $scope.minDate = new Date("2010","01","01");
         };
         $scope.open = function ($event, model) {
             $event.preventDefault();
@@ -50,7 +48,23 @@ angular.module("ROIClientApp")
             $scope.planForward.endPeriod = new Date($scope.planForward.endPeriod.getFullYear(), $scope.planForward.endPeriod.getMonth() + 1, 0);
         };
 
+        $scope.getMonthDiff = function (d1, d2) {
+            var months;
+            months = (d2.getFullYear() - d1.getFullYear()) * 12;
+            //months -= d1.getMonth() + 1;
+            //months += d2.getMonth();
+            months -= d1.getMonth();
+            months += d2.getMonth() + 1;
+            return months <= 0 ? 0 : months;
+        };
 
+        $scope.getYearMonth = function(d) {
+            var year = d.getFullYear();
+            var month = d.getMonth() + 1;
+            var fullMonth = month < 10 ? ('0' + month) : month;
+            var yearMonth = year + '-' +fullMonth; // 2015-06
+            return yearMonth;
+        };
 
 
         // init data default
@@ -80,8 +94,12 @@ angular.module("ROIClientApp")
             // init data output
             $scope.planForward.input = {};
             $scope.planForward.output = {};
-            $scope.planForward.init = {};
-            $scope.planForward.run = {};
+
+            $scope.planForward.initialInput = {};
+            $scope.planForward.initialOutput = {};
+
+            $scope.planForward.runInput = {};
+            $scope.planForward.runOutput = {};
             $scope.compareChart = {};
         };
         $scope.resetForm();
@@ -95,7 +113,6 @@ angular.module("ROIClientApp")
                 d.setFullYear($scope.planForward.beginPeriod.getFullYear() + Math.floor(($scope.planForward.beginPeriod.getMonth() + i) / 12));
                 $scope.planForward.ControlChannels.push(d);
             }
-            
 
             // init plan forward select plan all checked
             $scope.planForward.selectPlan = {};
@@ -111,183 +128,255 @@ angular.module("ROIClientApp")
 
             
             //get the input and send input data to the server via post method
-            $scope.planForward.init.UserName = "";
+            $scope.planForward.initialInput.UserName = "";
+            $scope.planForward.initialInput.Brand = $scope.planForward.brand;
+            $scope.planForward.initialInput.Spend = $scope.planForward.spend;
+            $scope.planForward.initialInput.StartingTime = $scope.getYearMonth($scope.planForward.beginPeriod);
+            $scope.planForward.initialInput.PlanMonths = $scope.getMonthDiff($scope.planForward.beginPeriod, $scope.planForward.endPeriod);
+            $scope.planForward.initialInput.EndingTime = $scope.getYearMonth($scope.planForward.endPeriod);
+            $scope.planForward.initialInput.lmTouch = $scope.planForward.attribution == "LTA"? "Last Touch" : "Multi-Touch";
+            $scope.planForward.initialInput.Algorithm = 1;
+            $scope.planForward.initialInput.AlgStartingTime = "";
+            $scope.planForward.initialInput.AlgEndingTime = "";
+            $scope.planForward.initialInput.AlgDuration = "";
+            $scope.planForward.initialInput.semLB = "";
+            $scope.planForward.initialInput.semCLB = "";
+            $scope.planForward.initialInput.semPLB = "";
+            $scope.planForward.initialInput.semOLB = "";
+            $scope.planForward.initialInput.semBLB = "";
+            $scope.planForward.initialInput.disLB = "";
+            $scope.planForward.initialInput.socLB = "";
+            $scope.planForward.initialInput.affLB = "";
+            $scope.planForward.initialInput.parLB = "";
 
-            // first step input init
-            $scope.planForward.init.Brand         = $scope.planForward.Brand;
-            $scope.planForward.init.lmTouch       = $scope.planForward.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch'; 
-            $scope.planForward.init.StartingTime  = $scope.planForward.beginPeriod.getFullYear() + '-' + Number(Number($scope.planForward.beginPeriod.getMonth())+1);
-            $scope.planForward.init.EndingTime    = $scope.planForward.endPeriod.getFullYear() + '-' + Number(Number($scope.planForward.endPeriod.getMonth())+1);
-            $scope.planForward.init.Spend         = $scope.planForward.spend; 
-            $scope.planForward.init.PlanMonths    = length;   
+            $scope.planForward.initialInput.semMin = "";
+            $scope.planForward.initialInput.semCMin = "";
+            $scope.planForward.initialInput.semPMin = "";
+            $scope.planForward.initialInput.semOMin = "";
+            $scope.planForward.initialInput.semBMin = "";
+            $scope.planForward.initialInput.disMin = "";
+            $scope.planForward.initialInput.socMin = "";
+            $scope.planForward.initialInput.affMin = "";
+            $scope.planForward.initialInput.parMin = "";
 
-            $scope.planForward.init.Algorithm = 1;
-            $scope.planForward.init.AlgStartingTime = "";
-            $scope.planForward.init.AlgEndingTime = "";
-            $scope.planForward.init.AlgDuration = "";
-            $scope.planForward.init.semLB = "";
-            $scope.planForward.init.semCLB = "";
-            $scope.planForward.init.semPLB = "";
-            $scope.planForward.init.semOLB = "";
-            $scope.planForward.init.semBLB = "";
-            $scope.planForward.init.disLB = "";
-            $scope.planForward.init.socLB = "";
-            $scope.planForward.init.affLB = "";
-            $scope.planForward.init.parLB = "";
+            $scope.planForward.initialInput.semMax = "";
+            $scope.planForward.initialInput.semCMax = "";
+            $scope.planForward.initialInput.semPMax = "";
+            $scope.planForward.initialInput.semOMax = "";
+            $scope.planForward.initialInput.semBMax = "";
+            $scope.planForward.initialInput.disMax = "";
+            $scope.planForward.initialInput.socMax = "";
+            $scope.planForward.initialInput.affMax = "";
+            $scope.planForward.initialInput.parMax = "";
 
-            $scope.planForward.init.semMin = "";
-            $scope.planForward.init.semCMin = "";
-            $scope.planForward.init.semPMin = "";
-            $scope.planForward.init.semOMin = "";
-            $scope.planForward.init.semBMin = "";
-            $scope.planForward.init.disMin = "";
-            $scope.planForward.init.socMin = "";
-            $scope.planForward.init.affMin = "";
-            $scope.planForward.init.parMin = "";
+            $scope.planForward.initialInput.semUB = "";
+            $scope.planForward.initialInput.semCUB = "";
+            $scope.planForward.initialInput.semPUB = "";
+            $scope.planForward.initialInput.semOUB = "";
+            $scope.planForward.initialInput.semBUB = "";
+            $scope.planForward.initialInput.disUB = "";
+            $scope.planForward.initialInput.socUB = "";
+            $scope.planForward.initialInput.affUB = "";
+            $scope.planForward.initialInput.parUB = "";
 
-            $scope.planForward.init.semMax = "";
-            $scope.planForward.init.semCMax = "";
-            $scope.planForward.init.semPMax = "";
-            $scope.planForward.init.semOMax = "";
-            $scope.planForward.init.semBMax = "";
-            $scope.planForward.init.disMax = "";
-            $scope.planForward.init.socMax = "";
-            $scope.planForward.init.affMax = "";
-            $scope.planForward.init.parMax = "";
+            $scope.planForward.initialInput.semSF = "";
+            $scope.planForward.initialInput.semCSF = "";
+            $scope.planForward.initialInput.semPSF = "";
+            $scope.planForward.initialInput.semOSF = "";
+            $scope.planForward.initialInput.semBSF = "";
+            $scope.planForward.initialInput.disSF = "";
+            $scope.planForward.initialInput.socSF = "";
+            $scope.planForward.initialInput.affSF = "";
+            $scope.planForward.initialInput.parSF = "";
 
-            $scope.planForward.init.semUB = "";
-            $scope.planForward.init.semCUB = "";
-            $scope.planForward.init.semPUB = "";
-            $scope.planForward.init.semOUB = "";
-            $scope.planForward.init.semBUB = "";
-            $scope.planForward.init.disUB = "";
-            $scope.planForward.init.socUB = "";
-            $scope.planForward.init.affUB = "";
-            $scope.planForward.init.parUB = "";
+            $scope.planForward.initialInput.dirSpendM1 = "";
+            $scope.planForward.initialInput.dirSpendM2 = "";
+            $scope.planForward.initialInput.dirSpendM3 = "";
 
-            $scope.planForward.init.semSF = "";
-            $scope.planForward.init.semCSF = "";
-            $scope.planForward.init.semPSF = "";
-            $scope.planForward.init.semOSF = "";
-            $scope.planForward.init.semBSF = "";
-            $scope.planForward.init.disSF = "";
-            $scope.planForward.init.socSF = "";
-            $scope.planForward.init.affSF = "";
-            $scope.planForward.init.parSF = "";
+            $scope.planForward.initialInput.tvBeginDate = "";
+            $scope.planForward.initialInput.tvEndDate = "";
+            $scope.planForward.initialInput.tvImpressions = "";
+            $scope.planForward.initialInput.tvSpend = "";
 
-            $scope.planForward.init.dirSpendM1 = "";
-            $scope.planForward.init.dirSpendM2 = "";
-            $scope.planForward.init.dirSpendM3 = "";
+            $scope.planForward.initialInput.semSR = "";
+            $scope.planForward.initialInput.semCSR = "";
+            $scope.planForward.initialInput.semPSR = "";
+            $scope.planForward.initialInput.semOSR = "";
+            $scope.planForward.initialInput.semBSR = "";
+            $scope.planForward.initialInput.disSR = "";
+            $scope.planForward.initialInput.socSR = "";
+            $scope.planForward.initialInput.affSR = "";
+            $scope.planForward.initialInput.parSR = "";
+            $scope.planForward.initialInput.totSR = "";
 
-            $scope.planForward.init.tvBeginDate = "";
-            $scope.planForward.init.tvEndDate = "";
-            $scope.planForward.init.tvImpressions = "";
-            $scope.planForward.init.tvSpend = "";
+            $scope.planForward.initialInput.semPR = "";
+            $scope.planForward.initialInput.semCPR = "";
+            $scope.planForward.initialInput.semPPR = "";
+            $scope.planForward.initialInput.semOPR = "";
+            $scope.planForward.initialInput.semBPR = "";
+            $scope.planForward.initialInput.disPR = "";
+            $scope.planForward.initialInput.socPR = "";
+            $scope.planForward.initialInput.affPR = "";
+            $scope.planForward.initialInput.parPR = "";
+            $scope.planForward.initialInput.totPR = "";
 
-            $scope.planForward.init.semSR = "";
-            $scope.planForward.init.semCSR = "";
-            $scope.planForward.init.semPSR = "";
-            $scope.planForward.init.semOSR = "";
-            $scope.planForward.init.semBSR = "";
-            $scope.planForward.init.disSR = "";
-            $scope.planForward.init.socSR = "";
-            $scope.planForward.init.affSR = "";
-            $scope.planForward.init.parSR = "";
-            $scope.planForward.init.totSR = "";
+            $scope.planForward.initialInput.run1RevRange = "";
+            $scope.planForward.initialInput.run1ProjROI = "";
+            $scope.planForward.initialInput.run1ROIRange = "";
 
-            $scope.planForward.init.semPR = "";
-            $scope.planForward.init.semCPR = "";
-            $scope.planForward.init.semPPR = "";
-            $scope.planForward.init.semOPR = "";
-            $scope.planForward.init.semBPR = "";
-            $scope.planForward.init.disPR = "";
-            $scope.planForward.init.socPR = "";
-            $scope.planForward.init.affPR = "";
-            $scope.planForward.init.parPR = "";
-            $scope.planForward.init.totPR = "";
+            $scope.planForward.initialInput.semSlideLeft = "";
+            $scope.planForward.initialInput.semCSlideLeft = "";
+            $scope.planForward.initialInput.semPSlideLeft = "";
+            $scope.planForward.initialInput.semOSlideLeft = "";
+            $scope.planForward.initialInput.semBSlideLeft = "";
+            $scope.planForward.initialInput.disSlideLeft = "";
+            $scope.planForward.initialInput.socSlideLeft = "";
+            $scope.planForward.initialInput.affSlideLeft = "";
+            $scope.planForward.initialInput.parSlideLeft = "";
 
-            $scope.planForward.init.run1RevRange = "";
-            $scope.planForward.init.run1ProjROI = "";
-            $scope.planForward.init.run1ROIRange = "";
+            $scope.planForward.initialInput.semSlide = "";
+            $scope.planForward.initialInput.semCSlide = "";
+            $scope.planForward.initialInput.semPSlide = "";
+            $scope.planForward.initialInput.semOSlide = "";
+            $scope.planForward.initialInput.semBSlide = "";
+            $scope.planForward.initialInput.disSlide = "";
+            $scope.planForward.initialInput.socSlide = "";
+            $scope.planForward.initialInput.affSlide = "";
+            $scope.planForward.initialInput.parSlide = "";
 
-            $scope.planForward.init.semSlideLeft = "";
-            $scope.planForward.init.semCSlideLeft = "";
-            $scope.planForward.init.semPSlideLeft = "";
-            $scope.planForward.init.semOSlideLeft = "";
-            $scope.planForward.init.semBSlideLeft = "";
-            $scope.planForward.init.disSlideLeft = "";
-            $scope.planForward.init.socSlideLeft = "";
-            $scope.planForward.init.affSlideLeft = "";
-            $scope.planForward.init.parSlideLeft = "";
+            $scope.planForward.initialInput.semSlideRight = "";
+            $scope.planForward.initialInput.semCSlideRight = "";
+            $scope.planForward.initialInput.semPSlideRight = "";
+            $scope.planForward.initialInput.semOSlideRight = "";
+            $scope.planForward.initialInput.semBSlideRight = "";
+            $scope.planForward.initialInput.disSlideRight = "";
+            $scope.planForward.initialInput.socSlideRight = "";
+            $scope.planForward.initialInput.affSlideRight = "";
+            $scope.planForward.initialInput.parSlideRight = "";
 
-            $scope.planForward.init.semSlide = "";
-            $scope.planForward.init.semCSlide = "";
-            $scope.planForward.init.semPSlide = "";
-            $scope.planForward.init.semOSlide = "";
-            $scope.planForward.init.semBSlide = "";
-            $scope.planForward.init.disSlide = "";
-            $scope.planForward.init.socSlide = "";
-            $scope.planForward.init.affSlide = "";
-            $scope.planForward.init.parSlide = "";
+            $scope.planForward.initialInput.semSlideDivMin = "";
+            $scope.planForward.initialInput.semCSlideDivMin = "";
+            $scope.planForward.initialInput.semPSlideDivMin = "";
+            $scope.planForward.initialInput.semOSlideDivMin = "";
+            $scope.planForward.initialInput.semBSlideDivMin = "";
+            $scope.planForward.initialInput.disSlideDivMin = "";
+            $scope.planForward.initialInput.socSlideDivMin = "";
+            $scope.planForward.initialInput.affSlideDivMin = "";
+            $scope.planForward.initialInput.parSlideDivMin = "";
 
-            $scope.planForward.init.semSlideRight = "";
-            $scope.planForward.init.semCSlideRight = "";
-            $scope.planForward.init.semPSlideRight = "";
-            $scope.planForward.init.semOSlideRight = "";
-            $scope.planForward.init.semBSlideRight = "";
-            $scope.planForward.init.disSlideRight = "";
-            $scope.planForward.init.socSlideRight = "";
-            $scope.planForward.init.affSlideRight = "";
-            $scope.planForward.init.parSlideRight = "";
+            $scope.planForward.initialInput.semSlideDivMax = "";
+            $scope.planForward.initialInput.semCSlideDivMax = "";
+            $scope.planForward.initialInput.semPSlideDivMax = "";
+            $scope.planForward.initialInput.semOSlideDivMax = "";
+            $scope.planForward.initialInput.semBSlideDivMax = "";
+            $scope.planForward.initialInput.disSlideDivMax = "";
+            $scope.planForward.initialInput.socSlideDivMax = "";
+            $scope.planForward.initialInput.affSlideDivMax = "";
+            $scope.planForward.initialInput.parSlideDivMax = "";
 
-            $scope.planForward.init.semSlideDivMin = "";
-            $scope.planForward.init.semCSlideDivMin = "";
-            $scope.planForward.init.semPSlideDivMin = "";
-            $scope.planForward.init.semOSlideDivMin = "";
-            $scope.planForward.init.semBSlideDivMin = "";
-            $scope.planForward.init.disSlideDivMin = "";
-            $scope.planForward.init.socSlideDivMin = "";
-            $scope.planForward.init.affSlideDivMin = "";
-            $scope.planForward.init.parSlideDivMin = "";
+            $scope.planForward.initialInput.semAS = "";
+            $scope.planForward.initialInput.semCAS = "";
+            $scope.planForward.initialInput.semPAS = "";
+            $scope.planForward.initialInput.semOAS = "";
+            $scope.planForward.initialInput.semBAS = "";
+            $scope.planForward.initialInput.disAS = "";
+            $scope.planForward.initialInput.socAS = "";
+            $scope.planForward.initialInput.affAS = "";
+            $scope.planForward.initialInput.parAS = "";
+            $scope.planForward.initialInput.totAS = "";
 
-            $scope.planForward.init.semSlideDivMax = "";
-            $scope.planForward.init.semCSlideDivMax = "";
-            $scope.planForward.init.semPSlideDivMax = "";
-            $scope.planForward.init.semOSlideDivMax = "";
-            $scope.planForward.init.semBSlideDivMax = "";
-            $scope.planForward.init.disSlideDivMax = "";
-            $scope.planForward.init.socSlideDivMax = "";
-            $scope.planForward.init.affSlideDivMax = "";
-            $scope.planForward.init.parSlideDivMax = "";
+            $scope.planForward.initialInput.semAR = "";
+            $scope.planForward.initialInput.semCAR = "";
+            $scope.planForward.initialInput.semPAR = "";
+            $scope.planForward.initialInput.semOAR = "";
+            $scope.planForward.initialInput.semBAR = "";
+            $scope.planForward.initialInput.disAR = "";
+            $scope.planForward.initialInput.socAR = "";
+            $scope.planForward.initialInput.affAR = "";
+            $scope.planForward.initialInput.parAR = "";
+            $scope.planForward.initialInput.totAR = "";
 
-            $scope.planForward.init.semAS = "";
-            $scope.planForward.init.semCAS = "";
-            $scope.planForward.init.semPAS = "";
-            $scope.planForward.init.semOAS = "";
-            $scope.planForward.init.semBAS = "";
-            $scope.planForward.init.disAS = "";
-            $scope.planForward.init.socAS = "";
-            $scope.planForward.init.affAS = "";
-            $scope.planForward.init.parAS = "";
-            $scope.planForward.init.totAS = "";
+            $scope.planForward.initialInput.run2ProjROI = "";
 
-            $scope.planForward.init.semAR = "";
-            $scope.planForward.init.semCAR = "";
-            $scope.planForward.init.semPAR = "";
-            $scope.planForward.init.semOAR = "";
-            $scope.planForward.init.semBAR = "";
-            $scope.planForward.init.disAR = "";
-            $scope.planForward.init.socAR = "";
-            $scope.planForward.init.affAR = "";
-            $scope.planForward.init.parAR = "";
-            $scope.planForward.init.totAR = "";
+            console.log( $scope.planForward.initialInput);
 
-            $scope.planForward.init.run2ProjROI = "";
+            $http.post("/api/planforwardInitial", $scope.planForward.initialInput).success(function(data, status) {
+                console.log(data);
+                console.log("post success");
 
-            console.log( $scope.planForward.init);
+                $scope.planForward.initialOutput        = data;
+                $scope.planForward.dataThrough   = new Date($scope.planForward.endPeriod);
+                $scope.planForward.dataThrough.setMonth($scope.planForward.include ? $scope.planForward.endPeriod.getMonth() : $scope.planForward.endPeriod.getMonth() - 1);
+
+                $scope.planForward.output.semBLB = $scope.planForward.initialOutput.semBLB;
+                $scope.planForward.output.semCLB = $scope.planForward.initialOutput.semCLB;
+                $scope.planForward.output.semPLB = $scope.planForward.initialOutput.semPLB;
+                $scope.planForward.output.semOLB = $scope.planForward.initialOutput.semOLB;
+
+                $scope.planForward.output.semBUB = $scope.planForward.initialOutput.semBUB;
+                $scope.planForward.output.semCUB = $scope.planForward.initialOutput.semCUB;
+                $scope.planForward.output.semPUB = $scope.planForward.initialOutput.semPUB;
+                $scope.planForward.output.semOUB = $scope.planForward.initialOutput.semOUB;
+
+                // $scope.planForward.output.semTLB = Number($scope.planForward.initialOutput.semBLB) + Number($scope.planForward.initialOutput.semCLB) + Number($scope.planForward.initialOutput.semPLB) + Number($scope.planForward.initialOutput.semOLB);
+                // $scope.planForward.output.semTUB = Number($scope.planForward.initialOutput.semBUB) + Number($scope.planForward.initialOutput.semCUB) + Number($scope.planForward.initialOutput.semPUB) + Number($scope.planForward.initialOutput.semOUB);
+                $scope.planForward.output.semTLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
+                $scope.planForward.output.semTUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
+
+                $scope.planForward.output.disLB = $scope.planForward.initialOutput.disLB;
+                $scope.planForward.output.socLB = $scope.planForward.initialOutput.socLB;
+                $scope.planForward.output.affLB = $scope.planForward.initialOutput.affLB;
+                $scope.planForward.output.parLB = $scope.planForward.initialOutput.parLB;
+
+                $scope.planForward.output.disUB = $scope.planForward.initialOutput.disUB;
+                $scope.planForward.output.socUB = $scope.planForward.initialOutput.socUB;
+                $scope.planForward.output.affUB = $scope.planForward.initialOutput.affUB;
+                $scope.planForward.output.parUB = $scope.planForward.initialOutput.parUB;
+
+
+                // set default value of input
+                $scope.planForward.input.semMin = $scope.planForward.initialOutput.semTLB;
+                $scope.planForward.input.semMax = $scope.planForward.initialOutput.semTUB;
+                $scope.planForward.input.semBMin = $scope.planForward.initialOutput.semBLB;
+                $scope.planForward.input.semBMax = $scope.planForward.initialOutput.semBUB;
+                $scope.planForward.input.semCMin = $scope.planForward.initialOutput.semCLB;
+                $scope.planForward.input.semCMax = $scope.planForward.initialOutput.semCUB;
+                $scope.planForward.input.semPMin = $scope.planForward.initialOutput.semPLB;
+                $scope.planForward.input.semPMax = $scope.planForward.initialOutput.semPUB;
+                $scope.planForward.input.semOMin = $scope.planForward.initialOutput.semOLB;
+                $scope.planForward.input.semOMax = $scope.planForward.initialOutput.semOUB;
+                // $scope.planForward.input.disMin = Number($scope.planForward.initialOutput.disLB);
+                // $scope.planForward.input.disMax = Number($scope.planForward.initialOutput.disUB);
+                // $scope.planForward.input.socMin = Number($scope.planForward.initialOutput.socLB);
+                // $scope.planForward.input.socMax = Number($scope.planForward.initialOutput.socUB);
+                // $scope.planForward.input.affMin = Number($scope.planForward.initialOutput.affLB);
+                // $scope.planForward.input.affMax = Number($scope.planForward.initialOutput.affUB);
+                // $scope.planForward.input.parMin = Number($scope.planForward.initialOutput.parLB);
+                // $scope.planForward.input.parMax = Number($scope.planForward.initialOutput.parUB);
+                $scope.planForward.input.disMin = $scope.planForward.initialOutput.disLB;
+                $scope.planForward.input.disMax = $scope.planForward.initialOutput.disUB;
+                $scope.planForward.input.socMin = $scope.planForward.initialOutput.socLB;
+                $scope.planForward.input.socMax = $scope.planForward.initialOutput.socUB;
+                $scope.planForward.input.affMin = $scope.planForward.initialOutput.affLB;
+                $scope.planForward.input.affMax = $scope.planForward.initialOutput.affUB;
+                $scope.planForward.input.parMin = $scope.planForward.initialOutput.parLB;
+                $scope.planForward.input.parMax = $scope.planForward.initialOutput.parUB;
+
+                // should remove the default value of scale factor, and add here the returned value. (updated)
+                // it is better to change name of ng-model of scale factor to input, because SF can be input to change
+                $scope.planForward.output.semBSF = $scope.planForward.initialOutput.semBSF;
+                $scope.planForward.output.semCSF = $scope.planForward.initialOutput.semCSF;
+                $scope.planForward.output.semPSF = $scope.planForward.initialOutput.semPSF;
+                $scope.planForward.output.semOSF = $scope.planForward.initialOutput.semOSF;
+                $scope.planForward.output.disSF = $scope.planForward.initialOutput.disSF;
+                $scope.planForward.output.socSF = $scope.planForward.initialOutput.socSF;
+                $scope.planForward.output.affSF = $scope.planForward.initialOutput.affSF;
+                $scope.planForward.output.parSF = $scope.planForward.initialOutput.parSF;
+
+/*   
             //get the temp var the api to init Algorithm obj
-            /*
-            $http.get('/api/PlanInitOutput').success(function (data) {
+            // $http.get('/api/PlanInitOutput').success(function (data) {
+            $http.get('/api/planforwardConstraints').success(function (data) {
             //pass the value to  the output object
                 $scope.planForward.output               = data;
 
@@ -299,8 +388,8 @@ angular.module("ROIClientApp")
                 $scope.planForward.output.PlanMonths    = length;
                 //  update within the input data and init , ready to send to server
                 // send the post request to server with input init
-            */
-                $http.post('/api/PlanInitOutput', $scope.planForward.init).success(function(data){
+            
+                $http.post('/api/PlanInitOutput', $scope.planForward.output).success(function(data){
                     console.log(data);
                 //get the response from the server side
                 $scope.planForward.output        = data;
@@ -328,22 +417,8 @@ angular.module("ROIClientApp")
                 $scope.planForward.input.parMin = Number($scope.planForward.output.parLB);
                 $scope.planForward.input.parMax = Number($scope.planForward.output.parUB);
 
-
-
-                //add the DM data and TV data
-                $scope.planForward.ControlChannelsDM = [];
-                if($scope.planForward.output.dirSpendM1) {
-                    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM1);
-                }
-                if($scope.planForward.output.dirSpendM2) {
-                    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM2);
-                }
-                if($scope.planForward.output.dirSpendM3) {
-                    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM3);
-                }
-                /*
                 });
-                */
+*/
             });
 
             $scope.nav.current = 'Constraints Input';
@@ -367,6 +442,271 @@ angular.module("ROIClientApp")
 
         var count;
 
+        $scope.calculate = function() {
+            // init data
+            $scope.planForward.runInput.UserName = "";
+            $scope.planForward.runInput.Brand = $scope.planForward.brand;
+            $scope.planForward.runInput.Spend = $scope.planForward.spend;
+            $scope.planForward.runInput.StartingTime = $scope.getYearMonth($scope.planForward.beginPeriod);
+            $scope.planForward.runInput.PlanMonths = $scope.getMonthDiff($scope.planForward.beginPeriod, $scope.planForward.endPeriod);
+            $scope.planForward.runInput.EndingTime = $scope.getYearMonth($scope.planForward.endPeriod);
+            $scope.planForward.runInput.lmTouch = $scope.planForward.attribution == "LTA"? "Last Touch" : "Multi-Touch";
+
+            $scope.planForward.runInput.Algorithm = 2;
+            $scope.planForward.runInput.AlgStartingTime = "";
+            $scope.planForward.runInput.AlgEndingTime = "";
+            $scope.planForward.runInput.AlgDuration = "";
+
+            $scope.planForward.runInput.semCLB = $scope.planForward.output.semCLB;
+            $scope.planForward.runInput.semPLB = $scope.planForward.output.semPLB;
+            $scope.planForward.runInput.semOLB = $scope.planForward.output.semOLB;
+            $scope.planForward.runInput.semBLB = $scope.planForward.output.semBLB;
+            $scope.planForward.runInput.disLB = $scope.planForward.output.disLB;
+            $scope.planForward.runInput.socLB = $scope.planForward.output.socLB;
+            $scope.planForward.runInput.affLB = $scope.planForward.output.affLB;
+            $scope.planForward.runInput.parLB = $scope.planForward.output.parLB;
+
+            $scope.planForward.runInput.semCMin = $scope.planForward.input.semCMin;
+            $scope.planForward.runInput.semPMin = $scope.planForward.input.semPMin;
+            $scope.planForward.runInput.semOMin = $scope.planForward.input.semOMin;
+            $scope.planForward.runInput.semBMin = $scope.planForward.input.semBMin;
+            $scope.planForward.runInput.disMin = $scope.planForward.input.disMin;
+            $scope.planForward.runInput.socMin = $scope.planForward.input.socMin;
+            $scope.planForward.runInput.affMin = $scope.planForward.input.affMin;
+            $scope.planForward.runInput.parMin = $scope.planForward.input.parMin;
+
+            $scope.planForward.runInput.semCMax = $scope.planForward.input.semCMax;
+            $scope.planForward.runInput.semPMax = $scope.planForward.input.semPMax;
+            $scope.planForward.runInput.semOMax = $scope.planForward.input.semOMax;
+            $scope.planForward.runInput.semBMax = $scope.planForward.input.semBMax;
+            $scope.planForward.runInput.disMax = $scope.planForward.input.disMax;
+            $scope.planForward.runInput.socMax = $scope.planForward.input.socMax;
+            $scope.planForward.runInput.affMax = $scope.planForward.input.affMax;
+            $scope.planForward.runInput.parMax = $scope.planForward.input.parMax;
+
+            $scope.planForward.runInput.semCUB = $scope.planForward.output.semCUB;
+            $scope.planForward.runInput.semPUB = $scope.planForward.output.semPUB;
+            $scope.planForward.runInput.semOUB = $scope.planForward.output.semOUB;
+            $scope.planForward.runInput.semBUB = $scope.planForward.output.semBUB;
+            $scope.planForward.runInput.disUB = $scope.planForward.output.disUB;
+            $scope.planForward.runInput.socUB = $scope.planForward.output.socUB;
+            $scope.planForward.runInput.affUB = $scope.planForward.output.affUB;
+            $scope.planForward.runInput.parUB = $scope.planForward.output.parUB;
+
+            $scope.planForward.runInput.semCSF = $scope.planForward.output.semCSF;
+            $scope.planForward.runInput.semPSF = $scope.planForward.output.semPSF;
+            $scope.planForward.runInput.semOSF = $scope.planForward.output.semOSF;
+            $scope.planForward.runInput.semBSF = $scope.planForward.output.semBSF;
+            $scope.planForward.runInput.disSF = $scope.planForward.output.disSF;
+            $scope.planForward.runInput.socSF = $scope.planForward.output.socSF;
+            $scope.planForward.runInput.affSF = $scope.planForward.output.affSF;
+            $scope.planForward.runInput.parSF = $scope.planForward.output.parSF;
+
+            // should add ng-model for direct mail and TV
+            // here use the data returned by R initialized json file, and cannot change
+            $scope.planForward.runInput.dirSpendM1 = $scope.planForward.initialOutput.dirSpendM1;
+            $scope.planForward.runInput.dirSpendM2 = $scope.planForward.initialOutput.dirSpendM2;
+            $scope.planForward.runInput.dirSpendM3 = $scope.planForward.initialOutput.dirSpendM3;
+
+            $scope.planForward.runInput.tvBeginDate = $scope.planForward.initialOutput.tvBeginDate;
+            $scope.planForward.runInput.tvEndDate = $scope.planForward.initialOutput.tvEndDate;
+            $scope.planForward.runInput.tvImpressions = $scope.planForward.initialOutput.tvImpressions;
+            $scope.planForward.runInput.tvSpend = $scope.planForward.initialOutput.tvSpend;
+
+            $scope.planForward.runInput.semSR = "";
+            $scope.planForward.runInput.semCSR = "";
+            $scope.planForward.runInput.semPSR = "";
+            $scope.planForward.runInput.semOSR = "";
+            $scope.planForward.runInput.semBSR = "";
+            $scope.planForward.runInput.disSR = "";
+            $scope.planForward.runInput.socSR = "";
+            $scope.planForward.runInput.affSR = "";
+            $scope.planForward.runInput.parSR = "";
+            $scope.planForward.runInput.totSR = "";
+
+            $scope.planForward.runInput.semPR = "";
+            $scope.planForward.runInput.semCPR = "";
+            $scope.planForward.runInput.semPPR = "";
+            $scope.planForward.runInput.semOPR = "";
+            $scope.planForward.runInput.semBPR = "";
+            $scope.planForward.runInput.disPR = "";
+            $scope.planForward.runInput.socPR = "";
+            $scope.planForward.runInput.affPR = "";
+            $scope.planForward.runInput.parPR = "";
+            $scope.planForward.runInput.totPR = "";
+
+            $scope.planForward.runInput.run1RevRange = "";
+            $scope.planForward.runInput.run1ProjROI = "";
+            $scope.planForward.runInput.run1ROIRange = "";
+
+            $scope.planForward.runInput.semSlideLeft = "";
+            $scope.planForward.runInput.semCSlideLeft = "";
+            $scope.planForward.runInput.semPSlideLeft = "";
+            $scope.planForward.runInput.semOSlideLeft = "";
+            $scope.planForward.runInput.semBSlideLeft = "";
+            $scope.planForward.runInput.disSlideLeft = "";
+            $scope.planForward.runInput.socSlideLeft = "";
+            $scope.planForward.runInput.affSlideLeft = "";
+            $scope.planForward.runInput.parSlideLeft = "";
+
+            $scope.planForward.runInput.semSlide = "";
+            $scope.planForward.runInput.semCSlide = "";
+            $scope.planForward.runInput.semPSlide = "";
+            $scope.planForward.runInput.semOSlide = "";
+            $scope.planForward.runInput.semBSlide = "";
+            $scope.planForward.runInput.disSlide = "";
+            $scope.planForward.runInput.socSlide = "";
+            $scope.planForward.runInput.affSlide = "";
+            $scope.planForward.runInput.parSlide = "";
+
+            $scope.planForward.runInput.semSlideRight = "";
+            $scope.planForward.runInput.semCSlideRight = "";
+            $scope.planForward.runInput.semPSlideRight = "";
+            $scope.planForward.runInput.semOSlideRight = "";
+            $scope.planForward.runInput.semBSlideRight = "";
+            $scope.planForward.runInput.disSlideRight = "";
+            $scope.planForward.runInput.socSlideRight = "";
+            $scope.planForward.runInput.affSlideRight = "";
+            $scope.planForward.runInput.parSlideRight = "";
+
+            $scope.planForward.runInput.semSlideDivMin = "";
+            $scope.planForward.runInput.semCSlideDivMin = "";
+            $scope.planForward.runInput.semPSlideDivMin = "";
+            $scope.planForward.runInput.semOSlideDivMin = "";
+            $scope.planForward.runInput.semBSlideDivMin = "";
+            $scope.planForward.runInput.disSlideDivMin = "";
+            $scope.planForward.runInput.socSlideDivMin = "";
+            $scope.planForward.runInput.affSlideDivMin = "";
+            $scope.planForward.runInput.parSlideDivMin = "";
+
+            $scope.planForward.runInput.semSlideDivMax = "";
+            $scope.planForward.runInput.semCSlideDivMax = "";
+            $scope.planForward.runInput.semPSlideDivMax = "";
+            $scope.planForward.runInput.semOSlideDivMax = "";
+            $scope.planForward.runInput.semBSlideDivMax = "";
+            $scope.planForward.runInput.disSlideDivMax = "";
+            $scope.planForward.runInput.socSlideDivMax = "";
+            $scope.planForward.runInput.affSlideDivMax = "";
+            $scope.planForward.runInput.parSlideDivMax = "";
+
+            $scope.planForward.runInput.semAS = "";
+            $scope.planForward.runInput.semCAS = "";
+            $scope.planForward.runInput.semPAS = "";
+            $scope.planForward.runInput.semOAS = "";
+            $scope.planForward.runInput.semBAS = "";
+            $scope.planForward.runInput.disAS = "";
+            $scope.planForward.runInput.socAS = "";
+            $scope.planForward.runInput.affAS = "";
+            $scope.planForward.runInput.parAS = "";
+            $scope.planForward.runInput.totAS = "";
+
+            $scope.planForward.runInput.semAR = "";
+            $scope.planForward.runInput.semCAR = "";
+            $scope.planForward.runInput.semPAR = "";
+            $scope.planForward.runInput.semOAR = "";
+            $scope.planForward.runInput.semBAR = "";
+            $scope.planForward.runInput.disAR = "";
+            $scope.planForward.runInput.socAR = "";
+            $scope.planForward.runInput.affAR = "";
+            $scope.planForward.runInput.parAR = "";
+            $scope.planForward.runInput.totAR = "";
+
+            $scope.planForward.runInput.run2ProjROI = "";
+
+
+
+            console.log($scope.planForward.runInput);
+
+            // add the scenario id
+                var scenarioId = {};
+                   scenarioId.brandShort    =  "SLFY";
+                   scenarioId.StartingTime  =  myformat($scope.planForward.beginPeriod);
+                   scenarioId.EndingTime    =  myformat($scope.planForward.endPeriod);
+                   scenarioId.lmTouch       =  shortLmTouch($scope.planForward.runInput.lmTouch);
+                   scenarioId.CreateTime    =  new Date().getTime();
+
+                $scope.planForward.runInput.scenarioId = scenarioId.brandShort+"-"+scenarioId.StartingTime+"-"+scenarioId.EndingTime+"-"+scenarioId.lmTouch+"-"+"N"+"-"+scenarioId.CreateTime ;
+                //planforwardSaveInfo.id = $scope.planForward.runInput.scenarioId;
+                console.log($scope.planForward.runInput.scenarioId);
+                function myformat(t){
+                    return t.toDateString().slice(4,7)+t.toDateString().slice(11,15);;
+                }
+                function shortLmTouch(l){
+                    return l.charAt(0)==="L" ? "LTA" : "MTA";
+                }
+                //end of add the scenario id
+
+            //add strategies on this post request within more than 5 mins waiting 
+            $http.post("/api/sendR", $scope.planForward.runInput).success(function(data, status) {
+               if(data.post) console.log("R running");
+            });
+
+            count = setInterval(doGet,4000);
+
+            function doGet(){
+                //console.log("inner");
+            if($scope.getJson === false){
+                   $http.get('/api/testGet').success(function (data) {
+                        console.log(JSON.stringify(data));
+                        console.log(data.test);
+                        if(data.test === true){
+                            $scope.getJson = true;
+                        }
+                    });
+            }else{
+                clearInterval(count);
+                
+                $http.get('/api/PlanRunOutput', $scope.planForward.output).success(function(data){
+                     console.log(data);
+                console.log("post success for run");
+
+                $scope.planForward.runOutput        = data;
+
+                $scope.planForward.input.semBAS = Number($scope.planForward.runOutput.semBAS);
+                $scope.planForward.input.semCAS = Number($scope.planForward.runOutput.semCAS);
+                $scope.planForward.input.semPAS = Number($scope.planForward.runOutput.semPAS);
+                $scope.planForward.input.semOAS = Number($scope.planForward.runOutput.semOAS);
+                $scope.planForward.input.disAS = Number($scope.planForward.runOutput.disAS);
+                $scope.planForward.input.socAS = Number($scope.planForward.runOutput.socAS);
+                $scope.planForward.input.affAS = Number($scope.planForward.runOutput.affAS);
+                $scope.planForward.input.parAS = Number($scope.planForward.runOutput.parAS);
+                
+
+                //get sum for semToal's elements
+                $scope.planForward.output.semTLB = Number($scope.planForward.runOutput.semBLB) + Number($scope.planForward.runOutput.semCLB) + Number($scope.planForward.runOutput.semPLB) + Number($scope.planForward.runOutput.semOLB);
+                $scope.planForward.input.semTMin = Number($scope.planForward.runOutput.semBMin) + Number($scope.planForward.runOutput.semCMin) + Number($scope.planForward.runOutput.semPMin) + Number($scope.planForward.runOutput.semOMin);
+                $scope.planForward.input.semTMax = Number($scope.planForward.runOutput.semBMax) + Number($scope.planForward.runOutput.semCMax) + Number($scope.planForward.runOutput.semPMax) + Number($scope.planForward.runOutput.semOMax);
+                $scope.planForward.output.semTUB = Number($scope.planForward.runOutput.semBUB) + Number($scope.planForward.runOutput.semCUB) + Number($scope.planForward.runOutput.semPUB) + Number($scope.planForward.runOutput.semOUB);
+                $scope.planForward.output.semTSR = Number($scope.planForward.runOutput.semBSR) + Number($scope.planForward.runOutput.semCSR) + Number($scope.planForward.runOutput.semPSR) + Number($scope.planForward.runOutput.semOSR);
+
+                //get different for the  different channels
+                $scope.planForward.output.semTSD = $scope.planForward.output.semSR - $scope.planForward.input.semTSR;
+                $scope.planForward.output.semBSD = $scope.planForward.output.semBSR - $scope.planForward.input.semBSB;
+                $scope.planForward.output.semCSD = $scope.planForward.output.semCSR - $scope.planForward.input.semCSB;
+                $scope.planForward.output.semPSD = $scope.planForward.output.semPSR - $scope.planForward.input.semPSB;
+                $scope.planForward.output.semOSD = $scope.planForward.output.semOSR - $scope.planForward.input.semOSB;
+                $scope.planForward.output.disSD = $scope.planForward.output.disSR - $scope.planForward.input.disSB;
+                $scope.planForward.output.socSD = $scope.planForward.output.socSR - $scope.planForward.input.socSB;
+                $scope.planForward.output.affSD = $scope.planForward.output.affSR - $scope.planForward.input.affSB;
+                $scope.planForward.output.parSD = $scope.planForward.output.parSR - $scope.planForward.input.parSB;
+
+                //get portfolio total 
+                $scope.planForward.output.PTLB = Number($scope.planForward.output.semTLB) + Number($scope.planForward.output.disLB) + Number($scope.planForward.output.socLB) + Number($scope.planForward.output.affLB) + Number($scope.planForward.output.parLB);
+                $scope.planForward.input.PTMin = Number($scope.planForward.input.semTMin) + Number($scope.planForward.input.disMin) + Number($scope.planForward.input.socMin) + Number($scope.planForward.input.affMin) + Number($scope.planForward.input.parMin);
+                $scope.planForward.input.PTMax = Number($scope.planForward.input.semTMax) + Number($scope.planForward.input.disMax) + Number($scope.planForward.input.socMax) + Number($scope.planForward.input.affMax) + Number($scope.planForward.input.parMax);
+                $scope.planForward.output.PTUB = Number($scope.planForward.output.semTUB) + Number($scope.planForward.output.disUB) + Number($scope.planForward.output.socUB) + Number($scope.planForward.output.affUB) + Number($scope.planForward.output.parUB);
+                $scope.planForward.output.PTSR = Number($scope.planForward.output.semTSR) + Number($scope.planForward.output.disSR) + Number($scope.planForward.output.socSR) + Number($scope.planForward.output.affSR) + Number($scope.planForward.output.parSR);
+                $scope.planForward.output.PTPR = Number($scope.planForward.output.disPR) + Number($scope.planForward.output.socPR) + Number($scope.planForward.output.affPR) + Number($scope.planForward.output.parPR);
+
+
+                $scope.nav.current = 'Output';
+                });
+            }
+            
+            }
+        };
+
+/*
         $scope.calculate = function () {
             // init data
             $scope.planForward.input.semAS = Number($scope.planForward.output.semTLB);
@@ -396,60 +736,8 @@ angular.module("ROIClientApp")
                 $scope.planForward.output.parMin     =   $scope.planForward.input.parMin +   "";
                 $scope.planForward.output.parMax     =   $scope.planForward.input.parMax +   "";
             
-                // should add the control channel and TV date .
-                $scope.planForward.run.dirSpendM1 = $scope.planForward.output.dirSpendM1;
-                $scope.planForward.run.dirSpendM2 = $scope.planForward.output.dirSpendM2;
-                $scope.planForward.run.dirSpendM3 = $scope.planForward.output.dirSpendM3;
-
-                $scope.planForward.run.tvBeginDate = $scope.planForward.input.tvBeginDate;
-                $scope.planForward.run.tvEndDate = $scope.planForward.input.tvEndDate;
-                $scope.planForward.run.tvImpressions = $scope.planForward.input.tvImpressions;
-                $scope.planForward.run.tvSpend = $scope.planForward.input.tvSpend;
-                // end of adding the control channel and TV date 
-
-                $scope.planForward.run = $scope.planForward.output;
-                $scope.planForward.run.Algorithm = 2;
-                $scope.planForward.run.AlgStartingTime = "";
-                $scope.planForward.run.AlgEndingTime = "";
-                $scope.planForward.run.AlgDuration = "";
-
-
-                // add the scenario id
-                var scenarioId = {};
-                   scenarioId.brandShort    =  "SLFY";
-                   scenarioId.StartingTime  =  myformat($scope.planForward.beginPeriod);
-                   scenarioId.EndingTime    =  myformat($scope.planForward.endPeriod);
-                   scenarioId.lmTouch       =  shortLmTouch($scope.planForward.run.lmTouch);
-                   scenarioId.CreateTime    =  new Date().getTime();
-
-                $scope.planForward.run.scenarioId = scenarioId.brandShort+"-"+scenarioId.StartingTime+"-"+scenarioId.EndingTime+"-"+scenarioId.lmTouch+"-"+scenarioId.CreateTime ;
-                console.log($scope.planForward.run.scenarioId);
-                function myformat(t){
-                    return t.toDateString().slice(4,7)+t.toDateString().slice(11,15);;
-                }
-                function shortLmTouch(l){
-                    return l.charAt(0)==="L" ? "LTA" : "MTA";
-                }
-                //end of add the scenario id
-
-            $http.post('/api/sendR', $scope.planForward.run).success(function(data){
-                if(data.post) console.log('R running');
-            });
             //add strategies on this post request within more than 5 mins waiting 
-            count = setInterval(doGet,1000*3);
-
-            //adjust the chart
-
-            $scope.compareChartData = [
-                {title: "SEM", value: $scope.planForward.output.semSD},
-                {title: "Display", value: $scope.planForward.output.disSD},
-                {title: "Social", value: $scope.planForward.output.socSD},
-                {title: "Affiliates", value: $scope.planForward.output.affSD},
-                {title: "Partners", value: $scope.planForward.output.parSD},
-                {title: "Portfolio Total", value: $scope.planForward.output.totSD}
-            ];
-
-            //end of adjust the chart
+            count = setInterval(doGet,4000);
 
             function doGet(){
                 //console.log("inner");
@@ -465,7 +753,7 @@ angular.module("ROIClientApp")
             else{
                 clearInterval(count);
                 
-                $http.get('/api/PlanRunOutput').success(function(data){
+                $http.post('/api/PlanInitOutput', $scope.planForward.output).success(function(data){
                 console.log(data);
 
                 $scope.planForward.output = data;
@@ -513,11 +801,8 @@ angular.module("ROIClientApp")
                 }
                // console.log($scope.getJson);
             }
-
-            
-
-
         };
+*/
 
         $scope.$watch('planForward', function () {
             if ($scope.nav.current === 'Constraints Input') {
@@ -541,7 +826,8 @@ angular.module("ROIClientApp")
 
         $scope.save = function () {
             $location.path('planforward/save');
-        }
+        };
+
 
         $scope.showme = false;
         $scope.planforwardContentSize = 'col-sm-12';
@@ -559,7 +845,7 @@ angular.module("ROIClientApp")
                 $scope.showGraph = 'Show Graph';
             }
         };
-        
+
         // added by david
         $scope.reRun = function() {
 
@@ -711,7 +997,30 @@ angular.module("ROIClientApp")
             $scope.calculate();
         }
 
+        $scope.saveScenario = function() {
 
+        };
+
+        $scope.backOutput = function() {
+            alert('go back Output');
+            $location.path('planforward');
+        };
+
+        //for the d3 chart setting
+        /*
+        $scope.compareChart.data = [
+            {title: "SEM", value: $scope.planForward.output.semTSD},
+            {title: "SEM-Bord", value: $scope.planForward.output.semBSD},
+            {title: "SEM-Card", value: $scope.planForward.output.semCSD},
+            {title: "SEM-Photobook", value: $scope.planForward.output.semPSD},
+            {title: "SEM-Others", value: $scope.planForward.output.semOSD},
+            {title: "Display", value: $scope.planForward.output.disSD},
+            {title: "Social", value: $scope.planForward.output.socSD},
+            {title: "Affiliates", value: $scope.planForward.output.affSD},
+            {title: "Partners", value: $scope.planForward.output.parSD},
+            {title: "Portfolio Total", value: $scope.planForward.output.PTSD}
+        ];
+        */
         $scope.compareChart.data = [
             {title: "SEM", value: -109009},
             {title: "SEM-Bord", value: -8002},
@@ -729,8 +1038,6 @@ angular.module("ROIClientApp")
             height: 313,
             margin: {left: 100, top: 0, right: 100, bottom: 30}
         };
-
-
     }])
     .directive('formatInput', ['$filter', function ($filter) {
         return {

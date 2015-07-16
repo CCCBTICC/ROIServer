@@ -24,21 +24,12 @@
                 <label for="planForwardAttribution" class="col-sm-3 control-label">Attribution:</label>
 
                 <div class="col-sm-4" id="planForwardAttribution">
-                    <label class="radio-inline">
-                    <input type="radio" ng-model="planForward.attribution" value="LTA">LTA
-                    </label>
-                    <label class="radio-inline">
-                    <input type="radio" ng-model="planForward.attribution" value="MTA">MTA
-                    </label>
-
-                    <!--
                     <label class="btn btn-default" ng-model="planForward.attribution" btn-radio="'LTA'" uncheckable>
                         LTA
                     </label>
                     <label class="btn btn-default" ng-model="planForward.attribution" btn-radio="'MTA'" uncheckable>
                         MTA
                     </label>
-                    -->
                 </div>
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{attrTooltips}}"></i>
@@ -51,7 +42,7 @@
                     <div class="input-group">
                         <input id="planForwardBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
                                ng-model="planForward.beginPeriod" is-open="opened.planForwardBeginPeriod"
-                               min-date="{{minDate}}" datepicker-options="dateOptions" datepicker-mode="'month'"
+                               datepicker-options="dateOptions" datepicker-mode="'month'"
                                ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event, 'planForwardBeginPeriod')">
@@ -89,7 +80,7 @@
 
                 <div class="col-sm-4">
                     <input class="form-control" id="planForwardSpend" type="text" ng-model="planForward.spend"
-                           format-input>
+                           ng-init="planForward.spend='5000000'" format-input autofocus>
                 </div>
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{spendTooltips}}"></i>
@@ -121,7 +112,7 @@
             <label>Begin Period</label>: {{planForward.beginPeriod | date: 'MMM-dd-yyyy'}}
             <label>End Period</label>: {{planForward.endPeriod | date: 'MMM-dd-yyyy'}}
             <label>Portfolio Spend </label>: {{planForward.spend | formatCurrency}}
-            
+            <label>Data through</label>: {{planForward.dataThrough | date: 'MMM-dd-yyyy'}}
         </div>
     </div>
     <div class="row">
@@ -154,7 +145,9 @@
                         <td>{{planForward.input.semMin | formatCurrency}}</td>
                         <td>{{planForward.input.semMax | formatCurrency}}</td>
                         <td>{{planForward.output.semTUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semBSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.semSF" 
+                            ng-init="planForward.output.semSF='1.0'">
+                        </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Brand</td>
@@ -171,7 +164,9 @@
                             <range-input ng-model="planForward.input.semBMax" min="planForward.input.semBMin" max="planForward.output.semBUB"></range-input>
                         </td>
                         <td>{{planForward.output.semBUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semBSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.semBSF" 
+                            ng-init="planForward.output.semBSF='1.0'">
+                        </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Card</td>
@@ -188,7 +183,9 @@
                             <range-input ng-model="planForward.input.semCMax" min="planForward.input.semCMin" max="planForward.output.semCUB"></range-input>
                         </td>
                         <td>{{planForward.output.semCUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semCSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.semCSF" 
+                            ng-init="planForward.output.semCSF='1.0'">
+                        </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Photobook</td>
@@ -205,7 +202,9 @@
                             <range-input ng-model="planForward.input.semPMax" min="planForward.input.semPMin" max="planForward.output.semPUB"></range-input>
                         </td>
                         <td>{{planForward.output.semPUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semPSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.semPSF" 
+                            ng-init="planForward.output.semPSF='1.0'">
+                        </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Others</td>
@@ -222,7 +221,9 @@
                             <range-input ng-model="planForward.input.semOMax" min="planForward.input.semOMin" max="planForward.output.semOUB"></range-input>
                         </td>
                         <td>{{planForward.output.semOUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semOSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.semOSF" 
+                            ng-init="planForward.output.semOSF='1.0'">
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-title">Display</td>
@@ -239,7 +240,9 @@
                             <range-input ng-model="planForward.input.disMax" min="planForward.input.disMin" max="planForward.output.disUB"></range-input>
                         </td>
                         <td>{{planForward.output.disUB | formatCurrency}}</td>
-                        <td>{{planForward.output.disSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.disSF" 
+                            ng-init="planForward.output.disSF='1.0'">
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-title">Social(FB)</td>
@@ -256,7 +259,9 @@
                             <range-input ng-model="planForward.input.socMax" min="planForward.input.socMin" max="planForward.output.socUB"></range-input>
                         </td>
                         <td>{{planForward.output.socUB | formatCurrency}}</td>
-                        <td>{{planForward.output.socSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.socSF" 
+                            ng-init="planForward.output.socSF='1.0'">
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-title">Affiliates</td>
@@ -273,7 +278,9 @@
                             <range-input ng-model="planForward.input.affMax" min="planForward.input.affMin" max="planForward.output.affUB"></range-input>
                         </td>
                         <td>{{planForward.output.affUB | formatCurrency}}</td>
-                        <td>{{planForward.output.affSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.affSF" 
+                            ng-init="planForward.output.affSF='1.0'">
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-title">Partners</td>
@@ -290,7 +297,9 @@
                             <range-input ng-model="planForward.input.parMax" min="planForward.input.parMin" max="planForward.output.parUB"></range-input>
                         </td>
                         <td>{{planForward.output.parUB | formatCurrency}}</td>
-                        <td>{{planForward.output.parSF}}</td>
+                        <td><input type="text" ng-model="planForward.output.parSF" 
+                            ng-init="planForward.output.parSF='1.0'">
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -310,7 +319,7 @@
                     <tbody>
                     <tr>
                         <td class="td-title">DM</td>
-                        <td ng-repeat="spend in planForward.ControlChannelsDM">{{spend}}</td>
+                        <td ng-repeat="month in planForward.ControlChannels"></td>
                     </tr>
                     </tbody>
                 </table>
@@ -329,14 +338,10 @@
                         <th class="col-1">Impressions</th>
                     </tr>
                     <tr>
-                        <td>{{planForward.output.tvBeginDate}}</td>
-                        <td>{{planForward.output.tvEndDate}}</td>
-                        <td>
-                           <input type="text" ng-model="planForward.output.tvSpend">
-                            </td>
-                        <td>
-                            <input type="text" ng-model="planForward.output.tvImpressions">
-                            </td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
                     </tr>
                 </table>
             </div>
@@ -609,13 +614,16 @@
                 </table>
             </div>
         </div>
-        <div class="col-sm-4" ng-show="showme">
+    </div>
+    <div class="col-sm-4" ng-show="showme">
             <br/>
             <h4 style="text-align:center">Spend Difference between optimized and what-if</h4>
             <compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>
             <h4 style="text-align:center">(-)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</h4>
         </div>
-    </div>
+
+
+
     <div class="row table-buttons">
         <div class="col-sm-10 col-sm-offset-2">
             <div class="col-sm-3">

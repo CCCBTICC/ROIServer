@@ -24,8 +24,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-click="selectRow(scenario)" ng-repeat="scenario in scenarios"
-                    ng-class="{'active-row':scenario.isActive}">
+                <tr  ng-repeat="scenario in scenarios">
+                    <td> <input type="checkbox" ng-click="selectRow(scenario)" ng-class="{'active-row':scenario.isActive}">   </td>
                     <td class="non-number">{{scenario._id}}</td>
                     <td class="non-number">{{scenario.AlgEndingTime}}</td>
                     <td class="non-number">{{scenario.StartingTime}}</td>

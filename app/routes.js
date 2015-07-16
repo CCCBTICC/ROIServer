@@ -28,6 +28,81 @@ watcher.add('R/output/input_temp_run.json');
 
 module.exports = function(app, passport,express) {
 
+    app.post('/api/planforwardInitial', function(req, res) {
+        var scenario = req.body;
+        var data = JSON.stringify(scenario);
+        fs.writeFile("/home/daviddong/ROI_V2/20150715/ROIServer/R/input/input_temp.json", data, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("The input file input_temp.json was saved!");
+
+            var cmd = "R CMD BATCH --no-save --no-restore '--args input_temp.json' /home/daviddong/ROI_V2/20150715/ROIServer/R/algorithms/RM.R";
+            var exec = require('child_process').exec;
+            last = exec(cmd);
+            last.stdout.on('data', function (data) {
+                console.log('output：' + data);
+            });
+            last.on('exit', function (code) {
+                res.send(JSON.parse(fs.readFileSync('/home/daviddong/ROI_V2/20150715/ROIServer/R/output/input_temp.json', 'utf-8')));
+                console.log('child process closed . code：' + code);
+            });
+        });
+        /*
+        var myVar = setInterval(function() {
+            var exist = fs.existsSync('/home/daviddong/ROI_V2/20150715/ROIServer/R/output/input_temp.json');
+            if (exist) {
+                res.send(JSON.parse(fs.readFileSync('/home/daviddong/ROI_V2/20150715/ROIServer/R/output/input_temp.json', 'utf-8')));
+                clearInterval(myVar);
+            }
+        }, 1000);
+        */
+
+    // res.send("Post success in Server");
+        //var input = {
+        //    a,a,,v,v
+        //}
+        //input.a = scenario.a;
+        //fs. genersa(input.json,url);
+      // console.log(scenario);
+        /*var output_fs = fs.readFileSync("/home/daviddong/ROI_V2/output/input_temp.json", "utf-8");
+        console.log(output_fs);
+        res.send(JSON.parse(output_fs));*/
+    });
+
+    app.post('/api/planforwardConstraints', function(req, res) {
+        var scenario = req.body;
+        var data = JSON.stringify(scenario);
+        fs.writeFile("/home/daviddong/ROI_V2/20150709/ROIServer/R/input/SFLY_run.json", data, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("The input file SFLY_run.json was saved!");
+
+            var cmd = "R CMD BATCH --no-save --no-restore '--args SFLY_run.json' /home/daviddong/ROI_V2/20150709/ROIServer/R/algorithms/RM.R";
+            var exec = require('child_process').exec;
+            last = exec(cmd);
+            last.stdout.on('data', function (data) {
+                console.log('标准输出：' + data);
+            });
+            last.on('exit', function (code) {
+                console.log('子进程已关闭，代码：' + code);
+            });
+        });
+
+        var myVar = setInterval(function() {
+            var exist = fs.existsSync('/home/daviddong/ROI_V2/20150709/ROIServer/R/output/SFLY_run.json');
+            if (exist) {
+                res.send(JSON.parse(fs.readFileSync('/home/daviddong/ROI_V2/20150709/ROIServer/R/output/SFLY_run.json', 'utf-8')));
+                clearInterval(myVar);
+            }
+        }, 1000);
+    });
+
+
+
     //  home page 
     app.get('/api/PlanInitOutput',function(req,res){
         //use commend line via R to compute the data and generate the file.
@@ -41,7 +116,7 @@ module.exports = function(app, passport,express) {
         fs.writeFile('R/input/input_temp.json',JSON.stringify(req.body));
 
         
-        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp.json" /home/daviddong/ROI_V2/20150715/ROIServer/R/algorithms/RM.R';
         var exec = require('child_process').exec;
         var last = exec(cmd);
         last.stdout.on('data', function (data) {
@@ -70,7 +145,8 @@ module.exports = function(app, passport,express) {
 
     //send the temp_run.json to front
     app.get('/api/PlanRunOutput',function(req,res){
-        res.send(JSON.parse(fs.readFileSync('R/output/input_temp_run.json', 'utf-8')));
+        //res.send(JSON.parse(fs.readFileSync('R/output/input_temp_run.json', 'utf-8')));
+        res.send(JSON.parse(fs.readFileSync('/home/daviddong/ROI_V2/20150715/ROIServer/R/output/input_temp_run.json', 'utf-8')));
         //init as defult
         tmpFileCheck = false;
         //data.test = false;
@@ -110,13 +186,13 @@ module.exports = function(app, passport,express) {
     });
     
     app.post('/api/sendR', function(req, res){
-
-        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp_run.json',JSON.stringify(req.body));
+        /*
+        fs.writeFile('R/input/input_temp_run.json',JSON.stringify(req.body));
         
         
         //use commend line via R to compute the data and generate the file.
         
-        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp_run.json" /home/daviddong/ROI_V2/20150715/ROIServer/R/algorithms/RM.R';
             var exec = require('child_process').exec;
             var last = exec(cmd);
             last.stdout.on('data', function (data) {
@@ -127,6 +203,27 @@ module.exports = function(app, passport,express) {
 
             }); 
 
+        */
+
+         var scenario = req.body;
+        var data = JSON.stringify(scenario);
+        fs.writeFile("/home/daviddong/ROI_V2/20150715/ROIServer/R/input/input_temp_run.json", data, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+
+            console.log("The input file input_temp_run.json was saved!");
+
+            var cmd = "R CMD BATCH --no-save --no-restore '--args input_temp_run.json' /home/daviddong/ROI_V2/20150715/ROIServer/R/algorithms/RM.R";
+            var exec = require('child_process').exec;
+            last = exec(cmd);
+            last.stdout.on('data', function (data) {
+                console.log('output: ' + data);
+            });
+            last.on('exit', function (code) {
+                console.log('child process closed .  code：' + code);
+            });
+        });
 
         res.send({post:"ture"});
         
