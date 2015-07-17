@@ -240,68 +240,6 @@ module.exports = function(app, passport,express) {
     });
     */
 
-    app.get('/scenarios',function(req,res){
-        Scenario.find(function(err, scenarios) {
-            if (err)
-                res.send(err);
-
-            res.json(scenarios);
-        });
-    });
-
-    app.post('/scenarios',function(req,res){
-        var data = fs.readFileSync('R/output/input_temp_run.json', 'utf-8');
-        console.log(data);
-
-        var scenario = new Scenario(JSON.parse(data));
-
-        scenario.save(function(err) {
-            if (err)
-                res.send(err);
-            res.json(scenario);
-        });
-    });
-
-    app.get('/scenarios/:scenario_id',function(req,res){
-        Scenario.findById(req.params.scenario_id, function(err, scenario) {
-            if (err)
-                res.send(err);
-            res.json(scenario);
-        });
-    });
-
-    app.put('/scenarios/:scenario_id',function(req,res){
-        Scenario.findById(req.params.scenario_id, function(err, scenario) {
-
-            if (err)
-                res.send(err);
-
-            scenario.UserName = req.body.userName;
-            scenario.Brand = req.body.brand;
-            scenario.Spend = req.body.spend;
-            scenario.save(function(err) {
-                if (err)
-                    res.send(err);
-
-                res.json({ message: 'Scenario updated!' });
-            });
-
-        });
-    });
-
-    app.delete('/scenarios/:scenario_id',function(req,res){
-       Scenario.remove({
-            _id: req.params.scenario_id
-        }, function(err, scenario) {
-            if (err)
-                res.send(err);
-
-            res.json({ message: 'Successfully deleted' });
-        });
-    });
-
-
-
 
 
 
