@@ -13,27 +13,41 @@
             <table class="table table-bordered table-hover roi-table">
                 <thead>
                 <tr>
+                    <th rowspan="2" style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"></th>
+                    <th class="col-1" colspan="3" >Scenarios</th>
+                    <th class="col-1" rowspan="2">Owner</th>
+                    <th class="col-1" rowspan="2">Final?</th>
+                    <th class="col-1" rowspan="2">Create Date</th>
+                    <th class="col-1" rowspan="2">Begin Month</th>
+                    <th class="col-1" rowspan="2">End Month</th>
+                    <th class="col-1" rowspan="2">Attribution Method</th>
+                    <th class="col-1" rowspan="2">History included?</th>
+                    <th class="col-1" rowspan="2">Data Through</th>
+                    <th class="col-1" rowspan="2">Share</th>
+                </tr>
+                <tr>
                     <th class="col-1">ID</th>
-                    <th class="col-1">Create Date</th>
-                    <th class="col-1">Begin Month</th>
-                    <th class="col-1">End Month</th>
-                    <th class="col-1">AM</th>
-                    <th class="col-1">Planned Spend</th>
-                    <th class="col-1">Revenue</th>
-                    <th class="col-1">ROI</th>
+                    <th class="col-1">Name</th>
+                    <th class="col-1">Note</th>
+                    
                 </tr>
                 </thead>
                 <tbody>
                 <tr  ng-repeat="scenario in scenarios">
-                    <td> <input type="checkbox" ng-click="selectRow(scenario)" ng-class="{'active-row':scenario.isActive}">   </td>
+                    <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"> <input type="checkbox" ng-click="selectRow(scenario)" ng-class="{'active-row':scenario.isActive}">   </td>
                     <td class="non-number">{{scenario._id}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td class="non-number">{{scenario.AlgEndingTime}}</td>
                     <td class="non-number">{{scenario.StartingTime}}</td>
                     <td class="non-number">{{scenario.EndingTime}}</td>
                     <td class="non-number">{{scenario.lmTouch}}</td>
-                    <td>{{scenario.Spend | formatCurrency}}</td>
-                    <td>{{scenario.totAR| formatCurrency}}</td>
-                    <td>{{scenario.run2ProjROI}}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 </tbody>
             </table>

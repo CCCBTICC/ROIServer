@@ -656,10 +656,10 @@ angular.module("ROIClientApp")
             }else{
                 clearInterval(count);
                 
-                $http.get('/api/PlanRunOutput', $scope.planForward.output).success(function(data){
+                $http.get('/api/PlanRunOutput').success(function(data){
                      console.log(data);
                 console.log("post success for run");
-
+                //$scope.planForward.output           = data;
                 $scope.planForward.runOutput        = data;
 
                 $scope.planForward.input.semBAS = Number($scope.planForward.runOutput.semBAS);
@@ -697,6 +697,22 @@ angular.module("ROIClientApp")
                 $scope.planForward.output.PTUB = Number($scope.planForward.output.semTUB) + Number($scope.planForward.output.disUB) + Number($scope.planForward.output.socUB) + Number($scope.planForward.output.affUB) + Number($scope.planForward.output.parUB);
                 $scope.planForward.output.PTSR = Number($scope.planForward.output.semTSR) + Number($scope.planForward.output.disSR) + Number($scope.planForward.output.socSR) + Number($scope.planForward.output.affSR) + Number($scope.planForward.output.parSR);
                 $scope.planForward.output.PTPR = Number($scope.planForward.output.disPR) + Number($scope.planForward.output.socPR) + Number($scope.planForward.output.affPR) + Number($scope.planForward.output.parPR);
+
+                $scope.planForward.output.semBSR = $scope.planForward.runOutput.semBSR;
+                $scope.planForward.output.semCSR = $scope.planForward.runOutput.semCSR;
+                $scope.planForward.output.semPSR = $scope.planForward.runOutput.semPSR;
+                $scope.planForward.output.semOSR = $scope.planForward.runOutput.semOSR;
+                $scope.planForward.output.disSR = $scope.planForward.runOutput.disSR;
+                $scope.planForward.output.socSR = $scope.planForward.runOutput.socSR;
+                $scope.planForward.output.affSR = $scope.planForward.runOutput.affSR;
+                $scope.planForward.output.parSR = $scope.planForward.runOutput.parSR;
+                $scope.planForward.output.parSR = $scope.planForward.runOutput.parSR;
+
+                $scope.planForward.output.semPR = $scope.planForward.runOutput.semPR;
+                $scope.planForward.output.disPR = $scope.planForward.runOutput.disPR;
+                $scope.planForward.output.socPR = $scope.planForward.runOutput.socPR;
+                $scope.planForward.output.affPR = $scope.planForward.runOutput.affPR;
+                $scope.planForward.output.parPR = $scope.planForward.runOutput.parPR;
 
 
                 $scope.nav.current = 'Output';
@@ -1034,7 +1050,7 @@ angular.module("ROIClientApp")
             {title: "Portfolio Total", value: 0}
         ];
         $scope.compareChart.config = {
-            width: 800,
+            width: 360,
             height: 313,
             margin: {left: 100, top: 0, right: 100, bottom: 30}
         };

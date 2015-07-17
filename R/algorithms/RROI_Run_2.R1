@@ -15,7 +15,7 @@ AlgStartingTime <-Sys.time()
 
 cat("############# Optimization Starts #################\n")
 source("RROI_Run_1_Optimization.R")
-temp <- 
+AS <- 
 Run_1_Optimization(
 Beg_Date      = Beg_Date,
 End_Date      = End_Date, 
@@ -23,15 +23,12 @@ Inputfile     = Inputfile,
 Estfile       = Estfile ,
 Date          = Date
 )
-SR<- temp[["SR"]]
-OptTotalRevenue <- temp[["OptTotalRevenue"]]
-rm("temp")
 cat("############# Optimization Ends #################\n")
 
 
 cat("############# Forecast Starts #################\n")
 source("RROI_Run_1_Forecast.R")
-PR <- 
+AR <- 
 Run_1_Forecast(
 Beg_Date     = Beg_Date,
 End_Date     = End_Date, 
@@ -43,38 +40,12 @@ cat("############# Forecast Ends #################\n")
 
 
 
-#run1RevRange <- 0.03
-#run1RevRange <- PR[ paste0(PRChannel, 'PR' )]/PR[length(PR)]* as.numeric(RevRange)
-RevRange <- abs(RevRange)
-       if(nMon==1 & LTAMTA=='_LTA') {      
-run1RevRange <-  RevRange[1]
-} else if(nMon==1 & LTAMTA=='_MTA') {  
-run1RevRange <-  RevRange[2]
-} else if(nMon==2 & LTAMTA=='_LTA') { 
-run1RevRange <-  RevRange[3]
-} else if(nMon==2 & LTAMTA=='_MTA') { 
-run1RevRange <-  RevRange[4]
-} else if(nMon==3 & LTAMTA=='_LTA') { 
-run1RevRange <-  RevRange[5]
-} else if(nMon==3 & LTAMTA=='_MTA') { 
-run1RevRange <-  RevRange[6]
-} else { 
-run1RevRange <-  0.023
-} 
+run2ProjROI  <- AR[length(AR)]/AS[length(AS)] - 1
+run2ProjROI  <- paste0(round(100*run2ProjROI, 0), "%")
 
-run1ProjROI  <- PR[length(PR)]/SR[length(SR)] - 1
-
-run1ROIRangeLB <- (run1ProjROI + 1)* (1 - run1RevRange) - 1
-run1ROIRangeUB <- (run1ProjROI + 1)* (1 + run1RevRange) - 1
-
-run1RevRange <- paste0("+/- ", 100*run1RevRange, "%")
-run1ProjROI  <- paste0(round(100*run1ProjROI, 0), "%")
-run1ROIRange <- paste0(round(100*run1ROIRangeLB, 0), "%/", round(100*run1ROIRangeUB, 0), "%")
-
-
-print(paste0("Total PR: $", format(PR[length(PR)],  big.mark=",", big.interval=3)))
-print(paste0("Total SR: $", format(SR[length(SR)],  big.mark=",", big.interval=3)))
-print(paste0("Projected ROI: ", run1ProjROI))
+print(paste0("Total AR: $", format(AR[length(AR)],  big.mark=",", big.interval=3)))
+print(paste0("Total AS: $", format(AS[length(AS)],  big.mark=",", big.interval=3)))
+print(paste0("Projected ROI: ", run2ProjROI))
 
 
 
@@ -86,7 +57,7 @@ AlgStartingTime=format(AlgStartingTime)
 AlgEndingTime=format(AlgEndingTime)
 AlgDuration=format(AlgDuration)
 
-run2ProjROI <- run1ProjROI
+
 
 
 
@@ -128,11 +99,10 @@ commafmt <- function(x)  format(x,  big.mark=",", big.interval=3)
   cat(paste0('"', 'SpendUB' ,                 '": "', inJsonData[ 'SpendUB'],                 '",\n'))
   
   cat(paste0('"', paste0(ChannelOut, 'SF' ),  '": "', inJsonData[ paste0(ChannelOut, 'SF' )], '",\n'))
- 
+
   cat(paste0('"dirSpendM1":',      '"', inJsonData$dirSpendM1,      '",\n'))
   cat(paste0('"dirSpendM2":',      '"', inJsonData$dirSpendM2,      '",\n'))
   cat(paste0('"dirSpendM3":',      '"', inJsonData$dirSpendM3,      '",\n'))
-
   
   cat(paste0('"tvBeginDate":"',   inJsonData$tvBeginDate,     '",\n'))
   cat(paste0('"tvEndDate":"',     inJsonData$tvEndDate,       '",\n'))
@@ -140,22 +110,21 @@ commafmt <- function(x)  format(x,  big.mark=",", big.interval=3)
   cat(paste0('"tvSpend":"',       inJsonData$tvSpend,         '",\n'))
 
 
-  cat(paste0('"', paste0(SRChannel,  'SR' ),  '": "', round(SR, roDgt), '",\n'))
-  cat(paste0('"OptTotalRevenue": "', round(OptTotalRevenue, roDgt), '",\n'))## added for optimizedTotalRevenue   
-  cat(paste0('"', paste0(PRChannel,  'PR' ),  '": "', round(PR, roDgt), '",\n'))
+  cat(paste0('"', paste0(SRChannel,  'SR' ),  '": "', inJsonData[ paste0(SRChannel,  'SR' )], '",\n'))
+  cat(paste0('"', paste0(PRChannel,  'PR' ),  '": "', inJsonData[ paste0(PRChannel,  'PR' )], '",\n'))
 
-  cat(paste0('"run1RevRange":',    '"', run1RevRange,  '",\n'))
-  cat(paste0('"run1ProjROI":',     '"', run1ProjROI,   '",\n'))
-  cat(paste0('"run1ROIRange":',    '"', run1ROIRange,  '",\n'))
+  cat(paste0('"run1RevRange":',    '"', inJsonData$run1RevRange,  '",\n'))
+  cat(paste0('"run1ProjROI":',     '"', inJsonData$run1ProjROI,   '",\n'))
+  cat(paste0('"run1ROIRange":',    '"', inJsonData$run1ROIRange,  '",\n'))
   
   
-  cat(paste0('"', paste0(ChannelOut,    'SlideLeft'         ),  '": "', inJsonData[ paste0(ChannelOut, 'LB' )], '",\n'))
-  cat(paste0('"', paste0(ChannelOut,    'Slide'             ),  '": "', round(SR[2:(length(SR)-1)], roDgt), '",\n'))
-  cat(paste0('"', paste0(ChannelOut,    'SlideRight'        ),  '": "', inJsonData[ paste0(ChannelOut, 'UB' )], '",\n'))
-  cat(paste0('"', paste0(ChannelOut,    'SlideDivMin'       ),  '": "', inJsonData[ paste0(ChannelOut, 'LB' )], '",\n'))
-  cat(paste0('"', paste0(ChannelOut,    'SlideDivMax'       ),  '": "', inJsonData[ paste0(ChannelOut, 'UB' )], '",\n'))
-  cat(paste0('"', paste0(ASChannel,     'AS'                ),  '": "', round(SR, roDgt), '",\n'))
-  cat(paste0('"', paste0(ARChannel,     'AR'                ),  '": "', round(PR, roDgt), '",\n'))
+  cat(paste0('"', paste0(ChannelOut,    'SlideLeft'   ),  '": "', inJsonData[ paste0(ChannelOut, 'LB' )], '",\n'))
+  cat(paste0('"', paste0(ChannelOut,    'Slide'       ),  '": "', inJsonData[ paste0(ChannelOut,    'Slide'       )], '",\n'))
+  cat(paste0('"', paste0(ChannelOut,    'SlideRight'  ),  '": "', inJsonData[ paste0(ChannelOut, 'UB' )], '",\n'))
+  cat(paste0('"', paste0(ChannelOut,    'SlideDivMin' ),  '": "', inJsonData[ paste0(ChannelOut, 'LB' )], '",\n'))
+  cat(paste0('"', paste0(ChannelOut,    'SlideDivMax' ),  '": "', inJsonData[ paste0(ChannelOut, 'UB' )], '",\n'))
+  cat(paste0('"', paste0(ASChannel,     'AS'          ),  '": "', round(AS, roDgt), '",\n'))
+  cat(paste0('"', paste0(ARChannel,     'AR'          ),  '": "', round(AR, roDgt), '",\n'))
 
   
   cat(paste0('"run2ProjROI":',    '"', run2ProjROI,  '"\n'))  # no comma before \n
