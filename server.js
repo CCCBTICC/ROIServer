@@ -16,7 +16,6 @@ var session      = require('express-session');
 var apiFolderName = 'api';//Todo: Change to 'api' for integration test
 var scenarios = require('./'+apiFolderName+'/scenarios');
 var analysis = require('./'+apiFolderName+'/analysis');
-var rmodel = require('./'+apiFolderName+'/rmodel');
 
 var app      = express();
 var port     = process.env.PORT || 3001;
@@ -43,7 +42,6 @@ app.use(express.static(__dirname + '/views'));
 
 app.use('/scenarios', scenarios);
 app.use('/analysis', analysis);
-app.use('/rmodel', rmodel);
 
 //=============================route API  user and scenario ======================
 
