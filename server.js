@@ -15,7 +15,8 @@ var session      = require('express-session');
 //require api
 var apiFolderName = 'mockapi';//Todo: Change to 'api' for integration test
 var scenarios = require('./'+apiFolderName+'/scenarios');
-
+var analysis = require('./'+apiFolderName+'/analysis');
+var rmodel = require('./'+apiFolderName+'/rmodel');
 
 var app      = express();
 var port     = process.env.PORT || 3001;
@@ -28,18 +29,7 @@ mongoose.connect(configDB.url); // connect to our database
 require('./config/passport')(passport); // pass passport for configuration
 
 // set up our express application
-/*
-app.use(morgan('dev')
-		,cookieParser()					
-		,bodyParser.json()
-		,bodyParser.urlencoded({ extended: true })
-		,session({ secret: 'ROIServersessionkey' })
-		,passport.initialize()
-		,passport.session()
-		,flash()
-		,express.static(__dirname + '/views')
-		); // log every request to the console
-*/
+
 
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -52,12 +42,13 @@ app.use(flash());
 app.use(express.static(__dirname + '/views'));
 
 app.use('/scenarios', scenarios);
-
+app.use('/analysis', analysis);
+app.use('/rmodel', rmodel);
 
 //=============================route API  user and scenario ======================
 
 // routes ======================================================================
-require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+//require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
 app.listen(port);

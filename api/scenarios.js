@@ -14,8 +14,8 @@ router.get('/list',function(req,res){
 });
 
 router.post('/',function(req,res){
-    var data = fs.readFileSync('R/output/input_temp_run.json', 'utf-8');
-    console.log(data);
+    //var data = fs.readFileSync('R/output/input_temp_run.json', 'utf-8');
+    
 
     var scenario = new Scenario(JSON.parse(data));
 
