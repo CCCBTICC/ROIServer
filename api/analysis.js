@@ -3,25 +3,47 @@
  */
 var express = require('express');
 var router = express.Router();
+var fs = require('fs');
+var Rmodule = require('./modules/Rmodule');
 
 
-	router.post('/api/planforwardInitial', function(req, res) {
-        var scenario = req.body;
-        var data = JSON.stringify(scenario);
-        fs.writeFile("/home/daviddong/ROI_V2/20150715/ROIServer/R/input/input_temp.json", data, function(err) {
-            if(err) {
-                return console.log(err);
-            }
+    //  first step  Algorithm = 1    *****init ****** start ******
+    router.post('/planforwardInitial', function(req, res) {
+    // use Rmodule.initRCompute function to write file and use commend line to send file to R
+    // return value is the generated file by R in R/output folder
+    var outputInit = Rmodule.initRCompute(req.body.filename, req.body.data);
+    res.send(outputInit);   
+    });
+    //  first step  Algorithm = 1    *****init ****** end ******
 
-            var cmd = "R CMD BATCH --no-save --no-restore '--args input_temp.json' /home/daviddong/ROI_V2/20150715/ROIServer/R/algorithms/RM.R";
-            var exec = require('child_process').exec;
-            last = exec(cmd);
-            last.stdout.on('data', function (data) {
-                console.log('output：' + data);
-            });
-            last.on('exit', function (code) {
-                res.send(JSON.parse(fs.readFileSync('/home/daviddong/ROI_V2/20150715/ROIServer/R/output/input_temp.json', 'utf-8')));
-                console.log('child process closed . code：' + code);
-            });
-        });
-    }
+    //  second step  Algorithm = 2    ****** run ****** start *****
+
+    //  using post method to get the data and let R run 
+    router.post('/sendR', function(req, res){
+    //  use Rmodule.sendRcompute function to write file and use commend line to send file to R
+    Rmodule.sendRcompute(req.body.filename, req.body.data);
+    // response the sendR post request 
+    res.send({post:"ture"});   
+    });
+
+    // using get method to  check the file change
+    router.post('/testGet', function(req, res) {
+        //init the response value as false
+        var data = {'test':false, 'outputData':{}};
+        // check the req.filename file exist or not 
+        var exist = fs.existsSync('R/output/'+ req.body.filename +'.json');
+        if(exist){
+            data.outputData = JSON.parse(fs.readFileSync('R/output/'+ req.body.filename +'.json', 'utf-8'));
+            data.test = true;
+            res.send(data);
+        }else{
+            data.outputData = {};
+            data.test = false;
+            res.send(data);
+        }
+        console.log(data);
+    });
+
+    //  second step  Algorithm = 2    ****** run ****** start *****
+
+module.exports = router;

@@ -27,23 +27,23 @@ var tmpFileCheck = false;
 
         setTimeout(function(){
             tmpFileCheck = true;
-        },1000*5);
+        },1000*10);
         
     });
 
     // using get method to get the global variable tmpFileCheck to check the input_temp file change
-    router.get('/testGet', function(req, res) {
+    router.post('/testGet', function(req, res) {
         var data;
-        data = {'test':false};
+        var data = {'test':false, 'outputData':{}};
         if(tmpFileCheck){
             data.test = true;
-            res.send(JSON.parse(fs.readFileSync('dummy_data/output/input_temp_run.json', 'utf-8')));
+            data.outputData = res.send(JSON.parse(fs.readFileSync('dummy_data/output/input_temp_run.json', 'utf-8')));
             //init as defult
             tmpFileCheck = false;
         }else{
             res.json(data); 
         }
-        console.log(data.test);
+        console.log(data);
         
     });
 

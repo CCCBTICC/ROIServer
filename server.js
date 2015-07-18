@@ -13,7 +13,7 @@ var bodyParser   = require('body-parser');
 var session      = require('express-session');
 
 //require api
-var apiFolderName = 'mockapi';//Todo: Change to 'api' for integration test
+var apiFolderName = 'api';//Todo: Change to 'api' for integration test
 var scenarios = require('./'+apiFolderName+'/scenarios');
 var analysis = require('./'+apiFolderName+'/analysis');
 var rmodel = require('./'+apiFolderName+'/rmodel');
