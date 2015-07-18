@@ -3,12 +3,24 @@
  */
 'use strict';
 
-var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize','CompareChart'])
-    .config(function ($routeProvider, $locationProvider) {
+var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize','CompareChart','forwardModule'])
+    .config(function ($routeProvider) {
         $routeProvider
-            .when('/planforward', {
-                templateUrl: './views/planforward.html',
+            .when('/planforward/init', {
+                templateUrl: './views/planforward/initialInput.html',
+                controller: 'forwardInitCtrl'
+            })
+            .when('/planforward/constrict', {
+                templateUrl: './views/planforward/constrictedInput.html',
+                controller: 'forwardConstrictCtrl'
+            })
+            .when('/planforward/output', {
+                templateUrl: './views/planforward/output.html',
                 controller: 'forwardCtrl'
+            })
+            .when('/planforward/save', {
+                templateUrl: './views/constrictedInput.html',
+                controller: 'forwardSaveCtrl'
             })
             .when('/lookback', {
                 templateUrl: './views/lookback.html',
@@ -44,10 +56,13 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
             })
     });
 
-app.controller("indexCtrl", function ($scope) {
-    $scope.users = {};
-    $scope.users.name = "Ed";
-    $scope.users.recentlyLoginDate = new Date();
+app.controller("indexCtrl", function ($scope,user) {
+    user.getUser(function(user){
+        $scope.user= user;
+
+    });
+    $scope.user.name='mike';
+
 });
 
 app.controller("savePlanCtrl", function ($scope,$http) {
@@ -60,4 +75,14 @@ app.controller("savePlanCtrl", function ($scope,$http) {
     });
     };  
     
+});
+app.factory('user',function(){
+    var user={};
+    user.name="Ed";
+    user.recentlyLoginDate = new Date();
+    return {
+        getUser:function(cb){
+            cb(user)
+        }
+    }
 });

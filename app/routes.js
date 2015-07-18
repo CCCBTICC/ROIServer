@@ -29,43 +29,44 @@ watcher.add('R/output/input_temp_run.json');
 module.exports = function(app, passport,express) {
 
     //  home page 
-    app.get('/api/PlanInitOutput',function(req,res){
-        //use commend line via R to compute the data and generate the file.
-        var data= fs.readFileSync('R/temp/input_temp.json', 'utf-8');
-        var jsonData = JSON.parse(data);
-        res.send(jsonData);
-    });
+    //app.get('/api/PlanInitOutput',function(req,res){
+    //    //use commend line via R to compute the data and ge/temp/input_temp.jnerate the file.
+    //    var data= fs.readFileSync('Rson', 'utf-8');
+    //    var jsonData = JSON.parse(data);
+    //    res.send(jsonData);
+    //});
 
     app.post('/api/PlanInitOutput',function(req,res){
         //write file and put the update data into temp file
         fs.writeFile('R/input/input_temp.json',JSON.stringify(req.body));
-
-        
+        res.send('');
+    });
+    app.get('/api/PlanInitOutput',function(req,res){
         var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
         var exec = require('child_process').exec;
         var last = exec(cmd);
         last.stdout.on('data', function (data) {
-        console.log('standard output：' + data);
+            console.log('standard output：' + data);
         });
         last.on('exit', function (code) {
-        console.log('child_process exit. code：' + code);
+            console.log('child_process exit. code：' + code);
             setTimeout(function(){
-            var initData = JSON.parse(fs.readFileSync('R/output/input_temp.json'));
-            res.send(initData);
+                var initData = JSON.parse(fs.readFileSync('R/output/input_temp.json'));
+                res.send(initData);
             },500);
             //move the input file to output file
             //fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json',JSON.stringify(initData));
-        }); 
+        });
         //res.send("run step processing ");
-        
+
         /*
-        setTimeout(function(){
-            var initData = JSON.parse(fs.readFileSync('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json'));
-            res.send(initData);
-            //move the input file to output file
-            fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json',JSON.stringify(initData));
-        },1000);
-        */
+         setTimeout(function(){
+         var initData = JSON.parse(fs.readFileSync('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp.json'));
+         res.send(initData);
+         //move the input file to output file
+         fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/output/input_temp.json',JSON.stringify(initData));
+         },1000);
+         */
     });
 
     //send the temp_run.json to front
@@ -111,7 +112,7 @@ module.exports = function(app, passport,express) {
     
     app.post('/api/sendR', function(req, res){
 
-        fs.writeFile('C:/Users/Administrator/Desktop/ccc/ROIServer/R/input/input_temp_run.json',JSON.stringify(req.body));
+        fs.writeFile('./R/input/input_temp_run.json',JSON.stringify(req.body));
         
         
         //use commend line via R to compute the data and generate the file.
@@ -133,7 +134,30 @@ module.exports = function(app, passport,express) {
 
 
     });
+    app.get('/api/sendR', function(req, res){
 
+        fs.writeFile('./R/input/input_temp_run.json',JSON.stringify(req.body));
+
+
+        //use commend line via R to compute the data and generate the file.
+
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args input_temp_run.json" C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms/RM.R';
+        var exec = require('child_process').exec;
+        var last = exec(cmd);
+        last.stdout.on('data', function (data) {
+            console.log('standard output：' + data);
+        });
+        last.on('exit', function (code) {
+            console.log('R computing finished. code:' + code);
+
+        });
+
+
+        res.send({post:"ture"});
+
+
+
+    });
     app.get('/api/testGet', function(req, res) {
         var data;
         data = {'test':false};

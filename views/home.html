@@ -43,8 +43,8 @@
                     </button>
                 </li>
                 <li>
-                    Welcome, <strong>{{users.name}}</strong> |
-                    <small>Last Logged on</small> <strong>{{users.recentlyLoginDate | date: 'MMM dd yy'}}</strong>
+                    Welcome, <strong>{{user.name}}</strong> |
+                    <small>Last Logged on</small> <strong>{{user.recentlyLoginDate | date: 'MMM dd yy'}}</strong>
                 </li>
             </ul>
         </div>
@@ -64,7 +64,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#planforward">
+                    <a href="#planforward/init">
                         <span>Plan Forward</span><img src="img/plan.png" alt="">
                     </a>
                 </li>
