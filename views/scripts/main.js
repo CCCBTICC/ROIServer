@@ -16,10 +16,10 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
             })
             .when('/planforward/output', {
                 templateUrl: './views/planforward/output.html',
-                controller: 'forwardCtrl'
+                controller: 'forwardOutputCtrl'
             })
             .when('/planforward/save', {
-                templateUrl: './views/constrictedInput.html',
+                templateUrl: './views/planforward/save.html',
                 controller: 'forwardSaveCtrl'
             })
             .when('/lookback', {
