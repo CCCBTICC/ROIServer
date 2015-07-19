@@ -160,12 +160,11 @@ forward.factory('forwardManager', function ($http) {
         "run2ProjROI": ""
     };
     var Name = "";
-    var url = "http://localhost:3001/analysis/planforward";
+    var url = "http://localhost:3001/analysis/";
     var get = function (cb) {
         $http({
             method: 'get',
-            url: url,
-            fileName: Name
+            url: url+Name
         }).success(function (data) {
             cb(data);
         });
@@ -173,7 +172,7 @@ forward.factory('forwardManager', function ($http) {
     var post = function (data, cb) {
         $http({
             method: 'post',
-            url: url,
+            url: url+'planforward',
             data: data
         }).success(function (fileName) {
             Name = fileName;
