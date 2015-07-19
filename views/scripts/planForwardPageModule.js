@@ -5,7 +5,7 @@
 'use strict';
 var forward = angular.module("forwardModule", []);
 forward.factory('forwardManager', function ($http) {
-    var dataTemplate = {
+    var tempData = {
         "UserName": "",
         "Brand": "",
         "lmTouch": "",
@@ -159,53 +159,37 @@ forward.factory('forwardManager', function ($http) {
         "totAR": "",
         "run2ProjROI": ""
     };
-    var initialOutPut = {};
-    var constrictOutput = {};
-
-    var url = "http://localhost:3001/api/PlanInitOutput";
-    var url1 = "http://localhost:3001/api/sendR";
-    var get = function (obj, cb) {
-        if (!obj.Algorithm) {
-            $http.get(url).success(function (data) {
-                obj = data;
-                cb(obj);
-            });
-
-        } else {
-            cb(initialOutPut);
-        }
+    var Name = "";
+    var url = "http://localhost:3001/analysis/planforward";
+    var get = function (cb) {
+        $http({
+            method: 'get',
+            url: url,
+            fileName: Name
+        }).success(function (data) {
+            cb(data);
+        });
     };
-    var post = function (data, url, cb) {
+    var post = function (data, cb) {
         $http({
             method: 'post',
             url: url,
             data: data
-        }).success(cb);
+        }).success(function (fileName) {
+            Name = fileName;
+            cb(true);
+        });
     };
     return {
-        getDataTemplate: function (cb) {
-            cb(dataTemplate)
+        getTempData:function(cb){
+            cb(tempData);
         },
-        postInitialInput: function (data, cb) {
-            post(data, url, cb);
-        },
-        getInitialOutPut: function (cb) {
-            get(initialOutPut, cb);
-        },
-        postConstrictInput: function (data, cb) {
-            post(data, url1, cb);
-        },
-        getConstrictOutPut: function (cb) {
-            get(constrictOutput, cb);
-        },
-        get: function (url, cb) {
-            $http.get(url).success(cb);
-        },
-
-        post: function (data, cb) {
+        getData: get,
+        postData: post,
+        setName: function (fileName) {
+            Name = fileName;
         }
     }
-
 });
 forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', function ($scope, manager, user) {
     // Calendar settings
@@ -216,18 +200,16 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         startingDay: 1,
         minMode: 'month'
     };
+    //adjust the date for the R Algorithm version 1.0
+    $scope.minDate = new Date('2010', '7', '01');
     $scope.today = function () {
         var date = new Date();
         $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
         $scope.planForward.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        //adjust the date for the R Algorithm version 1.0
-        $scope.minDate = new Date('2010', '7', '01');
-
     };
     $scope.open = function ($event, model) {
         $event.preventDefault();
         $event.stopPropagation();
-
         if (model === 'planForwardBeginPeriod') {
             $scope.opened.planForwardBeginPeriod = !$scope.opened.planForwardBeginPeriod;
             $scope.opened.planForwardEndPeriod = false;
@@ -236,17 +218,18 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
             $scope.opened.planForwardBeginPeriod = false;
         }
     };
-    //$scope.planForward.endPeriod = $scope.planForward.beginPeriod;
     $scope.getLastDate = function () {
-        $scope.planForward.endPeriod = new Date($scope.planForward.endPeriod);
-        $scope.planForward.endPeriod = new Date($scope.planForward.endPeriod.getFullYear(), $scope.planForward.endPeriod.getMonth() + 1, 0);
+        var d = new Date($scope.planForward.endPeriod);
+        $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
     };
     $scope.modifyEndDate = function () {
         if ($scope.planForward.beginPeriod > $scope.planForward.endPeriod) {
-            $scope.planForward.beginPeriod = new Date($scope.planForward.beginPeriod);
-            $scope.planForward.endPeriod = new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 1, 0);
+            var d = new Date($scope.planForward.beginPeriod);
+            $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
         }
     };
+    // calender settings END
+
     // init data default
     $scope.initForm = function () {
         $scope.planForward = {};
@@ -260,7 +243,6 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         $scope.today();
         // init data output
         $scope.planForward.init = {};
-        $scope.compareChart = {};
 
 
         // tooltips
@@ -272,20 +254,20 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         //$scope.includeTooltips = 'includeTooltips';
     };
     $scope.initForm();
+    //get User Info
     user.getUser(function (user) {
         $scope.user = user;
-        //$scope.planForward.init.UserName = $scope.user.name;
     });
-    manager.getDataTemplate(function (data) {
-        $scope.planForward.init = angular.copy(data);
+    //
+    manager.getTempData(function (data) {
+        $scope.planForward.init = data ;
     });
 
     $scope.CInput = function () {
-        var length = Number($scope.planForward.endPeriod.getFullYear() - $scope.planForward.beginPeriod.getFullYear()) * 12 + ($scope.planForward.endPeriod.getMonth() - $scope.planForward.beginPeriod.getMonth()) + 1;
-        //get the input and send input data to the server via post method
-        $scope.planForward.init.UserName = $scope.user.name;
+        var length = Number($scope.planForward.endPeriod.getFullYear() - $scope.planForward.beginPeriod.getFullYear()) * 12 + ($scope.planForward.endPeriod.getMonth() - $scope.planForward.beginPeriod.getMonth()) + 1
 
         // first step input init
+        $scope.planForward.init.UserName = $scope.user.name;
         $scope.planForward.init.Brand = $scope.planForward.brand;
         $scope.planForward.init.lmTouch = $scope.planForward.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
         $scope.planForward.init.StartingTime = $scope.planForward.beginPeriod.getFullYear() + '-' + Number(Number($scope.planForward.beginPeriod.getMonth()) + 1);
@@ -295,36 +277,37 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
 
         $scope.planForward.init.Algorithm = 1;
 
-        //get the temp var the api to init Algorithm obj
-        /*
-         $http.get('/api/PlanInitOutput').success(function (data) {
-         //pass the value to  the output object
-         $scope.planForward.output               = data;
-
-         $scope.planForward.output.brand         = $scope.planForward.brand;
-         $scope.planForward.output.lmTouch       = $scope.planForward.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
-         $scope.planForward.output.StartingTime  = $scope.planForward.beginPeriod.getFullYear() + '-' + Number(Number($scope.planForward.beginPeriod.getMonth())+1);
-         $scope.planForward.output.EndingTime    = $scope.planForward.endPeriod.getFullYear() + '-' + Number(Number($scope.planForward.endPeriod.getMonth())+1);
-         $scope.planForward.output.Spend         = $scope.planForward.spend;
-         $scope.planForward.output.PlanMonths    = length;
-         //  update within the input data and init , ready to send to server
-         // send the post request to server with input init
-         */
-        manager.postInitialInput($scope.planForward.init, function () {
-            console.log("sended successfully");
+        manager.postData($scope.planForward.init, function (res) {
+            console.log(res);
         });
     };
 }]);
 forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', function ($scope, manager) {
+    //initial controller scope
     $scope.planForward = {};
     $scope.planForward.output = {};
     $scope.planForward.input = {};
-    $scope.planForward.run = {};
-    manager.getInitialOutPut(function (data) {
-        //get the response from the server side
+    $scope.planForward.selectPlan = {};
+    $scope.planForward.selectPlan.semTotal = true;
+    $scope.planForward.selectPlan.semBrand = true;
+    $scope.planForward.selectPlan.semCard = true;
+    $scope.planForward.selectPlan.semPhotobook = true;
+    $scope.planForward.selectPlan.semOthers = true;
+    $scope.planForward.selectPlan.display = true;
+    $scope.planForward.selectPlan.social = true;
+    $scope.planForward.selectPlan.affiliates = true;
+    $scope.planForward.selectPlan.partners = true;
+
+    //get the response from the server side
+    manager.getData(function (data) {
         $scope.planForward.output = data;
-        $scope.planForward.dataThrough = new Date($scope.planForward.output.EndingTime);
-        //$scope.planForward.dataThrough.setMonth($scope.planForward.include ? $scope.planForward.endPeriod.getMonth() : $scope.planForward.endPeriod.getMonth() - 1);
+            // get initial input
+        $scope.planForward.brand=$scope.planForward.output.Brand;
+        $scope.planForward.attribution=$scope.planForward.output.lmTouch;
+        $scope.planForward.beginPeriod= $scope.planForward.output.StartingTime;
+        $scope.planForward.endPeriod = $scope.planForward.output.EndingTime;
+        $scope.planForward.spend = $scope.planForward.output.Spend;
+
         $scope.planForward.output.semTLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
         $scope.planForward.output.semTUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
         // set default value of input
@@ -346,32 +329,25 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', function
         $scope.planForward.input.affMax = Number($scope.planForward.output.affUB);
         $scope.planForward.input.parMin = Number($scope.planForward.output.parLB);
         $scope.planForward.input.parMax = Number($scope.planForward.output.parUB);
-        $scope.planForward.selectPlan = {};
-        $scope.planForward.selectPlan.semTotal = true;
-        $scope.planForward.selectPlan.semBrand = true;
-        $scope.planForward.selectPlan.semCard = true;
-        $scope.planForward.selectPlan.semPhotobook = true;
-        $scope.planForward.selectPlan.semOthers = true;
-        $scope.planForward.selectPlan.display = true;
-        $scope.planForward.selectPlan.social = true;
-        $scope.planForward.selectPlan.affiliates = true;
-        $scope.planForward.selectPlan.partners = true;
-        $scope.totCheck = function () {
-            if (!$scope.planForward.selectPlan.semTotal) {
-                Object.keys($scope.planForward.selectPlan).forEach(function (key) {
-                    $scope.planForward.selectPlan[key] = key.toString().indexOf('sem') < 0 ? $scope.planForward.selectPlan[key] : false;
-                });
-            } else {
-                Object.keys($scope.planForward.selectPlan).forEach(function (key) {
-                    $scope.planForward.selectPlan[key] = key.toString().indexOf('sem') < 0 ? $scope.planForward.selectPlan[key] : true;
-                });
-            }
-            $scope.semTSP = !$scope.semTSP;
-        };
-        $scope.subCheck = function () {
-            $scope.planForward.selectPlan.semTotal = !!($scope.planForward.selectPlan.semBrand && $scope.planForward.selectPlan.semCard && $scope.planForward.selectPlan.semPhotobook && $scope.planForward.selectPlan.semOthers);
-        };
     });
+
+
+    $scope.totCheck = function () {
+        if (!$scope.planForward.selectPlan.semTotal) {
+            Object.keys($scope.planForward.selectPlan).forEach(function (key) {
+                $scope.planForward.selectPlan[key] = key.toString().indexOf('sem') < 0 ? $scope.planForward.selectPlan[key] : false;
+            });
+        } else {
+            Object.keys($scope.planForward.selectPlan).forEach(function (key) {
+                $scope.planForward.selectPlan[key] = key.toString().indexOf('sem') < 0 ? $scope.planForward.selectPlan[key] : true;
+            });
+        }
+        $scope.semTSP = !$scope.semTSP;
+    };
+    $scope.subCheck = function () {
+        $scope.planForward.selectPlan.semTotal = !!($scope.planForward.selectPlan.semBrand && $scope.planForward.selectPlan.semCard && $scope.planForward.selectPlan.semPhotobook && $scope.planForward.selectPlan.semOthers);
+    };
+
     $scope.calculate = function () {
         // init data
         $scope.planForward.input.semAS = Number($scope.planForward.output.semTLB);
@@ -379,7 +355,6 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', function
         $scope.planForward.input.socAS = Number($scope.planForward.output.socLB);
         $scope.planForward.input.affAS = Number($scope.planForward.output.affLB);
         $scope.planForward.input.parAS = Number($scope.planForward.output.parLB);
-
 
         //update the data with max min and send the file to server to get res
         //change the data  with min max scroll value
@@ -392,57 +367,29 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', function
         $scope.planForward.output.semPMax = $scope.planForward.input.semPMax;
         $scope.planForward.output.semOMin = $scope.planForward.input.semOMin;
         $scope.planForward.output.semOMax = $scope.planForward.input.semOMax;
-        $scope.planForward.output.disMin = $scope.planForward.input.disMin + "";
-        $scope.planForward.output.disMax = $scope.planForward.input.disMax + "";
-        $scope.planForward.output.socMin = $scope.planForward.input.socMin + "";
-        $scope.planForward.output.socMax = $scope.planForward.input.socMax + "";
-        $scope.planForward.output.affMin = $scope.planForward.input.affMin + "";
-        $scope.planForward.output.affMax = $scope.planForward.input.affMax + "";
-        $scope.planForward.output.parMin = $scope.planForward.input.parMin + "";
-        $scope.planForward.output.parMax = $scope.planForward.input.parMax + "";
+        $scope.planForward.output.disMin = $scope.planForward.input.disMin;
+        $scope.planForward.output.disMax = $scope.planForward.input.disMax;
+        $scope.planForward.output.socMin = $scope.planForward.input.socMin;
+        $scope.planForward.output.socMax = $scope.planForward.input.socMax;
+        $scope.planForward.output.affMin = $scope.planForward.input.affMin;
+        $scope.planForward.output.affMax = $scope.planForward.input.affMax;
+        $scope.planForward.output.parMin = $scope.planForward.input.parMin;
+        $scope.planForward.output.parMax = $scope.planForward.input.parMax;
 
-        // should add the control channel and TV date .
-        $scope.planForward.run.dirSpendM1 = $scope.planForward.output.dirSpendM1;
-        $scope.planForward.run.dirSpendM2 = $scope.planForward.output.dirSpendM2;
-        $scope.planForward.run.dirSpendM3 = $scope.planForward.output.dirSpendM3;
-
-        $scope.planForward.run.tvBeginDate = $scope.planForward.input.tvBeginDate;
-        $scope.planForward.run.tvEndDate = $scope.planForward.input.tvEndDate;
-        $scope.planForward.run.tvImpressions = $scope.planForward.input.tvImpressions;
-        $scope.planForward.run.tvSpend = $scope.planForward.input.tvSpend;
-        // end of adding the control channel and TV date
-
-        $scope.planForward.run = $scope.planForward.output;
-        $scope.planForward.run.Algorithm = 2;
-        $scope.planForward.run.AlgStartingTime = "";
-        $scope.planForward.run.AlgEndingTime = "";
+        $scope.planForward.output.Algorithm = 2;
+        $scope.planForward.output.AlgStartingTime = "";
+        $scope.planForward.output.AlgEndingTime = "";
         $scope.planForward.run.AlgDuration = "";
 
-        // add the scenario id
-        var scenarioId = {};
-        scenarioId.brandShort = "SLFY";
-        scenarioId.StartingTime = $scope.planForward.output.StartingTime;
-        scenarioId.EndingTime = $scope.planForward.output.EndingTime;
-        scenarioId.lmTouch = $scope.planForward.run.lmTouch;
-        scenarioId.CreateTime = new Date().getTime();
-
-        $scope.planForward.run.scenarioId = scenarioId.brandShort + "-" + scenarioId.StartingTime + "-" + scenarioId.EndingTime + "-" + scenarioId.lmTouch + "-" + scenarioId.CreateTime;
-        console.log($scope.planForward.run.scenarioId);
-        //function myformat(t) {
-        //    return t.slice(0, 4) + t.slice(5, 2);
-        //}
-        ////function shortLmTouch(l) {
-        //    return l.charAt(0) === "L" ? "LTA" : "MTA";
-        //}
         manager.postConstrictInput($scope.planForward.run, function (data) {
             console.log(data);
         });
     };
 }]);
-forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($scope, manager) {
+forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', function ($scope, manager) {
     var count;
     $scope.getJson = false;
-    $scope.planForward={};
+    $scope.planForward = {};
     $scope.planForward.output = {};
     $scope.planForward.input = {};
     //add strategies on this post request within more than 5 mins waiting
@@ -474,8 +421,6 @@ forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($sc
                 $scope.planForward.input.socAS = Number($scope.planForward.output.socAS);
                 $scope.planForward.input.affAS = Number($scope.planForward.output.affAS);
                 $scope.planForward.input.parAS = Number($scope.planForward.output.parAS);
-
-                $scope.nav.current = 'Output';
 
                 //get sum for semToal's elements
                 $scope.planForward.output.semTLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
@@ -532,11 +477,6 @@ forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($sc
         {title: "Portfolio Total", value: $scope.planForward.output.totSD}
     ];
 
-    {
-
-    }
-
-
     $scope.showme = false;
     $scope.planforwardContentSize = 'col-sm-12';
     $scope.showGraph = 'Show Graph';
@@ -591,12 +531,12 @@ forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($sc
 
     $scope.reRunSem = function () {
 
-        var numSemSR = 0;
-        var numSemPR = 0;
-        var numSemAS = 0;
-        var numSemAR = 0;
-        var numSemSD = 0;
-        var numSemRD = 0;
+        var numSemSR;
+        var numSemPR;
+        var numSemAS;
+        var numSemAR;
+        var numSemSD;
+        var numSemRD;
 
         numSemSR = Number($scope.planForward.output.semSR);
         numSemPR = Number($scope.planForward.output.semPR);
@@ -613,12 +553,12 @@ forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($sc
 
     $scope.reRunDis = function () {
 
-        var numDisSR = 0;
-        var numDisPR = 0;
-        var numDisAS = 0;
-        var numDisAR = 0;
-        var numDisSD = 0;
-        var numDisRD = 0;
+        var numDisSR;
+        var numDisPR;
+        var numDisAS;
+        var numDisAR;
+        var numDisSD;
+        var numDisRD;
 
         numDisSR = Number($scope.planForward.output.disSR);
         numDisPR = Number($scope.planForward.output.disPR);
@@ -635,12 +575,12 @@ forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($sc
 
     $scope.reRunSoc = function () {
 
-        var numSocSR = 0;
-        var numSocPR = 0;
-        var numSocAS = 0;
-        var numSocAR = 0;
-        var numSocSD = 0;
-        var numSocRD = 0;
+        var numSocSR;
+        var numSocPR;
+        var numSocAS;
+        var numSocAR;
+        var numSocSD;
+        var numSocRD;
 
         numSocSR = Number($scope.planForward.output.socSR);
         numSocPR = Number($scope.planForward.output.socPR);
@@ -660,9 +600,9 @@ forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($sc
         var numAffSR;
         var numAffPR;
         var numAffAS;
-        var numAffAR = 0;
-        var numAffSD = 0;
-        var numAffRD = 0;
+        var numAffAR;
+        var numAffSD;
+        var numAffRD;
 
         numAffSR = Number($scope.planForward.output.affSR);
         numAffPR = Number($scope.planForward.output.affPR);
@@ -679,12 +619,12 @@ forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($sc
 
     $scope.reRunPar = function () {
 
-        var numParSR = 0;
-        var numParPR = 0;
-        var numParAS = 0;
-        var numParAR = 0;
-        var numParSD = 0;
-        var numParRD = 0;
+        var numParSR;
+        var numParPR;
+        var numParAS;
+        var numParAR;
+        var numParSD;
+        var numParRD;
 
         numParSR = Number($scope.planForward.output.parSR);
         numParPR = Number($scope.planForward.output.parPR);
@@ -698,7 +638,7 @@ forward.controller('forwardOutputCtrl', ['$scope','forwardManager',function ($sc
         $scope.planForward.output.parSD = numParSD;
         $scope.planForward.output.parRD = numParRD;
     };
-    $scope.compareChart.config = {
+    $scope.compareChartConfig = {
         width: 800,
         height: 313,
         margin: {left: 100, top: 0, right: 100, bottom: 30}
