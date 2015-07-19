@@ -1,55 +1,23 @@
 /**
  * Created by l.li on 7/16/15.
  */
-var express = require('express');
-var router = express.Router();
-var fs = require('fs');
+var express = require('express').Router();
+var requestCount = 0;
 
+router.post('/planforward', function (req, res) {
+    res.send('55ab282fce84683817469e03');
+});
 
-
-// init the file changed variable as false
-var tmpFileCheck = false;
-
-    //  first step  Algorithm = 1    *****init ****** start ******
-	router.post('/planforwardInitial', function(req, res) {
-        //read dummy_data output folder
-       res.send(JSON.parse(fs.readFileSync('dummy_data/output/input_temp.json', 'utf-8')));
-    });
-
-    //  first step  Algorithm = 1    *****init ****** end ******
-
-    //  second step  Algorithm = 2    ****** run ****** start *****
-
-    //  using post method to get the data and let R run 
-    router.post('/sendR', function(req, res){
-       // response the sendR post request 
-        res.send({post:"ture"});
-
-        setTimeout(function(){
-            tmpFileCheck = true;
-        },1000*10);
-        
-    });
-
-    // using get method to get the global variable tmpFileCheck to check the input_temp file change
-    router.post('/testGet', function(req, res) {
-        var data;
-        var data = {'test':false, 'outputData':{}};
-        if(tmpFileCheck){
-            data.test = true;
-            data.outputData = res.send(JSON.parse(fs.readFileSync('dummy_data/output/input_temp_run.json', 'utf-8')));
-            //init as defult
-            tmpFileCheck = false;
+// using get method to  check the file change
+router.get('/:objectId', function (req, res) {
+    if(req.params.objectId === '55ab282fce84683817469e03'){
+        requestCount++;
+        if(requestCount%10 ===0){
+            res.send({"AlgDuration":"6.876079 mins","AlgEndingTime":"2015-07-14 21:56:12","AlgStartingTime":"2015-07-14 21:49:19","Algorithm":"2","Brand":"Shutterfly","EndingTime":"2013-11","PlanMonths":"1","Spend":"6420305","SpendLB":"NULL","SpendUB":"NULL","StartingTime":"2013-11","UserName":"","__v":0,"_id":{"$oid":"55a7872121610f5810fc8244"},"affAR":"3803679","affAS":"335661","affLB":"43930","affMax":"","affMin":"197934","affPR":"3803679","affSF":"1.0","affSR":"335661","affSlide":"335661","affSlideDivMax":"1087494","affSlideDivMin":"43930","affSlideLeft":"43930","affSlideRight":"1087494","affUB":"1087494","dirSpendM1":"10125936","dirSpendM2":"","dirSpendM3":"","disAR":"8243110","disAS":"1343700","disLB":"320915","disMax":"","disMin":"1343700","disPR":"8243110","disSF":"1.0","disSR":"1343700","disSlide":"1343700","disSlideDivMax":"4068865","disSlideDivMin":"320915","disSlideLeft":"320915","disSlideRight":"4068865","disUB":"4068865","lmTouch":"Last Touch","parAR":"5603701","parAS":"986866","parLB":"286440","parMax":"986866","parMin":"986866","parPR":"5603701","parSF":"1.0","parSR":"986866","parSlide":"986866","parSlideDivMax":"4818540","parSlideDivMin":"286440","parSlideLeft":"286440","parSlideRight":"4818540","parUB":"4818540","run1ProjROI":"559%","run1ROIRange":"520%/599%","run1RevRange":"+/- 6%","run2ProjROI":"559%","semAR":"22133272","semAS":"3315269","semBAS":"279865","semBMax":"279865","semBMin":"279865","semBSF":"1.0","semBSR":"279865","semBSlide":"279865","semBSlideDivMax":"2221996","semBSlideDivMin":"59780","semBSlideLeft":"59780","semBSlideRight":"2221996","semBUB":"2221996","semCAS":"2519794","semCLB":"343858","semCMax":"","semCMin":"1661220","semCSF":"1.0","semCSR":"2519794","semCSlide":"2519794","semCSlideDivMax":"10762858","semCSlideDivMin":"343858","semCSlideLeft":"343858","semCSlideRight":"10762858","semCUB":"10762858","semOAS":"270270","semOLB":"59297","semOMax":"","semOMin":"268576","semOSF":"1.0","semOSR":"270270","semOSlide":"270270","semOSlideDivMax":"1495743","semOSlideDivMin":"59297","semOSlideLeft":"59297","semOSlideRight":"1495743","semOUB":"1495743","semPAS":"245340","semPLB":"72782","semPMax":"","semPMin":"244669","semPR":"22133272","semPSF":"1.0","semPSR":"245340","semPSlide":"245340","semPSlideDivMax":"774325","semPSlideDivMin":"72782","semPSlideLeft":"72782","semPSlideRight":"774325","semPUB":"774325","semSR":"3315269","socAR":"2539846","socAS":"438809","socLB":"59474","socMax":"","socMin":"437474","socPR":"2539846","socSF":"1.0","socSR":"438809","socSlide":"438809","socSlideDivMax":"1167684","socSlideDivMin":"59474","socSlideLeft":"59474","socSlideRight":"1167684","socUB":"1167684","totAR":"42323608","totAS":"6420305","totPR":"42323608","totSR":"6420305","tvBeginDate":"2013-11-04","tvEndDate":"2013-11-30","tvImpressions":"193668000","tvSpend":"1826417"});
         }else{
-            res.json(data); 
+            res.send(false);
         }
-        console.log(data);
-        
-    });
-
-    //  second step  Algorithm = 2    ****** run ****** start *****
-
-
-
+    }
+});
 
 module.exports = router;
