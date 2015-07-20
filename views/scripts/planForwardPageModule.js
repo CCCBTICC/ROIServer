@@ -383,8 +383,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager','$locatio
                     $scope.planForward.output.affAR = "";
                     $scope.planForward.output.parAR = "";
 
-
-
+                    delete  $scope.planForward.output.SpendLB;
+                    delete  $scope.planForward.output.SpendUB;
                 }
             });
         }
