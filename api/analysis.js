@@ -20,7 +20,7 @@ router.post('/planforward', function (req, res) {
         Revenue: data.Revenue,
         ROI: data.ROI
     };
-    if (req.body.data.Algorithm !== 1) {
+    if (data.Algorithm !== 1) {
         req.db.collection("scenarios").insertOne(scenario, function (err, result) {
             res.send(result.ops[0]._id);
         });

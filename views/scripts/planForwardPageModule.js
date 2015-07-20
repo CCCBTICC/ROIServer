@@ -180,7 +180,7 @@ forward.factory('forwardManager', function ($http) {
         $http({
             method: 'post',
             url: url + 'planforward',
-            data: data
+            data: {data:data}
         }).success(function (fileName) {
             Name = fileName;
             console.log(fileName);
@@ -253,7 +253,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         // Attribution
         $scope.planForward.attribution = 'LTA';
         //
-        $scope.planForward.spend = 500000;
+        $scope.planForward.spend = "500000";
         // Calendar
         $scope.today();
         // init data output
