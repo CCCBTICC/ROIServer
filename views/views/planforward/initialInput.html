@@ -51,7 +51,7 @@
                     <div class="input-group">
                         <input id="planForwardBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
                                ng-model="planForward.beginPeriod" is-open="opened.planForwardBeginPeriod" ng-change="modifyEndDate()"
-                               min-date="{{minDate}}" datepicker-options="dateOptions" datepicker-mode="'month'"
+                               min-date="{{minDate}}" max-date="{{maxDate}}" datepicker-options="dateOptions" datepicker-mode="'month'"
                                ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event, 'planForwardBeginPeriod')">
@@ -71,7 +71,7 @@
                     <div class="input-group">
                         <input id="planForwardEndPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
                                ng-model="planForward.endPeriod" is-open="opened.planForwardEndPeriod" ng-change="getLastDate()"
-                               min-date="planForward.beginPeriod" datepicker-options="dateOptions" disabled
+                               min-date="planForward.beginPeriod" max-date="eMaxDate" datepicker-options="dateOptions" disabled
                                datepicker-mode="'month'" ng-required="true" close-text="Close"/>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event, 'planForwardEndPeriod')">

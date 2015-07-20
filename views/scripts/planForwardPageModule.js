@@ -176,6 +176,7 @@ forward.factory('forwardManager', function ($http) {
         });
     };
     var post = function (data, cb) {
+        console.log(data);
         $http({
             method: 'post',
             url: url + 'planforward',
@@ -210,11 +211,15 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         startingDay: 1,
         minMode: 'month'
     };
-    $scope.minDate = new Date('2010', '7', '01');  //adjust the date for the R Algorithm version 1.0
+    $scope.minDate = new Date('2015', '6', '01');
+    $scope.maxDate = new Date('2015', '11', '01');
+
+     //adjust the date for the R Algorithm version 1.0
     $scope.today = function () {
         var date = new Date();
         $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
         $scope.planForward.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(),$scope.planForward.beginPeriod.getMonth()+3,0);
     };
     $scope.open = function ($event, model) {
         $event.preventDefault();
@@ -232,6 +237,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
     };
     $scope.modifyEndDate = function () {
+        $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(),$scope.planForward.beginPeriod.getMonth()+3,0);
         if ($scope.planForward.beginPeriod > $scope.planForward.endPeriod) {
             var d = new Date($scope.planForward.beginPeriod);
             $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
@@ -286,18 +292,23 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         $scope.planForward.init.PlanMonths = length;
 
         $scope.planForward.init.Algorithm = 1;
-
+        //console.log($scope.planForward.init);
         manager.postData($scope.planForward.init, function (res) {
             console.log(res);
         });
     };
 }]);
 
-forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', function ($scope, manager) {
+forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager','$location', function ($scope, manager,location) {
     //initial controller scope
     $scope.planForward = {};
     $scope.planForward.output = {};
 
+    manager.getName(function(name){
+        if(!name){
+            location.path("/planforward/init");
+        }
+    });
     // select plan settings
     $scope.planForward.selectPlan = {};
     $scope.planForward.selectPlan.semTotal = true;
@@ -334,6 +345,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', function
         if ($scope.getJson === false) {
             manager.getData(function (data) {
                 if (data) {
+                    console.log("from init");
+                    console.log(data);
                     $scope.getJson = true;
                     $scope.planForward.output = data;
 
@@ -350,14 +363,28 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', function
                     $scope.planForward.output.semPMax = $scope.planForward.output.semPUB;
                     $scope.planForward.output.semOMin = $scope.planForward.output.semOLB;
                     $scope.planForward.output.semOMax = $scope.planForward.output.semOUB;
-                    $scope.planForward.output.disMin = Number($scope.planForward.output.disLB);
-                    $scope.planForward.output.disMax = Number($scope.planForward.output.disUB);
-                    $scope.planForward.output.socMin = Number($scope.planForward.output.socLB);
-                    $scope.planForward.output.socMax = Number($scope.planForward.output.socUB);
-                    $scope.planForward.output.affMin = Number($scope.planForward.output.affLB);
-                    $scope.planForward.output.affMax = Number($scope.planForward.output.affUB);
-                    $scope.planForward.output.parMin = Number($scope.planForward.output.parLB);
-                    $scope.planForward.output.parMax = Number($scope.planForward.output.parUB);
+                    $scope.planForward.output.disMin = $scope.planForward.output.disLB;
+                    $scope.planForward.output.disMax = $scope.planForward.output.disUB;
+                    $scope.planForward.output.socMin = $scope.planForward.output.socLB;
+                    $scope.planForward.output.socMax = $scope.planForward.output.socUB;
+                    $scope.planForward.output.affMin = $scope.planForward.output.affLB;
+                    $scope.planForward.output.affMax = $scope.planForward.output.affUB;
+                    $scope.planForward.output.parMin = $scope.planForward.output.parLB;
+                    $scope.planForward.output.parMax = $scope.planForward.output.parUB;
+
+                    $scope.planForward.output.semPR = "";
+                    $scope.planForward.output.disPR = "";
+                    $scope.planForward.output.socPR = "";
+                    $scope.planForward.output.affPR = "";
+                    $scope.planForward.output.parPR = "";
+                    $scope.planForward.output.semAR = "";
+                    $scope.planForward.output.disAR = "";
+                    $scope.planForward.output.socAR = "";
+                    $scope.planForward.output.affAR = "";
+                    $scope.planForward.output.parAR = "";
+
+
+
                 }
             });
         }
@@ -379,12 +406,17 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', function
     };
 }]);
 
-forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', function ($scope, manager) {
+forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager','$location', function ($scope, manager,location) {
     //init controller scope
     $scope.planForward = {};
     $scope.planForward.output = {};
     $scope.planForward.input = {};
 
+    manager.getName(function(name){
+        if(!name){
+            location.path("/planforward/init");
+        }
+    });
     //get the initial Data from the server side
     var count;
     $scope.getJson = false;
@@ -447,7 +479,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', function ($
     }
 
     $scope.ReRun = function () {
-
+        $scope.planForward.output.Algorithm = 3;
         manager.postData($scope.planForward.output, function (res) {
             console.log(res);
             var count;

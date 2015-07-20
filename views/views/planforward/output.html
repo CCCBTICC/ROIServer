@@ -8,7 +8,10 @@
             <li>Output</li>
         </ol>
     </div>
-    <div class="row">
+    <div style="height: 400px" ng-hide="getJson">
+        <h1>WAITING PATIENTLY!!<br> THIS IS NOT AN ERROR!</h1>
+    </div>
+    <div class="row" ng-show="getJson">
         <div class="well well-sm"><label>Scenario ID:</label>{{planForward.output.ScenarioID}}<br>
             <label>Brand</label>: {{planForward.output.Brand}}
             <label>Attribution</label>: {{planForward.output.lmTouch}}
@@ -17,7 +20,7 @@
             <label>Portfolio Spend </label>: {{planForward.output.Spend | formatCurrency}}
         </div>
     </div>
-    <div class="row">
+    <div class="row" ng-show="getJson">
         <div class="{{planforwardContentSize}}">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-condensed roi-table">
