@@ -2,7 +2,7 @@
  * Created by ypling on 5/11/15.
  */
 var scenariosApp = angular.module("ROIClientApp")
-    .controller("scenariosCtrl", function ($scope, $location,$http,actionObjInfo) {
+    .controller("scenariosCtrl", function ($scope, $location,$http,actionObjInfo,forwardManager) {
         //vars
         var viewNames = ['list', 'export', 'retrieve', 'share'];
 
@@ -17,6 +17,16 @@ var scenariosApp = angular.module("ROIClientApp")
             return result;
         }
 
+        function getSelectedId(arr){
+            var id=0;
+            arr.forEach(function(obj){
+                if(obj.isActive){
+                    id = obj._id
+                }
+            });
+            return id;
+        }
+
         //scope vars
         $scope.operations = {
             compare: {disable: true},
@@ -28,7 +38,7 @@ var scenariosApp = angular.module("ROIClientApp")
 
         $scope.scenarios = [];
         
-        $http.get('api/scenariosList').success(function (data){
+        $http.get('scenarios/List').success(function (data){
             
             //console.log(data[0]._id);
             /*
@@ -219,6 +229,12 @@ var scenariosApp = angular.module("ROIClientApp")
 
         $scope.switchToView = function (viewName) {
             $location.path("myscenarios/" + viewName);
+        };
+
+        $scope.retrive = function(){
+          var objectId = getSelectedId($scope.scenarios);
+            forwardManager.setName(objectId);
+            $location.path('planforward/output');
         };
 
         //var actionObjInfo = [];

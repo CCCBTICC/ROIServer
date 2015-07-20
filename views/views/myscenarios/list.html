@@ -42,6 +42,10 @@
     <!--end table view-->
     <!--button bar-->
     <div class="row">
-            <span class="btn btn-orange" ng-class="{'disabled':operation.disable}" ng-click="switchToView(key)" ng-repeat="(key,operation) in operations">{{key}}</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}" ng-click="switchToView('compare')">compare</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="switchToView('delete')">delete</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" ng-click="switchToView('export')">export</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}" ng-click="retrive()">retrieve</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="switchToView('share')">share</span>
     </div>
 </div>
