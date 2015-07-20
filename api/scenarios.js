@@ -8,9 +8,9 @@ var assert = require('assert');
 
 //  the list json data
 router.get('/list', function (req, res) {
-    req.db.collection('scenarios').find({},function(err,result){
+    req.db.collection('scenarios').find().toArray(function(err,result){
         if(!err){
-            res.send({data:result});
+            res.send(result);
         }else{
             res.send({err:err});
         }

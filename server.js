@@ -1,6 +1,5 @@
 var express = require('express');
 var path = require("path");
-var passport = require('passport');
 var flash = require('connect-flash');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -28,7 +27,6 @@ var port = process.env.PORT || 3001;
 
 // configuration ===============================================================
 
-require('./config/passport')(passport); // pass passport for configuration
 
 // set up our express application
 
@@ -38,8 +36,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(session({secret: 'ROIServersessionkey'}));
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(flash());
 app.use(express.static(__dirname + '/views'));
 
