@@ -39,16 +39,15 @@
                     <td class="non-number">{{scenario._id}}</td>
                     <td></td>
                     <td></td>
-                    <td class="non-number">{{scenario.UserName}}</td>
-                    <td></td>
+                    <td class="non-number">{{scenario.Owner}}</td>
+                    <td class="non-number">{{scenario.Final}}</td>
                     <td class="non-number">{{scenario.AlgEndingTime}}</td>
                     <td class="non-number">{{scenario.StartingTime}}</td>
                     <td class="non-number">{{scenario.EndingTime}}</td>
                     <td class="non-number">{{scenario.lmTouch}}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="non-number">{{scenario.HistoryIncluded}}</td>
+                    <td class="non-number">{{scenario.DataThrough}}</td>
+                    <td class="non-number">{{scenario.Share}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -58,7 +57,7 @@
     <!--button bar-->
     <div class="row">
         <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}" ng-click="switchToView('compare')">compare</span>
-        <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="switchToView('delete')">delete</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</span>
         <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" ng-click="switchToView('export')">export</span>
         <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}" ng-click="retrive()">retrieve</span>
         <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="switchToView('share')">share</span>
