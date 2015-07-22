@@ -12,7 +12,7 @@ var scenariosApp = angular.module("ROIClientApp")
             $http({
                 method: 'post',
                 url: scenariosUrl,
-                data: {id: id, action: 'remove'}
+                data: {id:id, action:'remove'}
             }).success(callback);
         };
 
@@ -88,7 +88,6 @@ var scenariosApp = angular.module("ROIClientApp")
                         delete actionObjInfo[i];
                     }
                 }
-                ;
             }
             console.log(actionObjInfo);
 
@@ -118,8 +117,8 @@ var scenariosApp = angular.module("ROIClientApp")
 
         $scope.delete = function () {
             var objectId = getSelectedId($scope.scenarios);
-            scenarioManager.deleteScenario(objectId, function (todo) {
-                console.log('deleted');
+            scenarioManager.deleteScenario(objectId, function (data) {
+                console.log(data);
                 var deleteIndex = -1;
                 $scope.scenarios.forEach(function (obj, index) {
                     if (obj._id === objectId) {
@@ -129,6 +128,29 @@ var scenariosApp = angular.module("ROIClientApp")
                 if(deleteIndex !==-1){
                     console.log(deleteIndex);
                     $scope.scenarios.splice(deleteIndex, 1);
+                    switch (activeCount($scope.scenarios)) {
+                        case 0:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = true;
+                            });
+                            break;
+                        case 1:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key === 'compare');
+                            });
+                            break;
+                        case 2:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key !== 'delete' && key !== 'compare');
+                            });
+                            break;
+                        default:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key !== 'delete');
+                            });
+                            break;
+                    }
+
                 }
             });
         };

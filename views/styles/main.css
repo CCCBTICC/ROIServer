@@ -421,9 +421,15 @@ table.roi-table tr:first-child > th:first-child {
     padding: 5px 0 5px 15px;
     text-align: left;
 }
+table.roi-table tr > th.col-0 {
+    min-width: 30px;
+    max-width: 75px;
+    overflow: hidden;
+}
+
 
 table.roi-table tr > th.col-1 {
-    min-width: 100px;
+    min-width: 70px;
     max-width: 160px;
     overflow: hidden;
 }

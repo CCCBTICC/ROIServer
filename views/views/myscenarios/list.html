@@ -10,44 +10,63 @@
     <!--table view-->
     <div class="row">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover roi-table">
+            <table class="table table-bordered table-hover roi-table table-striped">
                 <thead>
                 <tr>
-                    <th rowspan="2" style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"></th>
-                    <th class="col-1" colspan="3" >Scenarios</th>
-                    <th class="col-1" rowspan="2">Owner</th>
-                    <th class="col-1" rowspan="2">Final?</th>
-                    <th class="col-1" rowspan="2">Create Date</th>
-                    <th class="col-1" rowspan="2">Begin Month</th>
-                    <th class="col-1" rowspan="2">End Month</th>
-                    <th class="col-1" rowspan="2">Attribution Method</th>
-                    <th class="col-1" rowspan="2">History included?</th>
-                    <th class="col-1" rowspan="2">Data Through</th>
-                    <th class="col-1" rowspan="2">Share</th>
-                </tr>
-                <tr>
-                    <th class="col-1">ID</th>
-                    <th class="col-1">Name</th>
-                    <th class="col-1">Note</th>
-
+                    <th style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"></th>
+                    <th class="col-0">ID</th>
+                    <th class="col-2">Name</th>
+                    <th class="col-2">Note</th>
+                    <th class="col-1">Owner</th>
+                    <th class="col-0">Final?</th>
+                    <th class="col-1">Create Date</th>
+                    <th class="col-1">Brand</th>
+                    <th class="col-1">Planned Spend</th>
+                    <th class="col-1">Planning Period</th>
+                    <th class="col-1">Attribution Method</th>
+                    <th class="col-1">Data Through</th>
+                    <th class="col-0">History included?</th>
+                    <th class="col-0">Shared?</th>
+                    <th style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250);"></th>
                 </tr>
                 </thead>
 
                 <tbody>
-                <tr  ng-repeat="scenario in scenarios">
-                    <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"> <input type="checkbox" ng-click="selectRow(scenario)" ng-class="{'active-row':scenario.isActive}">   </td>
-                    <td class="non-number">{{scenario._id}}</td>
-                    <td></td>
-                    <td></td>
+                <tr >
+                    <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"><input type="checkbox"></td>
+                    <td class="non-number"><div style="width:4em;overflow: hidden;text-overflow:ellipsis">55adcf318e5180d4242e79d1</div></td>
+                    <td class="non-number">SFLY-May-2015-Optimized</td>
+                    <td class="non-number"><div style="width:20em;overflow: hidden;text-overflow:ellipsis">this is the first scenario with Spend and no constraints and using MTA as attribution method</div></td>
+                    <td class="non-number">Mike</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">2015-07-21</td>
+                    <td class="non-number">Shutterfly</td>
+                    <td class="non-number">{{5000000| formatCurrency}}</td>
+                    <td class="non-number">2014-09 2014-10</td>
+                    <td class="non-number">Last Touch</td>
+                    <td class="non-number">2014-06</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">No</td>
+                    <th style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); "></th>
+                </tr>
+                <tr ng-repeat="scenario in scenarios"  ng-click="selectRow(scenario)">
+                    <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);">
+                        <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
+                    </td>
+                    <td class="non-number"><div style="width:5em;overflow: hidden;text-overflow:ellipsis">{{scenario._id}}</div></td>
+                    <td>{{scenario.Name}}</td>
+                    <td>{{scenario.Note}}</td>
                     <td class="non-number">{{scenario.Owner}}</td>
-                    <td class="non-number">{{scenario.Final}}</td>
+                    <td class="non-number">No</td>
                     <td class="non-number">{{scenario.AlgEndingTime}}</td>
-                    <td class="non-number">{{scenario.StartingTime}}</td>
-                    <td class="non-number">{{scenario.EndingTime}}</td>
+                    <td class="non-number">{{scenario.Brand}}</td>
+                    <td class="non-number">{{scenario.Spend | formatCurrency}}</td>
+                    <td class="non-number">{{scenario.StartingTime}}-{{scenario.EndingTime}}</td>
                     <td class="non-number">{{scenario.lmTouch}}</td>
-                    <td class="non-number">{{scenario.HistoryIncluded}}</td>
                     <td class="non-number">{{scenario.DataThrough}}</td>
+                    <td class="non-number">No</td>
                     <td class="non-number">{{scenario.Share}}</td>
+                    <th style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250);"></th>
                 </tr>
                 </tbody>
             </table>
@@ -56,10 +75,13 @@
     <!--end table view-->
     <!--button bar-->
     <div class="row">
-        <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}" ng-click="switchToView('compare')">compare</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}"
+              ng-click="switchToView('compare')">compare</span>
         <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</span>
-        <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" ng-click="switchToView('export')">export</span>
-        <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}" ng-click="retrive()">retrieve</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}"
+              ng-click="switchToView('export')">export</span>
+        <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}"
+              ng-click="retrive()">retrieve</span>
         <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="switchToView('share')">share</span>
     </div>
 </div>

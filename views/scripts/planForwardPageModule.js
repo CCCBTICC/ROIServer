@@ -262,7 +262,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         $scope.planForward.spend = "500000";
         // Calendar
         $scope.today();
-        // init data output
+        // init data
         $scope.planForward.init = {};
 
 

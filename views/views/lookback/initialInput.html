@@ -1,0 +1,94 @@
+<div class="container-fluid" id="Initial Input">
+    <div class="row">
+        <ol class="breadcrumb path path-lookback">
+            <li><a href="#/">Home</a></li>
+            <li>Look Back</li>
+            <li>Initial Input</li>
+        </ol>
+    </div>
+    <div class="row">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">Brand:</label>
+                <label class="col-sm-4">
+                    <select id="lookBackBrand" class="form-control" ng-model="lookBack.brand" ng-options="b for b in brands"></select>
+                </label>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{brandTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackAttribution" class="col-sm-3 control-label">Attribution:</label>
+
+                <div class="col-sm-4" id="lookBackAttribution">
+
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="lookBack.attribution" value="LTA">LTA
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="lookBack.attribution" value="MTA">MTA
+                    </label>
+                    <!--
+                    <label class="btn btn-default" ng-model="lookBack.attribution" btn-radio="'LTA'" uncheckable>
+                        LTA
+                    </label>
+                    <label class="btn btn-default" ng-model="lookBack.attribution" btn-radio="'MTA'" uncheckable>
+                        MTA
+                    </label>
+                    -->
+
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{attrTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackBeginPeriod" class="col-sm-3 control-label">Begin Period:</label>
+
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input id="lookBackBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
+                               ng-model="lookBack.beginPeriod" is-open="opened.lookBackBeginPeriod"
+                               datepicker-options="dateOptions" datepicker-mode="'month'" max-date="{{maxDate}}"
+                               ng-required="true" close-text="Close" disabled>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"
+                                    ng-click="open($event, 'lookBackBeginPeriod')">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{beginPeriodTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackEndPeriod" class="col-sm-3 control-label">End Period:</label>
+
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input id="lookBackEndPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
+                               ng-model="lookBack.endPeriod" is-open="opened.lookBackEndPeriod" ng-change="getLastDate()"
+                               min-date="lookBack.beginPeriod" datepicker-options="dateOptions"
+                               datepicker-mode="'month'" disabled max-date="{{maxDate}}" ng-required="true" close-text="Close">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event, 'lookBackEndPeriod')">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{endPeriodTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5 col-sm-offset-3">
+                    <a type="button" class="btn btn-default" href="#/lookback/add" ng-click="nextPage()">Next
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

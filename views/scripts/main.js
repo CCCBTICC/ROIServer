@@ -22,9 +22,21 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
                 templateUrl: './views/planforward/save.html',
                 controller: 'forwardSaveCtrl'
             })
-            .when('/lookback', {
-                templateUrl: './views/lookback.html',
-                controller: 'backCtrl'
+            .when('/lookback/init', {
+                templateUrl: './views/lookback/initialInput.html',
+                controller: 'backInitCtrl'
+            })
+            .when('/lookback/add', {
+                templateUrl: './views/lookback/additionalInput.html',
+                controller: 'backAddCtrl'
+            })
+            .when('/lookback/output', {
+                templateUrl: './views/lookback/output.html',
+                controller: 'backOutputCtrl'
+            })
+            .when('/lookback/save', {
+                templateUrl: './views/lookback/save.html',
+                controller: 'backSaveCtrl'
             })
             .when('/myscenarios', {
                 templateUrl: './views/myscenarios/list.html',
