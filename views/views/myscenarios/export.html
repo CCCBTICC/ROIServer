@@ -16,7 +16,7 @@
 
             <div class="col-sm-4">
                 <div class="well well-sm">
-                    SFLY-May2015-LTA-X-O-001-R1
+                    SFLY-May2015-LTA-X-O-001-R1{{scenario._id+1}}
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
 
             <div class="col-sm-4">
                 <div class="well well-sm">
-                    SFLY May 2015 Optimized
+                    SFLY May 2015 Optimized{{scenario.Name+1}}
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
 
             <div class="col-sm-4">
                 <div class="well well-sm">
-                    This is the first scenario with Spend and no constraints and using MTA as attribution method
+                    This is the first scenario with Spend and no constraints and using MTA as attribution method{{scenario.Note+1}}
                 </div>
             </div>
         </div>
@@ -46,7 +46,7 @@
 
             <div class="col-sm-4">
                 <label>
-                    <input class="form-control">
+                    <input class="form-control" ng-model="fileName">
                 </label>
             </div>
             <div class="col-sm-1 help-info">
@@ -70,7 +70,7 @@
         <!--button export and cancel-->
         <div class="form-group">
             <div class="col-xs-offset-0 col-sm-2 col-sm-offset-2">
-                <button type="button" class="btn btn-default">Export</button>
+                <a type="button" class="btn btn-default" ng-click="dataExport()" download="{{fileName}}.csv">Export</a>
             </div>
             <div class="col-sm-2">
                 <a href="#myscenarios"><button type="button" class="btn btn-default">Cancel</button></a>

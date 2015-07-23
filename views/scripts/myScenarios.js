@@ -3,8 +3,9 @@
  */
 var scenariosApp = angular.module("ROIClientApp")
     .factory('scenarioManager', function ($http) {
-        var scenariosUrl = "http://localhost:3001/scenarios";
+        var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
         var scenarios = [];
+        var selectedscenario = {};
         var get = function (callback) {
             $http.get(scenariosUrl + '/list').success(callback);
         };
@@ -12,18 +13,26 @@ var scenariosApp = angular.module("ROIClientApp")
             $http({
                 method: 'post',
                 url: scenariosUrl,
-                data: {id:id, action:'remove'}
+                data: {id: id, action: 'remove'}
             }).success(callback);
         };
 
         return {
             getScenarios: get,
+            setSelectedScenario: function (scenario) {
+                selectedscenario = scenario;
+                console.log(selectedscenario);
+            },
+            getSelectedScenario: function (cb) {
+
+                cb(selectedscenario);
+            },
             getUsers: function () {
             },
+
             deleteScenario: post
         }
-    }
-)
+    })
     .controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, forwardManager, scenarioManager) {
         //vars
         var viewNames = ['list', 'export', 'retrieve', 'share'];
@@ -55,20 +64,34 @@ var scenariosApp = angular.module("ROIClientApp")
             delete: {disable: true},
             export: {disable: true},
             retrieve: {disable: true},
-            share: {disable: true}
+            share: {disable: true},
+            edit:{disable:true}
         };
 
         $scope.scenarios = [];
 
         scenarioManager.getScenarios(function (data) {
             $scope.scenarios = data;
+
         });
 
 
         $scope.switchToView = function (viewName) {
             $location.path("myscenarios/" + viewName);
         };
+        $scope.export = function () {
 
+            var objectId = getSelectedId($scope.scenarios);
+            forwardManager.setName(objectId);
+
+            var exportIndex = -1;
+            $scope.scenarios.forEach(function (obj, index) {
+                if (obj._id === objectId) {
+                    exportIndex = index;
+                }
+            });
+            scenarioManager.setSelectedScenario($scope.scenarios[exportIndex]);
+        };
         $scope.retrive = function () {
             var objectId = getSelectedId($scope.scenarios);
             forwardManager.setName(objectId);
@@ -104,12 +127,12 @@ var scenariosApp = angular.module("ROIClientApp")
                     break;
                 case 2:
                     Object.keys($scope.operations).forEach(function (key) {
-                        $scope.operations[key].disable = (key !== 'delete' && key !== 'compare');
+                        $scope.operations[key].disable = (key !== 'compare');
                     });
                     break;
                 default:
                     Object.keys($scope.operations).forEach(function (key) {
-                        $scope.operations[key].disable = (key !== 'delete');
+                        $scope.operations[key].disable = true;
                     });
                     break;
             }
@@ -125,7 +148,7 @@ var scenariosApp = angular.module("ROIClientApp")
                         deleteIndex = index;
                     }
                 });
-                if(deleteIndex !==-1){
+                if (deleteIndex !== -1) {
                     console.log(deleteIndex);
                     $scope.scenarios.splice(deleteIndex, 1);
                     switch (activeCount($scope.scenarios)) {
@@ -156,14 +179,44 @@ var scenariosApp = angular.module("ROIClientApp")
         };
         //main
     })
-    .controller("scenariosExportCtrl", function ($scope) {
+    .controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager,$location) {
         //vars
 
         //functions
+        function getCsv(jsonData) {
+            var output = "";
+            var key;
+            for (key in jsonData) {
+                output += '"' + key + '",';
+            }
+            output = output.slice(0, -1) + '\n';
+            for (key in jsonData) {
+                output += '"' + jsonData[key] + '",';
+            }
+            output = output.slice(0, -1) + '\n';
+            return output;
+        }
 
         //scope vars
-
+        $scope.fileName="my";
         //scope functions
+
+        scenarioManager.getSelectedScenario(function (scenario) {
+            $scope.scenario = scenario;
+        });
+        forwardManager.getData(function (data) {
+            console.log(data);
+            $scope.output = getCsv(data);
+            //+ $scope.output
+            $scope.csvContent = encodeURI("data:text/csv;charset=utf-8,"+$scope.output);
+        });
+        $scope.dataExport=function(){
+            var link = document.createElement('a');
+            link.href = 'data:attachment/csv,' + $scope.csvContent;
+            //link.target = '_blank';
+            link.download = $scope.fileName+'.csv';
+            link.click();
+        };
     })
     .controller("scenariosShareCtrl", function ($scope) {
         //vars
@@ -182,6 +235,8 @@ var scenariosApp = angular.module("ROIClientApp")
         //scope vars
 
         //scope functions
+
+
     })
     .controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo) {
         //vars

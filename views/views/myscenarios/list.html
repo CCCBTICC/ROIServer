@@ -6,7 +6,7 @@
             <li>My Scenarios</li>
         </ol>
     </div>
-    <!--end nav bar-->
+    <!--end nav ba-->
     <!--table view-->
     <div class="row">
         <div class="table-responsive">
@@ -31,44 +31,56 @@
                 </tr>
                 </thead>
 
-                <tbody>
-                <tr >
-                    <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"><input type="checkbox"></td>
-                    <td class="non-number"><div style="width:4em;overflow: hidden;text-overflow:ellipsis">55adcf318e5180d4242e79d1</div></td>
-                    <td class="non-number">SFLY-May-2015-Optimized</td>
-                    <td class="non-number"><div style="width:20em;overflow: hidden;text-overflow:ellipsis">this is the first scenario with Spend and no constraints and using MTA as attribution method</div></td>
-                    <td class="non-number">Mike</td>
-                    <td class="non-number">No</td>
-                    <td class="non-number">2015-07-21</td>
-                    <td class="non-number">Shutterfly</td>
-                    <td class="non-number">{{5000000| formatCurrency}}</td>
-                    <td class="non-number">2014-09 2014-10</td>
-                    <td class="non-number">Last Touch</td>
-                    <td class="non-number">2014-06</td>
-                    <td class="non-number">No</td>
-                    <td class="non-number">No</td>
-                    <th style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); "></th>
-                </tr>
-                <tr ng-repeat="scenario in scenarios"  ng-click="selectRow(scenario)">
-                    <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);">
-                        <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
-                    </td>
-                    <td class="non-number"><div style="width:5em;overflow: hidden;text-overflow:ellipsis">{{scenario._id}}</div></td>
-                    <td>{{scenario.Name}}</td>
-                    <td>{{scenario.Note}}</td>
-                    <td class="non-number">{{scenario.Owner}}</td>
-                    <td class="non-number">No</td>
-                    <td class="non-number">{{scenario.AlgEndingTime}}</td>
-                    <td class="non-number">{{scenario.Brand}}</td>
-                    <td class="non-number">{{scenario.Spend | formatCurrency}}</td>
-                    <td class="non-number">{{scenario.StartingTime}}-{{scenario.EndingTime}}</td>
-                    <td class="non-number">{{scenario.lmTouch}}</td>
-                    <td class="non-number">{{scenario.DataThrough}}</td>
-                    <td class="non-number">No</td>
-                    <td class="non-number">{{scenario.Share}}</td>
-                    <th style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250);"></th>
-                </tr>
-                </tbody>
+                    <tbody>
+                    <tr>
+                        <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);">
+                            <input type="checkbox"></td>
+                        <td class="non-number">
+                            <div style="width:4em;overflow: hidden;text-overflow:ellipsis">55adcf318e5180d4242e79d1
+                            </div>
+                        </td>
+                        <td class="non-number">SFLY-May-2015-Optimized</td>
+                        <td class="non-number">
+                            <div style="width:20em;overflow: hidden;text-overflow:ellipsis">this is the first scenario
+                                with
+                                Spend and no constraints and using MTA as attribution method
+                            </div>
+                        </td>
+                        <td class="non-number">Mike</td>
+                        <td class="non-number">No</td>
+                        <td class="non-number">2015-07-21</td>
+                        <td class="non-number">Shutterfly</td>
+                        <td class="non-number">{{5000000| formatCurrency}}</td>
+                        <td class="non-number">2014-09 2014-10</td>
+                        <td class="non-number">Last Touch</td>
+                        <td class="non-number">2014-06</td>
+                        <td class="non-number">No</td>
+                        <td class="non-number">No</td>
+                        <th style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); "></th>
+                    </tr>
+                    <tr ng-repeat="scenario in scenarios" ng-click="selectRow(scenario)">
+                        <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);">
+                            <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
+                        </td>
+                        <td class="non-number">
+                            <div style="width:5em;overflow: hidden;text-overflow:ellipsis">{{scenario._id}}</div>
+                        </td>
+                        <td>{{scenario.Name}}</td>
+                        <td>{{scenario.Note}}</td>
+                        <td class="non-number">{{scenario.Owner}}</td>
+                        <td class="non-number">No</td>
+                        <td class="non-number">{{scenario.AlgEndingTime}}</td>
+                        <td class="non-number">{{scenario.Brand}}</td>
+                        <td class="non-number">{{scenario.Spend | formatCurrency}}</td>
+                        <td class="non-number">{{scenario.StartingTime}}-{{scenario.EndingTime}}</td>
+                        <td class="non-number">{{scenario.lmTouch}}</td>
+                        <td class="non-number">{{scenario.DataThrough}}</td>
+                        <td class="non-number">No</td>
+                        <td class="non-number">{{scenario.Share}}</td>
+                        <th style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250);"></th>
+                    </tr>
+                    </tbody>
+
             </table>
         </div>
     </div>
@@ -77,11 +89,13 @@
     <div class="row">
         <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}"
               ng-click="switchToView('compare')">compare</span>
-        <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</span>
-        <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}"
-              ng-click="switchToView('export')">export</span>
+        <a class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</a>
+        <a class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" href="#myscenarios/export"
+           ng-click="export()">export</a>
         <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}"
               ng-click="retrive()">retrieve</span>
         <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="switchToView('share')">share</span>
+        <a class="btn btn-orange" ng-class="{'disabled':operations.edit.disable}" href=""
+           ng-click="switchToView('edit')">edit</a>
     </div>
 </div>

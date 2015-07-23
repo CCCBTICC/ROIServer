@@ -159,7 +159,7 @@ angular.module("ROIClientApp")
             "run2ProjROI": ""
         };
         var Name = "";
-        var url = "http://localhost:3001/analysis/";
+        var url = "http://"+window.location.hostname+":3001/analysis/";
         var get = function (cb) {
             $http({
                 method: 'get',
