@@ -58,7 +58,7 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
                 templateUrl: './views/lookback/save.html',
                 controller: 'saveLookCtrl'
             })
-            .when('/planforward/save', {
+            .when('/planforward/edit', {
                 templateUrl: './views/planforward/save.html',
                 controller: 'savePlanCtrl'
             })

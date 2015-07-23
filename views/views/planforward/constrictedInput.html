@@ -45,10 +45,10 @@
                                 <input type="checkbox" ng-model="planForward.selectPlan.semTotal" ng-click="totCheck()">
                             </label>
                         </td>
-                        <td>{{planForward.output.semTLB | formatCurrency}}</td>
+                        <td>{{planForward.output.semLB | formatCurrency}}</td>
                         <td>{{planForward.output.semMin | formatCurrency}}</td>
                         <td>{{planForward.output.semMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semTUB | formatCurrency}}</td>
+                        <td>{{planForward.output.semUB | formatCurrency}}</td>
                         <td>{{planForward.output.semBSF}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
@@ -205,7 +205,7 @@
                     <tbody>
                     <tr>
                         <td class="td-title">DM</td>
-                        <td ng-repeat="spend in planForward.ControlChannelsDM">{{spend}}</td>
+                        <td ng-repeat="spend in planForward.ControlChannelsDM">{{spend | formatCurrency}}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -227,10 +227,10 @@
                         <td>{{planForward.output.tvBeginDate}}</td>
                         <td>{{planForward.output.tvEndDate}}</td>
                         <td>
-                           <input type="text" ng-model="planForward.output.tvSpend">
+                           <input type="text" ng-model="planForward.output.tvSpend | formatCurrency">
                             </td>
                         <td>
-                            <input type="text" ng-model="planForward.output.tvImpressions">
+                            <input type="text" ng-model="planForward.output.tvImpressions | formatCurrency">
                             </td>
                     </tr>
                 </table>

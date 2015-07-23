@@ -459,7 +459,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     //initial controller scope
     $scope.planForward = {};
     $scope.planForward.output = {};
-
+    $scope.planForward.ControlChannelsDM = [];
+    $scope.planForward.ControlChannels=[];
     manager.getName(function (name) {
         if (!name) {
             location.path("/planforward/init");
@@ -474,8 +475,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     $scope.planForward.selectPlan.semOthers = true;
     $scope.planForward.selectPlan.display = true;
     $scope.planForward.selectPlan.social = true;
-    $scope.planForward.selectPlan.affiliates = true;
-    $scope.planForward.selectPlan.partners = true;
+    $scope.planForward.selectPlan.affiliates = false;
+    $scope.planForward.selectPlan.partners = false;
     $scope.totCheck = function () {
         if (!$scope.planForward.selectPlan.semTotal) {
             Object.keys($scope.planForward.selectPlan).forEach(function (key) {
@@ -506,8 +507,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                     $scope.planForward.output = data;
 
                     //change type for calculating
-                    $scope.planForward.output.semTLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
-                    $scope.planForward.output.semTUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
+                    $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
+                    $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
                     $scope.planForward.output.semMin = $scope.planForward.output.semTLB;
                     $scope.planForward.output.semMax = $scope.planForward.output.semTUB;
                     $scope.planForward.output.semBMin = $scope.planForward.output.semBLB;
@@ -538,8 +539,36 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                     $scope.planForward.output.affAR = "";
                     $scope.planForward.output.parAR = "";
 
-                    delete  $scope.planForward.output.SpendLB;
-                    delete  $scope.planForward.output.SpendUB;
+                    var b=new Date($scope.planForward.output.StartingTime);
+                     b=new Date(b.getFullYear(), b.getMonth()+1);
+                    console.log(b);
+                    var e=new Date($scope.planForward.output.EndingTime);
+                    e=new Date(e.getFullYear(), e.getMonth()+1);
+                    console.log(e);
+                    while(b<=e){
+                        $scope.planForward.ControlChannels.push(b);
+                        b=new Date(b.getFullYear(), b.getMonth()+1,1);
+                    }
+                    console.log($scope.planForward.ControlChannels);
+                    if($scope.planForward.output.dirSpendM1) {
+                        $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM1);
+                    }
+                    if($scope.planForward.output.dirSpendM2) {
+                        $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM2);
+                    }
+                    if($scope.planForward.output.dirSpendM3) {
+                        $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM3);
+                    }
+                    //if($scope.planForward.output.dirSpendM4) {
+                    //    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM4);
+                    //}
+                    //if($scope.planForward.output.dirSpendM5) {
+                    //    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM5);
+                    //}
+                    //if($scope.planForward.output.dirSpendM6) {
+                    //    $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM6);
+                    //}
+
                 }
             });
         }
