@@ -640,6 +640,19 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                     $scope.planForward.output.parSD = Number($scope.planForward.output.parAS) - Number($scope.planForward.output.parSR);
                     $scope.planForward.output.totSD = Number($scope.planForward.output.totAS) - Number($scope.planForward.output.totSR);
 
+                    $scope.planForward.output.semCSlide=$scope.planForward.output.semCAS;
+                    $scope.planForward.output.semPSlide=$scope.planForward.output.semPAS;
+                    $scope.planForward.output.semBSlide=$scope.planForward.output.semBAS;
+                    $scope.planForward.output.semOSlide=$scope.planForward.output.semOAS;
+
+                    $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide)+Number($scope.planForward.output.semPSlide)+Number($scope.planForward.output.semBSlide)+Number($scope.planForward.output.semOSlide);
+                    $scope.planForward.output.disSlide =  $scope.planForward.output.disAS;
+                    $scope.planForward.output.socSlide =  $scope.planForward.output.socAS;
+                    $scope.planForward.output.affSlide =  $scope.planForward.output.affAS;
+                    $scope.planForward.output.parSlide =  $scope.planForward.output.parAS;
+                    $scope.planForward.output.totSlide =  $scope.planForward.output.totAS;
+
+
                     $scope.compareChart.data = [
                         {title: "SEM", value: Number($scope.planForward.output.semSD)},
                         {title: "Display", value: Number($scope.planForward.output.disSD)},
@@ -675,9 +688,6 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                                 $scope.planForward.output.ScenarioID = name;
                             });
                             //get sum for semTotal's elements
-                            $scope.planForward.output.semAS = Number($scope.planForward.output.semBAS) + Number($scope.planForward.output.semCAS) + Number($scope.planForward.output.semPAS) + Number($scope.planForward.output.semOAS);
-                            $scope.planForward.output.totAS = $scope.planForward.output.semAS + Number($scope.planForward.output.disAS) + Number($scope.planForward.output.affAS) + Number($scope.planForward.output.socAS) + Number($scope.planForward.output.parAS);
-
                             $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
                             $scope.planForward.output.semMin = Number($scope.planForward.output.semBMin) + Number($scope.planForward.output.semCMin) + Number($scope.planForward.output.semPMin) + Number($scope.planForward.output.semOMin);
                             $scope.planForward.output.semMax = Number($scope.planForward.output.semBMax) + Number($scope.planForward.output.semCMax) + Number($scope.planForward.output.semPMax) + Number($scope.planForward.output.semOMax);
@@ -688,21 +698,49 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                             $scope.planForward.output.totMin = Number($scope.planForward.output.semMin) + Number($scope.planForward.output.disMin) + Number($scope.planForward.output.socMin) + Number($scope.planForward.output.affMin) + Number($scope.planForward.output.parMin);
                             $scope.planForward.output.totMax = Number($scope.planForward.output.semMax) + Number($scope.planForward.output.disMax) + Number($scope.planForward.output.socMax) + Number($scope.planForward.output.affMax) + Number($scope.planForward.output.parMax);
                             $scope.planForward.output.totUB = Number($scope.planForward.output.semUB) + Number($scope.planForward.output.disUB) + Number($scope.planForward.output.socUB) + Number($scope.planForward.output.affUB) + Number($scope.planForward.output.parUB);
+                            //reset adjusted spend input
+                            $scope.planForward.output.semBSlide = $scope.planForward.output.semBAS;
+                            $scope.planForward.output.semCSlide = $scope.planForward.output.semCAS;
+                            $scope.planForward.output.semPSlide = $scope.planForward.output.semPAS;
+                            $scope.planForward.output.semOSlide = $scope.planForward.output.semOAS;
+                            $scope.planForward.output.disSlide = $scope.planForward.output.disAS;
+                            $scope.planForward.output.socSlide = $scope.planForward.output.socAS;
+                            $scope.planForward.output.affSlide = $scope.planForward.output.affAS;
+                            $scope.planForward.output.parSlide = $scope.planForward.output.parAS;
 
+                            $scope.planForward.output.semAS = Number($scope.planForward.output.semBAS) + Number($scope.planForward.output.semCAS) + Number($scope.planForward.output.semPAS) + Number($scope.planForward.output.semOAS);
+                            $scope.planForward.output.totAS = $scope.planForward.output.semAS + Number($scope.planForward.output.disAS) + Number($scope.planForward.output.affAS) + Number($scope.planForward.output.socAS) + Number($scope.planForward.output.parAS);
+                            $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide)+Number($scope.planForward.output.semPSlide)+Number($scope.planForward.output.semBSlide)+Number($scope.planForward.output.semOSlide);
+                            $scope.planForward.output.totSlide = $scope.planForward.output.semSlide+Number($scope.planForward.output.disSlide)+Number($scope.planForward.output.socSlide)+Number($scope.planForward.output.affSlide)+Number($scope.planForward.output.parSlide);
+
+                            //compareChart
                             $scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
                             $scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
                             $scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
                             $scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
                             $scope.planForward.output.parSD = Number($scope.planForward.output.parAS) - Number($scope.planForward.output.parSR);
                             $scope.planForward.output.totSD = Number($scope.planForward.output.totAS) - Number($scope.planForward.output.totSR);
-                            // Maybe Useful in the future
-                            //$scope.planForward.output.semRD = Number($scope.planForward.output.semAR) - Number($scope.planForward.output.semPR);
-                            //$scope.planForward.output.disRD = Number($scope.planForward.output.disAR) - Number($scope.planForward.output.disPR);
-                            //$scope.planForward.output.socRD = Number($scope.planForward.output.socAR) - Number($scope.planForward.output.socPR);
-                            //$scope.planForward.output.affRD = Number($scope.planForward.output.affAR) - Number($scope.planForward.output.affPR);
-                            //$scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
-                            //$scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
 
+                            $scope.planForward.output.semRD = Number($scope.planForward.output.semAR) - Number($scope.planForward.output.semPR);
+                            $scope.planForward.output.disRD = Number($scope.planForward.output.disAR) - Number($scope.planForward.output.disPR);
+                            $scope.planForward.output.socRD = Number($scope.planForward.output.socAR) - Number($scope.planForward.output.socPR);
+                            $scope.planForward.output.affRD = Number($scope.planForward.output.affAR) - Number($scope.planForward.output.affPR);
+                            $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
+                            $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
+                            $scope.compareChart = {};
+                            $scope.compareChart.data = [
+                                {title: "SEM", value: $scope.planForward.output.semSD},
+                                {title: "Display", value: $scope.planForward.output.disSD},
+                                {title: "Social", value: $scope.planForward.output.socSD},
+                                {title: "Affiliates", value: $scope.planForward.output.affSD},
+                                {title: "Partners", value: $scope.planForward.output.parSD},
+                                {title: "Portfolio Total", value: $scope.planForward.output.totSD}
+                            ];
+                            $scope.compareChart.config = {
+                                width: 800,
+                                height: 313,
+                                margin: {left: 100, top: 0, right: 100, bottom: 30}
+                            };
                         }
                     });
                 }
@@ -714,17 +752,39 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
 
     };
     $scope.reSet = function () {
-        //AS=SR;
-        $scope.planForward.output.semBAS = $scope.planForward.output.semBSR;
-        $scope.planForward.output.semCAS = $scope.planForward.output.semCSR;
-        $scope.planForward.output.semPAS = $scope.planForward.output.semPSR;
-        $scope.planForward.output.semOAS = $scope.planForward.output.semOSR;
-        $scope.planForward.output.disAS = $scope.planForward.output.disSR;
-        $scope.planForward.output.socAS = $scope.planForward.output.socSR;
-        $scope.planForward.output.affAS = $scope.planForward.output.affSR;
-        $scope.planForward.output.parAS = $scope.planForward.output.parSR;
-    };
+        //Slide=AS;
+        $scope.planForward.output.semBSlide = $scope.planForward.output.semBAS;
+        $scope.planForward.output.semCSlide = $scope.planForward.output.semCAS;
+        $scope.planForward.output.semPSlide = $scope.planForward.output.semPAS;
+        $scope.planForward.output.semOSlide = $scope.planForward.output.semOAS;
+        $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide) + Number($scope.planForward.output.semPSlide) + Number($scope.planForward.output.semBSlide) + Number($scope.planForward.output.semOSlide);
 
+        $scope.planForward.output.disSlide = $scope.planForward.output.disAS;
+        $scope.planForward.output.socSlide = $scope.planForward.output.socAS;
+        $scope.planForward.output.affSlide = $scope.planForward.output.affAS;
+        $scope.planForward.output.parSlide = $scope.planForward.output.parAS;
+        $scope.planForward.output.totSlide = $scope.planForward.output.semSlide + Number($scope.planForward.output.disSlide) + Number($scope.planForward.output.socSlide) + Number($scope.planForward.output.affSlide) + Number($scope.planForward.output.parSlide);
+    };
+    $scope.fix = function () {
+        $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide)+Number($scope.planForward.output.semPSlide)+Number($scope.planForward.output.semBSlide)+Number($scope.planForward.output.semOSlide);
+        $scope.planForward.output.totSlide = $scope.planForward.output.semSlide+Number($scope.planForward.output.disSlide)+Number($scope.planForward.output.socSlide)+Number($scope.planForward.output.affSlide)+Number($scope.planForward.output.parSlide);
+        //$scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
+        //$scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
+        //$scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
+        //$scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
+        //$scope.planForward.output.parSD = Number($scope.planForward.output.parAS) - Number($scope.planForward.output.parSR);
+        //$scope.planForward.output.totSD = Number($scope.planForward.output.totAS) - Number($scope.planForward.output.totSR);
+        //
+        //$scope.compareChart.data = [
+        //    {title: "SEM", value: $scope.planForward.output.semSD},
+        //    {title: "Display", value: $scope.planForward.output.disSD},
+        //    {title: "Social", value: $scope.planForward.output.socSD},
+        //    {title: "Affiliates", value: $scope.planForward.output.affSD},
+        //    {title: "Partners", value: $scope.planForward.output.parSD},
+        //    {title: "Portfolio Total", value: $scope.planForward.output.totSD}
+        //];
+    };
+    //graph Settings
     $scope.showme = false;
     $scope.planforwardContentSize = 'col-sm-12';
     $scope.showGraph = 'Show Graph';
@@ -741,41 +801,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             $scope.showGraph = 'Show Graph';
         }
     };
-
-    $scope.compareChart = {};
-    $scope.compareChart.data = [
-        {title: "SEM", value: $scope.planForward.output.semSD},
-        {title: "Display", value: $scope.planForward.output.disSD},
-        {title: "Social", value: $scope.planForward.output.socSD},
-        {title: "Affiliates", value: $scope.planForward.output.affSD},
-        {title: "Partners", value: $scope.planForward.output.parSD},
-        {title: "Portfolio Total", value: $scope.planForward.output.totSD}
-    ];
-    $scope.fix = function () {
-
-        $scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
-        $scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
-        $scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
-        $scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
-        $scope.planForward.output.parSD = Number($scope.planForward.output.parAS) - Number($scope.planForward.output.parSR);
-        $scope.planForward.output.totSD = Number($scope.planForward.output.totAS) - Number($scope.planForward.output.totSR);
-
-        $scope.compareChart.data = [
-            {title: "SEM", value: $scope.planForward.output.semSD},
-            {title: "Display", value: $scope.planForward.output.disSD},
-            {title: "Social", value: $scope.planForward.output.socSD},
-            {title: "Affiliates", value: $scope.planForward.output.affSD},
-            {title: "Partners", value: $scope.planForward.output.parSD},
-            {title: "Portfolio Total", value: $scope.planForward.output.totSD}
-        ];
-    };
-    //$scope.fix();
-    $scope.compareChart.config = {
-        width: 800,
-        height: 313,
-        margin: {left: 100, top: 0, right: 100, bottom: 30}
-    };
-
+    //pause getrequest
     $scope.$on('$destroy', function () {
         clearInterval(count);
     });

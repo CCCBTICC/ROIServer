@@ -65,10 +65,10 @@
                         <td>{{planForward.output.semMin | formatCurrency}}</td>
                         <td>{{planForward.output.semMax | formatCurrency}}</td>
                         <td>{{planForward.output.semBSF }}</td>
-                        <td>{{planForward.output.semAS}}</td>
+                        <td>{{planForward.output.semSlide}}</td>
                         <td>{{planForward.output.semAR | formatCurrency}}</td>
-                        <td>{{planForward.output.semAS-planForward.output.semSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semAR-planForward.output.semPR | formatCurrency}}</td>
+                        <td>{{planForward.output.semSD | formatCurrency}}</td>
+                        <td>{{planForward.output.semRD | formatCurrency}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM - Brand</td>
@@ -83,12 +83,12 @@
                         <td>{{planForward.output.semBMax | formatCurrency}}</td>
                         <td>{{planForward.output.semBSF}}</td>
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.semBAS" min="planForward.output.semBMin"
+                            <range-input ng-model="planForward.output.semBSlide" min="planForward.output.semBMin"
                                          max="planForward.output.semBMax" ng-change="fix()"></range-input>
                         </td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semBAS-planForward.output.semBSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semBAR-planForward.output.semBPR | formatCurrency}}</td>
+                        <td>{{planForward.output.semBSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM - Card</td>
@@ -103,12 +103,12 @@
                         <td>{{planForward.output.semCMax | formatCurrency}}</td>
                         <td>{{planForward.output.semCSF}}</td>
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.semCAS" min="planForward.output.semCMin"
+                            <range-input ng-model="planForward.output.semCSlide" min="planForward.output.semCMin"
                                          max="planForward.output.semCMax" ng-change="fix()"></range-input>
                         </td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semCAS - planForward.output.semCSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semCAR - planForward.output.semCPR | formatCurrency}}</td>
+                        <td>{{planForward.output.semCSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM - Photobook</td>
@@ -123,12 +123,12 @@
                         <td>{{planForward.output.semPMax | formatCurrency}}</td>
                         <td>{{planForward.output.semPSF}}</td>
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.semPAS" min="planForward.output.semPMin"
+                            <range-input ng-model="planForward.output.semPSlide" min="planForward.output.semPMin"
                                          max="planForward.output.semPMax" ng-change="fix()"></range-input>
                         </td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semPAS- planForward.output.semPSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semPAR- planForward.output.semPPR | formatCurrency}}</td>
+                        <td>{{planForward.output.semPSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM - Others</td>
@@ -143,12 +143,12 @@
                         <td>{{planForward.output.semOMax | formatCurrency}}</td>
                         <td>{{planForward.output.semOSF}}</td>
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.semOAS" min="planForward.output.semOMin"
+                            <range-input ng-model="planForward.output.semOSlide" min="planForward.output.semOMin"
                                          max="planForward.output.semOMax" ng-change="fix()"></range-input>
                         </td>
                         <td class="disabled">-</td>
                         <td>{{planForward.output.semOAS-planForward.output.semOSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semOAR-planForward.output.semOPR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
                     </tr>
                     <tr>
                         <td class="td-title">Display</td>
@@ -163,12 +163,12 @@
                         <td>{{planForward.output.disMax | formatCurrency}}</td>
                         <td>{{planForward.output.disSF}}</td>
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.disAS" min="planForward.output.disMin"
+                            <range-input ng-model="planForward.output.disSlide" min="planForward.output.disMin"
                                          max="planForward.output.disMax" ng-change="fix()"></range-input>
                         </td>
                         <td>{{planForward.output.disAR | formatCurrency}}</td>
-                        <td>{{planForward.output.disAS-planForward.output.disSR | formatCurrency}}</td>
-                        <td>{{planForward.output.disAR-planForward.output.disPR | formatCurrency}}</td>
+                        <td>{{planForward.output.disSD | formatCurrency}}</td>
+                        <td>{{planForward.output.disRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Social(FB)</td>
@@ -183,12 +183,12 @@
                         <td>{{planForward.output.socMax | formatCurrency}}</td>
                         <td>{{planForward.output.socSF}}</td>
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.socAS" min="planForward.output.disMin"
+                            <range-input ng-model="planForward.output.socSlide" min="planForward.output.disMin"
                                          max="planForward.output.disMax" ng-change="fix()"></range-input>
                         </td>
                         <td>{{planForward.output.socAR | formatCurrency}}</td>
-                        <td>{{planForward.output.socAS-planForward.output.socSR | formatCurrency}}</td>
-                        <td>{{planForward.output.socAR-planForward.output.socPR | formatCurrency}}</td>
+                        <td>{{planForward.output.socSD | formatCurrency}}</td>
+                        <td>{{planForward.output.socRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Affiliates</td>
@@ -203,12 +203,12 @@
                         <td>{{planForward.output.affMax | formatCurrency}}</td>
                         <td>{{planForward.output.affSF}}</td>
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.affAS" min="planForward.output.affMin"
+                            <range-input ng-model="planForward.output.affSlide" min="planForward.output.affMin"
                                          max="planForward.output.affMax" ng-change="fix()" planforward="planforward"></range-input>
                         </td>
                         <td>{{planForward.output.affAR | formatCurrency}}</td>
-                        <td>{{planForward.output.affAS-planForward.output.affSR | formatCurrency}}</td>
-                        <td>{{planForward.output.affAR-planForward.output.affPR | formatCurrency}}</td>
+                        <td>{{planForward.output.affSD | formatCurrency}}</td>
+                        <td>{{planForward.output.affRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Partners</td>
@@ -221,14 +221,14 @@
                         <td>{{planForward.output.parPR | formatCurrency}}</td>
                         <td>{{planForward.output.parMin | formatCurrency}}</td>
                         <td>{{planForward.output.parMax | formatCurrency}}</td>
-                        <td>{{planForward.output.parSF}}</td>
+                        <td>{{planForward.output.parSF }}</td>
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.parAS" min="planForward.output.parMin"
+                            <range-input ng-model="planForward.output.parSlide" min="planForward.output.parMin"
                                          max="planForward.output.parMax" fix="fix()"></range-input>
                         </td>
                         <td>{{planForward.output.parAR | formatCurrency}}</td>
-                        <td>{{planForward.output.parAS-planForward.output.parSR | formatCurrency}}</td>
-                        <td>{{planForward.output.parAR-planForward.output.parPR | formatCurrency}}</td>
+                        <td>{{planForward.output.parSD | formatCurrency}}</td>
+                        <td>{{planForward.output.parRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio Total</td>
@@ -242,10 +242,10 @@
                         <td>{{planForward.output.totMin | formatCurrency}}</td>
                         <td>{{planForward.output.totMax | formatCurrency}}</td>
                         <td></td>
-                        <td>{{planForward.output.totAS | formatCurrency}}</td>
+                        <td>{{planForward.output.totSlide | formatCurrency}}</td>
                         <td>{{planForward.output.totAR | formatCurrency}}</td>
-                        <td>{{planForward.output.totAS-planForward.output.totSR | formatCurrency}}</td>
-                        <td>{{planForward.output.totAR-planForward.output.totPR | formatCurrency}}</td>
+                        <td>{{planForward.output.totSD | formatCurrency}}</td>
+                        <td>{{planForward.output.totRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio ROI</td>
