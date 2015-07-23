@@ -30,7 +30,7 @@
 
             <img src="https://cdn.staticsfly.com/img_/ui/sitenav/sfly_logo_header_full.png?v1" alt="" style="margin:0 0 0 3px;" width="135px" height="48px">
 
-            <a class="navbar-brand" href="#/dashboard">ROI Decision Support Tool</a>
+            <a class="navbar-brand" >ROI Decision Support Tool</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -43,8 +43,8 @@
                     </button>
                 </li>
                 <li>
-                    Welcome, <strong>{{users.name}}</strong> |
-                    <small>Last Logged on</small> <strong>{{users.recentlyLoginDate | date: 'MMM dd yy'}}</strong>
+                    Welcome, <strong>{{user.name}}</strong> |
+                    <small>Last Logged on</small> <strong>{{user.recentlyLoginDate | date: 'MMM dd yy'}}</strong>
                 </li>
             </ul>
         </div>
@@ -59,12 +59,12 @@
             <a href="javascript:void(0)" ng-click="slideBarHide = !slideBarHide"><i class="fa fa-arrow-left"></i></a>
             <ul class="nav nav-sidebar">
                 <li>
-                    <a href="#lookback">
+                    <a href="#lookback/init">
                         <span>Look Back</span><img src="img/look.png" alt="">
                     </a>
                 </li>
                 <li>
-                    <a href="#planforward">
+                    <a href="#planforward/init">
                         <span>Plan Forward</span><img src="img/plan.png" alt="">
                     </a>
                 </li>
@@ -81,8 +81,6 @@
     </div>
 </div>
 <!-- End of main content -->
-
-<footer></footer>
 
 <!--Local js Components-->
 <!--<script src="bower_components/jquery/dist/jquery.min.js"></script>-->

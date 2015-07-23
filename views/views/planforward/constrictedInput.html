@@ -1,0 +1,251 @@
+<div class="container-fluid">
+    <div class="row">
+        <ol class="breadcrumb path path-palnforward">
+            <li><a href="#/">Home</a></li>
+            <li>Plan Forward</li>
+            <li><a href="#/planforward/init">Initial Input</a></li>
+            <li>Constraints Input</li>
+        </ol>
+    </div>
+    <div class="waiting" style="height: 400px;" ng-hide="getJson">
+        <h1>WAITING PATIENTLY!!!<br>THIS IS NOT AN ERROR!</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 well well-sm" ng-show="getJson">
+            <label>Brand</label>: {{planForward.output.Brand}}
+            <label>Attribution</label>: {{planForward.output.lmTouch}}
+            <label>Begin Period</label>: {{planForward.output.StartingTime | date: 'MMM-dd-yyyy'}}
+            <label>End Period</label>: {{planForward.output.EndingTime | date: 'MMM-dd-yyyy'}}
+            <label>Portfolio Spend </label>: {{planForward.output.Spend | formatCurrency}}
+        </div>
+    </div>
+    <div class="row" ng-show="getJson">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed roi-table">
+                    <thead>
+                    <tr>
+                        <th class="col-1" rowspan="2">Portfolio Channels</th>
+                        <th class="col-1" rowspan="2">Maintain current Spend?</th>
+                        <th class="col-1" rowspan="2">Lower Bound</th>
+                        <th class="col-2" colspan="2">Spend Constraints</th>
+                        <th class="col-1" rowspan="2">Upper Bound</th>
+                        <th class="col-1" rowspan="2">Scaling Factor</th>
+                    </tr>
+                    <tr>
+                        <th class="col-1">Minimum</th>
+                        <th class="col-1">Maximum</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="td-title" ng-click="hideSemItems = !hideSemItems">SEM Total<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="planForward.selectPlan.semTotal" ng-click="totCheck()">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.semLB | formatCurrency}}</td>
+                        <td>{{planForward.output.semMin | formatCurrency}}</td>
+                        <td>{{planForward.output.semMax | formatCurrency}}</td>
+                        <td>{{planForward.output.semUB | formatCurrency}}</td>
+                        <td>{{planForward.output.semBSF}}</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Brand</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="planForward.selectPlan.semBrand" ng-click="subCheck()">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.semBLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.semBMin" min="planForward.output.semBLB" max="planForward.output.semBMax"></range-input>
+                        </td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.semBMax" min="planForward.output.semBMin" max="planForward.output.semBUB"></range-input>
+                        </td>
+                        <td>{{planForward.output.semBUB | formatCurrency}}</td>
+                        <td>{{planForward.output.semBSF}}</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Card</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="planForward.selectPlan.semCard" ng-click="subCheck()">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.semCLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.semCMin" min="planForward.output.semCLB" max="planForward.output.semCMax"></range-input>
+                        </td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.semCMax" min="planForward.output.semCMin" max="planForward.output.semCUB"></range-input>
+                        </td>
+                        <td>{{planForward.output.semCUB | formatCurrency}}</td>
+                        <td>{{planForward.output.semCSF}}</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Photobook</td>
+                        <td class="check">
+                            <label class="check">
+                                <input type="checkbox" ng-model="planForward.selectPlan.semPhotobook" ng-click="subCheck()">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.semPLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.semPMin" min="planForward.output.semPLB" max="planForward.output.semPMax"></range-input>
+                        </td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.semPMax" min="planForward.output.semPMin" max="planForward.output.semPUB"></range-input>
+                        </td>
+                        <td>{{planForward.output.semPUB | formatCurrency}}</td>
+                        <td>{{planForward.output.semPSF}}</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Others</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="planForward.selectPlan.semOthers" ng-click="subCheck()">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.semOLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.semOMin" min="planForward.output.semOLB" max="planForward.output.semOMax"></range-input>
+                        </td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.semOMax" min="planForward.output.semOMin" max="planForward.output.semOUB"></range-input>
+                        </td>
+                        <td>{{planForward.output.semOUB | formatCurrency}}</td>
+                        <td>{{planForward.output.semOSF}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Display</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="planForward.selectPlan.display">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.disLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.disMin" min="planForward.output.disLB" max="planForward.output.disMax"></range-input>
+                        </td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.disMax" min="planForward.output.disMin" max="planForward.output.disUB"></range-input>
+                        </td>
+                        <td>{{planForward.output.disUB | formatCurrency}}</td>
+                        <td>{{planForward.output.disSF}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Social(FB)</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="planForward.selectPlan.social">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.socLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.socMin" min="planForward.output.socLB" max="planForward.output.socMax"></range-input>
+                        </td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.socMax" min="planForward.output.socMin" max="planForward.output.socUB"></range-input>
+                        </td>
+                        <td>{{planForward.output.socUB | formatCurrency}}</td>
+                        <td>{{planForward.output.socSF}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Affiliates</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="planForward.selectPlan.affiliates">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.affLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.affMin" min="planForward.output.affLB" max="planForward.output.affMax"></range-input>
+                        </td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.affMax" min="planForward.output.affMin" max="planForward.output.affUB"></range-input>
+                        </td>
+                        <td>{{planForward.output.affUB | formatCurrency}}</td>
+                        <td>{{planForward.output.affSF}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Partners</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="planForward.selectPlan.partners">
+                            </label>
+                        </td>
+                        <td>{{planForward.output.parLB | formatCurrency}}</td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.parMin" min="planForward.output.parLB" max="planForward.output.parMax"></range-input>
+                        </td>
+                        <td class="range-input">
+                            <range-input ng-model="planForward.output.parMax" min="planForward.output.parMin" max="planForward.output.parUB"></range-input>
+                        </td>
+                        <td>{{planForward.output.parUB | formatCurrency}}</td>
+                        <td>{{planForward.output.parSF}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="getJson">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed roi-table">
+                    <thead>
+                    <tr>
+                        <th class="col-1">Control Channels</th>
+                        <th ng-repeat="month in planForward.ControlChannels" class="col-1">{{month | date: 'MMM-dd-yyyy'}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="td-title">DM</td>
+                        <td ng-repeat="spend in planForward.ControlChannelsDM">{{spend | formatCurrency}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="getJson">
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed roi-table">
+                    <tr>
+                        <th rowspan="2" class="col-1">TV</th>
+                        <th class="col-1">Begin Date</th>
+                        <th class="col-1">End Date</th>
+                        <th class="col-1">Spend ($)</th>
+                        <th class="col-1">Impressions</th>
+                    </tr>
+                    <tr>
+                        <td>{{planForward.output.tvBeginDate}}</td>
+                        <td>{{planForward.output.tvEndDate}}</td>
+                        <td>
+                           <input type="text" ng-model="planForward.output.tvSpend | formatCurrency">
+                            </td>
+                        <td>
+                            <input type="text" ng-model="planForward.output.tvImpressions | formatCurrency">
+                            </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <form class="form-group form-horizontal">
+            <div class="col-sm-2 col-sm-offset-3">
+                <a href="#/planforward/init" class="btn btn-default">Prev</a>
+            </div>
+            <div class="col-sm-2">
+                <a href="#/planforward/output" class="btn btn-default" ng-click="calculate()">Next</a>
+            </div>
+        </form>
+    </div>
+</div>
+

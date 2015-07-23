@@ -3,14 +3,209 @@
  */
 'use strict';
 angular.module("ROIClientApp")
-    .controller('backCtrl', ['$scope', '$http', '$location', function ($scope, $http, $location) {
+    .factory('backManager', function ($http) {
+        var tempData = {
+            "UserName": "",
+            "Brand": "",
+            "lmTouch": "",
+            "StartingTime": "",
+            "EndingTime": "",
+            "Spend": "",
+            "PlanMonths": "",
+            "Algorithm": "",
+            "AlgStartingTime": "",
+            "AlgEndingTime": "",
+            "AlgDuration": "",
+            "semLB": "",
+            "semCLB": "",
+            "semPLB": "",
+            "semOLB": "",
+            "semBLB": "",
+            "disLB": "",
+            "socLB": "",
+            "affLB": "",
+            "parLB": "",
+            "semMin": "",
+            "semCMin": "",
+            "semPMin": "",
+            "semOMin": "",
+            "semBMin": "",
+            "disMin": "",
+            "socMin": "",
+            "affMin": "",
+            "parMin": "",
+            "semMax": "",
+            "semCMax": "",
+            "semPMax": "",
+            "semOMax": "",
+            "semBMax": "",
+            "disMax": "",
+            "socMax": "",
+            "affMax": "",
+            "parMax": "",
+            "semUB": "",
+            "semCUB": "",
+            "semPUB": "",
+            "semOUB": "",
+            "semBUB": "",
+            "disUB": "",
+            "socUB": "",
+            "affUB": "",
+            "parUB": "",
+            "semSF": "",
+            "semCSF": "",
+            "semPSF": "",
+            "semOSF": "",
+            "semBSF": "",
+            "disSF": "",
+            "socSF": "",
+            "affSF": "",
+            "parSF": "",
+            "dirSpendM1": "",
+            "dirSpendM2": "",
+            "dirSpendM3": "",
+            "tvBeginDate": "",
+            "tvEndDate": "",
+            "tvImpressions": "",
+            "tvSpend": "",
+            "semSR": "",
+            "semCSR": "",
+            "semPSR": "",
+            "semOSR": "",
+            "semBSR": "",
+            "disSR": "",
+            "socSR": "",
+            "affSR": "",
+            "parSR": "",
+            "totSR": "",
+            "semPR": "",
+            "semCPR": "",
+            "semPPR": "",
+            "semOPR": "",
+            "semBPR": "",
+            "disPR": "",
+            "socPR": "",
+            "affPR": "",
+            "parPR": "",
+            "totPR": "",
+            "run1RevRange": "",
+            "run1ProjROI": "",
+            "run1ROIRange": "",
+            "semSlideLeft": "",
+            "semCSlideLeft": "",
+            "semPSlideLeft": "",
+            "semOSlideLeft": "",
+            "semBSlideLeft": "",
+            "disSlideLeft": "",
+            "socSlideLeft": "",
+            "affSlideLeft": "",
+            "parSlideLeft": "",
+            "semSlide": "",
+            "semCSlide": "",
+            "semPSlide": "",
+            "semOSlide": "",
+            "semBSlide": "",
+            "disSlide": "",
+            "socSlide": "",
+            "affSlide": "",
+            "parSlide": "",
+            "semSlideRight": "",
+            "semCSlideRight": "",
+            "semPSlideRight": "",
+            "semOSlideRight": "",
+            "semBSlideRight": "",
+            "disSlideRight": "",
+            "socSlideRight": "",
+            "affSlideRight": "",
+            "parSlideRight": "",
+            "semSlideDivMin": "",
+            "semCSlideDivMin": "",
+            "semPSlideDivMin": "",
+            "semOSlideDivMin": "",
+            "semBSlideDivMin": "",
+            "disSlideDivMin": "",
+            "socSlideDivMin": "",
+            "affSlideDivMin": "",
+            "parSlideDivMin": "",
+            "semSlideDivMax": "",
+            "semCSlideDivMax": "",
+            "semPSlideDivMax": "",
+            "semOSlideDivMax": "",
+            "semBSlideDivMax": "",
+            "disSlideDivMax": "",
+            "socSlideDivMax": "",
+            "affSlideDivMax": "",
+            "parSlideDivMax": "",
+            "semAS": "",
+            "semCAS": "",
+            "semPAS": "",
+            "semOAS": "",
+            "semBAS": "",
+            "disAS": "",
+            "socAS": "",
+            "affAS": "",
+            "parAS": "",
+            "totAS": "",
+            "semAR": "",
+            "semCAR": "",
+            "semPAR": "",
+            "semOAR": "",
+            "semBAR": "",
+            "disAR": "",
+            "socAR": "",
+            "affAR": "",
+            "parAR": "",
+            "totAR": "",
+            "run2ProjROI": ""
+        };
+        var Name = "";
+        var url = "http://"+window.location.hostname+":3001/analysis/";
+        var get = function (cb) {
+            $http({
+                method: 'get',
+                url: url + Name
+            }).success(function (data) {
+                cb(data);
+
+            }).error(function (data) {
+                console.log(data);
+            });
+        };
+        var post = function (data, cb) {
+            $http({
+                method: 'post',
+                url: url + 'planforward',
+                data: {data: data}
+            }).success(function (fileName) {
+                Name = fileName;
+                cb(true);
+            });
+        };
+        return {
+            getTempData: function (cb) {
+                cb(tempData);
+            },
+            setTempData: function (data) {
+                tempData = data;
+            },
+            getData: get,
+            postData: post,
+            getName: function (cb) {
+                cb(Name);
+            },
+            setName: function (fileName) {
+                Name = fileName;
+            }
+        }
+    })
+
+    .controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($scope, manager, user) {
         // tooltips
         $scope.brandTooltips = 'brandTooltips';
         $scope.attrTooltips = 'attrTooltips';
         $scope.beginPeriodTooltips = 'beginPeriodTooltips';
         $scope.endPeriodTooltips = 'endPeriodTooltips';
-        $scope.spendTooltips = 'spendTooltips';
-        $scope.includeTooltips = 'includeTooltips';
+
 
         // Calendar settings
         $scope.opened = {};
@@ -20,9 +215,7 @@ angular.module("ROIClientApp")
             startingDay: 1,
             minMode: 'month'
         };
-        // get json init
-        $scope.getJson = false;
-
+        $scope.maxDate = new Date('2014', '11', '30');
         $scope.today = function () {
             var date = new Date();
             $scope.lookBack.beginPeriod = new Date(date.getFullYear(), date.getMonth() - 1, 1);
@@ -47,146 +240,112 @@ angular.module("ROIClientApp")
             $scope.lookBack.endPeriod = new Date($scope.lookBack.endPeriod);
             $scope.lookBack.endPeriod = new Date($scope.lookBack.endPeriod.getFullYear(), $scope.lookBack.endPeriod.getMonth() + 1, 0);
         };
+        //calendar settings -END-
 
         // init data default
-        $scope.resetForm = function () {
-            // Nav bar
-            $scope.nav = {};
-            $scope.nav.current = 'Initial Input';
-
-            // Data
+        $scope.initForm = function () {
+            console.log('from init');
             $scope.lookBack = {};
 
             // Brand
-            $scope.brands = ['shutterfly'];
+            $scope.brands = ['Shutterfly'];
             $scope.lookBack.brand = $scope.brands[0];
-
             // Attribution
             $scope.lookBack.attribution = 'MTA';
-
-            //
-            $scope.formatInput = function () {
-                $scope.lookBack.spend = ($filter('formatCurrency')($scope.lookBack.spend)).substr(1);
-            };
-
-            // Include data
+            // spend
+            $scope.lookBack.spend = 50000000;
+            // Include data through
             $scope.lookBack.include = true;
-
             // Calendar
             $scope.today();
-
-            // Table
-            $scope.lookBack.input = {};
+            // init input
+            $scope.lookBack.init = {};
         };
-        $scope.resetForm();
+        $scope.initForm();
 
-        // table
-
-        $scope.calculate = function () {
-            $http.get('dummy_data/output/1430764474_63.json').success(function (data) {
+        //get User Info
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
+        // get data template
+        manager.getTempData(function (data) {
+            $scope.lookBack.init = data;
+        });
+        //set tempData
+        $scope.nextPage = function () {
+            console.log('clicked');
+            var length = ($scope.lookBack.endPeriod.getFullYear() - $scope.lookBack.beginPeriod.getFullYear()) * 12 + $scope.lookBack.endPeriod.getMonth() - $scope.lookBack.beginPeriod.getMonth() + 1;
+            // first step input init
+            $scope.lookBack.init.UserName = $scope.user.name;
+            $scope.lookBack.init.Brand = $scope.lookBack.brand;
+            $scope.lookBack.init.lmTouch = $scope.lookBack.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
+            $scope.lookBack.init.StartingTime = $scope.lookBack.beginPeriod;
+            $scope.lookBack.init.EndingTime = $scope.lookBack.endPeriod;
+            $scope.lookBack.init.Spend = $scope.lookBack.spend;
+            $scope.lookBack.init.PlanMonths = length;
+            manager.setTempData($scope.lookBack.init);
+            console.log("data updated");
+        };
+    }])
+    .controller('backAddCtrl', ['$scope', 'backManager', function ($scope, manager) {
+        $scope.lookBack = {};
+        $scope.lookBack.output = {};
+        $scope.spendTooltips = 'spendTooltips';
+        $scope.includeTooltips = 'includeTooltips';
+        manager.getTempData(function (data) {
                 $scope.lookBack.output = data;
-                $scope.lookBack.dataThrough = new Date($scope.lookBack.endPeriod);
-                $scope.lookBack.dataThrough.setMonth($scope.lookBack.include ? $scope.lookBack.endPeriod.getMonth() : $scope.lookBack.endPeriod.getMonth() - 1);
-
-                // set default value of input
-                $scope.lookBack.input.semBSB = Number($scope.lookBack.output.semBLB);
-                $scope.lookBack.input.semCSB = Number($scope.lookBack.output.semCLB);
-                $scope.lookBack.input.semPSB = Number($scope.lookBack.output.semPLB);
-                $scope.lookBack.input.semOSB = Number($scope.lookBack.output.semOLB);
-                $scope.lookBack.input.disSB = Number($scope.lookBack.output.disLB);
-                $scope.lookBack.input.socSB = Number($scope.lookBack.output.socLB);
-                $scope.lookBack.input.affSB = Number($scope.lookBack.output.affLB);
-                $scope.lookBack.input.parSB = Number($scope.lookBack.output.parLB);
-
-                // jump to output page
-                $scope.nav.current = 'Output';
-                
-                $scope.lookBack.input.semTSB = Number($scope.lookBack.input.semBSB) + Number($scope.lookBack.input.semCSB) + Number($scope.lookBack.input.semPSB) + Number($scope.lookBack.input.semOSB);
-                $scope.lookBack.output.semTUB = Number($scope.lookBack.output.semBUB) + Number($scope.lookBack.output.semCUB) + Number($scope.lookBack.output.semPUB) + Number($scope.lookBack.output.semOUB);
-                $scope.lookBack.output.semTLB = Number($scope.lookBack.output.semBLB) + Number($scope.lookBack.output.semCLB) + Number($scope.lookBack.output.semPLB) + Number($scope.lookBack.output.semOLB - 1);
-                $scope.lookBack.output.semTSD = $scope.lookBack.output.semSR - $scope.lookBack.input.semTSB;
-                $scope.lookBack.output.semBSD = $scope.lookBack.output.semBSR - $scope.lookBack.input.semBSB;
-                $scope.lookBack.output.semCSD = $scope.lookBack.output.semCSR - $scope.lookBack.input.semCSB;
-                $scope.lookBack.output.semPSD = $scope.lookBack.output.semPSR - $scope.lookBack.input.semPSB;
-                $scope.lookBack.output.semOSD = $scope.lookBack.output.semOSR - $scope.lookBack.input.semOSB;
-                $scope.lookBack.output.disSD = $scope.lookBack.output.disSR - $scope.lookBack.input.disSB;
-                $scope.lookBack.output.socSD = $scope.lookBack.output.socSR - $scope.lookBack.input.socSB;
-                $scope.lookBack.output.affSD = $scope.lookBack.output.affSR - $scope.lookBack.input.affSB;
-                $scope.lookBack.output.parSD = $scope.lookBack.output.parSR - $scope.lookBack.input.parSB;
-                $scope.lookBack.output.totLB = $scope.lookBack.output.semTLB + Number($scope.lookBack.output.disLB) + Number($scope.lookBack.output.socLB) + Number($scope.lookBack.output.affLB) + Number($scope.lookBack.output.parLB);
-                $scope.lookBack.input.totSB = $scope.lookBack.input.semTSB + Number($scope.lookBack.input.disSB) + Number($scope.lookBack.input.socSB) + Number($scope.lookBack.input.affSB) + Number($scope.lookBack.input.parSB);
-                $scope.lookBack.output.totUB = $scope.lookBack.output.semTUB + Number($scope.lookBack.output.disUB) + Number($scope.lookBack.output.socUB) + Number($scope.lookBack.output.affUB) + Number($scope.lookBack.output.parUB);
-                $scope.lookBack.output.totSD = $scope.lookBack.output.semTSD + $scope.lookBack.output.disSD + $scope.lookBack.output.socSD + $scope.lookBack.output.affSD + $scope.lookBack.output.parSD;
-            });
-        };
-        $scope.save = function () {
-            //$location.path('lookback/save');
-            //console.log('save clicked');
-            var a = {"a":"b"};
-             $http.post('/api/test',a).success(function (data) {
-               var b = JSON.stringify(data);
-                console.log(b);
-            });
-            
-        };
-        
-        /*the test url is /api/test with post method it does 3 steps
-         * we use the saveGet bind on the save btn's ng-click to test 
-         * first is try to connect 
-         * second is happened when the json file changeed
-         * third is post request with a updated data response
-         */
-        var count;
-        $scope.saveGet = function () {
-            //$location.path('lookback/save');
-            console.log($scope.getJson);
-             count = setInterval(doGet,2000);
-             /*
-             setTimeout(function(){
-                console.log("cao");
-                clearInterval(count);
-             }, 1000*60*10);
-            */
-        }
-       function doGet(){
-        console.log("inner");
-            if($scope.getJson === false){
-                   $http.get('/api/testGet').success(function (data) {
-                        console.log(JSON.stringify(data));
-                        console.log(data.test);
-                        if(data.test === true){
-                            $scope.getJson = true;
-                        }
-                    });
+                $scope.lookBack.output.Spend = 5000000;
+                $scope.lookBack.output.included="true";
+                console.log($scope.lookBack.output);
+            }
+        );
+        $scope.run = function () {
+            if($scope.lookBack.output.include){
+                $scope.lookBack.output.dataThrough=$scope.lookBack.output.EndingTime;
             }
             else{
-                clearInterval(count);
-                $http.get('/api/test').success(function (data) {
-                        console.log(JSON.stringify(data));
-                    });                    
+             var d =   new Date($scope.lookBack.output.StartingTime);
+                if (d.getMonth() < 9) {
+                    $scope.lookBack.output.dataThrough = d.getFullYear() + '-0' + (d.getMonth() + 1);
                 }
-            console.log($scope.getJson);
+                else {
+                    $scope.lookBack.output.dataThrough = d.getFullYear() + '-' + (d.getMonth() + 1);
+                }
+            }
+            $scope.lookBack.output.Algorithm = 2;
+            console.log($scope.lookBack.output.Algorithm);
+            manager.postData($scope.lookBack.output, function (result) {
+                console.log(result);
+            });
+        }
+    }])
+    .controller('backOutputCtrl', ['$scope', 'backManager',  function ($scope, manager) {
+        $scope.lookBack={};
+        $scope.lookBack.output={};
+        var count;
+        $scope.getJson = false;
+        count = setInterval(doGet, 1000 * 1); //set frequency
+        function doGet() {
+            if ($scope.getJson === false) {
+                manager.getData(function (data) {
+                    if (data) {
+                        console.log("from init");
+                        console.log(data);
+                        $scope.getJson = true;
+                        $scope.lookBack.output = data;
+
+                    }
+                });
+            }
+            else {
+                clearInterval(count);
+            }
         }
 
-
-
-        $scope.$watch('lookBack', function () {
-            if ($scope.nav.current === 'Output') {
-                $scope.lookBack.input.semTSB = Number($scope.lookBack.input.semBSB) + Number($scope.lookBack.input.semCSB) + Number($scope.lookBack.input.semPSB) + Number($scope.lookBack.input.semOSB);
-                $scope.lookBack.output.semTSD = $scope.lookBack.output.semSR - $scope.lookBack.input.semTSB;
-                $scope.lookBack.output.semBSD = $scope.lookBack.output.semBSR - $scope.lookBack.input.semBSB;
-                $scope.lookBack.output.semCSD = $scope.lookBack.output.semCSR - $scope.lookBack.input.semCSB;
-                $scope.lookBack.output.semPSD = $scope.lookBack.output.semPSR - $scope.lookBack.input.semPSB;
-                $scope.lookBack.output.semOSD = $scope.lookBack.output.semOSR - $scope.lookBack.input.semOSB;
-                $scope.lookBack.output.disSD = $scope.lookBack.output.disSR - $scope.lookBack.input.disSB;
-                $scope.lookBack.output.socSD = $scope.lookBack.output.socSR - $scope.lookBack.input.socSB;
-                $scope.lookBack.output.affSD = $scope.lookBack.output.affSR - $scope.lookBack.input.affSB;
-                $scope.lookBack.output.parSD = $scope.lookBack.output.parSR - $scope.lookBack.input.parSB;
-                $scope.lookBack.input.totSB = $scope.lookBack.input.semTSB + Number($scope.lookBack.input.disSB) + Number($scope.lookBack.input.socSB) + Number($scope.lookBack.input.affSB) + Number($scope.lookBack.input.parSB);
-                $scope.lookBack.output.totSD = $scope.lookBack.output.semTSD + $scope.lookBack.output.disSD + $scope.lookBack.output.socSD + $scope.lookBack.output.affSD + $scope.lookBack.output.parSD;
-            }
-        }, true);
-    }]);
+        $scope.$on('$destroy', function () {
+            clearInterval(count);
+        });
+}]);
 
 
 

@@ -770,7 +770,7 @@ SR[1]= sum(SR[2:5])  #semSR
 
 print(SR)
 
-return(list(SR=SR, OptTotalRevenue=OptTotalRevenue))
+return(SR)
 
 
 }#Run_1_Optimization

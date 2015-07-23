@@ -29,9 +29,9 @@ Type 'q()' to quit R.
 > ################################ Load JSON Data From JSON Input file ######################################################				
 > ###########################################################################################################################	
 > 
-> jsonIOFolder  <- "/home/daviddong/ROI_V2/20150715/ROIServer/R/"
-> rCodeFolder   <- "/home/daviddong/ROI_V2/20150715/ROIServer/R/algorithms"
-> rOutputFolder <- "/home/daviddong/ROI_V2/20150715/ROIServer/R/output"
+> jsonIOFolder  <- "/home/daviddong/ROI_V2/ROIServer20150723/ROIServer/R/"
+> rCodeFolder   <- "/home/daviddong/ROI_V2/ROIServer20150723/ROIServer/R/algorithms"
+> rOutputFolder <- "/home/daviddong/ROI_V2/ROIServer20150723/ROIServer/R/output"
 > 
 > 
 > 
@@ -75,7 +75,7 @@ Loading required package: lubridate
 > inJsonData <- fromJSON(paste(readLines(inJsonFileFullPath), collapse="")) 
 Warning message:
 In readLines(inJsonFileFullPath) :
-  incomplete final line found on '/home/daviddong/ROI_V2/20150715/ROIServer/R/input/input_temp_run.json'
+  incomplete final line found on '/home/daviddong/ROI_V2/ROIServer20150723/ROIServer/R/input/55b140a16b3f57540f9a2e3f.json'
 > outJsonFileFullPath <- paste(jsonIOFolder,"output/",inJsonFile,sep="")
 > inJsonData$Algorithm
 [1] 2
@@ -141,7 +141,7 @@ In readLines(inJsonFileFullPath) :
 > 
 > print(inJsonData[1:8])
 $UserName
-[1] ""
+[1] "mike"
 
 $Brand
 [1] "Shutterfly"
@@ -153,7 +153,7 @@ $StartingTime
 [1] "2015-07"
 
 $PlanMonths
-[1] 1
+[1] "1"
 
 $EndingTime
 [1] "2015-07"

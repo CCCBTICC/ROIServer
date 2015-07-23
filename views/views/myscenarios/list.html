@@ -6,48 +6,203 @@
             <li>My Scenarios</li>
         </ol>
     </div>
-    <!--end nav bar-->
+    <!--end nav ba-->
     <!--table view-->
     <div class="row">
         <div class="table-responsive">
-            <table class="table table-bordered table-hover roi-table">
+            <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                 <thead>
                 <tr>
-                    <th rowspan="2" style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"></th>
-                    <th class="col-1" colspan="3" >Scenarios</th>
+                    <th class="col-1" rowspan="2"></th>
+                    <th class="col-1" rowspan="2">ID</th>
+                    <th class="col-2" rowspan="2">Name</th>
+                    <th class="col-3" rowspan="2">Note</th>
                     <th class="col-1" rowspan="2">Owner</th>
                     <th class="col-1" rowspan="2">Final?</th>
                     <th class="col-1" rowspan="2">Create Date</th>
-                    <th class="col-1" rowspan="2">Begin Month</th>
-                    <th class="col-1" rowspan="2">End Month</th>
+                    <th class="col-1" rowspan="2">Brand</th>
+                    <th class="col-1" rowspan="2">Planned Spend</th>
+                    <th class="col-2" colspan="2">Planning Period</th>
                     <th class="col-1" rowspan="2">Attribution Method</th>
-                    <th class="col-1" rowspan="2">History included?</th>
                     <th class="col-1" rowspan="2">Data Through</th>
-                    <th class="col-1" rowspan="2">Share</th>
+                    <th class="col-1" rowspan="2">History included?</th>
+                    <th class="col-1" rowspan="2">Shared?</th>
                 </tr>
                 <tr>
-                    <th class="col-1">ID</th>
-                    <th class="col-1">Name</th>
-                    <th class="col-1">Note</th>
-                    
+                    <th class="col-1">Start Date</th>
+                    <th class="col-1">End Date</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr  ng-repeat="scenario in scenarios">
-                    <td style="border-bottom: solid rgb(250,250,250); border-top: solid rgb(250,250,250); border-left: solid rgb(250,250,250);"> <input type="checkbox" ng-click="selectRow(scenario)" ng-class="{'active-row':scenario.isActive}">   </td>
+                <tbody class="row-2">
+                <tr>
+                    <td class="check col-1">
+                        <label><input type="checkbox"></label>
+                    </td>
+                    <td class="non-number col-1">1</td>
+                    <td class="non-number col-2">SFLY-May-2015-Optimized</td>
+                    <td class="non-number col-3">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number col-1">Mike</td>
+                    <td class="non-number col-1">No</td>
+                    <td class="non-number col-1">2015-07-21</td>
+                    <td class="non-number col-1">Shutterfly</td>
+                    <td class="non-number col-1">{{5000000| formatCurrency}}</td>
+                    <td class="non-number col-1">2014-09</td>
+                    <td class="non-number col-1">2014-10</td>
+                    <td class="non-number col-1">Last Touch</td>
+                    <td class="non-number col-1">2014-06</td>
+                    <td class="non-number col-1">No</td>
+                    <td class="non-number col-1">No</td>
+                </tr>
+                <tr>
+                    <td class="check">
+                        <label><input type="checkbox"></label>
+                    </td>
+                    <td class="non-number">55</td>
+                    <td class="non-number">SFLY-May-2015-Optimized</td>
+                    <td class="non-number">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number">Mike</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">2015-07-21</td>
+                    <td class="non-number">Shutterfly</td>
+                    <td class="non-number">{{5000000| formatCurrency}}</td>
+                    <td class="non-number">2014-09</td>
+                    <td class="non-number">2014-10</td>
+                    <td class="non-number">Last Touch</td>
+                    <td class="non-number">2014-06</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">No</td>
+                </tr>
+                <tr>
+                    <td class="check">
+                        <label><input type="checkbox"></label>
+                    </td>
+                    <td class="non-number">55</td>
+                    <td class="non-number">SFLY-May-2015-Optimized</td>
+                    <td class="non-number">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number">Mike</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">2015-07-21</td>
+                    <td class="non-number">Shutterfly</td>
+                    <td class="non-number">{{5000000| formatCurrency}}</td>
+                    <td class="non-number">2014-09</td>
+                    <td class="non-number">2014-10</td>
+                    <td class="non-number">Last Touch</td>
+                    <td class="non-number">2014-06</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">No</td>
+                </tr>
+                <tr>
+                    <td class="check">
+                        <label><input type="checkbox"></label>
+                    </td>
+                    <td class="non-number">55</td>
+                    <td class="non-number">SFLY-May-2015-Optimized</td>
+                    <td class="non-number">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number">Mike</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">2015-07-21</td>
+                    <td class="non-number">Shutterfly</td>
+                    <td class="non-number">{{5000000| formatCurrency}}</td>
+                    <td class="non-number">2014-09</td>
+                    <td class="non-number">2014-10</td>
+                    <td class="non-number">Last Touch</td>
+                    <td class="non-number">2014-06</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">No</td>
+                </tr>
+                <tr>
+                    <td class="check">
+                        <label><input type="checkbox"></label>
+                    </td>
+                    <td class="non-number">55</td>
+                    <td class="non-number">SFLY-May-2015-Optimized</td>
+                    <td class="non-number">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number">Mike</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">2015-07-21</td>
+                    <td class="non-number">Shutterfly</td>
+                    <td class="non-number">{{5000000| formatCurrency}}</td>
+                    <td class="non-number">2014-09</td>
+                    <td class="non-number">2014-10</td>
+                    <td class="non-number">Last Touch</td>
+                    <td class="non-number">2014-06</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">No</td>
+                </tr>
+                <tr>
+                    <td class="check">
+                        <label><input type="checkbox"></label>
+                    </td>
+                    <td class="non-number">55</td>
+                    <td class="non-number">SFLY-May-2015-Optimized</td>
+                    <td class="non-number">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number">Mike</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">2015-07-21</td>
+                    <td class="non-number">Shutterfly</td>
+                    <td class="non-number">{{5000000| formatCurrency}}</td>
+                    <td class="non-number">2014-09</td>
+                    <td class="non-number">2014-10</td>
+                    <td class="non-number">Last Touch</td>
+                    <td class="non-number">2014-06</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">No</td>
+                </tr>
+                <tr>
+                    <td class="check">
+                        <label><input type="checkbox"></label>
+                    </td>
+                    <td class="non-number">55</td>
+                    <td class="non-number">SFLY-May-2015-Optimized</td>
+                    <td class="non-number">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number">Mike</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">2015-07-21</td>
+                    <td class="non-number">Shutterfly</td>
+                    <td class="non-number">{{5000000| formatCurrency}}</td>
+                    <td class="non-number">2014-09</td>
+                    <td class="non-number">2014-10</td>
+                    <td class="non-number">Last Touch</td>
+                    <td class="non-number">2014-06</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">No</td>
+                </tr>
+                <tr>
+                    <td class="check">
+                        <label><input type="checkbox"></label>
+                    </td>
+                    <td class="non-number">55</td>
+                    <td class="non-number">SFLY-May-2015-Optimized</td>
+                    <td class="non-number">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number">Mike</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">2015-07-21</td>
+                    <td class="non-number">Shutterfly</td>
+                    <td class="non-number">{{5000000| formatCurrency}}</td>
+                    <td class="non-number">2014-09</td>
+                    <td class="non-number">2014-10</td>
+                    <td class="non-number">Last Touch</td>
+                    <td class="non-number">2014-06</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">No</td>
+                </tr>
+                <tr ng-repeat="scenario in scenarios" ng-click="selectRow(scenario)">
+                    <td class="check">
+                        <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
+                    </td>
                     <td class="non-number">{{scenario._id}}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{scenario.Name}}</td>
+                    <td>{{scenario.Note}}</td>
+                    <td class="non-number">{{scenario.Owner}}</td>
+                    <td class="non-number">No</td>
                     <td class="non-number">{{scenario.AlgEndingTime}}</td>
-                    <td class="non-number">{{scenario.StartingTime}}</td>
-                    <td class="non-number">{{scenario.EndingTime}}</td>
+                    <td class="non-number">{{scenario.Brand}}</td>
+                    <td class="non-number">{{scenario.Spend | formatCurrency}}</td>
+                    <td class="non-number">{{scenario.StartingTime}}-{{scenario.EndingTime}}</td>
                     <td class="non-number">{{scenario.lmTouch}}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="non-number">{{scenario.DataThrough}}</td>
+                    <td class="non-number">No</td>
+                    <td class="non-number">{{scenario.Share}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -56,6 +211,16 @@
     <!--end table view-->
     <!--button bar-->
     <div class="row">
-            <span class="btn btn-orange" ng-class="{'disabled':operation.disable}" ng-click="switchToView(key)" ng-repeat="(key,operation) in operations">{{key}}</span>
+        <div class="controls">
+            <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}"
+                  ng-click="switchToView('compare')">compare</span>
+            <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</span>
+            <!-- todo: href="#myscenarios/export" deleted from tag a, move it to function. -->
+            <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</span>
+            <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}"
+                  ng-click="retrive()">retrieve</span>
+            <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="switchToView('share')">share</span>
+            <span class="btn btn-orange" ng-class="{'disabled':operations.edit.disable}" ng-click="switchToView('edit')">edit</span>
+        </div>
     </div>
 </div>

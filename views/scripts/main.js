@@ -3,16 +3,40 @@
  */
 'use strict';
 
-var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize','CompareChart'])
-    .config(function ($routeProvider, $locationProvider) {
+var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize','CompareChart','forwardModule'])
+    .config(function ($routeProvider) {
         $routeProvider
-            .when('/planforward', {
-                templateUrl: './views/planforward.html',
-                controller: 'forwardCtrl'
+            .when('/planforward/init', {
+                templateUrl: './views/planforward/initialInput.html',
+                controller: 'forwardInitCtrl'
             })
-            .when('/lookback', {
-                templateUrl: './views/lookback.html',
-                controller: 'backCtrl'
+            .when('/planforward/constrict', {
+                templateUrl: './views/planforward/constrictedInput.html',
+                controller: 'forwardConstrictCtrl'
+            })
+            .when('/planforward/output', {
+                templateUrl: './views/planforward/output.html',
+                controller: 'forwardOutputCtrl'
+            })
+            .when('/planforward/save', {
+                templateUrl: './views/planforward/save.html',
+                controller: 'forwardSaveCtrl'
+            })
+            .when('/lookback/init', {
+                templateUrl: './views/lookback/initialInput.html',
+                controller: 'backInitCtrl'
+            })
+            .when('/lookback/add', {
+                templateUrl: './views/lookback/additionalInput.html',
+                controller: 'backAddCtrl'
+            })
+            .when('/lookback/output', {
+                templateUrl: './views/lookback/output.html',
+                controller: 'backOutputCtrl'
+            })
+            .when('/lookback/save', {
+                templateUrl: './views/lookback/save.html',
+                controller: 'backSaveCtrl'
             })
             .when('/myscenarios', {
                 templateUrl: './views/myscenarios/list.html',
@@ -34,7 +58,7 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
                 templateUrl: './views/lookback/save.html',
                 controller: 'saveLookCtrl'
             })
-            .when('/planforward/save', {
+            .when('/planforward/edit', {
                 templateUrl: './views/planforward/save.html',
                 controller: 'savePlanCtrl'
             })
@@ -44,31 +68,18 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
             })
     });
 
+app.controller("indexCtrl", function ($scope,user) {
+    user.getUser(function(user){
+        $scope.user= user;
 
+    });
+    $scope.user.name='mike';
 
-
-
-app.factory('actionObjInfo',function(){
-    var actionObjInfo = [];
-    return actionObjInfo;
-});
-
-app.factory('planforwardSaveInfo',function(){
-    var planforwardSaveInfo = {};
-    return planforwardSaveInfo;
-});
-
-
-app.controller("indexCtrl", function ($scope) {
-    $scope.users = {};
-    $scope.users.name = "Ed";
-    $scope.users.recentlyLoginDate = new Date();
 });
 
 app.controller("savePlanCtrl", function ($scope,$http) {
     console.log('saveCtrl work');
-    //$scope.savePlanForwardId = planforwardSaveInfo.id;
-    $scope.message = "hello";
+
     $scope.savePlanForward = function(){
         var sendData = {};
         $http.post('/scenarios',sendData).success(function(data){
@@ -77,14 +88,13 @@ app.controller("savePlanCtrl", function ($scope,$http) {
     };  
     
 });
-
-
-app.controller("scenariosCompareCtrl", function ($scope,$http,actionObjInfo) {
-    var compareList = {};
-    $http.get('/scenarios/'+actionObjInfo[0]).success(function(data){
-           compareList.first = data;
-    });
-    $http.get('/scenarios/'+actionObjInfo[1]).success(function(data){
-           compareList.second = data;
-    });
+app.factory('user',function(){
+    var user={};
+    user.name="Ed";
+    user.recentlyLoginDate = new Date();
+    return {
+        getUser:function(cb){
+            cb(user)
+        }
+    }
 });

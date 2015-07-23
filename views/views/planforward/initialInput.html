@@ -1,0 +1,106 @@
+<div class="container-fluid">
+    <div class="row">
+        <ol class="breadcrumb path path-palnforward">
+            <li><a href="#/">Home</a></li>
+            <li>Plan Forward</li>
+            <li>Initial Input</li>
+        </ol>
+    </div>
+    <div class="row">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="planForwardBrand" class="col-sm-3 control-label">Brand:</label>
+                <label class="col-sm-4">
+                    <select id="planForwardBrand" class="form-control" ng-model="planForward.brand"
+                            ng-options="b for b in brands">
+                    </select>
+                </label>
+
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{brandTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="planForwardAttribution" class="col-sm-3 control-label">Attribution:</label>
+
+                <div class="col-sm-4" id="planForwardAttribution">
+                    <label class="radio-inline">
+                    <input type="radio" ng-model="planForward.attribution" value="LTA">LTA
+                    </label>
+                    <label class="radio-inline">
+                    <input type="radio" ng-model="planForward.attribution" value="MTA">MTA
+                    </label>
+
+                    <!--
+                    <label class="btn btn-default" ng-model="planForward.attribution" btn-radio="'LTA'" uncheckable>
+                        LTA
+                    </label>
+                    <label class="btn btn-default" ng-model="planForward.attribution" btn-radio="'MTA'" uncheckable>
+                        MTA
+                    </label>
+                    -->
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{attrTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group" id="begin">
+                <label for="planForwardBeginPeriod" class="col-sm-3 control-label">Begin Period:</label>
+
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input id="planForwardBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
+                               ng-model="planForward.beginPeriod" is-open="opened.planForwardBeginPeriod" ng-change="modifyEndDate()"
+                               min-date="{{minDate}}" max-date="{{maxDate}}" datepicker-options="dateOptions" datepicker-mode="'month'"
+                               ng-required="true" close-text="Close" disabled>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event, 'planForwardBeginPeriod')">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{beginPeriodTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group" id="end">
+                <label for="planForwardEndPeriod" class="col-sm-3 control-label">End Period:</label>
+
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input id="planForwardEndPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
+                               ng-model="planForward.endPeriod" is-open="opened.planForwardEndPeriod" ng-change="getLastDate()"
+                               min-date="planForward.beginPeriod" max-date="eMaxDate" datepicker-options="dateOptions" disabled
+                               datepicker-mode="'month'" ng-required="true" close-text="Close"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="open($event, 'planForwardEndPeriod')">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{endPeriodTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group" id="spend">
+                <label for="planForwardSpend" class="col-sm-3 control-label">Portfolio Spend:</label>
+
+                <div class="col-sm-4">
+                    <input class="form-control" id="planForwardSpend" type="text" ng-model="planForward.spend"
+                           format-input>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{spendTooltips}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5 col-sm-offset-3">
+                    <a href="#/planforward/constrict" class="btn btn-default" ng-click="CInput()">Next
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
