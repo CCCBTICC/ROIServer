@@ -11,12 +11,12 @@
     <div class="row">
         <div class="well well-sm">
             <label>Scenario ID:</label>{{lookBack.output.ScenarioID}} <br>
-            <label>Brand</label>: {{lookBack.brand}}
-            <label>Attribution</label>: {{lookBack.attribution}}
-            <label>Begin Period</label>: {{lookBack.beginPeriod | date: 'MMM-dd-yyyy'}}
-            <label>End Period</label>: {{lookBack.endPeriod | date: 'MMM-dd-yyyy'}}
-            <label>Portfolio Spend </label>: {{lookBack.spend | formatCurrency}}
-            <label>Data through</label>: {{lookBack.dataThrough | date: 'MMM-dd-yyyy'}}
+            <label>Brand</label>: {{lookBack.output.Brand}}
+            <label>Attribution</label>: {{lookBack.output.lmTouch}}
+            <label>Begin Period</label>: {{lookBack.output.StartingTime | date: 'MMM-dd-yyyy'}}
+            <label>End Period</label>: {{lookBack.output.EndingTime | date: 'MMM-dd-yyyy'}}
+            <label>Portfolio Spend </label>: {{lookBack.output.Spend | formatCurrency}}
+            <label>Data through</label>: {{lookBack.output.dataThrough | date: 'MMM-dd-yyyy'}}
         </div>
     </div>
     <div class="row">
@@ -27,7 +27,7 @@
                     <tr>
                         <th class="col-1" rowspan="2">Portfolio Channels</th>
                         <th class="col-2" colspan="2">Actuals</th>
-                        <th class="col-4" colspan="4">{{lookBack.beginPeriod | date: 'MMM-dd-yyyy'}} Optimized</th>
+                        <th class="col-4" colspan="4">{{lookBack.output.StartingTime | date: 'MMM-dd-yyyy'}} Optimized</th>
                         <th class="col-2" colspan="2">Difference</th>
                     </tr>
                     <tr>
@@ -190,7 +190,7 @@
         <div class="col-sm-10 col-sm-offset-2">
             <div class="col-sm-3">
                 <div class="btn-group" dropdown>
-                    <button type="button" class="btn btn-default" ng-click="saveGet()">Save</button>
+                    <button type="button" class="btn btn-default" ng-click="saveGet()">Edit</button>
                     <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
                         <span class="caret"></span>
                         <span class="sr-only">Split button!</span>

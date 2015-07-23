@@ -279,18 +279,8 @@ angular.module("ROIClientApp")
             $scope.lookBack.init.UserName = $scope.user.name;
             $scope.lookBack.init.Brand = $scope.lookBack.brand;
             $scope.lookBack.init.lmTouch = $scope.lookBack.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
-            if ($scope.lookBack.beginPeriod.getMonth() < 9) {
-                $scope.lookBack.init.StartingTime = $scope.lookBack.beginPeriod.getFullYear() + '-0' + ($scope.lookBack.beginPeriod.getMonth() + 1);
-            }
-            else {
-                $scope.lookBack.init.StartingTime = $scope.lookBack.beginPeriod.getFullYear() + '-' + ($scope.lookBack.beginPeriod.getMonth() + 1);
-            }
-            if ($scope.lookBack.endPeriod.getMonth() < 9) {
-                $scope.lookBack.init.EndingTime = $scope.lookBack.endPeriod.getFullYear() + '-0' + ($scope.lookBack.endPeriod.getMonth() + 1);
-            }
-            else {
-                $scope.planForward.init.EndingTime = $scope.planForward.endPeriod.getFullYear() + '-' + ($scope.planForward.endPeriod.getMonth() + 1);
-            }
+            $scope.lookBack.init.StartingTime = $scope.lookBack.beginPeriod;
+            $scope.lookBack.init.EndingTime = $scope.lookBack.endPeriod;
             $scope.lookBack.init.Spend = $scope.lookBack.spend;
             $scope.lookBack.init.PlanMonths = length;
             manager.setTempData($scope.lookBack.init);
@@ -306,7 +296,7 @@ angular.module("ROIClientApp")
         manager.getTempData(function (data) {
                 $scope.lookBack.output = data;
                 $scope.lookBack.output.Spend = 5000000;
-                $scope.lookBack.output.included="false";
+                $scope.lookBack.output.included="true";
                 console.log($scope.lookBack.output);
 
             }
@@ -317,13 +307,11 @@ angular.module("ROIClientApp")
             }
             else{
              var d =   new Date($scope.lookBack.output.StartingTime);
-                var d2 = new Date(d.getFullYear(), d.getMonth()-1,0);
-
-                if (d2.getMonth() < 9) {
-                    $scope.lookBack.output.dataThrough = d2.getFullYear() + '-0' + (d2.getMonth() + 1);
+                if (d.getMonth() < 9) {
+                    $scope.lookBack.output.dataThrough = d.getFullYear() + '-0' + (d.getMonth() + 1);
                 }
                 else {
-                    $scope.lookBack.output.dataThrough = d2.getFullYear() + '-' + (d2.getMonth() + 1);
+                    $scope.lookBack.output.dataThrough = d.getFullYear() + '-' + (d.getMonth() + 1);
                 }
             }
             $scope.lookBack.output.Algorithm = 2;
@@ -356,15 +344,9 @@ angular.module("ROIClientApp")
             }
         }
 
-
-
-
-
-
         $scope.$on('$destroy', function () {
             clearInterval(count);
         });
-
 }]);
 
 
