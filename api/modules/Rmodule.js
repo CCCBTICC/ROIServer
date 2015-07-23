@@ -9,7 +9,7 @@ var Rmodule = {
         //write dynimic filename
         fs.writeFile('R/input/' + filename + '.json',JSON.stringify(data));
         //send the generated file to R via commend line 
-        var cmd = 'R CMD BATCH --no-save --no-restore "--args '+ filename + '.json" R/algorithms/RM.R '+ 'R/algorithms/log/' + filename '.Rout';
+        var cmd = 'R CMD BATCH --no-save --no-restore "--args '+ filename + '.json" R/algorithms/RM.R '+ 'R/log/' + filename +'.Rout';
         var exec = require('child_process').exec;
         var last = exec(cmd);
         last.stdout.on('data', function (data) {
