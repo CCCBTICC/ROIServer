@@ -285,7 +285,6 @@ angular.module("ROIClientApp")
             $scope.lookBack.init.PlanMonths = length;
             manager.setTempData($scope.lookBack.init);
             console.log("data updated");
-
         };
     }])
     .controller('backAddCtrl', ['$scope', 'backManager', function ($scope, manager) {
@@ -298,7 +297,6 @@ angular.module("ROIClientApp")
                 $scope.lookBack.output.Spend = 5000000;
                 $scope.lookBack.output.included="true";
                 console.log($scope.lookBack.output);
-
             }
         );
         $scope.run = function () {
