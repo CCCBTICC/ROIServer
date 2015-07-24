@@ -460,7 +460,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     $scope.planForward = {};
     $scope.planForward.output = {};
     $scope.planForward.ControlChannelsDM = [];
-    $scope.planForward.ControlChannels=[];
+    $scope.planForward.ControlChannels = [];
+    $scope.slideError = false;
     manager.getName(function (name) {
         if (!name) {
             location.path("/planforward/init");
@@ -468,17 +469,54 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     });
     // select plan settings
     $scope.planForward.selectPlan = {};
-    $scope.planForward.selectPlan.semTotal = true;
-    $scope.planForward.selectPlan.semBrand = true;
-    $scope.planForward.selectPlan.semCard = true;
-    $scope.planForward.selectPlan.semPhotobook = true;
-    $scope.planForward.selectPlan.semOthers = true;
-    $scope.planForward.selectPlan.display = true;
-    $scope.planForward.selectPlan.social = true;
+    $scope.planForward.semTotal = false;
+    $scope.planForward.selectPlan.semBrand = false;
+    $scope.planForward.selectPlan.semCard = false;
+    $scope.planForward.selectPlan.semPhotobook = false;
+    $scope.planForward.selectPlan.semOthers = false;
+    $scope.planForward.selectPlan.display = false;
+    $scope.planForward.selectPlan.social = false;
     $scope.planForward.selectPlan.affiliates = false;
     $scope.planForward.selectPlan.partners = false;
+    $scope.semTotal = false;
+    $scope.semBrand = false;
+    $scope.semCard = false;
+    $scope.semPhotobook = false;
+    $scope.semOthers = false;
+    $scope.display = false;
+    $scope.social = false;
+    $scope.affiliates = false;
+    $scope.partners = false;
+
+
+    $scope.Count = function () {
+        var count = 0;
+        Object.keys($scope.planForward.selectPlan).forEach(function (key) {
+            if ($scope.planForward.selectPlan[key]) {
+                count++;
+            }
+        });
+        if (count > 5) {
+            Object.keys($scope.planForward.selectPlan).forEach(function (key) {
+                if (!$scope.planForward.selectPlan[key]) {
+                    $scope[key] = true;
+                    $scope.semTotal = true;
+                }
+            });
+        } else {
+            $scope.semTotal = false;
+            $scope.semBrand = false;
+            $scope.semCard = false;
+            $scope.semPhotobook = false;
+            $scope.semOthers = false;
+            $scope.display = false;
+            $scope.social = false;
+            $scope.affiliates = false;
+            $scope.partners = false;
+        }
+    };
     $scope.totCheck = function () {
-        if (!$scope.planForward.selectPlan.semTotal) {
+        if (!$scope.planForward.semTotal) {
             Object.keys($scope.planForward.selectPlan).forEach(function (key) {
                 $scope.planForward.selectPlan[key] = key.toString().indexOf('sem') < 0 ? $scope.planForward.selectPlan[key] : false;
             });
@@ -487,9 +525,11 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                 $scope.planForward.selectPlan[key] = key.toString().indexOf('sem') < 0 ? $scope.planForward.selectPlan[key] : true;
             });
         }
+        $scope.Count();
     };
     $scope.subCheck = function () {
-        $scope.planForward.selectPlan.semTotal = !!($scope.planForward.selectPlan.semBrand && $scope.planForward.selectPlan.semCard && $scope.planForward.selectPlan.semPhotobook && $scope.planForward.selectPlan.semOthers);
+        $scope.planForward.semTotal = !!($scope.planForward.selectPlan.semBrand && $scope.planForward.selectPlan.semCard && $scope.planForward.selectPlan.semPhotobook && $scope.planForward.selectPlan.semOthers);
+        $scope.Count();
     };
     // select plan settings -END-
 
@@ -509,8 +549,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                     //change type for calculating
                     $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
                     $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
-                    $scope.planForward.output.semMin = $scope.planForward.output.semTLB;
-                    $scope.planForward.output.semMax = $scope.planForward.output.semTUB;
+                    $scope.planForward.output.semMin = $scope.planForward.output.semLB;
+                    $scope.planForward.output.semMax = $scope.planForward.output.semUB;
                     $scope.planForward.output.semBMin = $scope.planForward.output.semBLB;
                     $scope.planForward.output.semBMax = $scope.planForward.output.semBUB;
                     $scope.planForward.output.semCMin = $scope.planForward.output.semCLB;
@@ -539,24 +579,24 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                     $scope.planForward.output.affAR = "";
                     $scope.planForward.output.parAR = "";
 
-                    var b=new Date($scope.planForward.output.StartingTime);
-                     b=new Date(b.getFullYear(), b.getMonth()+1);
+                    var b = new Date($scope.planForward.output.StartingTime);
+                    b = new Date(b.getFullYear(), b.getMonth() + 1);
                     console.log(b);
-                    var e=new Date($scope.planForward.output.EndingTime);
-                    e=new Date(e.getFullYear(), e.getMonth()+1);
+                    var e = new Date($scope.planForward.output.EndingTime);
+                    e = new Date(e.getFullYear(), e.getMonth() + 1);
                     console.log(e);
-                    while(b<=e){
+                    while (b <= e) {
                         $scope.planForward.ControlChannels.push(b);
-                        b=new Date(b.getFullYear(), b.getMonth()+1,1);
+                        b = new Date(b.getFullYear(), b.getMonth() + 1, 1);
                     }
                     console.log($scope.planForward.ControlChannels);
-                    if($scope.planForward.output.dirSpendM1) {
+                    if ($scope.planForward.output.dirSpendM1) {
                         $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM1);
                     }
-                    if($scope.planForward.output.dirSpendM2) {
+                    if ($scope.planForward.output.dirSpendM2) {
                         $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM2);
                     }
-                    if($scope.planForward.output.dirSpendM3) {
+                    if ($scope.planForward.output.dirSpendM3) {
                         $scope.planForward.ControlChannelsDM.push($scope.planForward.output.dirSpendM3);
                     }
                     //if($scope.planForward.output.dirSpendM4) {
@@ -578,6 +618,46 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     }
 
     //post data to R and get fileName from serverSide
+    $scope.fix = function () {
+        $scope.planForward.output.semMin =
+            Number($scope.planForward.output.semBMin) +
+            Number($scope.planForward.output.semCMin) +
+            Number($scope.planForward.output.semPMin) +
+            Number($scope.planForward.output.semOMin);
+        var min =
+            Number($scope.planForward.output.semMin) +
+            Number($scope.planForward.output.disMin) +
+            Number($scope.planForward.output.socMin) +
+            Number($scope.planForward.output.affMin) +
+            Number($scope.planForward.output.parMin);
+
+        $scope.planForward.output.semMax =
+            Number($scope.planForward.output.semBMax) +
+            Number($scope.planForward.output.semCMax) +
+            Number($scope.planForward.output.semPMax) +
+            Number($scope.planForward.output.semOMax);
+        var max =
+            Number($scope.planForward.output.semMax) +
+            Number($scope.planForward.output.disMax) +
+            Number($scope.planForward.output.socMax) +
+            Number($scope.planForward.output.affMax) +
+            Number($scope.planForward.output.parMax);
+        console.log(min);
+        console.log(max);
+
+        if (Number($scope.planForward.output.Spend) < min) {
+            $scope.slideError = true;
+            $scope.slideErrorValue = Number($scope.planForward.output.Spend) - min;
+            return;
+        }
+        if (Number($scope.planForward.output.Spend) > max) {
+            console.log("infix")
+            $scope.slideError = true;
+            $scope.slideErrorValue = Number($scope.planForward.output.Spend) - max;
+            return;
+        }
+        $scope.slideError = false;
+    };
     $scope.calculate = function () {
         $scope.planForward.output.Algorithm = 2;
         $scope.planForward.output.AlgStartingTime = "";
@@ -588,17 +668,21 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
             console.log(res);
         });
     };
+
     $scope.$on('$destroy', function () {
         clearInterval(count);
     });
 }]);
 
 forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', function ($scope, manager, location) {
+
+
+
     //init controller scope
     $scope.planForward = {};
     $scope.planForward.output = {};
     $scope.planForward.input = {};
-
+    $scope.slideError = false;
     manager.getName(function (name) {
         if (!name) {
             location.path("/planforward/init");
@@ -631,18 +715,17 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                     $scope.planForward.output.totMax = Number($scope.planForward.output.semMax) + Number($scope.planForward.output.disMax) + Number($scope.planForward.output.socMax) + Number($scope.planForward.output.affMax) + Number($scope.planForward.output.parMax);
                     $scope.planForward.output.totUB = Number($scope.planForward.output.semUB) + Number($scope.planForward.output.disUB) + Number($scope.planForward.output.socUB) + Number($scope.planForward.output.affUB) + Number($scope.planForward.output.parUB);
 
-                    $scope.planForward.output.semCSlide=$scope.planForward.output.semCAS;
-                    $scope.planForward.output.semPSlide=$scope.planForward.output.semPAS;
-                    $scope.planForward.output.semBSlide=$scope.planForward.output.semBAS;
-                    $scope.planForward.output.semOSlide=$scope.planForward.output.semOAS;
+                    $scope.planForward.output.semCSlide = $scope.planForward.output.semCAS;
+                    $scope.planForward.output.semPSlide = $scope.planForward.output.semPAS;
+                    $scope.planForward.output.semBSlide = $scope.planForward.output.semBAS;
+                    $scope.planForward.output.semOSlide = $scope.planForward.output.semOAS;
 
-                    $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide)+Number($scope.planForward.output.semPSlide)+Number($scope.planForward.output.semBSlide)+Number($scope.planForward.output.semOSlide);
-                    $scope.planForward.output.disSlide =  $scope.planForward.output.disAS;
-                    $scope.planForward.output.socSlide =  $scope.planForward.output.socAS;
-                    $scope.planForward.output.affSlide =  $scope.planForward.output.affAS;
-                    $scope.planForward.output.parSlide =  $scope.planForward.output.parAS;
-                    $scope.planForward.output.totSlide = $scope.planForward.output.semSlide+Number($scope.planForward.output.disSlide)+Number($scope.planForward.output.socSlide)+Number($scope.planForward.output.affSlide)+Number($scope.planForward.output.parSlide);
-
+                    $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide) + Number($scope.planForward.output.semPSlide) + Number($scope.planForward.output.semBSlide) + Number($scope.planForward.output.semOSlide);
+                    $scope.planForward.output.disSlide = $scope.planForward.output.disAS;
+                    $scope.planForward.output.socSlide = $scope.planForward.output.socAS;
+                    $scope.planForward.output.affSlide = $scope.planForward.output.affAS;
+                    $scope.planForward.output.parSlide = $scope.planForward.output.parAS;
+                    $scope.planForward.output.totSlide = $scope.planForward.output.semSlide + Number($scope.planForward.output.disSlide) + Number($scope.planForward.output.socSlide) + Number($scope.planForward.output.affSlide) + Number($scope.planForward.output.parSlide);
 
 
                     //compareChart
@@ -683,6 +766,9 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
 
     $scope.ReRun = function () {
         $scope.planForward.output.Algorithm = 3;
+        $scope.planForward.output.AlgStartingTime = "";
+        $scope.planForward.output.AlgEndingTime = "";
+        $scope.planForward.output.AlgDuration = "";
         manager.postData($scope.planForward.output, function (res) {
             console.log(res);
             var count;
@@ -719,8 +805,8 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                             $scope.planForward.output.affSlide = $scope.planForward.output.affAS;
                             $scope.planForward.output.parSlide = $scope.planForward.output.parAS;
 
-                            $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide)+Number($scope.planForward.output.semPSlide)+Number($scope.planForward.output.semBSlide)+Number($scope.planForward.output.semOSlide);
-                            $scope.planForward.output.totSlide = $scope.planForward.output.semSlide+Number($scope.planForward.output.disSlide)+Number($scope.planForward.output.socSlide)+Number($scope.planForward.output.affSlide)+Number($scope.planForward.output.parSlide);
+                            $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide) + Number($scope.planForward.output.semPSlide) + Number($scope.planForward.output.semBSlide) + Number($scope.planForward.output.semOSlide);
+                            $scope.planForward.output.totSlide = $scope.planForward.output.semSlide + Number($scope.planForward.output.disSlide) + Number($scope.planForward.output.socSlide) + Number($scope.planForward.output.affSlide) + Number($scope.planForward.output.parSlide);
 
                             //compareChart
                             $scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
@@ -761,6 +847,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     };
     $scope.reSet = function () {
         //Slide=AS;
+        $scope.slideError = false;
         $scope.planForward.output.semBSlide = $scope.planForward.output.semBAS;
         $scope.planForward.output.semCSlide = $scope.planForward.output.semCAS;
         $scope.planForward.output.semPSlide = $scope.planForward.output.semPAS;
@@ -773,9 +860,10 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
         $scope.planForward.output.parSlide = $scope.planForward.output.parAS;
         $scope.planForward.output.totSlide = $scope.planForward.output.semSlide + Number($scope.planForward.output.disSlide) + Number($scope.planForward.output.socSlide) + Number($scope.planForward.output.affSlide) + Number($scope.planForward.output.parSlide);
     };
+
     $scope.fix = function () {
-        $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide)+Number($scope.planForward.output.semPSlide)+Number($scope.planForward.output.semBSlide)+Number($scope.planForward.output.semOSlide);
-        $scope.planForward.output.totSlide = $scope.planForward.output.semSlide+Number($scope.planForward.output.disSlide)+Number($scope.planForward.output.socSlide)+Number($scope.planForward.output.affSlide)+Number($scope.planForward.output.parSlide);
+        $scope.planForward.output.semSlide = Number($scope.planForward.output.semCSlide) + Number($scope.planForward.output.semPSlide) + Number($scope.planForward.output.semBSlide) + Number($scope.planForward.output.semOSlide);
+        $scope.planForward.output.totSlide = $scope.planForward.output.semSlide + Number($scope.planForward.output.disSlide) + Number($scope.planForward.output.socSlide) + Number($scope.planForward.output.affSlide) + Number($scope.planForward.output.parSlide);
         //$scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
         //$scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
         //$scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
@@ -791,7 +879,73 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
         //    {title: "Partners", value: $scope.planForward.output.parSD},
         //    {title: "Portfolio Total", value: $scope.planForward.output.totSD}
         //];
+        var sldChgFlg = {};
+        sldChgFlg.semCSlide = $scope.planForward.output.semCAS - $scope.planForward.output.semCSlide;
+
+        sldChgFlg.semPSlide = $scope.planForward.output.semPAS - $scope.planForward.output.semPSlide;
+        sldChgFlg.semBSlide = $scope.planForward.output.semBAS - $scope.planForward.output.semBSlide;
+        sldChgFlg.semOSlide = $scope.planForward.output.semOAS - $scope.planForward.output.semOSlide;
+        sldChgFlg.disSlide = $scope.planForward.output.disAS - $scope.planForward.output.disSlide;
+        sldChgFlg.socSlide = $scope.planForward.output.socAS - $scope.planForward.output.socSlide;
+        sldChgFlg.affSlide = $scope.planForward.output.affAS - $scope.planForward.output.affSlide;
+        sldChgFlg.parSlide = $scope.planForward.output.parAS - $scope.planForward.output.parSlide;
+        var min = {};
+        min.semCSlide = $scope.planForward.output.semCMin;
+        min.semPSlide = $scope.planForward.output.semPMin;
+        min.semBSlide = $scope.planForward.output.semBMin;
+        min.semOSlide = $scope.planForward.output.semOMin;
+        min.disSlide = $scope.planForward.output.disMin;
+        min.socSlide = $scope.planForward.output.socMin;
+        min.affSlide = $scope.planForward.output.affMin;
+        min.parSlide = $scope.planForward.output.parMin;
+        var max = {};
+        max.semCSlide = $scope.planForward.output.semCMax;
+        max.semPSlide = $scope.planForward.output.semPMax;
+        max.semBSlide = $scope.planForward.output.semBMax;
+        max.semOSlide = $scope.planForward.output.semOMax;
+        max.disSlide = $scope.planForward.output.disMax;
+        max.socSlide = $scope.planForward.output.socMax;
+        max.affSlide = $scope.planForward.output.affMax;
+        max.parSlide = $scope.planForward.output.parMax;
+
+        function sumValidate() {
+            var sum = 0;
+            var tmp = 0;
+            var sumMax = 0;
+            var tmpMax = 0;
+            Object.keys(sldChgFlg).forEach(function (key) {
+                if (sldChgFlg[key] == 0) {
+                    tmp = min[key];
+                    tmpMax = max[key];
+                } else {
+                    tmp = $scope.planForward.output[key];
+                    tmpMax = tmp;
+                }
+                sum += Number(tmp);
+                sumMax += Number(tmpMax);
+            });
+            if (Number($scope.planForward.output.totSR) < sum) {
+                console.log(sum);
+                $scope.slideError = true;
+                $scope.slideErrorValue = $scope.planForward.output.totSR - sum;
+                return;
+            }
+            if (Number($scope.planForward.output.totSR) > sumMax) {
+                $scope.slideError = true;
+                $scope.slideErrorValue = $scope.planForward.output.totSR - sum;
+                return;
+            }
+            $scope.slideError = false;
+
+
+        }
+
+        sumValidate();
+
+
     };
+
+
     //graph Settings
     $scope.showme = false;
     $scope.planforwardContentSize = 'col-sm-12';

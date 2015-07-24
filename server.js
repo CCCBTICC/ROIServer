@@ -19,7 +19,7 @@ MongoClient.connect(dbURL, function (err, db) {
 });
 
 //require api
-var apiFolderName = 'api';//Todo: Change to 'api' for integration test
+var apiFolderName = 'mockapi';//Todo: Change to 'api' for integration test
 var scenarios = require('./' + apiFolderName + '/scenarios');
 var analysis = require('./' + apiFolderName + '/analysis');
 var app = express();

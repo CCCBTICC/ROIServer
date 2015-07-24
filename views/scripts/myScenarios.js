@@ -91,6 +91,8 @@ var scenariosApp = angular.module("ROIClientApp")
                 }
             });
             scenarioManager.setSelectedScenario($scope.scenarios[exportIndex]);
+            $location.path("myscenarios/export");
+
         };
         $scope.retrive = function () {
             var objectId = getSelectedId($scope.scenarios);

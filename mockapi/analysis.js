@@ -1,14 +1,50 @@
 /**
  * Created by l.li on 7/16/15.
  */
-var router = require('express').Router();
-var requestCount = 0;
+var express = require('express');
+var router = express.Router();
+var fs = require('fs');
+var Rmodule = require('./../api/modules/Rmodule');
+var ObjectId = require('mongodb').ObjectID;
+var requestCount=0;
 
 router.post('/planforward', function (req, res) {
-    res.send('55ab282fce84683817469e03');
+    var data = req.body.data;
+    var objectId = new ObjectId();
+    var scenario = {
+        _id: objectId,
+        AlgStartingTime: data.AlgStartingTime,
+        StartingTime: data.StartingTime,
+        EndingTime: data.EndingTime,
+        lmtouch: data.lmTouch,
+        Spend: data.Spend,
+        Revenue: data.Revenue,
+        Brand:data.Brand,
+        Owner:data.UserName,
+        Name:"",
+        Note:"",
+        Final:"No",
+        DataThrough:data.StartingTime,
+        Share:"No"
+    };
+    if (data.Algorithm !== 1) {
+        req.db.collection("scenarios").insertOne(scenario, function (err, result) {
+            res.send('55ab282fce84683817469e03');
+        });
+    } else {
+        res.send('55ab282fce84683817469e03');
+    }
+    //  use Rmodule.sendRcompute function to write file and use commend line to send file to R
+    console.log('after send');
+    //Rmodule.sendRcompute(objectId, req.body.data);
 });
 
 // using get method to  check the file change
+//router.get('/:objectId', function (req, res) {
+//    var objectId = req.params.objectId;
+//    var result = Rmodule.getRoutput(objectId);
+//    res.send(result);
+//});
 router.get('/:objectId', function (req, res) {
     if(req.params.objectId === '55ab282fce84683817469e03'){
         requestCount++;
@@ -19,5 +55,4 @@ router.get('/:objectId', function (req, res) {
         }
     }
 });
-
 module.exports = router;

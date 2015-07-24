@@ -274,6 +274,7 @@
             <compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>
             <h4 style="text-align:center">(-)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</h4>
         </div>
+        <span ng-show="slideError">{{slideErrorValue | formatCurrency}}</span>
     </div>
     <div class="row table-buttons">
         <div class="col-sm-10 col-sm-offset-2">
@@ -291,7 +292,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-                <button type="button" class="btn btn-default" ng-click="ReRun()">Re-run</button>
+                <button type="button" class="btn btn-default" ng-click="ReRun()" ng-class="{disabled:slideError}">Re-run</button>
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>
