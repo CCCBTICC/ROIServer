@@ -22,14 +22,13 @@ MongoClient.connect(dbURL, function (err, db) {
 var apiFolderName = 'mockapi';//Todo: Change to 'api' for integration test
 var scenarios = require('./' + apiFolderName + '/scenarios');
 var analysis = require('./' + apiFolderName + '/analysis');
+var users = require('./' + apiFolderName + '/users');
 var app = express();
 var port = process.env.PORT || 3001;
 
 // configuration ===============================================================
 
-
 // set up our express application
-
 
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -44,11 +43,9 @@ app.use(function (req, res, next) {
     next();
 });
 
-
-
-
 app.use('/scenarios', scenarios);
 app.use('/analysis', analysis);
+app.use('/users', users);
 
 //=============================route API  user and scenario ======================
 
