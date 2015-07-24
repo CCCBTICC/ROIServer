@@ -8,21 +8,14 @@ var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 
 //  the list json data
-router.get('/list', function (req, res) {
-    req.db.collection('scenarios').find().toArray(function(err,result){
-        if(!err){
-            res.send(result);
-        }else{
-            res.send({err:err});
-        }
-    });
-});
 
 router.post('/', function (req, res) {
-    var resData = "test";
-    //TODO:add switch logic base on reqData.action
-    var reqData=req.body;
+    var reqData = req.body;
+    var resData;
     switch (reqData.action) {
+        case "list":
+            resData = list(req, res, reqData);
+            break;
         case "share":
             res.redirect("home.html#/myscenarios/share.html");
             res.send(resData);
@@ -38,9 +31,26 @@ router.post('/', function (req, res) {
         default:
             //res.redirect("home.html#/myscenarios/list.html");
             res.send(resData);
-
-
+            break;
     }
 });
+
+function list(req, res, reqData) {
+    var username = reqData.username;
+    req.db.collection('users').findOne({username: username}, {fields: {scenarios: 1}}, function (err, user) {
+        var scenariosList = [];
+        user.scenarios.forEach(function (id) {
+            scenariosList.push(new ObjectId(id));
+        });
+        req.db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
+            console.log(result);
+            if (!err) {
+                res.send(result);
+            } else {
+                res.send({err: err});
+            }
+        });
+    });
+}
 
 module.exports = router;

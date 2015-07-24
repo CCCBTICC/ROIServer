@@ -5,7 +5,34 @@ var router = require('express').Router();
 var requestCount = 0;
 
 router.post('/planforward', function (req, res) {
-    res.send('55ab282fce84683817469e03');
+    var reqData = req.body.data;
+    var objectId = new ObjectId();
+    var scenario = {
+        _id: objectId,
+        AlgStartingTime: reqData.AlgStartingTime,
+        StartingTime: reqData.StartingTime,
+        EndingTime: reqData.EndingTime,
+        lmtouch: reqData.lmTouch,
+        Spend: reqData.Spend,
+        Revenue: reqData.Revenue,
+        Brand:reqData.Brand,
+        Owner:reqData.UserName,
+        Name:"",
+        Note:"",
+        Final:"No",
+        DataThrough:reqData.StartingTime,
+        Share:"No"
+    };
+    if (data.Algorithm !== 1) {
+        req.db.collection("scenarios").insertOne(scenario, function (err, result) {
+            res.send('55ab282fce84683817469e03');
+        });
+    } else {
+        res.send('55ab282fce84683817469e03');
+    }
+    //  use Rmodule.sendRcompute function to write file and use commend line to send file to R
+    console.log('after send');
+    //Rmodule.sendRcompute(objectId, req.body.data);
 });
 
 // using get method to  check the file change
