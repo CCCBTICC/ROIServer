@@ -317,12 +317,13 @@ forward.factory('forwardManager', function ($http) {
         $http({
             method: 'post',
             url: url + 'planforward',
-            data: {data: data}
-        }).success(function (fileName) {
-            Name = fileName;
-            cb(true);
+            data:{data:data,username:'user1'}
+        }).success(function (name) {
+            Name=name;
+            cb(Name);
         });
     };
+    //var post = function(){console.log('111');};
     return {
         getTempData: function (cb) {
             cb(tempData);
@@ -338,7 +339,7 @@ forward.factory('forwardManager', function ($http) {
     }
 });
 
-forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', function ($scope, manager, user) {
+forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', function ($scope, manager, user, location) {
     // Calendar settings
     $scope.opened = {};
     $scope.format = 'MMMM-dd-yyyy';
@@ -347,12 +348,12 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         startingDay: 1,
         minMode: 'month'
     };
-    $scope.minDate = new Date('2014', '6', '01');
-    $scope.maxDate = new Date('2014', '11', '30');
+    $scope.minDate = new Date(2015, 4+1, 30);
+    $scope.maxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 6, 0);
 
     //adjust the date for the R Algorithm version 1.0
-    $scope.today = function () {
-        var date = new Date();
+    $scope.initDate = function () {
+        var date = $scope.minDate;
         $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
         $scope.planForward.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
         $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0);
@@ -375,18 +376,19 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         $scope.modifyEndDate();
     };
     $scope.modifyEndDate = function () {
-        d = new Date($scope.planForward.beginPeriod);
+        var  d = new Date($scope.planForward.beginPeriod);
+        if( d>$scope.maxDate){d=$scope.maxDate}
         $scope.planForward.beginPeriod = new Date(d.getFullYear(), d.getMonth(), 1);
-        if (new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0) < new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 9, 0)) {
+        if (new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0) < new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 8, 0)) {
             $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0);
         } else {
-            $scope.eMaxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 9, 0)
+            $scope.eMaxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 8, 0)
         }
         if ($scope.eMaxDate < $scope.planForward.endPeriod) {
             $scope.planForward.endPeriod = $scope.eMaxDate;
         }
         if ($scope.planForward.beginPeriod > $scope.planForward.endPeriod) {
-            var d = new Date($scope.planForward.beginPeriod);
+            d = new Date($scope.planForward.beginPeriod);
             $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
         }
     };
@@ -402,7 +404,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         //
         $scope.planForward.spend = "500000";
         // Calendar
-        $scope.today();
+        $scope.initDate();
         // init data
         $scope.planForward.init = {};
 
@@ -447,10 +449,13 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', funct
         }
         $scope.planForward.init.Spend = $scope.planForward.spend;
         $scope.planForward.init.PlanMonths = length;
-        $scope.planForward.init.Algorithm = 1;
+        $scope.planForward.init.Algorithm = 3;
 
-        manager.postData($scope.planForward.init, function (res) {
+        //$scope.planForward.init={1:1};
+        manager.postData($scope.planForward.init,function (res) {
             console.log(res);
+            location.path('planforward/constrict');
+
         });
     };
 }]);
@@ -496,11 +501,15 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                 count++;
             }
         });
+        if (count > 2) {
+            if (!$scope.planForward.semTotal) {
+                $scope.semTotal = true;
+            }
+        }
         if (count > 5) {
             Object.keys($scope.planForward.selectPlan).forEach(function (key) {
                 if (!$scope.planForward.selectPlan[key]) {
                     $scope[key] = true;
-                    $scope.semTotal = true;
                 }
             });
         } else {

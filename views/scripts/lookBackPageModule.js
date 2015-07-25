@@ -175,7 +175,7 @@ angular.module("ROIClientApp")
             $http({
                 method: 'post',
                 url: url + 'planforward',
-                data: {data: data}
+                data: {data: data,username:data.UserName}
             }).success(function (fileName) {
                 Name = fileName;
                 cb(true);
@@ -215,13 +215,11 @@ angular.module("ROIClientApp")
             startingDay: 1,
             minMode: 'month'
         };
-        $scope.maxDate = new Date('2014', '11', '30');
-        $scope.today = function () {
-            var date = new Date();
-            $scope.lookBack.beginPeriod = new Date(date.getFullYear(), date.getMonth() - 1, 1);
-            $scope.lookBack.endPeriod = new Date(date.getFullYear(), date.getMonth(), 0);
-            $scope.maxDate = new Date();
-            $scope.maxDate.setMonth($scope.maxDate.getMonth() - 1);
+        $scope.maxDate = new Date(2015, 4, 30);
+        $scope.initDate = function () {
+            var date = $scope.maxDate;
+            $scope.lookBack.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
+            $scope.lookBack.endPeriod = new Date(date.getFullYear(), date.getMonth()+1, 0);
         };
         $scope.open = function ($event, model) {
             $event.preventDefault();
@@ -237,9 +235,29 @@ angular.module("ROIClientApp")
             }
         };
         $scope.getLastDate = function () {
-            $scope.lookBack.endPeriod = new Date($scope.lookBack.endPeriod);
-            $scope.lookBack.endPeriod = new Date($scope.lookBack.endPeriod.getFullYear(), $scope.lookBack.endPeriod.getMonth() + 1, 0);
+            var d = new Date($scope.lookBack.endPeriod);
+            $scope.lookBack.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
         };
+        $scope.modifyEndDate = function () {
+           var d = new Date($scope.lookBack.beginPeriod);
+            if( d>$scope.maxDate){d=$scope.maxDate}
+            $scope.lookBack.beginPeriod = new Date(d.getFullYear(), d.getMonth(), 1);
+
+
+            if (new Date($scope.lookBack.beginPeriod.getFullYear(), $scope.lookBack.beginPeriod.getMonth() + 6, 0) < new Date($scope.maxDate.getFullYear(), $scope.maxDate.getMonth()+1, 0)) {
+                $scope.eMaxDate = new Date($scope.lookBack.beginPeriod.getFullYear(), $scope.lookBack.beginPeriod.getMonth() + 6, 0);
+            } else {
+                $scope.eMaxDate = new Date($scope.maxDate.getFullYear(), $scope.maxDate.getMonth() + 1, 0)
+            }
+            if ($scope.eMaxDate < $scope.lookBack.endPeriod) {
+                $scope.lookBack.endPeriod = $scope.eMaxDate;
+            }
+            if ($scope.lookBack.beginPeriod > $scope.lookBack.endPeriod) {
+                 d = new Date($scope.lookBack.beginPeriod);
+                $scope.lookBack.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+            }
+        };
+
         //calendar settings -END-
 
         // init data default
@@ -257,7 +275,7 @@ angular.module("ROIClientApp")
             // Include data through
             $scope.lookBack.include = true;
             // Calendar
-            $scope.today();
+            $scope.initDate();
             // init input
             $scope.lookBack.init = {};
         };

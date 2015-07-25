@@ -2,12 +2,20 @@
  * Created by ypling on 5/11/15.
  */
 var scenariosApp = angular.module("ROIClientApp")
-    .factory('scenarioManager', function ($http) {
+    .factory('scenarioManager', function ($http,user) {
         var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
         var scenarios = [];
         var selectedscenario = {};
-        var get = function (callback) {
-            $http.get(scenariosUrl + '/list').success(callback);
+        var user;
+        user.getUser(function(user){
+            user=user;
+        });
+        var get = function (username,callback) {
+            $http({
+                method:'post',
+                url:scenariosUrl,
+                data:{action:'list',username:username}
+            }).success(callback);
         };
         var post = function (id, callback) {
             $http({
@@ -33,7 +41,7 @@ var scenariosApp = angular.module("ROIClientApp")
             deleteScenario: post
         }
     })
-    .controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, forwardManager, scenarioManager) {
+    .controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, forwardManager, scenarioManager,user) {
         //vars
         var viewNames = ['list', 'export', 'retrieve', 'share'];
 
@@ -69,11 +77,17 @@ var scenariosApp = angular.module("ROIClientApp")
         };
 
         $scope.scenarios = [];
+        user.getUser(function(user){
+            $scope.user=user;
+            console.log(user);
+            scenarioManager.getScenarios($scope.user.name,function (data) {
+                $scope.scenarios = data;
+                console.log(data);
 
-        scenarioManager.getScenarios(function (data) {
-            $scope.scenarios = data;
+            });
 
-        });
+    });
+
 
 
         $scope.switchToView = function (viewName) {

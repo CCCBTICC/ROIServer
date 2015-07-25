@@ -10,11 +10,11 @@
         <form class="form-horizontal">
             <div class="form-group">
                 <label for="planForwardBrand" class="col-sm-3 control-label">Brand:</label>
-                <label class="col-sm-4">
+                <div class="col-sm-4">
                     <select id="planForwardBrand" class="form-control" ng-model="planForward.brand"
                             ng-options="b for b in brands">
                     </select>
-                </label>
+                </div>
 
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{brandTooltips}}"></i>
@@ -97,8 +97,8 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-5 col-sm-offset-3">
-                    <a href="#/planforward/constrict" class="btn btn-default" ng-click="CInput()">Next
-                    </a>
+                    <btn href="" class="btn btn-default" ng-click="CInput()">Next
+                    </btn>
                 </div>
             </div>
         </form>

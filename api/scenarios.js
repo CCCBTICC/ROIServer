@@ -10,6 +10,7 @@ var ObjectId = require('mongodb').ObjectID;
 //  the list json data
 
 router.post('/', function (req, res) {
+    console.log('in scenarios');
     var reqData = req.body;
     var resData;
     switch (reqData.action) {
