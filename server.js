@@ -11,15 +11,17 @@ var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var dbURL = 'mongodb://localhost:27017/ROIDB';
 var DB;
+var DBinitModule = require('./utility/DBInitModule');
 
 MongoClient.connect(dbURL, function (err, db) {
     assert.equal(null, err);
     console.log('mongoDB conntected');
+    DBinitModule.initDB(db);
     DB = db;
 });
 
 //require api
-var apiFolderName = 'mockapi';//Todo: Change to 'api' for integration test
+var apiFolderName = 'api';//Todo: Change to 'api' for integration test
 var scenarios = require('./' + apiFolderName + '/scenarios');
 var analysis = require('./' + apiFolderName + '/analysis');
 var users = require('./' + apiFolderName + '/users');

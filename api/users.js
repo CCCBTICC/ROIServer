@@ -20,7 +20,6 @@ router.post('/', function (req, res) {
                     res.send(false);
                     return;
                 }
-                console.log("aaa"+result);
                 if(result.password === password){
                     res.send(true);
                 }else{
