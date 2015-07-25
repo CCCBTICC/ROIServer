@@ -18,6 +18,11 @@ function initDB(db) {
                     username: 'user2',
                     password: 'test',
                     scenarios: []
+                },
+                {
+                    username: 'user3',
+                    password: 'test',
+                    scenarios: []
                 }
             ],
             {w: 1},

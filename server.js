@@ -11,7 +11,7 @@ var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var dbURL = 'mongodb://localhost:27017/ROIDB';
 var DB;
-var DBinitModule = require('./utility/DBInitModule');
+var DBinitModule = require('./utilities/DBInitModule');
 
 MongoClient.connect(dbURL, function (err, db) {
     assert.equal(null, err);
@@ -21,7 +21,7 @@ MongoClient.connect(dbURL, function (err, db) {
 });
 
 //require api
-var apiFolderName = 'api';//Todo: Change to 'api' for integration test
+var apiFolderName = 'api';
 var scenarios = require('./' + apiFolderName + '/scenarios');
 var analysis = require('./' + apiFolderName + '/analysis');
 var users = require('./' + apiFolderName + '/users');
