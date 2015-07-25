@@ -8,6 +8,11 @@
     </div>
     <!--end nav ba-->
     <!--table view-->
+    <script>
+        $('table.thead-fixed-top').on('scroll', function () {
+            $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
+        });
+    </script>
     <div class="row">
         <div class="table-responsive">
             <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
@@ -38,9 +43,9 @@
                     <td class="check col-1">
                         <label><input type="checkbox"></label>
                     </td>
-                    <td class="non-number col-1">1</td>
+                    <td class="non-number col-1" title="{{testCaseA}}">{{testCaseA | TLNR}}</td>
                     <td class="non-number col-2">SFLY-May-2015-Optimized</td>
-                    <td class="non-number col-3">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="non-number col-3" title="{{testCaseB}}">{{testCaseB | TLNR:3:2}}</td>
                     <td class="non-number col-1">Mike</td>
                     <td class="non-number col-1">No</td>
                     <td class="non-number col-1">2015-07-21</td>

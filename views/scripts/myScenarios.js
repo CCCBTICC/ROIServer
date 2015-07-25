@@ -59,6 +59,9 @@ var scenariosApp = angular.module("ROIClientApp")
         }
 
         //scope vars
+        $scope.testCaseB = "this is the first scenario with Spend and no constraints and using MTA123512312124123123 as attribution method";
+        $scope.testCaseA = "abcdefghijklmnopqrstuvwxyz";
+
         $scope.operations = {
             compare: {disable: true},
             delete: {disable: true},

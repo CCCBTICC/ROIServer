@@ -27,12 +27,14 @@ angular.module("ROIClientApp")
                 total: '='
             },
             link: function (scope, element, attrs) {
-                element.bind('click',function(){
+                element.bind('click', function () {
                     console.log(attrs.ngModel);
                     console.log(scope.totalCost);
-                    scope.$watch(function(scope){return scope.lookBack;}, function(){
+                    scope.$watch(function (scope) {
+                        return scope.lookBack;
+                    }, function () {
                         scope.totalCost = 0;
-                        scope.total.forEach(function(e){
+                        scope.total.forEach(function (e) {
                             scope.totalCost += Number(e);
                         });
                     }, true);
@@ -53,7 +55,7 @@ angular.module("ROIClientApp")
                 min: '=',
                 max: '=',
                 ngModel: '=',
-                ngChange:'&'
+                ngChange: '&'
             },
             link: function (scope, element, attrs) {
                 scope.checkRange = function () {
@@ -75,5 +77,23 @@ angular.module("ROIClientApp")
             }
             var output = Number(input).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').toString();
             return "$" + output.substr(0, output.length - 3);
+        }
+    })
+    .filter('nameFormat', function () {
+        return function (input) {
+            if (input != null)
+                input = input.toLowerCase();
+            return input.substring(0, 1).toUpperCase() + input.substring(1);
+        }
+    })
+    .filter('TLNR', function () {
+        return function (input, numOfCol, numOfRow) {
+            numOfCol = numOfCol || 1;
+            numOfRow = numOfRow || 1;
+            var str = input.substring(0, numOfRow * numOfCol * 15 - 5);
+            if (str.lastIndexOf(' ') < 0) {
+                return str.substring(0, str.length) + '...';
+            }
+            return str.substring(0, str.lastIndexOf(' ')) + ' ...';
         }
     });

@@ -3,7 +3,7 @@
  */
 'use strict';
 
-var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize','CompareChart','forwardModule'])
+var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize', 'CompareChart', 'forwardModule'])
     .config(function ($routeProvider) {
         $routeProvider
             .when('/planforward/init', {
@@ -68,32 +68,33 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
             })
     });
 
-app.controller("indexCtrl", function ($scope,user) {
-    user.getUser(function(user){
-        $scope.user= user;
+app.controller("indexCtrl", function ($scope, user) {
+    user.getUser(function (user) {
+        $scope.user = user;
 
     });
-    $scope.user.name='mike';
+    $scope.user.name = 'mike';
 
 });
 
-app.controller("savePlanCtrl", function ($scope,$http) {
+app.controller("savePlanCtrl", function ($scope, $http) {
     console.log('saveCtrl work');
 
-    $scope.savePlanForward = function(){
+    $scope.savePlanForward = function () {
         var sendData = {};
-        $http.post('/scenarios',sendData).success(function(data){
-            if(data) alert("saved!");
-    });
-    };  
-    
+        $http.post('/scenarios', sendData).success(function (data) {
+            if (data) alert("saved!");
+        });
+    };
+
 });
-app.factory('user',function(){
-    var user={};
-    user.name="Ed";
+
+app.factory('user', function () {
+    var user = {};
+    user.name = "Ed";
     user.recentlyLoginDate = new Date();
     return {
-        getUser:function(cb){
+        getUser: function (cb) {
             cb(user)
         }
     }
