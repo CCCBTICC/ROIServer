@@ -11,10 +11,12 @@ var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var dbURL = 'mongodb://localhost:27017/ROIDB';
 var DB;
+var DBinitModule = require('./utility/DBInitModule');
 
 MongoClient.connect(dbURL, function (err, db) {
     assert.equal(null, err);
     console.log('mongoDB conntected');
+    DBinitModule.initDB(db);
     DB = db;
 });
 
