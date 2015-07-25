@@ -44,7 +44,7 @@ function initDB(db) {
                     "Spend": "data.Spend",
                     "Revenue": "data.Revenue",
                     "Brand": null,
-                    "Owner": null,
+                    "owner": "user1",
                     "Name": "",
                     "Note": "",
                     "Final": "No",
