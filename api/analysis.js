@@ -16,11 +16,12 @@ router.post('/planforward', function (req, res) {
     var d=new Date();
     var scenario = {
         _id: objectId,
+        ScenarioID:"000",
         StartingTime: reqData.StartingTime,
         EndingTime: reqData.EndingTime,
         lmTouch: reqData.lmTouch,
         Spend: reqData.Spend,
-        CreatDate: d,
+        CreateDate: d,
         Revenue: reqData.Revenue,
         Brand: reqData.Brand,
         Owner: reqData.UserName,
@@ -28,6 +29,7 @@ router.post('/planforward', function (req, res) {
         Note: "",
         Final: "No",
         DataThrough: reqData.StartingTime,
+        HistoryIncluded:'No',
         Share: "No"
     };
     if (reqData.Algorithm !== 1) {

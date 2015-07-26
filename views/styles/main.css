@@ -404,13 +404,13 @@ input[type=range]::-ms-thumb {
 
 /*  Tables setting  */
 .table-responsive {
-    max-height: calc(100vh - 205px);
+    max-height: calc(100vh - 240px);
     height: 100%;
     position: relative;
 }
 
 table.roi-table {
-    margin-right: 20px;
+    margin-right: 100px;
     text-align: right;
 }
 

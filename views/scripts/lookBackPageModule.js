@@ -305,7 +305,7 @@ angular.module("ROIClientApp")
             console.log("data updated");
         };
     }])
-    .controller('backAddCtrl', ['$scope', 'backManager', function ($scope, manager) {
+    .controller('backAddCtrl', ['$scope', 'backManager','$location', function ($scope, manager,location) {
         $scope.lookBack = {};
         $scope.lookBack.output = {};
         $scope.spendTooltips = 'spendTooltips';
@@ -334,12 +334,20 @@ angular.module("ROIClientApp")
             console.log($scope.lookBack.output.Algorithm);
             manager.postData($scope.lookBack.output, function (result) {
                 console.log(result);
+                location.path('lookback/output');
             });
         }
     }])
-    .controller('backOutputCtrl', ['$scope', 'backManager',  function ($scope, manager) {
+    .controller('backOutputCtrl', ['$scope', 'backManager','$location',  function ($scope, manager,location) {
+
         $scope.lookBack={};
         $scope.lookBack.output={};
+
+        manager.getName(function (name) {
+            if (!name) {
+                location.path("/lookback/init");
+            }
+        });
         var count;
         $scope.getJson = false;
         count = setInterval(doGet, 1000 * 1); //set frequency

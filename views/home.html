@@ -43,7 +43,7 @@
                     </button>
                 </li>
                 <li>
-                    Welcome, <strong>{{user.name}}</strong> |
+                    Welcome, <strong>{{user.name | name}}</strong> |
                     <small>Last Logged on</small> <strong>{{user.recentlyLoginDate | date: 'MMM dd, yyyy'}}</strong>
                 </li>
             </ul>

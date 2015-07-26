@@ -675,6 +675,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
 
         manager.postData($scope.planForward.output, function (res) {
             console.log(res);
+            location.path("planforward/output");
         });
     };
 
@@ -684,13 +685,33 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
 }]);
 
 forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', function ($scope, manager, location) {
-
-
-
     //init controller scope
     $scope.planForward = {};
     $scope.planForward.output = {};
     $scope.planForward.input = {};
+    $scope.compareChart = {};
+    $scope.planForward.output.semSD =0;
+    $scope.planForward.output.disSD =0;
+    $scope.planForward.output.socSD =0;
+    $scope.planForward.output.affSD =0;
+    $scope.planForward.output.parSD =0;
+    $scope.planForward.output.totSD =0;
+
+    $scope.compareChart.data = [
+        {title: "SEM", value: $scope.planForward.output.semSD},
+        {title: "Display", value: $scope.planForward.output.disSD},
+        {title: "Social", value: $scope.planForward.output.socSD},
+        {title: "Affiliates", value: $scope.planForward.output.affSD},
+        {title: "Partners", value: $scope.planForward.output.parSD},
+        {title: "Portfolio Total", value: $scope.planForward.output.totSD}
+    ];
+    $scope.compareChart.config = {
+        width: 800,
+        height: 313,
+        margin: {left: 100, top: 0, right: 100, bottom: 30}
+    };
+
+
     $scope.slideError = false;
     manager.getName(function (name) {
         if (!name) {
@@ -711,14 +732,12 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                     manager.getName(function (name) {
                         $scope.planForward.output.ScenarioID = name;
                     });
-                    //get sum for semTotal's elements
 
                     $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
                     $scope.planForward.output.semMin = Number($scope.planForward.output.semBMin) + Number($scope.planForward.output.semCMin) + Number($scope.planForward.output.semPMin) + Number($scope.planForward.output.semOMin);
                     $scope.planForward.output.semMax = Number($scope.planForward.output.semBMax) + Number($scope.planForward.output.semCMax) + Number($scope.planForward.output.semPMax) + Number($scope.planForward.output.semOMax);
                     $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
 
-                    //get portfolio total
                     $scope.planForward.output.totLB = Number($scope.planForward.output.semLB) + Number($scope.planForward.output.disLB) + Number($scope.planForward.output.socLB) + Number($scope.planForward.output.affLB) + Number($scope.planForward.output.parLB);
                     $scope.planForward.output.totMin = Number($scope.planForward.output.semMin) + Number($scope.planForward.output.disMin) + Number($scope.planForward.output.socMin) + Number($scope.planForward.output.affMin) + Number($scope.planForward.output.parMin);
                     $scope.planForward.output.totMax = Number($scope.planForward.output.semMax) + Number($scope.planForward.output.disMax) + Number($scope.planForward.output.socMax) + Number($scope.planForward.output.affMax) + Number($scope.planForward.output.parMax);
@@ -739,6 +758,11 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
 
                     //compareChart
                     $scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
+                    $scope.planForward.output.semCSD = Number($scope.planForward.output.semCAS) - Number($scope.planForward.output.semCSR);
+                    $scope.planForward.output.semBSD = Number($scope.planForward.output.semBAS) - Number($scope.planForward.output.semBSR);
+                    $scope.planForward.output.semPSD = Number($scope.planForward.output.semPAS) - Number($scope.planForward.output.semPSR);
+                    $scope.planForward.output.semOSD = Number($scope.planForward.output.semOAS) - Number($scope.planForward.output.semOSR);
+
                     $scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
                     $scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
                     $scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
@@ -751,7 +775,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                     $scope.planForward.output.affRD = Number($scope.planForward.output.affAR) - Number($scope.planForward.output.affPR);
                     $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
                     $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
-                    $scope.compareChart = {};
+
                     $scope.compareChart.data = [
                         {title: "SEM", value: $scope.planForward.output.semSD},
                         {title: "Display", value: $scope.planForward.output.disSD},
@@ -760,11 +784,6 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                         {title: "Partners", value: $scope.planForward.output.parSD},
                         {title: "Portfolio Total", value: $scope.planForward.output.totSD}
                     ];
-                    $scope.compareChart.config = {
-                        width: 800,
-                        height: 313,
-                        margin: {left: 100, top: 0, right: 100, bottom: 30}
-                    };
                 }
             });
         }
@@ -819,6 +838,10 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
 
                             //compareChart
                             $scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
+                            $scope.planForward.output.semCSD = Number($scope.planForward.output.semCAS) - Number($scope.planForward.output.semCSR);
+                            $scope.planForward.output.semBSD = Number($scope.planForward.output.semBAS) - Number($scope.planForward.output.semBSR);
+                            $scope.planForward.output.semPSD = Number($scope.planForward.output.semPAS) - Number($scope.planForward.output.semPSR);
+                            $scope.planForward.output.semOSD = Number($scope.planForward.output.semOAS) - Number($scope.planForward.output.semOSR);
                             $scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
                             $scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
                             $scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
@@ -831,7 +854,6 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                             $scope.planForward.output.affRD = Number($scope.planForward.output.affAR) - Number($scope.planForward.output.affPR);
                             $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
                             $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
-                            $scope.compareChart = {};
                             $scope.compareChart.data = [
                                 {title: "SEM", value: $scope.planForward.output.semSD},
                                 {title: "Display", value: $scope.planForward.output.disSD},
@@ -840,11 +862,6 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                                 {title: "Partners", value: $scope.planForward.output.parSD},
                                 {title: "Portfolio Total", value: $scope.planForward.output.totSD}
                             ];
-                            $scope.compareChart.config = {
-                                width: 800,
-                                height: 313,
-                                margin: {left: 100, top: 0, right: 100, bottom: 30}
-                            };
                         }
                     });
                 }
@@ -945,15 +962,9 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                 return;
             }
             $scope.slideError = false;
-
-
         }
-
         sumValidate();
-
-
     };
-
 
     //graph Settings
     $scope.showme = false;
@@ -962,7 +973,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     $scope.toggle = function () {
 
         if ($scope.showme == false) {
-            $scope.planforwardContentSize = 'col-sm-5';
+            $scope.planforwardContentSize = 'col-sm-6';
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
         }
@@ -972,6 +983,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             $scope.showGraph = 'Show Graph';
         }
     };
+
     //pause getrequest
     $scope.$on('$destroy', function () {
         clearInterval(count);

@@ -55,7 +55,7 @@ function list(db, requestData, res) {
 }
 
 function remove(db, requestData, res){
-    var scenarioId = requestData.scenarioId
+    var scenarioId = requestData.scenarioId;
     db.collection("scenarios").findAndRemove({_id: new ObjectId(scenarioId)}, [['b', 1]], function (err, result) {
         if (result) {
             console.log(result);

@@ -94,7 +94,6 @@ app.controller("loginCtrl", function ($scope, user, $http) {
 });
 app.controller("indexCtrl",function($scope,user){
     user.getUser(function(user){
-        console
         $scope.user=user;
     });
 });
@@ -109,10 +108,18 @@ app.controller("savePlanCtrl", function ($scope, $http) {
     };
 
 });
-app.factory('user', function () {
+app.factory('user', function ($http) {
     var user = {};
         user.name="user1";
         user.recentlyLoginDate =new Date();
+    var userUrl="http://" + window.location.hostname + ":3001/users";
+    var post=function(data,callback){
+        $http({
+            method: 'post',
+            url: userUrl,
+            data: data
+        }).success(callback);
+    };
     return {
         getUser: function (cb) {
             cb(user)
@@ -121,6 +128,20 @@ app.factory('user', function () {
             user.name = name;
             user.recentlyLoginDate=new Date();
             console.log(user);
+        },
+        getUserList:function(username,cb){
+            var data={
+                action:'userList',
+                data:{username:username}
+            };
+            post(data,cb);
         }
+    }
+});
+app.filter('name', function() {
+    return function(input, scope) {
+        if (input!=null)
+            input = input.toLowerCase();
+        return input.substring(0,1).toUpperCase()+input.substring(1);
     }
 });

@@ -27,15 +27,15 @@
                     <tr>
                         <th class="col-1" rowspan="2">Portfolio Channels</th>
                         <th class="col-2" colspan="2">Actuals</th>
-                        <th class="col-4" colspan="4">{{lookBack.output.StartingTime | date: 'MMM-dd-yyyy'}} Optimized</th>
+                        <th class="col-2" colspan="2">{{lookBack.output.StartingTime | date: 'MMM-dd-yyyy'}} Optimized</th>
                         <th class="col-2" colspan="2">Difference</th>
                     </tr>
                     <tr>
                         <th class="col-1">Spend</th>
                         <th class="col-1">Revenue</th>
-                        <th class="col-1">Lower</th>
+                        <!--<th class="col-1">Lower</th>-->
                         <th class="col-1">Spend</th>
-                        <th class="col-1">Upper</th>
+                        <!--<th class="col-1">Upper</th>-->
                         <th class="col-1">Revenue</th>
                         <th class="col-1">Spend</th>
                         <th class="col-1">Revenue</th>
@@ -44,142 +44,154 @@
                     <tbody>
                     <tr>
                         <td class="td-title" ng-click="hideSemItems = !hideSemItems">SEM Total<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
+                        <td>{{lookBack.history.semSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.semPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.semTLB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.semSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
-                        <td>{{lookBack.output.semTLB | formatCurrency}}</td>
-                        <td>{{lookBack.input.semTSB | formatCurrency}}</td>
-                        <td>{{lookBack.output.semTUB | formatCurrency}}</td>
-                        <td class="disabled">-</td>
-                        <td>{{lookBack.output.semTSD | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <!--<td>{{lookBack.output.semTUB | formatCurrency}}</td>-->
+                        <td>{{lookBack.output.semPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.semSD | formatCurrency}}</td>
+                        <td>{{lookBack.output.semRD | formatCurrency}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Brand</td>
+                        <td>{{lookBack.history.semBSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.semBPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.semBLB | formatCurrency}}</td>-->
+                        <!--<td class="range-input">-->
+                            <!--<range-input ng-model="lookBack.input.semBSB" min="lookBack.output.semBLB" max="lookBack.output.semBUB"></range-input>-->
+                        <!--</td>-->
+                        <!--<td>{{lookBack.output.semBUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.semBSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
-                        <td>{{lookBack.output.semBLB | formatCurrency}}</td>
-                        <td class="range-input">
-                            <range-input ng-model="lookBack.input.semBSB" min="lookBack.output.semBLB" max="lookBack.output.semBUB"></range-input>
-                        </td>
-                        <td>{{lookBack.output.semBUB | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semBPR | formatCurrency}}</td>
                         <td>{{lookBack.output.semBSD | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semBRD | formatCurrency}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Cards</td>
+                        <td>{{lookBack.history.semCSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.semCPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.semCLB | formatCurrency}}</td>-->
+                        <!--<td class="range-input">-->
+                            <!--<range-input ng-model="lookBack.input.semCSB" min="lookBack.output.semCLB" max="lookBack.output.semCUB"></range-input>-->
+                        <!--</td>-->
+                        <!--<td>{{lookBack.output.semCUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.semCSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
-                        <td>{{lookBack.output.semCLB | formatCurrency}}</td>
-                        <td class="range-input">
-                            <range-input ng-model="lookBack.input.semCSB" min="lookBack.output.semCLB" max="lookBack.output.semCUB"></range-input>
-                        </td>
-                        <td>{{lookBack.output.semCUB | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semCPR | formatCurrency}}</td>
                         <td>{{lookBack.output.semCSD | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semCRD | formatCurrency}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Photobook</td>
+                        <td>{{lookBack.history.semPSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.semPPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.semPLB | formatCurrency}}</td>-->
+                        <!--<td class="range-input">-->
+                            <!--<range-input ng-model="lookBack.input.semPSB" min="lookBack.output.semPLB" max="lookBack.output.semPUB"></range-input>-->
+                        <!--</td>-->
+                        <!--<td>{{lookBack.output.semPUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.semPSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
-                        <td>{{lookBack.output.semPLB | formatCurrency}}</td>
-                        <td class="range-input">
-                            <range-input ng-model="lookBack.input.semPSB" min="lookBack.output.semPLB" max="lookBack.output.semPUB"></range-input>
-                        </td>
-                        <td>{{lookBack.output.semPUB | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semPPR | formatCurrency}}</td>
                         <td>{{lookBack.output.semPSD | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semPRD | formatCurrency}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Others</td>
+                        <td>{{lookBack.history.semOSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.semOPR | formatCurrency}}</td>
+                        <!--<td class="disabled">-</td>-->
+                        <!--<td>{{lookBack.output.semOLB | formatCurrency}}</td>-->
+                        <!--<td class="range-input">-->
+                            <!--<range-input ng-model="lookBack.input.semOSB" min="lookBack.output.semOLB" max="lookBack.output.semOUB"></range-input>-->
+                        <!--</td>-->
+                        <!--<td>{{lookBack.output.semOUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.semOSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
-                        <td>{{lookBack.output.semOLB | formatCurrency}}</td>
-                        <td class="range-input">
-                            <range-input ng-model="lookBack.input.semOSB" min="lookBack.output.semOLB" max="lookBack.output.semOUB"></range-input>
-                        </td>
-                        <td>{{lookBack.output.semOUB | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semOPR | formatCurrency}}</td>
                         <td>{{lookBack.output.semOSD | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td>{{lookBack.output.semORD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Display</td>
+                        <td>{{lookBack.history.disSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.disPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.disLB | formatCurrency}}</td>-->
+                        <!--<td class="range-input">-->
+                            <!--<range-input ng-model="lookBack.input.disSB" min="lookBack.output.disLB" max="lookBack.output.disUB"></range-input>-->
+                        <!--</td>-->
+                        <!--<td>{{lookBack.output.disUB | formatCurrency}}</td>-->
+
                         <td>{{lookBack.output.disSR | formatCurrency}}</td>
                         <td>{{lookBack.output.disPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.disLB | formatCurrency}}</td>
-                        <td class="range-input">
-                            <range-input ng-model="lookBack.input.disSB" min="lookBack.output.disLB" max="lookBack.output.disUB"></range-input>
-                        </td>
-                        <td>{{lookBack.output.disUB | formatCurrency}}</td>
-                        <td>{{lookBack.output.disAR | formatCurrency}}</td>
                         <td>{{lookBack.output.disSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.disAR - lookBack.output.disPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.disRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Social(FB)</td>
+                        <td>{{lookBack.history.socSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.socPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.socLB | formatCurrency}}</td>-->
+                        <!--<td class="range-input">-->
+                            <!--<range-input ng-model="lookBack.input.socSB" min="lookBack.output.socLB" max="lookBack.output.socUB"></range-input>-->
+                        <!--</td>-->
+                        <!--<td>{{lookBack.output.socUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.socSR | formatCurrency}}</td>
                         <td>{{lookBack.output.socPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.socLB | formatCurrency}}</td>
-                        <td class="range-input">
-                            <range-input ng-model="lookBack.input.socSB" min="lookBack.output.socLB" max="lookBack.output.socUB"></range-input>
-                        </td>
-                        <td>{{lookBack.output.socUB | formatCurrency}}</td>
-                        <td>{{lookBack.output.socAR | formatCurrency}}</td>
                         <td>{{lookBack.output.socSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.socAR - lookBack.output.socPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.socRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Affiliates</td>
+                        <td>{{lookBack.history.affSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.affPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.affLB | formatCurrency}}</td>-->
+                        <!--<td class="range-input">-->
+                            <!--<range-input ng-model="lookBack.input.affSB" min="lookBack.output.affLB" max="lookBack.output.affUB"></range-input>-->
+                        <!--</td>-->
+                        <!--<td>{{lookBack.output.affUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.affSR | formatCurrency}}</td>
                         <td>{{lookBack.output.affPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.affLB | formatCurrency}}</td>
-                        <td class="range-input">
-                            <range-input ng-model="lookBack.input.affSB" min="lookBack.output.affLB" max="lookBack.output.affUB"></range-input>
-                        </td>
-                        <td>{{lookBack.output.affUB | formatCurrency}}</td>
-                        <td>{{lookBack.output.affAR | formatCurrency}}</td>
                         <td>{{lookBack.output.affSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.affAR - lookBack.output.affPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.affRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Partners</td>
+                        <td>{{lookBack.history.parSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.parPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.parLB | formatCurrency}}</td>-->
+                        <!--<td class="range-input">-->
+                            <!--<range-input ng-model="lookBack.input.parSB" min="lookBack.output.parLB" max="lookBack.output.parUB"></range-input>-->
+                        <!--</td>-->
+                        <!--<td>{{lookBack.output.parUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.parSR | formatCurrency}}</td>
                         <td>{{lookBack.output.parPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.parLB | formatCurrency}}</td>
-                        <td class="range-input">
-                            <range-input ng-model="lookBack.input.parSB" min="lookBack.output.parLB" max="lookBack.output.parUB"></range-input>
-                        </td>
-                        <td>{{lookBack.output.parUB | formatCurrency}}</td>
-                        <td>{{lookBack.output.parAR | formatCurrency}}</td>
                         <td>{{lookBack.output.parSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.parAR - lookBack.output.parPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.parRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio Total</td>
+                        <td>{{lookBack.history.totSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.totPR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.totLB | formatCurrency}}</td>-->
+                        <!--<td>{{lookBack.input.totSB | formatCurrency}}</td>-->
+                        <!--<td>{{lookBack.output.totUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.totSR | formatCurrency}}</td>
                         <td>{{lookBack.output.totPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.totLB | formatCurrency}}</td>
-                        <td>{{lookBack.input.totSB | formatCurrency}}</td>
-                        <td>{{lookBack.output.totUB | formatCurrency}}</td>
-                        <td>{{lookBack.output.totAR | formatCurrency}}</td>
                         <td>{{lookBack.output.totSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.totAR - lookBack.output.totPR | formatCurrency}}</td>
+                        <td>{{lookBack.output.totRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio ROI</td>
                         <td colspan="2">%</td>
-                        <td colspan="4">%</td>
+                        <td colspan="2">{{lookBack.output.run1ProjROI}}</td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Change in Brand Total Revenue</td>
+                        <td colspan="4"></td>
                         <td colspan="2">%</td>
-                    </tr>
-                    <tr>
-                        <td colspan="9"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="8">Change in Brand Total Revenue</td>
-                        <td>%</td>
                     </tr>
                     </tbody>
                 </table>
@@ -201,12 +213,12 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-sm-3">
-                <button type="button" class="btn btn-default" ng-click="">Re-run</button>
-            </div>
-            <div class="col-sm-3">
-                <a type="button" class="btn btn-default" href="#/lookback/init">Reset</a>
-            </div>
+            <!--<div class="col-sm-3">-->
+                <!--<button type="button" class="btn btn-default" ng-click="">Re-run</button>-->
+            <!--</div>-->
+            <!--<div class="col-sm-3">-->
+                <!--<a type="button" class="btn btn-default" href="#/lookback/init">Reset</a>-->
+            <!--</div>-->
         </div>
     </div>
 </div>

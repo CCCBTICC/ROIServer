@@ -195,7 +195,7 @@
                     <td>{{scenario.Note}}</td>
                     <td class="non-number">{{scenario.Owner}}</td>
                     <td class="non-number">No</td>
-                    <td class="non-number">{{scenario.CreatDate | date: 'yyyy-MM-dd'}}</td>
+                    <td class="non-number">{{scenario.CreateDate | date: 'yyyy-MM-dd'}}</td>
                     <td class="non-number">{{scenario.Brand}}</td>
                     <td class="non-number">{{scenario.Spend | formatCurrency}}</td>
                     <td class="non-number">{{scenario.StartingTime | date: 'yyyy-MM'}}</td>
@@ -212,6 +212,7 @@
     </div>
     <!--end table view-->
     <!--button bar-->
+    <div><br></div>
     <div class="row">
         <div class="controls">
             <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}"
@@ -221,7 +222,7 @@
             <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</span>
             <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}"
                   ng-click="retrive()">retrieve</span>
-            <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="switchToView('share')">share</span>
+            <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="share()">share</span>
             <span class="btn btn-orange" ng-class="{'disabled':operations.edit.disable}" ng-click="switchToView('edit')">edit</span>
         </div>
     </div>
