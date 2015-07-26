@@ -216,14 +216,14 @@
     <div class="row">
         <div class="controls">
             <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}"
-                  ng-click="switchToView('compare')">compare</span>
+                  ng-click="compare()">compare</span>
             <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</span>
             <!-- todo: href="#myscenarios/export" deleted from tag a, move it to function. -->
             <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</span>
             <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}"
                   ng-click="retrive()">retrieve</span>
             <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="share()">share</span>
-            <span class="btn btn-orange" ng-class="{'disabled':operations.edit.disable}" ng-click="switchToView('edit')">edit</span>
+            <span class="btn btn-orange" ng-class="{'disabled':operations.edit.disable}" ng-click="edit()">edit</span>
         </div>
     </div>
 </div>

@@ -161,10 +161,10 @@ forward.factory('forwardManager', function ($http) {
     };
     var Name = "";
     var url = "http://" + window.location.hostname + ":3001/analysis/";
-    var get = function (cb) {
+    var get = function (cb, id) {
         $http({
             method: 'get',
-            url: url + Name
+            url: url + id
         }).success(function (data) {
             cb(data);
 
@@ -183,7 +183,7 @@ forward.factory('forwardManager', function ($http) {
                 "SpendLB": "NULL",
                 "SpendUB": "NULL",
                 "StartingTime": "2013-11",
-                "UserName": "",
+                "UserName": "false",
                 "__v": 0,
                 "_id": {"$oid": "55a7872121610f5810fc8244"},
                 "affAR": "3803679",
@@ -317,9 +317,9 @@ forward.factory('forwardManager', function ($http) {
         $http({
             method: 'post',
             url: url + 'planforward',
-            data:{data:data,username:'user1'}
+            data: {data: data, username: 'user1'}
         }).success(function (name) {
-            Name=name;
+            Name = name;
             cb(Name);
         });
     };
@@ -328,7 +328,14 @@ forward.factory('forwardManager', function ($http) {
         getTempData: function (cb) {
             cb(tempData);
         },
-        getData: get,
+        getData: function (cb, name) {
+            if (!name) {
+                get(cb, Name);
+            }
+            else {
+                get(cb, name);
+            }
+        },
         postData: post,
         getName: function (cb) {
             cb(Name);
@@ -348,7 +355,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
         startingDay: 1,
         minMode: 'month'
     };
-    $scope.minDate = new Date(2015, 4+1, 30);
+    $scope.minDate = new Date(2015, 4 + 1, 30);
     $scope.maxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 6, 0);
 
     //adjust the date for the R Algorithm version 1.0
@@ -376,8 +383,10 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
         $scope.modifyEndDate();
     };
     $scope.modifyEndDate = function () {
-        var  d = new Date($scope.planForward.beginPeriod);
-        if( d>$scope.maxDate){d=$scope.maxDate}
+        var d = new Date($scope.planForward.beginPeriod);
+        if (d > $scope.maxDate) {
+            d = $scope.maxDate
+        }
         $scope.planForward.beginPeriod = new Date(d.getFullYear(), d.getMonth(), 1);
         if (new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0) < new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 8, 0)) {
             $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0);
@@ -452,7 +461,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
         $scope.planForward.init.Algorithm = 3;
 
         //$scope.planForward.init={1:1};
-        manager.postData($scope.planForward.init,function (res) {
+        manager.postData($scope.planForward.init, function (res) {
             console.log(res);
             location.path('planforward/constrict');
 
@@ -690,12 +699,12 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     $scope.planForward.output = {};
     $scope.planForward.input = {};
     $scope.compareChart = {};
-    $scope.planForward.output.semSD =0;
-    $scope.planForward.output.disSD =0;
-    $scope.planForward.output.socSD =0;
-    $scope.planForward.output.affSD =0;
-    $scope.planForward.output.parSD =0;
-    $scope.planForward.output.totSD =0;
+    $scope.planForward.output.semSD = 1000;
+    $scope.planForward.output.disSD = 0;
+    $scope.planForward.output.socSD = 0;
+    $scope.planForward.output.affSD = 0;
+    $scope.planForward.output.parSD = 0;
+    $scope.planForward.output.totSD = 0;
 
     $scope.compareChart.data = [
         {title: "SEM", value: $scope.planForward.output.semSD},
@@ -963,6 +972,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             }
             $scope.slideError = false;
         }
+
         sumValidate();
     };
 

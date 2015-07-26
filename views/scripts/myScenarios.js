@@ -6,7 +6,6 @@ scenariosApp.factory('scenarioManager', function ($http) {
     var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
     var scenarios = [];
     var selectedScenario = {};
-    var userList = [];
     var post = function (data, callback) {
         $http({
             method: 'post',
@@ -117,9 +116,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 break;
         }
     };
-    $scope.switchToView = function (viewName) {
-        $location.path("myscenarios/" + viewName);
-    };
     $scope.export = function () {
         var objectId = getSelectedId($scope.scenarios);
         forwardManager.setName(objectId);
@@ -189,6 +185,12 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         scenarioManager.setSelectedScenario($scope.scenarios[exportIndex]);
         $location.path('myscenarios/share');
     };
+    $scope.compare = function () {
+        $location.path('myscenarios/compare');
+    };
+    $scope.edit = function () {
+        $location.path('myscenarios/edit');
+    };
 
     //main
     // get users scenarioList
@@ -199,7 +201,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         });
     });
 });
-scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager,$location) {
+scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager, $location) {
     //vars
     var format = {
         Excel: 'csv'
@@ -277,19 +279,22 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
 
     //main
     scenarioManager.getSelectedScenario(function (scenario) {
-        if(scenario._id){
-        $scope.scenario = scenario;
-        $scope.scenarioGot = true;
-        if ($scope.dataGot && $scope.scenarioGot) {
-            $scope.output = convertPlan($scope.scenario, $scope.data);
-            $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
-        }}
-        else{$location.path('myscenarios');}
+        if (scenario._id) {
+            $scope.scenario = scenario;
+            $scope.scenarioGot = true;
+            if ($scope.dataGot && $scope.scenarioGot) {
+                $scope.output = convertPlan($scope.scenario, $scope.data);
+                $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
+            }
+        }
+        else {
+            $location.path('myscenarios');
+        }
 
     });
     forwardManager.getData(function (data) {
         $scope.data = data;
-        var modify=function() {
+        var modify = function () {
             $scope.data.semLB = Number($scope.data.semBLB) + Number($scope.data.semCLB) + Number($scope.data.semPLB) + Number($scope.data.semOLB);
             $scope.data.semMin = Number($scope.data.semBMin) + Number($scope.data.semCMin) + Number($scope.data.semPMin) + Number($scope.data.semOMin);
             $scope.data.semMax = Number($scope.data.semBMax) + Number($scope.data.semCMax) + Number($scope.data.semPMax) + Number($scope.data.semOMax);
@@ -373,25 +378,17 @@ scenariosApp.controller("saveCtrl", function ($scope) {
 
 
 });
-scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo) {
+scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, forwardManager) {
     //vars
+
+    //functions
+
+    //scope vars
     $scope.compareChart = {};
-    console.log(actionObjInfo);
-    var compareObj = [];
-    $http.get('/scenarios/' + actionObjInfo[0]).success(function (data) {
-        compareObj[0] = data;
-        console.log(compareObj);
-    });
-    $http.get('/scenarios/' + actionObjInfo[1]).success(function (data) {
-        compareObj[1] = data;
-        console.log(compareObj);
-    });
-    $scope.compareChart.first = compareObj[0];
-    $scope.compareChart.second = compareObj[1];
-    $scope.compareChart.actionObjInfo = actionObjInfo;
-
-    //console.log(compareObj);
-
+    $scope.compareObj = {};
+    $scope.compareObj.difference = {};
+    $scope.firstGot = false;
+    $scope.secondGot = false;
     $scope.compareChart.data = [
         {title: "SEM", value: -109009},
         {title: "SEM-Bord", value: -8002},
@@ -409,11 +406,55 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
         height: 313,
         margin: {left: 100, top: 0, right: 100, bottom: 30}
     };
-    //functions
-
-    //scope vars
-
     //scope functions
+
+    //main
+    $scope.compareChart.actionObjInfo = actionObjInfo;
+    forwardManager.getData(function (data) {
+        $scope.compareObj.first = data;
+
+        $scope.firstGot = true;
+        if ($scope.firstGot && $scope.secondGot) {
+            Object.keys($scope.compareObj.first).forEach(function (key) {
+                $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+            });
+            $scope.compareChart.data = [
+                {title: "SEM", value: -$scope.compareObj.difference.semAS},
+                {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+                {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+                {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+                {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+                {title: "Display", value: -$scope.compareObj.difference.disAS},
+                {title: "Social", value: -$scope.compareObj.difference.socAS},
+                {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+                {title: "Partners", value: -$scope.compareObj.difference.parAS},
+                {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+            ];
+        }
+    }, actionObjInfo[0]);
+
+    forwardManager.getData(function (data) {
+        $scope.compareObj.second = data;
+
+        $scope.secondGot = true;
+        if ($scope.firstGot && $scope.secondGot) {
+            Object.keys($scope.compareObj.first).forEach(function (key) {
+                $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+            });
+            $scope.compareChart.data = [
+                {title: "SEM", value: -$scope.compareObj.difference.semAS},
+                {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+                {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+                {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+                {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+                {title: "Display", value: -$scope.compareObj.difference.disAS},
+                {title: "Social", value: -$scope.compareObj.difference.socAS},
+                {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+                {title: "Partners", value: -$scope.compareObj.difference.parAS},
+                {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+            ];
+        }
+    }, actionObjInfo[1]);
 });
 
 scenariosApp.factory('actionObjInfo', function () {
