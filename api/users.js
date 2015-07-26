@@ -9,27 +9,47 @@ var ObjectId = require('mongodb').ObjectID;
 
 
 router.post('/', function (req, res) {
-    var reqData = req.body.data;
+    var requestData = req.body.data;
     var reqAction = req.body.action;
     switch (reqAction) {
         case "login":
-            var username = reqData.username;
-            var password = reqData.password;
-            req.db.collection('users').findOne({username:username},{fields:{password:1}},function(err,result){
-                if(result ===null){
-                    res.send(false);
-                    return;
-                }
-                if(result.password === password){
-                    res.send(true);
-                }else{
-                    res.send(false);
-                }
-            });
+            userLogin(req.db, requestData, res);
+            break;
+        case "userList":
+            userList(req.db, requestData, res);
             break;
         default:
-            res.send(false);
+            res.send('invalid action');
     }
 });
+
+function userLogin(db, requestData, res) {
+    var username = requestData.username;
+    var password = requestData.password;
+    db.collection('users').findOne({username: username}, {fields: {password: 1}}, function (err, result) {
+        if (result === null) {
+            res.send(false);
+            return;
+        }
+        if (result.password === password) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
+    });
+}
+
+function userList(db, requestData, res) {
+    var username = requestData.username;
+    db.collection('users').find({}, {username: 1}).toArray(function (err, users) {
+        var result = [];
+        users.forEach(function(user){
+            if(user.username !== username){
+                result.push(user.username);
+            }
+        });
+        res.send(result);
+    });
+}
 
 module.exports = router;

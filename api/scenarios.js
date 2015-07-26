@@ -10,40 +10,40 @@ var ObjectId = require('mongodb').ObjectID;
 //  the list json data
 
 router.post('/', function (req, res) {
-    console.log('in scenarios');
-    var reqData = req.body;
-    var resData;
-    switch (reqData.action) {
+    var requestData = req.body.data;
+    var reqAction = req.body.action;
+    switch (reqAction) {
         case "list":
-            resData = list(req, res, reqData);
+            list(req.db,requestData, res);
             break;
         case "share":
-            res.redirect("home.html#/myscenarios/share.html");
-            res.send(resData);
+            share(req.db, requestData, res);
             break;
         case "remove":
-            req.db.collection("scenarios").findAndRemove({_id: new ObjectId(req.body.id)}, [['b', 1]], function (err, result) {
-                if (result) {
-                    console.log(result);
-                    res.send(result);
-                }
-            });
+            remove(req.db, requestData, res);
             break;
         default:
-            //res.redirect("home.html#/myscenarios/list.html");
-            res.send(resData);
+            res.send('invalid actions');
             break;
     }
 });
 
-function list(req, res, reqData) {
-    var username = reqData.username;
-    req.db.collection('users').findOne({username: username}, {fields: {scenarios: 1}}, function (err, user) {
+function share(db, requestData, res){
+    var scenarioId = requestData.scenarioId;
+    var targetUsername = requestData.targetUsername;
+    db.collection('users').findOneAndUpdate({username: targetUsername}, {$push: {scenarios: new ObjectId(scenarioId)}}, function (err, result) {
+        res.send(scenarioId);
+    });
+}
+
+function list(db, requestData, res) {
+    var username = requestData.username;
+    db.collection('users').findOne({username: username}, {fields: {scenarios: 1}}, function (err, user) {
         var scenariosList = [];
         user.scenarios.forEach(function (id) {
             scenariosList.push(new ObjectId(id));
         });
-        req.db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
+        db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
             console.log(result);
             if (!err) {
                 res.send(result);
@@ -51,6 +51,16 @@ function list(req, res, reqData) {
                 res.send({err: err});
             }
         });
+    });
+}
+
+function remove(db, requestData, res){
+    var scenarioId = requestData.scenarioId
+    db.collection("scenarios").findAndRemove({_id: new ObjectId(scenarioId)}, [['b', 1]], function (err, result) {
+        if (result) {
+            console.log(result);
+            res.send(result);
+        }
     });
 }
 
