@@ -6,7 +6,6 @@ var router = express.Router();
 var fs = require('fs');
 var Rmodule = require('./modules/Rmodule');
 var ObjectId = require('mongodb').ObjectID;
-var requestCount = 0;
 
 router.post('/planforward', function (req, res) {
     console.log('in api');
@@ -24,7 +23,7 @@ router.post('/planforward', function (req, res) {
         CreateDate: d,
         Revenue: reqData.Revenue,
         Brand: reqData.Brand,
-        Owner: reqData.UserName,
+        Owner: reqData.username,
         Name: "",
         Note: "",
         Final: "No",

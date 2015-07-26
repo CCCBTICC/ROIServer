@@ -18,6 +18,11 @@ function initDB(db) {
                     username: 'user2',
                     password: 'test',
                     scenarios: []
+                },
+                {
+                    username: 'user3',
+                    password: 'test',
+                    scenarios: []
                 }
             ],
             {w: 1},
@@ -39,7 +44,7 @@ function initDB(db) {
                     "Spend": "data.Spend",
                     "Revenue": "data.Revenue",
                     "Brand": null,
-                    "Owner": null,
+                    "owner": "user1",
                     "Name": "",
                     "Note": "",
                     "Final": "No",

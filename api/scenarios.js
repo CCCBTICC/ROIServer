@@ -14,7 +14,7 @@ router.post('/', function (req, res) {
     var reqAction = req.body.action;
     switch (reqAction) {
         case "list":
-            list(req.db,requestData, res);
+            list(req.db, requestData, res);
             break;
         case "share":
             share(req.db, requestData, res);
@@ -28,7 +28,7 @@ router.post('/', function (req, res) {
     }
 });
 
-function share(db, requestData, res){
+function share(db, requestData, res) {
     var scenarioId = requestData.scenarioId;
     var targetUsername = requestData.targetUsername;
     db.collection('users').findOneAndUpdate({username: targetUsername}, {$push: {scenarios: new ObjectId(scenarioId)}}, function (err, result) {
@@ -54,12 +54,18 @@ function list(db, requestData, res) {
     });
 }
 
-function remove(db, requestData, res){
+function remove(db, requestData, res) {
     var scenarioId = requestData.scenarioId;
-    db.collection("scenarios").findAndRemove({_id: new ObjectId(scenarioId)}, [['b', 1]], function (err, result) {
-        if (result) {
-            console.log(result);
-            res.send(result);
+    db.collection("scenarios").findOne({_id: new ObjectId(scenarioId)}, {owner: 1, _id: 1}, function (err, scenario) {
+        if (scenario) {
+
+            if (scenario.owner === requestData.username) {
+                db.collection('user').removeOne({_id: new ObjectId(scenarioId)}, {w: 1}, function () {
+                    res.send(true);
+                });
+            } else {
+                res.send(false);
+            }
         }
     });
 }
