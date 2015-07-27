@@ -22,9 +22,9 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
                 templateUrl: './views/planforward/output.html',
                 controller: 'forwardOutputCtrl'
             })
-            .when('/planforward/save', {
-                templateUrl: './views/planforward/save.html',
-                controller: 'forwardSaveCtrl'
+            .when('/planforward/edit', {
+                templateUrl: './views/planforward/edit.html',
+                controller: 'scenariosEditCtrl'
             })
             .when('/lookback/init', {
                 templateUrl: './views/lookback/initialInput.html',
@@ -38,9 +38,9 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
                 templateUrl: './views/lookback/output.html',
                 controller: 'backOutputCtrl'
             })
-            .when('/lookback/save', {
-                templateUrl: './views/lookback/save.html',
-                controller: 'backSaveCtrl'
+            .when('/lookback/edit', {
+                templateUrl: './views/lookback/edit.html',
+                controller: 'scenariosEditCtrl'
             })
             .when('/myscenarios', {
                 templateUrl: './views/myscenarios/list.html',
@@ -58,12 +58,16 @@ var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize
                 templateUrl: './views/myscenarios/share.html',
                 controller: 'scenariosShareCtrl'
             })
+            .when('/myscenarios/edit', {
+                templateUrl: './views/myscenarios/edit.html',
+                controller: 'scenariosEditCtrl'
+            })
             .when('/lookback/save', {
-                templateUrl: './views/lookback/save.html',
+                templateUrl: './views/lookback/edit.html',
                 controller: 'saveLookCtrl'
             })
             .when('/planforward/edit', {
-                templateUrl: './views/planforward/save.html',
+                templateUrl: './views/planforward/edit.html',
                 controller: 'savePlanCtrl'
             })
             .otherwise({

@@ -864,7 +864,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     }
 
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 30); //set frequency
+    count = setInterval(doGet, 1000 * 1); //set frequency
 
     //graph Settings
     $scope.showme = false;

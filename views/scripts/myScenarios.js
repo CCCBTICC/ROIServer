@@ -372,7 +372,7 @@ scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioMa
         })
     });
 });
-scenariosApp.controller("saveCtrl", function ($scope) {
+scenariosApp.controller("scenariosEditCtrl", function ($scope) {
     //vars
 
     //functions
@@ -415,6 +415,28 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
 
     //main
     $scope.compareChart.actionObjInfo = actionObjInfo;
+    //forwardManager.getData(function (data) {
+    //    $scope.compareObj.first = data;
+    //
+    //    $scope.firstGot = true;
+    //    if ($scope.firstGot && $scope.secondGot) {
+    //        Object.keys($scope.compareObj.first).forEach(function (key) {
+    //            $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+    //        });
+    //        $scope.compareChart.data = [
+    //            {title: "SEM", value: -$scope.compareObj.difference.semAS},
+    //            {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+    //            {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+    //            {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+    //            {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+    //            {title: "Display", value: -$scope.compareObj.difference.disAS},
+    //            {title: "Social", value: -$scope.compareObj.difference.socAS},
+    //            {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+    //            {title: "Partners", value: -$scope.compareObj.difference.parAS},
+    //            {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+    //        ];
+    //    }
+    //}, 'run2');
     forwardManager.getData(function (data) {
         $scope.compareObj.first = data;
 
@@ -437,7 +459,28 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
             ];
         }
     }, actionObjInfo[0]);
-
+    //forwardManager.getData(function (data) {
+    //    $scope.compareObj.second = data;
+    //
+    //    $scope.secondGot = true;
+    //    if ($scope.firstGot && $scope.secondGot) {
+    //        Object.keys($scope.compareObj.first).forEach(function (key) {
+    //            $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+    //        });
+    //        $scope.compareChart.data = [
+    //            {title: "SEM", value: -$scope.compareObj.difference.semAS},
+    //            {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+    //            {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+    //            {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+    //            {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+    //            {title: "Display", value: -$scope.compareObj.difference.disAS},
+    //            {title: "Social", value: -$scope.compareObj.difference.socAS},
+    //            {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+    //            {title: "Partners", value: -$scope.compareObj.difference.parAS},
+    //            {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+    //        ];
+    //    }
+    //}, 'run3');
     forwardManager.getData(function (data) {
         $scope.compareObj.second = data;
 
@@ -460,6 +503,7 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
             ];
         }
     }, actionObjInfo[1]);
+
 });
 
 scenariosApp.factory('actionObjInfo', function () {
