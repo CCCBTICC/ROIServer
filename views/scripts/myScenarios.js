@@ -21,10 +21,10 @@ scenariosApp.factory('scenarioManager', function ($http) {
             };
             post(data, cb);
         },
-        deleteScenario: function (id, cb) {
+        deleteScenario: function (id,user, cb) {
             var data = {
                 action: 'remove',
-                data: {scenarioId: id}
+                data: {scenarioId: id,username:user}
             };
             post(data, cb);
         },
@@ -136,7 +136,11 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     };
     $scope.delete = function () {
         var objectId = getSelectedId($scope.scenarios);
-        scenarioManager.deleteScenario(objectId, function (data) {
+        user.getUser(function(user){
+            $scope.user=user;
+        });
+        scenarioManager.deleteScenario(objectId,$scope.user.name, function (data) {
+            console.log('from delete in scenarios');
             console.log(data);
             var deleteIndex = -1;
             $scope.scenarios.forEach(function (obj, index) {
@@ -197,6 +201,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     user.getUser(function (user) {
         $scope.user = user;
         scenarioManager.getScenarios($scope.user.name, function (data) {
+            console.log(data);
             $scope.scenarios = data;
         });
     });

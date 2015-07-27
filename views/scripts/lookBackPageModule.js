@@ -215,7 +215,9 @@ back.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($sco
         startingDay: 1,
         minMode: 'month'
     };
-    $scope.maxDate = new Date(2015, 4, 30);
+    $scope.historydate='2015-05';
+    var d=new Date($scope.historydate);
+    $scope.maxDate = new Date(d.getFullYear(), d.getMonth()+2,0);
     $scope.initDate = function () {
         var date = $scope.maxDate;
         $scope.lookBack.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -235,18 +237,18 @@ back.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($sco
         }
     };
     $scope.getLastDate = function () {
+        if(!$scope.lookBack.endPeriod){$scope.lookBack.endPeriod=$scope.lookBack.beginPeriod;}
         var d = new Date($scope.lookBack.endPeriod);
         $scope.lookBack.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
         $scope.modifyEndDate();
     };
     $scope.modifyEndDate = function () {
+        if(!$scope.lookBack.beginPeriod){$scope.lookBack.beginPeriod=$scope.maxDate;}
         var d = new Date($scope.lookBack.beginPeriod);
         if (d > $scope.maxDate) {
             d = $scope.maxDate
         }
         $scope.lookBack.beginPeriod = new Date(d.getFullYear(), d.getMonth(), 1);
-
-
         if (new Date($scope.lookBack.beginPeriod.getFullYear(), $scope.lookBack.beginPeriod.getMonth() + 6, 0) < new Date($scope.maxDate.getFullYear(), $scope.maxDate.getMonth() + 1, 0)) {
             $scope.eMaxDate = new Date($scope.lookBack.beginPeriod.getFullYear(), $scope.lookBack.beginPeriod.getMonth() + 6, 0);
         } else {

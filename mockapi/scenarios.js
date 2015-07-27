@@ -8,39 +8,66 @@ var assert = require('assert');
 var ObjectId = require('mongodb').ObjectID;
 
 //  the list json data
-router.get('/list', function (req, res) {
-    req.db.collection('scenarios').find().toArray(function(err,result){
-        if(!err){
-            res.send(result);
-        }else{
-            res.send({err:err});
-        }
-    });
-});
 
 router.post('/', function (req, res) {
-    var resData = "test";
-    //TODO:add switch logic base on reqData.action
-    var reqData=req.body;
-    switch (reqData.action) {
+    var requestData = req.body.data;
+    var reqAction = req.body.action;
+    switch (reqAction) {
+        case "list":
+            list(req.db, requestData, res);
+            break;
         case "share":
-            res.redirect("home.html#/myscenarios/share.html");
-            res.send(resData);
+            share(req.db, requestData, res);
             break;
         case "remove":
-            req.db.collection("scenarios").findAndRemove({_id: new ObjectId(req.body.id)}, [['b', 1]], function (err, result) {
-                if (result) {
-                    console.log(result);
-                    res.send(result);
-                }
-            });
+            remove(req.db, requestData, res);
             break;
         default:
-            //res.redirect("home.html#/myscenarios/list.html");
-            res.send(resData);
-
-
+            res.send('invalid actions');
+            break;
     }
 });
+
+function share(db, requestData, res) {
+    var scenarioId = requestData.scenarioId;
+    var targetUsername = requestData.targetUsername;
+    db.collection('users').findOneAndUpdate({username: targetUsername}, {$push: {scenarios: new ObjectId(scenarioId)}}, function (err, result) {
+        res.send(scenarioId);
+    });
+}
+
+function list(db, requestData, res) {
+    var username = requestData.username;
+    db.collection('users').findOne({username: username}, {fields: {scenarios: 1}}, function (err, user) {
+        var scenariosList = [];
+        user.scenarios.forEach(function (id) {
+            scenariosList.push(new ObjectId(id));
+        });
+        db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
+            console.log(result);
+            if (!err) {
+                res.send(result);
+            } else {
+                res.send({err: err});
+            }
+        });
+    });
+}
+
+function remove(db, requestData, res) {
+    var scenarioId = requestData.scenarioId;
+    db.collection("scenarios").findOne({_id: new ObjectId(scenarioId)}, {owner: 1, _id: 1}, function (err, scenario) {
+        if (scenario) {
+
+            if (scenario.owner === requestData.username) {
+                db.collection('scenarios').removeOne({_id: new ObjectId(scenarioId)}, {w: 1}, function () {
+                    res.send(true);
+                });
+            } else {
+                res.send(false);
+            }
+        }
+    });
+}
 
 module.exports = router;

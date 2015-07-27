@@ -40,7 +40,7 @@ function initDB(db) {
                     "AlgStartingTime": "data.AlgStartingTime",
                     "StartingTime": null,
                     "EndingTime": "data.EndingTime",
-                    "lmtouch": null,
+                    "lmTouch": null,
                     "Spend": "data.Spend",
                     "Revenue": "data.Revenue",
                     "Brand": null,

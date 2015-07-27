@@ -21,7 +21,7 @@ MongoClient.connect(dbURL, function (err, db) {
 });
 
 //require api
-var apiFolderName = 'api';
+var apiFolderName = 'mockapi';
 var scenarios = require('./' + apiFolderName + '/scenarios');
 var analysis = require('./' + apiFolderName + '/analysis');
 var users = require('./' + apiFolderName + '/users');

@@ -190,10 +190,10 @@
                     <td class="check">
                         <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
                     </td>
-                    <td class="non-number"><div style="width:4em;overflow:hidden;text-overflow: ellipsis;">{{scenario._id}}</div></td>
+                    <td class="non-number"><div style="width:4em;overflow:hidden;text-overflow: ellipsis;">{{scenario.ScenarioID}}</div></td>
                     <td>{{scenario.Name}}</td>
                     <td>{{scenario.Note}}</td>
-                    <td class="non-number">{{scenario.Owner}}</td>
+                    <td class="non-number">{{scenario.owner}}</td>
                     <td class="non-number">No</td>
                     <td class="non-number">{{scenario.CreateDate | date: 'yyyy-MM-dd'}}</td>
                     <td class="non-number">{{scenario.Brand}}</td>

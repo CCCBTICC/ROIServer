@@ -60,7 +60,7 @@ function remove(db, requestData, res) {
         if (scenario) {
 
             if (scenario.owner === requestData.username) {
-                db.collection('user').removeOne({_id: new ObjectId(scenarioId)}, {w: 1}, function () {
+                db.collection('scenarios').removeOne({_id: new ObjectId(scenarioId)}, {w: 1}, function () {
                     res.send(true);
                 });
             } else {

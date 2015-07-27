@@ -47,7 +47,7 @@
                         </td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.semTotal" ng-disabled="semTotal" ng-click="totCheck()">
+                                <input type="checkbox" ng-model="planForward.semTotal" ng-disabled="disable.semTotal" ng-click="totCheck()">
                             </label>
                         </td>
                         <td>{{planForward.output.semLB | formatCurrency}}</td>
@@ -60,7 +60,7 @@
                         <td class="td-subtitle">SEM-Brand</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.semBrand" ng-disabled="semBrand" ng-click="subCheck()">
+                                <input type="checkbox" ng-model="planForward.selectPlan.semBrand" ng-disabled="disable.semBrand" ng-click="subCheck()">
                             </label>
                         </td>
                         <td>{{planForward.output.semBLB | formatCurrency}}</td>
@@ -86,7 +86,7 @@
                         <td class="td-subtitle">SEM-Card</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.semCard" ng-disabled="semCard" ng-click="subCheck()">
+                                <input type="checkbox" ng-model="planForward.selectPlan.semCard" ng-disabled="disable.semCard" ng-click="subCheck()">
                             </label>
                         </td>
                         <td>{{planForward.output.semCLB | formatCurrency}}</td>
@@ -111,7 +111,7 @@
                         <td class="td-subtitle">SEM-Photobook</td>
                         <td class="check">
                             <label class="check">
-                                <input type="checkbox" ng-model="planForward.selectPlan.semPhotobook" ng-disabled="semPhotobook"
+                                <input type="checkbox" ng-model="planForward.selectPlan.semPhotobook" ng-disabled="disable.semPhotobook"
                                        ng-click="subCheck()">
                             </label>
                         </td>
@@ -137,7 +137,7 @@
                         <td class="td-subtitle">SEM-Others</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.semOthers" ng-disabled="semOthers"
+                                <input type="checkbox" ng-model="planForward.selectPlan.semOthers" ng-disabled="disable.semOthers"
                                        ng-click="subCheck()">
                             </label>
                         </td>
@@ -163,7 +163,7 @@
                         <td class="td-title">Display</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.display" ng-disabled="display" ng-click="Count()">
+                                <input type="checkbox" ng-model="planForward.selectPlan.display" ng-disabled="disable.display" ng-click="Count()">
                             </label>
                         </td>
                         <td>{{planForward.output.disLB | formatCurrency}}</td>
@@ -188,7 +188,7 @@
                         <td class="td-title">Social(FB)</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.social" ng-disabled="social" ng-click="Count()">
+                                <input type="checkbox" ng-model="planForward.selectPlan.social" ng-disabled="disable.social" ng-click="Count()">
                             </label>
                         </td>
                         <td>{{planForward.output.socLB | formatCurrency}}</td>
@@ -213,7 +213,7 @@
                         <td class="td-title">Affiliates</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.affiliates" ng-disabled="affiliates" ng-click="Count()">
+                                <input type="checkbox" ng-model="planForward.selectPlan.affiliates" ng-disabled="disable.affiliates" ng-click="Count()">
                             </label>
                         </td>
                         <td>{{planForward.output.affLB | formatCurrency}}</td>
@@ -239,7 +239,7 @@
                         <td class="td-title">Partners</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.partners" ng-disabled="partners" ng-click="Count()">
+                                <input type="checkbox" ng-model="planForward.selectPlan.partners" ng-disabled="disable.partners" ng-click="Count()">
                             </label>
                         </td>
                         <td>{{planForward.output.parLB | formatCurrency}}</td>
@@ -283,7 +283,7 @@
                     <tr>
                         <td rowspan="2" class="td-title">DM</td>
                         <td ng-repeat="month in planForward.ControlChannels" class="col-1">{{month | date:
-                            'MMM-dd-yyyy'}}
+                            'yyyy-MM'}}
                     </tr>
                     <tr>
                         <td ng-repeat="spend in planForward.ControlChannelsDM">{{spend | formatCurrency}}</td>
@@ -325,7 +325,7 @@
             </div>
             <div class="col-sm-2">
                 <button class="btn btn-default" ng-class="{disabled:slideError}"
-                   ng-click="calculate()">Next</button>
+                   ng-click="run()">Next</button>
             </div>
         </form>
     </div>
