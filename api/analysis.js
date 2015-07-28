@@ -57,24 +57,15 @@ router.post('/lookback', function (req, res){
         allMonth = getAllMonth(begin,end);
         allMonth.forEach(function (monthStr,index){
             req.db.collection("history").findOne({Month:monthStr},{}, function (err, result){
-                console.log(result);
                 allMonthObj.push(result);
-                console.log(allMonthObj);
-                //allMonthObj[index] = result;
+                if(allMonthObj.length >= allMonth.length){
+                    res.send(allMonthObj);
+                    allMonth = [];
+                    allMonthObj = [];
+                }
             });
-            if(allMonth.length === allMonthObj.length){
-                res.send(allMonthObj);
-                allMonth = [];
-                allMonthObj = [];
-            }
-        });
-        setTimeout(function(){
-            res.send(allMonthObj);
-            allMonth = [];
-            allMonthObj = [];
-        },500);
-    
 
+        });
 }); 
 
 router.get('/lookback', function (req, res){
