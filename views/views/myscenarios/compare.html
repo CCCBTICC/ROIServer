@@ -19,7 +19,7 @@
                         <th colspan="2" class="col-2">{{compareChart.actionObjInfo[0]}}</th>
                         <th colspan="2" class="col-2">{{compareChart.actionObjInfo[1]}}</th>
                         <th colspan="2" class="col-2">Difference</th>
-                        <th rowspan="2" class="col-6">Chart</th>
+                        <th rowspan="2" class="col-6">Spend Difference</th>
                     </tr>
                     <tr>
                         <th class="col-1">Spend</th>
@@ -32,7 +32,11 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="td-title">SEM Total<button class="btn btn-xs btn-default" ng-click="hideSemItems = !hideSemItems"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
+                        <td class="td-title">SEM Total
+                            <button class="btn btn-xs btn-default" ng-click="hideSemItems = !hideSemItems"><i
+                                    ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems"
+                                                                                      class="fa fa-plus"></i></button>
+                        </td>
                         <td>{{compareObj.first.semAS | formatCurrency}}</td>
                         <td>{{compareObj.first.semAR | formatCurrency}}</td>
                         <td>{{compareObj.second.semAS | formatCurrency}}</td>
@@ -40,7 +44,9 @@
                         <td>{{compareObj.difference.semAS | formatCurrency}}</td>
                         <td>{{compareObj.difference.semAR | formatCurrency}}</td>
                         <td rowspan="100" class="compare-chart">
-                            <compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>
+                            <compare-chart compare-data="compareChart.data"
+                                           config="compareChart.config"></compare-chart>
+                            <h4 style="text-align:center">(-)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</h4>
                         </td>
                     </tr>
                     <tr ng-hide="hideSemItems">

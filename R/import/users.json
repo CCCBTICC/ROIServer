@@ -1,0 +1,3 @@
+{"_id":{"$oid":"55b6c1be38208538368cec74"},"password":"test","scenarios":[{"$oid":"55b068284038186f07f83a82"}],"username":"user1"}
+{"_id":{"$oid":"55b6c1be38208538368cec75"},"password":"test","scenarios":[],"username":"user2"}
+{"_id":{"$oid":"55b6c1be38208538368cec76"},"password":"test","scenarios":[],"username":"user3"}

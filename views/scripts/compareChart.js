@@ -54,7 +54,7 @@ angular.module('CompareChart', [])
                         //draw rectangle
                         var rect = chartSvg
                             .append('rect')
-                            .attr("y", barHeight * index  + scope.config.margin.top + 10)
+                            .attr("y", barHeight * index + scope.config.margin.top + 10)
                             .attr("height", barHeight - 20)
                             .style('fill', '#F05323');
                         //render title text
@@ -64,13 +64,14 @@ angular.module('CompareChart', [])
                             .attr('y', barHeight * index + scope.config.margin.top + barHeight - 7)
                             .attr('font-size', barHeight - 7)
                             //.attr('fill', 'rgba(255, 255, 255, .4)')
-                            .attr('font-weight',800)
+                            .attr('font-weight', 0)
+                            .attr('font-size', 18)
                             .attr('text-anchor', "left");
                         //end text
                         //render value text
                         var valueText = chartSvg.append('text');
                         valueText.text(Math.abs(item.value))
-                            .attr('font-size', 10)
+                            .attr('font-size', 18)
                             .attr('fill', '#222')
                             .attr('x', Number(oldData[index].value) * oldScaleFactor + midX)
                             .attr('y', barHeight * index + scope.config.margin.top + textHeight + textMargin)

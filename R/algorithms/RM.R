@@ -10,9 +10,9 @@
 ################################ Load JSON Data From JSON Input file ######################################################				
 ###########################################################################################################################	
 
-jsonIOFolder  <- "C:/Users/Administrator/Desktop/ccc/ROIServer/R/"
-rCodeFolder   <- "C:/Users/Administrator/Desktop/ccc/ROIServer/R/algorithms"
-rOutputFolder <- "C:/Users/Administrator/Desktop/ccc/ROIServer/R/output"
+jsonIOFolder  <- "/home/daviddong/ROI_V2/20150727/ISSUE-14/ROIServer/R/"
+rCodeFolder   <- "/home/daviddong/ROI_V2/20150727/ISSUE-14/ROIServer/R/algorithms"
+rOutputFolder <- "/home/daviddong/ROI_V2/20150727/ISSUE-14/ROIServer/R/output"
 
 
 

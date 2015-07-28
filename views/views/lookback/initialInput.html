@@ -10,8 +10,10 @@
         <form class="form-horizontal">
             <div class="form-group">
                 <label for="lookBackBrand" class="col-sm-3 control-label">Brand:</label>
+
                 <div class="col-sm-4">
-                    <select id="lookBackBrand" class="form-control" ng-model="lookBack.brand" ng-options="b for b in brands"></select>
+                    <select id="lookBackBrand" class="form-control" ng-model="lookBack.brand"
+                            ng-options="b for b in brands"></select>
                 </div>
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{brandTooltips}}"></i>
@@ -48,7 +50,8 @@
                 <div class="col-sm-4">
                     <div class="input-group">
                         <input id="lookBackBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
-                               ng-model="lookBack.beginPeriod" is-open="opened.lookBackBeginPeriod" ng-change="modifyEndDate()"
+                               ng-model="lookBack.beginPeriod" is-open="opened.lookBackBeginPeriod"
+                               ng-change="modifyEndDate()"
                                datepicker-options="dateOptions" datepicker-mode="'month'" max-date="{{maxDate}}"
                                ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">
@@ -69,9 +72,11 @@
                 <div class="col-sm-4">
                     <div class="input-group">
                         <input id="lookBackEndPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
-                               ng-model="lookBack.endPeriod" is-open="opened.lookBackEndPeriod" ng-change="getLastDate()"
+                               ng-model="lookBack.endPeriod" is-open="opened.lookBackEndPeriod"
+                               ng-change="getLastDate()"
                                min-date="lookBack.beginPeriod" datepicker-options="dateOptions"
-                               datepicker-mode="'month'" disabled max-date="eMaxDate" ng-required="true" close-text="Close">
+                               datepicker-mode="'month'" disabled max-date="eMaxDate" ng-required="true"
+                               close-text="Close">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event, 'lookBackEndPeriod')">
                                 <i class="glyphicon glyphicon-calendar"></i>

@@ -51,9 +51,6 @@ app.use('/users', users);
 
 //=============================route API  user and scenario ======================
 
-// routes ======================================================================
-//require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
-
 // launch ======================================================================
 app.listen(port);
 console.log('The Server is listening on port ' + port);
