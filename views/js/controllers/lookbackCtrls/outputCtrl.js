@@ -1,8 +1,8 @@
 /**
  * Created by Chenghuijin on 2015/7/22.
  */
-define(['controllers'],function(back){
-    back.controller('backOutputCtrl', ['$scope', 'backManager',  function ($scope, manager) {
+define(['../module'],function(module){
+    module.controller('backOutputCtrl', ['$scope', 'backManager',  function ($scope, manager) {
         $scope.lookBack={};
         $scope.lookBack.output={};
         var count;

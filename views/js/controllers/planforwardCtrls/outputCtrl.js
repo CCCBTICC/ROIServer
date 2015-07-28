@@ -1,8 +1,8 @@
 /**
  * Created by Chenghuijin on 2015/7/22.
  */
-define(['controllers'],function(forward){
-    forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', function ($scope, manager, location) {
+define(['../module'],function(module){
+    module.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', function ($scope, manager, location) {
         //init controller scope
         $scope.planForward = {};
         $scope.planForward.output = {};

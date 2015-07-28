@@ -1,8 +1,8 @@
 /**
  * Created by Chenghuijin on 2015/7/22.
  */
-define(['controllers',function(back){
-    back.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($scope, manager, user) {
+define(['../module'],function(module) {
+    module.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($scope, manager, user) {
         // tooltips
         $scope.brandTooltips = 'brandTooltips';
         $scope.attrTooltips = 'attrTooltips';
@@ -90,4 +90,4 @@ define(['controllers',function(back){
             console.log("data updated");
         };
     }]);
-}]);
+});

@@ -1,8 +1,8 @@
 /**
  * Created by Chenghuijin on 2015/7/22.
  */
-define(['controllers'],function(Ctrls){
-    Ctrls.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', function ($scope, manager, user) {
+define(['../module'],function(module){
+    module.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', function ($scope, manager, user) {
         // Calendar settings
         $scope.opened = {};
         $scope.format = 'MMMM-dd-yyyy';
