@@ -30,7 +30,7 @@ router.post('/planforward', function (req, res) {
             Note: "",
             Final: "No",
             DataThrough: reqData.dataThrough,
-            HistoryIncluded: 'No',
+            HistoryIncluded: reqData.included,
             Share: "No",
             Exist:false,
             From:reqData.from

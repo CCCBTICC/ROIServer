@@ -70,4 +70,17 @@ function remove(db, requestData, res) {
     });
 }
 
+//router.get('/:objectId', function (req, res) {
+//    var objectId = req.params.objectId;
+//
+//    req.db.collection('scenarios').findOne({_id:objectId},{fields:{owner:1}},function(err,result){
+//        console.log(result);
+//        if(!err){
+//        res.send(result);}
+//        else{
+//            res.send({err:err});
+//        }
+//    });
+//    });
+
 module.exports = router;

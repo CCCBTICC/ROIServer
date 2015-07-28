@@ -1,12 +1,12 @@
 <div class="container-fluid">
     <!--nav bar-->
     <div class="row">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb path path-palnforward">
             <li><a href="#dashBoard">Home</a></li>
             <li><a href="#planforward">Plan Forward</a></li>
-            <li><a href="">Initial Input</a></li>
-            <li><a href="">Constraints Input</a></li>
-            <li><a href="">Output</a></li>
+            <li><a href="#planforward/init">Initial Input</a></li>
+            <li><a href="#planforward/constrict">Constraints Input</a></li>
+            <li><a href="#planforward/output">Output</a></li>
             <li>Edit</li>
         </ol>
     </div>
@@ -19,7 +19,7 @@
 
             <div class="col-xs-11 col-sm-4">
                 <div class="well well-sm">
-                    SFLY-Jun2015-Oct2015-LTA-X-O-001
+                    {{scenario.scenarioId}}
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
             <label class="col-xs-12 col-sm-2 control-label">Scenario Name:</label>
 
             <div class="col-xs-11 col-sm-4">
-                <input class="form-control">
+                <input class="form-control" ng-model="scenario.Name">
             </div>
             <div class="col-xs-1 elp-info">
                 <i class="fa fa-question-circle" tooltip-placement="left" tooltip="tooltip"></i>
@@ -39,7 +39,7 @@
             <label class="col-xs-12 col-sm-2 control-label">Notes about the scenario:</label>
 
             <div class="col-xs-11 col-sm-4">
-                <textarea class="form-control"></textarea>
+                <textarea class="form-control" ng-model="scenario.Note"></textarea>
             </div>
             <div class="col-xs-1 elp-info">
                 <i class="fa fa-question-circle" tooltip-placement="left" tooltip="tooltip"></i>
@@ -50,7 +50,7 @@
             <div class="col-xs-11 col-sm-4 col-sm-offset-2">
             <div class="checkbox">
                 <label class="control-label">
-                    <input type="checkbox" ng-model=""> Final scenario
+                    <input type="checkbox" ng-model="scenario.Final" ng-true-value="'Yes'" ng-false-value="'No'"> Final scenario
                 </label>
             </div>
                 </div>
@@ -61,7 +61,7 @@
         <!--button save and cancel-->
         <div class="form-group">
             <div class="col-xs-6 col-xs-offset-0 col-sm-2 col-sm-offset-2">
-                <button type="button" class="btn btn-default" ng-click="savePlanForward()">Save</button>
+                <button type="button" class="btn btn-default" ng-click="update()">Save</button>
             </div>
             <div class="col-xs-6 col-sm-2">
                 <a type="button" href="#/planforward/output" class="btn btn-default">Cancel</a>

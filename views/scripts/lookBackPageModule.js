@@ -199,13 +199,12 @@ back.factory('backManager', function ($http) {
     }
 });
 
-back.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($scope, manager, user) {
+back.controller('backInitCtrl', ['$scope', 'backManager', 'user', 'history', function ($scope, manager, user, history) {
     // tooltips
     $scope.brandTooltips = 'brandTooltips';
     $scope.attrTooltips = 'attrTooltips';
     $scope.beginPeriodTooltips = 'beginPeriodTooltips';
     $scope.endPeriodTooltips = 'endPeriodTooltips';
-
 
     // Calendar settings
     $scope.opened = {};
@@ -215,9 +214,12 @@ back.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($sco
         startingDay: 1,
         minMode: 'month'
     };
-    $scope.historydate='2015-05';
-    var d=new Date($scope.historydate);
-    $scope.maxDate = new Date(d.getFullYear(), d.getMonth()+2,0);
+    history.getHistoryDate(function (d) {
+        $scope.historydate = d;
+    });
+    var d = new Date($scope.historydate);
+    $scope.maxDate = new Date(d.getFullYear(), d.getMonth() + 2, 0);
+    //scope functions for calender settings
     $scope.initDate = function () {
         var date = $scope.maxDate;
         $scope.lookBack.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -237,13 +239,17 @@ back.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($sco
         }
     };
     $scope.getLastDate = function () {
-        if(!$scope.lookBack.endPeriod){$scope.lookBack.endPeriod=$scope.lookBack.beginPeriod;}
+        if (!$scope.lookBack.endPeriod) {
+            $scope.lookBack.endPeriod = $scope.lookBack.beginPeriod;
+        }
         var d = new Date($scope.lookBack.endPeriod);
         $scope.lookBack.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
         $scope.modifyEndDate();
     };
     $scope.modifyEndDate = function () {
-        if(!$scope.lookBack.beginPeriod){$scope.lookBack.beginPeriod=$scope.maxDate;}
+        if (!$scope.lookBack.beginPeriod) {
+            $scope.lookBack.beginPeriod = $scope.maxDate;
+        }
         var d = new Date($scope.lookBack.beginPeriod);
         if (d > $scope.maxDate) {
             d = $scope.maxDate
@@ -262,7 +268,6 @@ back.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($sco
             $scope.lookBack.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
         }
     };
-
     //calendar settings -END-
 
     // init data default
@@ -297,49 +302,158 @@ back.controller('backInitCtrl', ['$scope', 'backManager', 'user', function ($sco
     //set tempData
     $scope.nextPage = function () {
         console.log('clicked');
-        var length = ($scope.lookBack.endPeriod.getFullYear() - $scope.lookBack.beginPeriod.getFullYear()) * 12 + $scope.lookBack.endPeriod.getMonth() - $scope.lookBack.beginPeriod.getMonth() + 1;
         // first step input init
         $scope.lookBack.init.UserName = $scope.user.name;
         $scope.lookBack.init.Brand = $scope.lookBack.brand;
         $scope.lookBack.init.lmTouch = $scope.lookBack.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
         $scope.lookBack.init.StartingTime = $scope.lookBack.beginPeriod;
         $scope.lookBack.init.EndingTime = $scope.lookBack.endPeriod;
-        $scope.lookBack.init.Spend = $scope.lookBack.spend;
-        $scope.lookBack.init.PlanMonths = length;
         manager.setTempData($scope.lookBack.init);
         console.log("data updated");
     };
 }]);
 
-back.controller('backAddCtrl', ['$scope', 'backManager', '$location', function ($scope, manager, location) {
+back.controller('backAddCtrl', ['$scope', 'backManager', '$location', 'history', '$filter', function ($scope, manager, location, history, filter) {
     $scope.lookBack = {};
     $scope.lookBack.output = {};
+    $scope.lookBack.history = {};
     $scope.spendTooltips = 'spendTooltips';
     $scope.includeTooltips = 'includeTooltips';
+
+    //main
     manager.getTempData(function (data) {
             $scope.lookBack.output = data;
+            history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (dataArray) {
+                console.log('from history in lookback/add');
+                console.log(dataArray);
+                Object.keys(dataArray[0]).forEach(function (key) {
+                    var value = 0;
+                    dataArray.forEach(function (data) {
+                        value += data[key];
+                    });
+                    $scope.lookBack.history[key] = value;
+                });
+            });
             $scope.lookBack.output.Spend = 5000000;
-            $scope.lookBack.output.included = "true";
+            //$scope.lookBack.output.Spend = $scope.lookBack.history.Spend;
+            $scope.lookBack.output.included = "false";
             console.log($scope.lookBack.output);
-        }
-    );
+    });
+
     $scope.run = function () {
+        //run1
         if ($scope.lookBack.output.include) {
-            $scope.lookBack.output.dataThrough = $scope.lookBack.output.EndingTime;
+            $scope.lookBack.output.dataThrough = filter('date')($scope.lookBack.output.EndingTime, 'yyyy-MM');
         }
         else {
             var d = new Date($scope.lookBack.output.StartingTime);
-            if (d.getMonth() < 9) {
-                $scope.lookBack.output.dataThrough = d.getFullYear() + '-0' + (d.getMonth() + 1);
-            }
-            else {
-                $scope.lookBack.output.dataThrough = d.getFullYear() + '-' + (d.getMonth() + 1);
-            }
+            $scope.lookBack.output.dataThrough = new Date(d.getFullYear(), d.getMonth(), 0);
+            $scope.lookBack.output.dataThrough = filter('date')($scope.lookBack.output.dataThrough, 'yyyy-MM');
         }
-        $scope.lookBack.output.Algorithm = 2;
-        console.log($scope.lookBack.output.Algorithm);
+
+
+
+
+
+
+
+        // first step input init
+        $scope.planForward.init.UserName = $scope.user.name;
+        $scope.planForward.init.Brand = $scope.planForward.brand;
+        $scope.planForward.init.lmTouch = $scope.planForward.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
+        $scope.planForward.init.StartingTime = filter('date')($scope.planForward.beginPeriod, 'yyyy-MM');
+        $scope.planForward.init.EndingTime = filter('date')($scope.planForward.endPeriod, 'yyyy-MM');
+        $scope.planForward.init.Spend = $scope.planForward.spend;
+        $scope.planForward.init.PlanMonths = length;
+        $scope.planForward.init.Algorithm = 1;
+        $scope.lookBack.output.Algorithm = 1;
         manager.postData($scope.lookBack.output, function (result) {
+
             console.log(result);
+            if (result) {
+                var count;
+                function doGet() {
+                    if ($scope.getJson === false) {
+                        manager.getData(function (data) {
+                            if (data) {
+                                console.log("from doGet in forward/constrict after got Data");
+                                console.log(data);
+                                $scope.getJson = true;
+                                $scope.planForward.output = data;
+
+                                //change type for calculating
+                                $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
+                                $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
+                                $scope.planForward.output.semMin = $scope.planForward.output.semLB;
+                                $scope.planForward.output.semMax = $scope.planForward.output.semUB;
+                                $scope.planForward.output.semBMin = $scope.planForward.output.semBLB;
+                                $scope.planForward.output.semBMax = $scope.planForward.output.semBUB;
+                                $scope.planForward.output.semCMin = $scope.planForward.output.semCLB;
+                                $scope.planForward.output.semCMax = $scope.planForward.output.semCUB;
+                                $scope.planForward.output.semPMin = $scope.planForward.output.semPLB;
+                                $scope.planForward.output.semPMax = $scope.planForward.output.semPUB;
+                                $scope.planForward.output.semOMin = $scope.planForward.output.semOLB;
+                                $scope.planForward.output.semOMax = $scope.planForward.output.semOUB;
+                                $scope.planForward.output.disMin = $scope.planForward.output.disLB;
+                                $scope.planForward.output.disMax = $scope.planForward.output.disUB;
+                                $scope.planForward.output.socMin = $scope.planForward.output.socLB;
+                                $scope.planForward.output.socMax = $scope.planForward.output.socUB;
+                                $scope.planForward.output.affMin = $scope.planForward.output.affLB;
+                                $scope.planForward.output.affMax = $scope.planForward.output.affUB;
+                                $scope.planForward.output.parMin = $scope.planForward.output.parLB;
+                                $scope.planForward.output.parMax = $scope.planForward.output.parUB;
+
+                                //$scope.planForward.output.semPR = "";
+                                //$scope.planForward.output.disPR = "";
+                                //$scope.planForward.output.socPR = "";
+                                //$scope.planForward.output.affPR = "";
+                                //$scope.planForward.output.parPR = "";
+                                //$scope.planForward.output.semAR = "";
+                                //$scope.planForward.output.disAR = "";
+                                //$scope.planForward.output.socAR = "";
+                                //$scope.planForward.output.affAR = "";
+                                //$scope.planForward.output.parAR = "";
+
+                                var b = new Date($scope.planForward.output.StartingTime);
+                                b = new Date(b.getFullYear(), b.getMonth() + 1);
+                                console.log(b);
+                                var e = new Date($scope.planForward.output.EndingTime);
+                                e = new Date(e.getFullYear(), e.getMonth() + 1);
+                                console.log(e);
+                                while (b <= e) {
+                                    $scope.planForward.ControlChannels.push(b);
+                                    b = new Date(b.getFullYear(), b.getMonth() + 1, 1);
+                                }
+                                var month = ['dirSpendM1', 'dirSpendM2', 'dirSpendM3', 'dirSpendM4', 'dirSpendM5', 'dirSpendM6'];
+                                month.forEach(function (key) {
+                                    if ($scope.planForward.output[key]) {
+                                        $scope.planForward.ControlChannelsDM.push($scope.planForward.output[key]);
+                                    }
+                                });
+
+                                //get historyData
+                                //history.getHistoryData($scope.planForward.StartingTime,$scope.planForward.EndingTime,function(dataArray){
+                                //    console.log('from history in doGet in forward/constrict');
+                                //    console.log(dataArray);
+                                //    Object.keys(dataArray[0]).forEach(function(key){
+                                //        var value=0;
+                                //        dataArray.forEach(function(data){
+                                //            value+=data[key];
+                                //        });
+                                //        $scope.planForward.history[key]=value;
+                                //    });
+                                //});
+
+                            }
+                        });
+                    }
+                    else {
+                        clearInterval(count);
+                    }
+                }
+                $scope.getJson = false;
+                count = setInterval(doGet, 1000 * 1); //set frequency
+            }
             location.path('lookback/output');
         });
     }
@@ -372,6 +486,18 @@ back.controller('backOutputCtrl', ['$scope', 'backManager', '$location', functio
         margin: {left: 100, top: 0, right: 100, bottom: 30}
     };
 
+    $scope.edit = function () {
+
+        location.path('lookback/edit');
+    };
+    $scope.export = function () {
+
+        location.path('myscenarios/export');
+    };
+    $scope.share = function () {
+
+        location.path('myscenarios/share');
+    };
 
     manager.getName(function (name) {
         if (!name) {

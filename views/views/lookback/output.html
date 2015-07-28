@@ -208,14 +208,14 @@
         <div class="col-sm-10 col-sm-offset-2">
             <div class="col-sm-3">
                 <div class="btn-group" dropdown>
-                    <button type="button" class="btn btn-default" ng-click="saveGet()">Edit</button>
+                    <button type="button" class="btn btn-default" ng-click="edit()">Edit</button>
                     <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
                         <span class="caret"></span>
                         <span class="sr-only">Split button!</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="javascript:void(0)" ng-click="">Export</a></li>
-                        <li><a href="javascript:void(0)" ng-click="">Share</a></li>
+                        <li><a  ng-click="export()">Export</a></li>
+                        <li><a  ng-click="share()">Share</a></li>
                     </ul>
                 </div>
 

@@ -45,7 +45,10 @@
                 <label for="lookBackSpend" class="col-sm-3 control-label">Portfolio Spend :</label>
 
                 <div class="col-sm-4">
-                    <input class="form-control" id="lookBackSpend" type="text" ng-model="lookBack.output.Spend" format-input>
+                    <div class="well well-sm">
+                       {{lookBack.output.Spend | formatCurrency}}
+                    </div>
+                    <!--<input class="form-control" id="lookBackSpend" type="text" ng-model="lookBack.output.Spend" format-input>-->
                 </div>
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{spendTooltips}}"></i>

@@ -203,7 +203,7 @@ forward.factory('forwardManager', function ($http) {
     }
 });
 
-forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter', function ($scope, manager, user, location, filter) {
+forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter','history', function ($scope, manager, user, location, filter,history) {
 
     // Calendar settings
     ////scope vars for calender settings
@@ -214,7 +214,9 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
         startingDay: 1,
         minMode: 'month'
     };
-    $scope.historydate = '2015-05';
+    history.getHistoryDate(function(d){
+        $scope.historydate=d;
+    });
     var d = new Date($scope.historydate);
     $scope.minDate = new Date(d.getFullYear(), d.getMonth() + 2, 1);
     $scope.maxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 6, 0);
@@ -317,7 +319,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
     });
 }]);
 
-forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$location', '$filter', function ($scope, manager, location, filter) {
+forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$location', '$filter','history', function ($scope, manager, location, filter,history) {
     //check if data id exist in factory
     manager.getName(function (name) {
         if (!name) {
@@ -328,6 +330,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     //initial controller scope
     $scope.planForward = {
         output: {},
+        history:{},
         ControlChannelsDM: [],
         ControlChannels: [],
         selectPlan: {
@@ -343,6 +346,9 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
         semTotal: false
     };
     $scope.slideError = false;
+    history.getHistoryDate(function(d){
+        $scope.historydate=d;
+    });
 
     //checkbox validation
     $scope.Count = function () {
@@ -361,6 +367,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
         Object.keys($scope.planForward.selectPlan).forEach(function (key) {
             if ($scope.planForward.selectPlan[key]) {
                 count++;
+                // min=max=$scope.planForward.history[key];
             }
         });
         if (count > 2) {
@@ -445,7 +452,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
             "SLFY-" + filter('date')(beginDay, 'MMMyyyy') +
             "-" + filter('date')(endDay, 'MMMyyyy') + "-" +
             $scope.planForward.output.lmTouch.charAt(0) + "-" + "000";
-        $scope.planForward.output.dataThrough = "2015-05";
+        $scope.planForward.output.dataThrough = $scope.historydate;
         $scope.planForward.output.from = "forward";
         //post data to R
         manager.postData($scope.planForward.output, function (res) {
@@ -516,6 +523,19 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                         }
                     });
 
+                    //get historyData
+                    //history.getHistoryData($scope.planForward.StartingTime,$scope.planForward.EndingTime,function(dataArray){
+                    //    console.log('from history in doGet in forward/constrict');
+                    //    console.log(dataArray);
+                    //    Object.keys(dataArray[0]).forEach(function(key){
+                    //        var value=0;
+                    //        dataArray.forEach(function(data){
+                    //            value+=data[key];
+                    //        });
+                    //        $scope.planForward.history[key]=value;
+                    //    });
+                    //});
+
                 }
             });
         }
@@ -532,7 +552,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     });
 }]);
 
-forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', '$filter', function ($scope, manager, location, filter) {
+forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', '$filter','history', function ($scope, manager, location, filter,history) {
     manager.getName(function (name) {
         if (!name) {
             location.path("/planforward/init");
@@ -565,6 +585,10 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
         }
     };
     $scope.slideError = false;
+    history.getHistoryDate(function(d){
+        $scope.historydate=d;
+    });
+
     //reset slideValue
     $scope.reSet = function () {
         //Slide=AS;
@@ -606,7 +630,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             filter('date')(endDay, 'MMMyyyy') + "-" +
             $scope.planForward.output.lmTouch.charAt(0) + "-" + "00X";
         //
-        $scope.planForward.output.dataThrough = "2015-05";
+        $scope.planForward.output.dataThrough = $scope.historydate;
         $scope.planForward.output.from = "forward";
         //post data to R
         manager.postData($scope.planForward.output, function (res) {
@@ -691,6 +715,18 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                 }
             }
         });
+    };
+    $scope.share=function(){
+
+        location.path('myscenarios/share');
+    };
+    $scope.export=function(){
+        //main
+        location.path('/myscenarios/export');
+    };
+    $scope.edit=function(){
+
+        location.path('/planforward/edit');
     };
     //slide validation
     $scope.fix = function () {
@@ -847,6 +883,8 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                     $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
                     $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
 
+                    $scope.planForward.output.ROID=Number($scope.planForward.output.run2ProjROI.substr(0,3))-Number($scope.planForward.output.run1ProjROI.substr(0,3));
+                    $scope.planForward.output.changeR=$scope.planForward.output.ROID/Number($scope.planForward.output.run1ProjROI.substr(0,3))*100;
                     $scope.compareChart.data = [
                         {title: "SEM", value: $scope.planForward.output.semSD},
                         {title: "Display", value: $scope.planForward.output.disSD},

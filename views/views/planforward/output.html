@@ -254,7 +254,7 @@
                         <td colspan="5" ng-hide="showme"></td>
                         <td colspan="2">{{planForward.output.run1ProjROI}}</td>
                         <td colspan="2">{{planForward.output.run2ProjROI}}</td>
-                        <td colspan="2"></td>
+                        <td colspan="2">{{planForward.output.ROID}}%</td>
                     </tr>
                     <tr>
                         <td colspan="all"></td>
@@ -263,7 +263,7 @@
                         <td class="td-title">Change in Brand Total Revenue</td>
                         <td colspan="9" ng-hide="showme"></td>
                         <td colspan="4" ng-show="showme"></td>
-                        <td colspan="2">{{planForward.output.totAR-planForward.output.totPR  | number}}%</td>
+                        <td colspan="2">{{planForward.output.changeR  | number}}%</td>
                     </tr>
                     </tbody>
                 </table>
@@ -281,14 +281,14 @@
         <div class="col-sm-10 col-sm-offset-2">
             <div class="col-sm-3">
                 <div class="btn-group" dropdown>
-                    <a href="#/planforward/edit" class="btn btn-default" ng-click="save()">Edit</a>
+                    <button  class="btn btn-default" ng-click="edit()">Edit</button>
                     <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
                         <span class="caret"></span>
                         <span class="sr-only">Split button!</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="#/myscenarios/export" ng-click="">Export</a></li>
-                        <li><a href="#/myscenarios/share" ng-click="">Share</a></li>
+                        <li><a href="" ng-click="export()">Export</a></li>
+                        <li><a href="" ng-click="share()">Share</a></li>
                     </ul>
                 </div>
             </div>
