@@ -32,7 +32,7 @@ function userLogin(db, requestData, res) {
             return;
         }
         if (result.password === password) {
-            res.send(true);
+            res.send(username);
         } else {
             res.send(false);
         }

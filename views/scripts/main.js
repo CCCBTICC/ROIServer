@@ -76,7 +76,7 @@ app.config(function ($routeProvider) {
         })
 });
 
-app.controller("loginCtrl", function ($scope, user, $http) {
+app.controller("loginCtrl", function ($scope, $http) {
     $scope.login = {};
     $scope.login.username = "user1";
     $scope.login.password = "test";
@@ -88,18 +88,28 @@ app.controller("loginCtrl", function ($scope, user, $http) {
             data: {action: 'login', data: $scope.login}
         }).success(function (res) {
             if (res) {
-                user.setUser($scope.login.username);
+                window.sessionStorage.setItem('username',res);
                 window.location.href = ('http://' + window.location.hostname + ':3001/home.html');
             } else {
-                console.log('uncorrect')
+                console.log('uncorrect');
             }
         });
     };
 });
 app.controller("indexCtrl", function ($scope, user) {
-    user.getUser(function (user) {
-        $scope.user = user;
+    //var
+    var username = window.sessionStorage.getItem('username');
+    //function declare
+    $scope.logout = function(){
+        window.sessionStorage.removeItem('username');
+        window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
+    };
+    //main
+    user.setUser(username);
+    user.getUser(function(user){
+       $scope.user = user;
     });
+
 });
 app.controller("savePlanCtrl", function ($scope, $http) {
     console.log('saveCtrl work');
@@ -114,7 +124,6 @@ app.controller("savePlanCtrl", function ($scope, $http) {
 });
 app.factory('user', function ($http) {
     var user = {};
-    user.name = "user1";
     user.recentlyLoginDate = new Date();
     var userUrl = "http://" + window.location.hostname + ":3001/users";
     var post = function (data, callback) {
