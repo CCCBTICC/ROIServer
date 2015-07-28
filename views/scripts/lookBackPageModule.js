@@ -341,7 +341,7 @@ back.controller('backAddCtrl', ['$scope', 'backManager', '$location', 'history',
     });
 
     $scope.run = function () {
-        //run1
+
         if ($scope.lookBack.output.include) {
             $scope.lookBack.output.dataThrough = filter('date')($scope.lookBack.output.EndingTime, 'yyyy-MM');
         }
@@ -350,116 +350,62 @@ back.controller('backAddCtrl', ['$scope', 'backManager', '$location', 'history',
             $scope.lookBack.output.dataThrough = new Date(d.getFullYear(), d.getMonth(), 0);
             $scope.lookBack.output.dataThrough = filter('date')($scope.lookBack.output.dataThrough, 'yyyy-MM');
         }
-
-
-
-
-
-
-
-        // first step input init
-        $scope.planForward.init.UserName = $scope.user.name;
-        $scope.planForward.init.Brand = $scope.planForward.brand;
-        $scope.planForward.init.lmTouch = $scope.planForward.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
-        $scope.planForward.init.StartingTime = filter('date')($scope.planForward.beginPeriod, 'yyyy-MM');
-        $scope.planForward.init.EndingTime = filter('date')($scope.planForward.endPeriod, 'yyyy-MM');
-        $scope.planForward.init.Spend = $scope.planForward.spend;
-        $scope.planForward.init.PlanMonths = length;
-        $scope.planForward.init.Algorithm = 1;
+        //run1
+        //// first step input init
+        $scope.lookBack.output.StartingTime = filter('date')($scope.lookBack.output.StartingTime, 'yyyy-MM');
+        $scope.lookBack.output.EndingTime = filter('date')($scope.lookBack.output.endPeriod, 'yyyy-MM');
         $scope.lookBack.output.Algorithm = 1;
-        manager.postData($scope.lookBack.output, function (result) {
+        manager.postData($scope.lookBack.output, function (res) {
+            var count,getJson;
+            function doGet() {
+                if ($scope.getJson === false) {
+                    manager.getData(function (data) {
+                        if (data) {
+                            console.log("from doGet in forward/constrict after got Data");
+                            console.log(data);
+                            getJson = true;
+                            $scope.lookBack.output1 = data;
 
-            console.log(result);
-            if (result) {
-                var count;
-                function doGet() {
-                    if ($scope.getJson === false) {
-                        manager.getData(function (data) {
-                            if (data) {
-                                console.log("from doGet in forward/constrict after got Data");
-                                console.log(data);
-                                $scope.getJson = true;
-                                $scope.planForward.output = data;
+                            //run2
+                            $scope.lookBack.output1.Algorithm = 2;
+                            $scope.lookBack.output1.AlgStartingTime = "";
+                            $scope.lookBack.output1.AlgEndingTime = "";
+                            $scope.lookBack.output1.AlgDuration = "";
 
-                                //change type for calculating
-                                $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
-                                $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
-                                $scope.planForward.output.semMin = $scope.planForward.output.semLB;
-                                $scope.planForward.output.semMax = $scope.planForward.output.semUB;
-                                $scope.planForward.output.semBMin = $scope.planForward.output.semBLB;
-                                $scope.planForward.output.semBMax = $scope.planForward.output.semBUB;
-                                $scope.planForward.output.semCMin = $scope.planForward.output.semCLB;
-                                $scope.planForward.output.semCMax = $scope.planForward.output.semCUB;
-                                $scope.planForward.output.semPMin = $scope.planForward.output.semPLB;
-                                $scope.planForward.output.semPMax = $scope.planForward.output.semPUB;
-                                $scope.planForward.output.semOMin = $scope.planForward.output.semOLB;
-                                $scope.planForward.output.semOMax = $scope.planForward.output.semOUB;
-                                $scope.planForward.output.disMin = $scope.planForward.output.disLB;
-                                $scope.planForward.output.disMax = $scope.planForward.output.disUB;
-                                $scope.planForward.output.socMin = $scope.planForward.output.socLB;
-                                $scope.planForward.output.socMax = $scope.planForward.output.socUB;
-                                $scope.planForward.output.affMin = $scope.planForward.output.affLB;
-                                $scope.planForward.output.affMax = $scope.planForward.output.affUB;
-                                $scope.planForward.output.parMin = $scope.planForward.output.parLB;
-                                $scope.planForward.output.parMax = $scope.planForward.output.parUB;
+                            var beginDay = new Date($scope.lookBack.output1.StartingTime);
+                            beginDay = new Date(beginDay.getFullYear(), beginDay.getMonth() + 1, 1);
+                            var endDay = new Date($scope.lookBack.output1.EndingTime);
+                            endDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1, 1);
 
-                                //$scope.planForward.output.semPR = "";
-                                //$scope.planForward.output.disPR = "";
-                                //$scope.planForward.output.socPR = "";
-                                //$scope.planForward.output.affPR = "";
-                                //$scope.planForward.output.parPR = "";
-                                //$scope.planForward.output.semAR = "";
-                                //$scope.planForward.output.disAR = "";
-                                //$scope.planForward.output.socAR = "";
-                                //$scope.planForward.output.affAR = "";
-                                //$scope.planForward.output.parAR = "";
+                            $scope.lookBack.output1.scenarioId =
+                                "SLFY-" + filter('date')(beginDay, 'MMMyyyy') +
+                                "-" + filter('date')(endDay, 'MMMyyyy') + "-" +
+                                $scope.lookBack.output1.lmTouch.charAt(0) + "-" + "000";
+                            $scope.lookBack.output1.dataThrough = $scope.lookBack.output.dataThrough;
+                            $scope.lookBack.output1.from = "back";
 
-                                var b = new Date($scope.planForward.output.StartingTime);
-                                b = new Date(b.getFullYear(), b.getMonth() + 1);
-                                console.log(b);
-                                var e = new Date($scope.planForward.output.EndingTime);
-                                e = new Date(e.getFullYear(), e.getMonth() + 1);
-                                console.log(e);
-                                while (b <= e) {
-                                    $scope.planForward.ControlChannels.push(b);
-                                    b = new Date(b.getFullYear(), b.getMonth() + 1, 1);
-                                }
-                                var month = ['dirSpendM1', 'dirSpendM2', 'dirSpendM3', 'dirSpendM4', 'dirSpendM5', 'dirSpendM6'];
-                                month.forEach(function (key) {
-                                    if ($scope.planForward.output[key]) {
-                                        $scope.planForward.ControlChannelsDM.push($scope.planForward.output[key]);
-                                    }
-                                });
-
-                                //get historyData
-                                //history.getHistoryData($scope.planForward.StartingTime,$scope.planForward.EndingTime,function(dataArray){
-                                //    console.log('from history in doGet in forward/constrict');
-                                //    console.log(dataArray);
-                                //    Object.keys(dataArray[0]).forEach(function(key){
-                                //        var value=0;
-                                //        dataArray.forEach(function(data){
-                                //            value+=data[key];
-                                //        });
-                                //        $scope.planForward.history[key]=value;
-                                //    });
-                                //});
-
-                            }
-                        });
-                    }
-                    else {
-                        clearInterval(count);
-                    }
+                            manager.postData($scope.lookBack.output1,function(res){
+                                console.log(res);
+                                location.path('lookback/output');
+                            })
+                        }
+                    });
                 }
-                $scope.getJson = false;
+                else {
+                    clearInterval(count);
+                }
+            }
+            console.log('from run1 in run back/add');
+            console.log(res);
+            if (res) {
+                getJson = false;
                 count = setInterval(doGet, 1000 * 1); //set frequency
             }
-            location.path('lookback/output');
         });
     }
 }]);
 
-back.controller('backOutputCtrl', ['$scope', 'backManager', '$location', function ($scope, manager, location) {
+back.controller('backOutputCtrl', ['$scope', 'backManager', '$location','history',function ($scope, manager, location,history) {
 
     $scope.lookBack = {};
     $scope.lookBack.output = {};
@@ -515,6 +461,9 @@ back.controller('backOutputCtrl', ['$scope', 'backManager', '$location', functio
                     console.log(data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
+                    history.getHistoryData(function(data){
+                        $scope.lookBack.history=data;
+                    });
 
                 }
             });
