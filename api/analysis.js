@@ -48,6 +48,48 @@ router.post('/planforward', function (req, res) {
     Rmodule.sendRcompute(objectId, req.body.data);
 });
 
+router.post('/lookback', function (req, res){
+    var begin = req.body.begin;
+    var end = req.body.end;
+    var allMonth = [];
+    var allMonthObj = [];
+    console.log(typeof allMonthObj);
+    if(end >= begin){
+        allMonth = getAllMonth(begin,end);
+        allMonth.forEach(function (monthStr,index){
+            req.db.collection("history").findOne({Month:monthStr},{}, function (err, result){
+                console.log(result);
+                allMonthObj.push(result);
+                console.log(allMonthObj);
+                //allMonthObj[index] = result;
+
+            });
+            if(allMonth.length === allMonthObj.length){
+                res.send(allMonthObj);
+            }
+        });
+    }else{
+        console.log('end should latter than begin');
+    }   
+
+}); 
+
+router.get('/lookback', function (req, res){
+    var allMonth = [];
+    var latestMonth = '';
+    req.db.collection('history').find().toArray(function (err, result){
+        console.log(result);
+        result.forEach(function (single, index){
+            allMonth.push(single.Month);
+        });
+        allMonth.sort();
+        res.send({
+            earliest:allMonth[0],
+            latest:allMonth[allMonth.length-1]
+        });
+    });
+}); 
+
 // using get method to  check the file change
 router.get('/:objectId', function (req, res) {
     var objectId = req.params.objectId;
@@ -55,3 +97,54 @@ router.get('/:objectId', function (req, res) {
     res.send(result);
 });
 module.exports = router;
+
+
+
+function getAllMonth (begin, end){
+    var year = end.slice(0,4) - begin.slice(0,4);
+    var month = end.slice(5)  - begin.slice(5);
+    var output = [];
+    var temp = "";
+    if(year>0){
+    for(var i=Number(begin.slice(5,7));i<=12;i++){
+        if(i<10){
+        temp = begin.slice(0,5)+"0"+i;
+        output.push(temp);
+        }else{
+        temp = begin.slice(0,5)+i; 
+        output.push(temp);   
+        }
+    }
+    for(var i=1;i<year;i++){
+       for(var j=1;j<=12;j++){
+             if(j<10){ 
+                 temp = Number(Number(begin.slice(0,4))+i)+"-0"+j;
+                 output.push(temp);
+             }else{
+                 temp = Number(Number(begin.slice(0,4))+i)+"-"+j;
+                 output.push(temp);
+             }
+            }
+    }
+    for(var i=1;i<=Number(end.slice(5));i++){
+        if(i<10){
+        temp = end.slice(0,4)+"-0"+i;
+        output.push(temp);
+        }else{
+        temp = end.slice(0,4)+"-"+i;  
+        output.push(temp);
+        }
+    }       
+    }else{
+      for(var i=Number(begin.slice(5,7));i<=Number(end.slice(5,7));i++){
+        if(i<10){
+        temp = begin.slice(0,5)+"0"+i;
+        output.push(temp);
+        }else{
+        temp = begin.slice(0,5)+i; 
+        output.push(temp);   
+        }
+    }
+    }    
+    return output;
+}
