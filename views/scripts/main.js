@@ -105,6 +105,9 @@ app.controller("indexCtrl", function ($scope, user) {
         window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
     };
     //main
+    if(!username){
+        $scope.logout();
+    }
     user.setUser(username);
     user.getUser(function(user){
        $scope.user = user;

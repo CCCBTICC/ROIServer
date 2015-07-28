@@ -70,14 +70,13 @@ function list(db, requestData, res) {
 function edit(db, requestData, res) {
     var username = requestData.username;
     var scenarioId = requestData.scenarioId;
-    var name = requestData.scenarioName;
-    var note = requestData.scenarioNote;
-
+    var update = requestData.update;
     db.collection('scenarios').findOne({_id: new ObjectId(scenarioId)}, {}, function (err, scenario) {
         if (scenario) {
             if (scenario.owner === username) {
-                scenario.name= name;
-                scenario.note= note;
+               Object.keys(update).forEach(function(key){
+                   scenario[key]=update[key];
+               });
                 db.collection('scenarios').findOneAndUpdate({_id:scenario._id}, scenario, function (err, result) {
                     res.send(true);
                 });
@@ -87,6 +86,28 @@ function edit(db, requestData, res) {
         }
     });
 }
+//function edit(db, requestData, res) {
+//    var username = requestData.username;
+//    var scenarioId = requestData.scenarioId;
+//    var name = requestData.scenarioName;
+//    var note = requestData.scenarioNote;
+//    var final=requestData.scenarioFinal;
+//    db.collection('scenarios').findOne({_id: new ObjectId(scenarioId)}, {}, function (err, scenario) {
+//        if (scenario) {
+//            if (scenario.owner === username) {
+//                scenario.name= name;
+//                scenario.note= note;
+//                scenario.final=final;
+//                //scenario.exist=exist;
+//                db.collection('scenarios').findOneAndUpdate({_id:scenario._id}, scenario, function (err, result) {
+//                    res.send(true);
+//                });
+//            } else {
+//                res.send(false);
+//            }
+//        }
+//    });
+//}
 
 function remove(db, requestData, res) {
     var scenarioId = requestData.scenarioId;

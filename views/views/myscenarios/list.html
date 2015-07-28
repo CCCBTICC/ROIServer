@@ -13,8 +13,8 @@
             <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                 <thead>
                 <tr>
-                    <th class="col-1" rowspan="2"></th>
-                    <th class="col-1" rowspan="2">ID</th>
+                    <th class="col-0" rowspan="2"></th>
+                    <th class="col-2" rowspan="2">ID</th>
                     <th class="col-2" rowspan="2">Name</th>
                     <th class="col-3" rowspan="2">Note</th>
                     <th class="col-1" rowspan="2">Owner</th>
@@ -35,10 +35,10 @@
                 </thead>
                 <tbody class="row-2">
                 <tr>
-                    <td class="check col-1">
+                    <td class="check col-0">
                         <label><input type="checkbox"></label>
                     </td>
-                    <td class="non-number col-1">1</td>
+                    <td class="non-number col-2">1</td>
                     <td class="non-number col-2">SFLY-May-2015-Optimized</td>
                     <td class="non-number col-3">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
                     <td class="non-number col-1">Mike</td>
@@ -46,8 +46,8 @@
                     <td class="non-number col-1">2015-07-21</td>
                     <td class="non-number col-1">Shutterfly</td>
                     <td class="non-number col-1">{{5000000| formatCurrency}}</td>
-                    <td class="non-number col-1">2014-09</td>
-                    <td class="non-number col-1">2014-10</td>
+                    <td class="non-number col-1" colspan="1">2014-09</td>
+                    <td class="non-number col-1" colspan="1">2014-10</td>
                     <td class="non-number col-1">Last Touch</td>
                     <td class="non-number col-1">2014-06</td>
                     <td class="non-number col-1">No</td>
@@ -187,23 +187,23 @@
                     <td class="non-number">No</td>
                 </tr>
                 <tr ng-repeat="scenario in scenarios" ng-click="selectRow(scenario)">
-                    <td class="check">
+                    <td class="check non-number">
                         <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
                     </td>
-                    <td class="non-number">{{scenario.ScenarioID}}</td>
-                    <td>{{scenario.Name}}</td>
-                    <td>{{scenario.Note}}</td>
+                    <td class="non-number">{{scenario.scenarioId}}</td>
+                    <td class="non-number">{{scenario.name}}</td>
+                    <td class="non-number">{{scenario.note}}</td>
                     <td class="non-number">{{scenario.owner}}</td>
-                    <td class="non-number">{{scenario.Final}}</td>
-                    <td class="non-number">{{scenario.CreateDate | date: 'yyyy-MM-dd'}}</td>
-                    <td class="non-number">{{scenario.Brand}}</td>
-                    <td class="non-number">{{scenario.Spend | formatCurrency}}</td>
-                    <td class="non-number">{{scenario.StartingTime | date: 'yyyy-MM'}}</td>
-                    <td class="non-number">{{scenario.EndingTime | date: 'yyyy-MM'}}</td>
+                    <td class="non-number">{{scenario.final}}</td>
+                    <td class="non-number">{{scenario.createDate | date: 'yyyy-MM-dd'}}</td>
+                    <td class="non-number">{{scenario.brand}}</td>
+                    <td class="non-number">{{scenario.spend | formatCurrency}}</td>
+                    <td class="non-number">{{scenario.begin | date: 'yyyy-MM'}}</td>
+                    <td class="non-number">{{scenario.end | date: 'yyyy-MM'}}</td>
                     <td class="non-number">{{scenario.lmTouch}}</td>
-                    <td class="non-number">{{scenario.DataThrough | date: 'yyyy-MM'}}</td>
-                    <td class="non-number">{{scenario.HistoryIncluded}}</td>
-                    <td class="non-number">{{scenario.Share}}</td>
+                    <td class="non-number">{{scenario.dataThrough | date: 'yyyy-MM'}}</td>
+                    <td class="non-number">{{scenario.included}}</td>
+                    <td class="non-number">{{scenario.share}}</td>
                 </tr>
                 </tbody>
             </table>

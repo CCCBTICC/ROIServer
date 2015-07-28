@@ -16,23 +16,23 @@ router.post('/planforward', function (req, res) {
     if (reqData.Algorithm !== 1) {
         scenario = {
             _id: objectId,
-            ScenarioID: reqData.scenarioId,
-            StartingTime: reqData.StartingTime,
-            EndingTime: reqData.EndingTime,
+            scenarioId: reqData.scenarioId,
+            begin: reqData.StartingTime,
+            end: reqData.EndingTime,
             lmTouch: reqData.lmTouch === 'Last Touch' ? 'Last Touch' : 'Multi Touch',
-            Spend: reqData.Spend,
-            CreateDate: d,
-            Revenue: reqData.Revenue,
-            Brand: reqData.Brand,
+            spend: reqData.Spend,
+            createDate: d,
+            revenue: reqData.Revenue,
+            brand: reqData.Brand,
             owner: reqData.UserName,
-            Name: "",
-            Note: "",
-            Final: "No",
-            DataThrough: reqData.dataThrough,
-            HistoryIncluded: 'No',
-            Share: "No",
-            Exist: false,
-            From: reqData.from === 'forward'?'forward':'back'
+            name: "",
+            note: "",
+            final: "No",
+            dataThrough: reqData.dataThrough,
+            included: reqData.included ? reqData.included:'No',
+            share: "No",
+            exist: false,
+            from: reqData.from === 'forward'?'forward':'back'
         };
         console.log(scenario);
         req.db.collection("scenarios").insertOne(scenario, function (err, scenarioDoc) {

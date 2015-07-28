@@ -35,6 +35,16 @@ scenariosApp.factory('scenarioManager', function ($http) {
             };
             post(data, cb);
         },
+        editScenario: function (username, id, update, cb) {
+            var data = {
+                action: 'edit',
+                data: {scenarioId: id, username: username, update: update}
+            };
+            post(data, cb);
+        },
+        getScenarioById: function (id, cb) {
+            $http.get(scenariosUrl + "/" + id).success(cb);
+        },
         setSelectedScenario: function (scenario) {
             selectedScenario = scenario;
         },
@@ -87,7 +97,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         } else {
             for (var i = actionObjInfo.length - 1; i >= 0; i--) {
                 if (actionObjInfo[i] === obj._id) {
-                     actionObjInfo.splice(i,1);
+                    actionObjInfo.splice(i, 1);
                 }
             }
         }
@@ -176,7 +186,9 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                     }
 
                 }
-            }else{alert("You are not the original owner, data can not be deleted!");}
+            } else {
+                alert("You are not the original owner, data can not be deleted!");
+            }
         });
     };
     $scope.share = function () {
@@ -195,6 +207,8 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         $location.path('myscenarios/compare');
     };
     $scope.edit = function () {
+        var objectId = getSelectedId($scope.scenarios);
+        forwardManager.setName(objectId);
         $location.path('myscenarios/edit');
     };
 
@@ -341,7 +355,7 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
     });
 });
 scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioManager, $location) {
-     //vars
+    //vars
 
     //functions
 
@@ -376,28 +390,48 @@ scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioMa
         })
     });
 });
-scenariosApp.controller("scenariosEditCtrl", function ($scope,forwardManager,scenarioManager) {
+scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, scenarioManager, user,$location) {
     //vars
 
     //functions
-    $scope.update=function(){
-        console.log($scope.scenario.Final);
-    };
+
     //scope vars
-    $scope.scenario={};
+
     //scope functions
+    $scope.update = function () {
+        console.log($scope.scenario.final);
+        $scope.update = {
+            name: $scope.scenario.name,
+            note: $scope.scenario.note,
+            final: $scope.scenario.final
+        };
+        user.getUser(function (user) {
+            scenarioManager.editScenario(user.name, $scope.scenario._id, $scope.update, function (res) {
+                console.log(res);
+                if (res) {
+                    alert("ScenarioInfo is  updated.")
+                }else{
+                    alert(res)
+                }
+            });
+        });
 
-    //forwardManager.getName(function(id){
-    //    $scope.id=id;
-    //    scenarioManager.updateScenario(data,function(result){
-    //        console.log(result);
-    //    });
-    //})
-
-
+    };
+    //main
+    forwardManager.getName(function (id) {
+        if (id) {
+            scenarioManager.getScenarioById(id, function (res) {
+                if (res) {
+                    $scope.scenario = res;
+                }
+            });
+        }
+        else {$location.path("myscenarios");
+        }
+    });
 });
-scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, forwardManager,$location) {
-    if(!actionObjInfo[1]){
+scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, forwardManager, $location) {
+    if (!actionObjInfo[1]) {
         $location.path('myscenarios');
     }
     //vars
@@ -461,8 +495,8 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
             Object.keys($scope.compareObj.first).forEach(function (key) {
                 $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
             });
-            $scope.compareObj.difference.run2ProjROI=Number($scope.compareObj.first.run2ProjROI.substr(0,3))-Number($scope.compareObj.first.run2ProjROI.substr(0,3));
-            console.log(Number($scope.compareObj.first.run2ProjROI.substr(0,3)));
+            $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
+            console.log(Number($scope.compareObj.first.run2ProjROI.substr(0, 3)));
             $scope.compareChart.data = [
                 {title: "SEM", value: -$scope.compareObj.difference.semAS},
                 {title: "SEM-Brand", value: -$scope.compareObj.difference.semBAS},
@@ -507,7 +541,7 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
             Object.keys($scope.compareObj.first).forEach(function (key) {
                 $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
             });
-            $scope.compareObj.difference.run2ProjROI=Number($scope.compareObj.first.run2ProjROI.substr(0,3))-Number($scope.compareObj.first.run2ProjROI.substr(0,3));
+            $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
             $scope.compareChart.data = [
                 {title: "SEM", value: -$scope.compareObj.difference.semAS},
                 {title: "SEM-Brand", value: -$scope.compareObj.difference.semBAS},

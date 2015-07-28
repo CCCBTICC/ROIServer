@@ -37,19 +37,23 @@ function initDB(db) {
             [
                 {
                     "_id": new ObjectID('55b068284038186f07f83a82'),
-                    "AlgStartingTime": "data.AlgStartingTime",
-                    "StartingTime": null,
-                    "EndingTime": "data.EndingTime",
+                    "scenarioId": "data.scenarioId",
+                    "begin": null,
+                    "end": "data.EndingTime",
+                    "createDate": null,
                     "lmTouch": null,
-                    "Spend": "data.Spend",
-                    "Revenue": "data.Revenue",
-                    "Brand": null,
+                    "spend": "data.Spend",
+                    "revenue": "data.Revenue",
+                    "brand": null,
                     "owner": "user1",
                     "name": "",
                     "note": "",
-                    "Final": "No",
-                    "DataThrough": null,
-                    "Share": "No"
+                    "final": "No",
+                    "dataThrough": null,
+                    "included":"No",
+                    "share": "No",
+                    "exist":"false",
+                    "from":null
                 }
             ],
             {w: 1},
@@ -71,11 +75,11 @@ function importCollection(collectionName){
         var exec = require('child_process').exec;
         var last = exec(cmd);
         last.stdout.on('data', function (data) {
-            console.log('outputï¼š' + data);
+            console.log('outputï¼?' + data);
         });
         last.on('exit', function (code) {
             //code 0 --> success    code >1  --> fail
-            console.log('import action finished. codeï¼š' + code);
+            console.log('import action finished. codeï¼?' + code);
         return !code;
 
         });

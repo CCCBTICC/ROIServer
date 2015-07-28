@@ -24,7 +24,9 @@ MongoClient.connect(dbURL, function (err, db) {
 var apiFolderName = 'api';
 //var apiFolderName = 'mockapi';
 var scenarios = require('./' + apiFolderName + '/scenarios');
-var analysis = require('./' + apiFolderName + '/analysis');
+//var analysis = require('./' + apiFolderName + '/analysis');
+var analysis = require('./' + 'mockapi' + '/analysis');
+
 var users = require('./' + apiFolderName + '/users');
 var app = express();
 var port = process.env.PORT || 3001;

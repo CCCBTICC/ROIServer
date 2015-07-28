@@ -454,7 +454,7 @@ table.roi-table tr:first-child > th:first-child {
 
 table.roi-table tr > .col-0 {
     min-width: 50px;
-    max-width: 80px;
+    max-width: 50px;
     overflow: hidden;
 }
 

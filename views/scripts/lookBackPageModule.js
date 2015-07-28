@@ -216,7 +216,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
     $scope.lookBack.output = {};
 
     $scope.compareChart = {};
-    $scope.lookBack.output.semSD = 0;
+    $scope.lookBack.output.semSD = 10000;
     $scope.lookBack.output.disSD = 0;
     $scope.lookBack.output.socSD = 0;
     $scope.lookBack.output.affSD = 0;
@@ -249,7 +249,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
 
         location.path('myscenarios/share');
     };
-
+    //main
     manager.getName(function (name) {
         if (!name) {
             location.path("/lookback/init");
@@ -284,7 +284,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
     $scope.toggle = function () {
 
         if ($scope.showme == false) {
-            $scope.lookbackContentSize = 'col-sm-6';
+            $scope.lookbackContentSize = 'col-sm-5';
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
         }
