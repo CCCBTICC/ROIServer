@@ -45,8 +45,8 @@ function initDB(db) {
                     "Revenue": "data.Revenue",
                     "Brand": null,
                     "owner": "user1",
-                    "Name": "",
-                    "Note": "",
+                    "name": "",
+                    "note": "",
                     "Final": "No",
                     "DataThrough": null,
                     "Share": "No"

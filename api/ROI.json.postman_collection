@@ -9,7 +9,9 @@
 		"89f155b2-a46f-1945-e6e3-4e7d273b12f2",
 		"4bd1d1c2-4237-b757-a399-542eecc6f83c",
 		"6a16c0bd-9c65-066c-756f-d17665022c7c",
-		"85071451-0567-81d9-22ba-eba56873943e"
+		"85071451-0567-81d9-22ba-eba56873943e",
+		"214538bc-d1ef-9e4d-4cd7-f9efd3d58848",
+		"99975c28-b371-19e8-c30e-ab2497212543"
 	],
 	"folders": [],
 	"timestamp": 1437114564389,
@@ -39,6 +41,26 @@
 			"rawModeData": "{\n    \"action\":\"login\",\n    \"data\":{\n        \"username\":\"user2\",\n        \"password\":\"test\"\n    }\n}"
 		},
 		{
+			"id": "214538bc-d1ef-9e4d-4cd7-f9efd3d58848",
+			"headers": "Content-Type: application/json\n",
+			"url": "localhost:3001/scenarios/",
+			"preRequestScript": "",
+			"pathVariables": {},
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1438095702739,
+			"name": "edit scenario",
+			"description": "",
+			"collectionId": "3a252210-12df-1f31-d23f-99a6a32b08bf",
+			"responses": [],
+			"rawModeData": "{\n    \"action\":\"edit\",\n    \"data\":{\n        \"username\":\"user1\",\n        \"scenarioId\":\"55b068284038186f07f83a82\",\n        \"scenarioName\":\"scenario test name\",\n        \"scenarioNote\":\"scenario test note\"\n    }\n}"
+		},
+		{
 			"id": "28f6e01c-ff4c-b84f-122e-9679c2fe6689",
 			"headers": "Content-Type: application/json\n",
 			"url": "localhost:3001/analysis/planforward",
@@ -51,32 +73,31 @@
 			"tests": "",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1437851548466,
+			"time": 1437851974114,
 			"name": "planforward",
 			"description": "",
 			"collectionId": "3a252210-12df-1f31-d23f-99a6a32b08bf",
 			"responses": [],
-			"rawModeData": "{\n    \"username\":\"user1\",\n    \"data\":{\n        \"Algorithm\":2,\n        \"AlgStartingTime\": \"data.AlgStartingTime\",\n        \"StaringTime\": \"data.StartingTime\",\n        \"EndingTime\": \"data.EndingTime\",\n        \"Imtouch\": \"data.Imtouch\",\n        \"Spend\": \"data.Spend\",\n        \"Revenue\": \"data.Revenue\",\n        \"ROI\": \"data.ROI\"\n}}"
+			"rawModeData": "{\n    \"username\":\"user1\",\n    \"data\":{\n        \"Algorithm\":2,\n        \"AlgStartingTime\": \"data.AlgStartingTime\",\n        \"StaringTime\": \"data.StartingTime\",\n        \"EndingTime\": \"data.EndingTime\",\n        \"Imtouch\": \"data.Imtouch\",\n        \"Spend\": \"data.Spend\",\n        \"Revenue\": \"data.Revenue\",\n        \"ROI\": \"data.ROI\"\n    }\n}"
 		},
 		{
 			"id": "4bd1d1c2-4237-b757-a399-542eecc6f83c",
-			"headers": "Content-Type: application/json\n",
-			"url": "localhost:3001/scenarios/",
+			"headers": "",
+			"url": "localhost:3001/scenarios/55b068284038186f07f83a82",
 			"preRequestScript": "",
 			"pathVariables": {},
-			"method": "POST",
+			"method": "GET",
 			"data": [],
-			"dataMode": "raw",
+			"dataMode": "params",
 			"version": 2,
 			"tests": "",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1437851049539,
+			"time": 1438096110949,
 			"name": "Remove scenario",
 			"description": "",
 			"collectionId": "3a252210-12df-1f31-d23f-99a6a32b08bf",
-			"responses": [],
-			"rawModeData": "{\n    \"action\":\"remove\",\n    \"data\":{\n    \"scenarioId\":\"55b068284038186f07f83a82\"\n    }\n}"
+			"responses": []
 		},
 		{
 			"id": "6a16c0bd-9c65-066c-756f-d17665022c7c",
@@ -131,12 +152,32 @@
 			"tests": "",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1437851478491,
+			"time": 1438095633800,
 			"name": "Scenario List",
 			"description": "",
 			"collectionId": "3a252210-12df-1f31-d23f-99a6a32b08bf",
 			"responses": [],
-			"rawModeData": "{\n    \"action\":\"list\",\n    \"data\":{\n        \"username\":\"user2\"\n    }\n}"
+			"rawModeData": "{\n    \"action\":\"list\",\n    \"data\":{\n        \"username\":\"user1\"\n    }\n}"
+		},
+		{
+			"id": "99975c28-b371-19e8-c30e-ab2497212543",
+			"headers": "",
+			"url": "localhost:3001/scenarios/55b068284038186f07f83a82",
+			"pathVariables": {},
+			"preRequestScript": "",
+			"method": "GET",
+			"collectionId": "3a252210-12df-1f31-d23f-99a6a32b08bf",
+			"data": [],
+			"dataMode": "params",
+			"name": "get scenario by ID",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1438096132355,
+			"version": 2,
+			"responses": [],
+			"tests": "",
+			"currentHelper": "normal",
+			"helperAttributes": {}
 		},
 		{
 			"id": "fc6aa91b-510b-0340-fbcc-fa8c356d07c4",
@@ -151,12 +192,12 @@
 			"tests": "",
 			"currentHelper": "normal",
 			"helperAttributes": {},
-			"time": 1437851551848,
+			"time": 1437851981533,
 			"name": "planforward algorithm 1",
 			"description": "",
 			"collectionId": "3a252210-12df-1f31-d23f-99a6a32b08bf",
 			"responses": [],
-			"rawModeData": "{\n    \"username\":\"user1\",\n    \"data\":{\n        \"Algorithm\":1,\n        \"AlgStartingTime\": \"data.AlgStartingTime\",\n        \"StaringTime\": \"data.StartingTime\",\n        \"EndingTime\": \"data.EndingTime\",\n        \"Imtouch\": \"data.Imtouch\",\n        \"Spend\": \"data.Spend\",\n        \"Revenue\": \"data.Revenue\",\n        \"ROI\": \"data.ROI\"\n}}"
+			"rawModeData": "{\n    \"username\":\"user1\",\n    \"data\":{\n        \"Algorithm\":1,\n        \"AlgStartingTime\": \"data.AlgStartingTime\",\n        \"StaringTime\": \"data.StartingTime\",\n        \"EndingTime\": \"data.EndingTime\",\n        \"Imtouch\": \"data.Imtouch\",\n        \"Spend\": \"data.Spend\",\n        \"Revenue\": \"data.Revenue\",\n        \"ROI\": \"data.ROI\"\n    }\n}"
 		}
 	]
 }
