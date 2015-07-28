@@ -3,203 +3,8 @@
  */
 'use strict';
 var back = angular.module("ROIClientApp");
-back.factory('backManager', function ($http) {
-    var tempData = {
-        "UserName": "",
-        "Brand": "",
-        "lmTouch": "",
-        "StartingTime": "",
-        "EndingTime": "",
-        "Spend": "",
-        "PlanMonths": "",
-        "Algorithm": "",
-        "AlgStartingTime": "",
-        "AlgEndingTime": "",
-        "AlgDuration": "",
-        "semLB": "",
-        "semCLB": "",
-        "semPLB": "",
-        "semOLB": "",
-        "semBLB": "",
-        "disLB": "",
-        "socLB": "",
-        "affLB": "",
-        "parLB": "",
-        "semMin": "",
-        "semCMin": "",
-        "semPMin": "",
-        "semOMin": "",
-        "semBMin": "",
-        "disMin": "",
-        "socMin": "",
-        "affMin": "",
-        "parMin": "",
-        "semMax": "",
-        "semCMax": "",
-        "semPMax": "",
-        "semOMax": "",
-        "semBMax": "",
-        "disMax": "",
-        "socMax": "",
-        "affMax": "",
-        "parMax": "",
-        "semUB": "",
-        "semCUB": "",
-        "semPUB": "",
-        "semOUB": "",
-        "semBUB": "",
-        "disUB": "",
-        "socUB": "",
-        "affUB": "",
-        "parUB": "",
-        "semSF": "",
-        "semCSF": "",
-        "semPSF": "",
-        "semOSF": "",
-        "semBSF": "",
-        "disSF": "",
-        "socSF": "",
-        "affSF": "",
-        "parSF": "",
-        "dirSpendM1": "",
-        "dirSpendM2": "",
-        "dirSpendM3": "",
-        "tvBeginDate": "",
-        "tvEndDate": "",
-        "tvImpressions": "",
-        "tvSpend": "",
-        "semSR": "",
-        "semCSR": "",
-        "semPSR": "",
-        "semOSR": "",
-        "semBSR": "",
-        "disSR": "",
-        "socSR": "",
-        "affSR": "",
-        "parSR": "",
-        "totSR": "",
-        "semPR": "",
-        "semCPR": "",
-        "semPPR": "",
-        "semOPR": "",
-        "semBPR": "",
-        "disPR": "",
-        "socPR": "",
-        "affPR": "",
-        "parPR": "",
-        "totPR": "",
-        "run1RevRange": "",
-        "run1ProjROI": "",
-        "run1ROIRange": "",
-        "semSlideLeft": "",
-        "semCSlideLeft": "",
-        "semPSlideLeft": "",
-        "semOSlideLeft": "",
-        "semBSlideLeft": "",
-        "disSlideLeft": "",
-        "socSlideLeft": "",
-        "affSlideLeft": "",
-        "parSlideLeft": "",
-        "semSlide": "",
-        "semCSlide": "",
-        "semPSlide": "",
-        "semOSlide": "",
-        "semBSlide": "",
-        "disSlide": "",
-        "socSlide": "",
-        "affSlide": "",
-        "parSlide": "",
-        "semSlideRight": "",
-        "semCSlideRight": "",
-        "semPSlideRight": "",
-        "semOSlideRight": "",
-        "semBSlideRight": "",
-        "disSlideRight": "",
-        "socSlideRight": "",
-        "affSlideRight": "",
-        "parSlideRight": "",
-        "semSlideDivMin": "",
-        "semCSlideDivMin": "",
-        "semPSlideDivMin": "",
-        "semOSlideDivMin": "",
-        "semBSlideDivMin": "",
-        "disSlideDivMin": "",
-        "socSlideDivMin": "",
-        "affSlideDivMin": "",
-        "parSlideDivMin": "",
-        "semSlideDivMax": "",
-        "semCSlideDivMax": "",
-        "semPSlideDivMax": "",
-        "semOSlideDivMax": "",
-        "semBSlideDivMax": "",
-        "disSlideDivMax": "",
-        "socSlideDivMax": "",
-        "affSlideDivMax": "",
-        "parSlideDivMax": "",
-        "semAS": "",
-        "semCAS": "",
-        "semPAS": "",
-        "semOAS": "",
-        "semBAS": "",
-        "disAS": "",
-        "socAS": "",
-        "affAS": "",
-        "parAS": "",
-        "totAS": "",
-        "semAR": "",
-        "semCAR": "",
-        "semPAR": "",
-        "semOAR": "",
-        "semBAR": "",
-        "disAR": "",
-        "socAR": "",
-        "affAR": "",
-        "parAR": "",
-        "totAR": "",
-        "run2ProjROI": ""
-    };
-    var Name = "";
-    var url = "http://" + window.location.hostname + ":3001/analysis/";
-    var get = function (cb) {
-        $http({
-            method: 'get',
-            url: url + Name
-        }).success(function (data) {
-            cb(data);
 
-        }).error(function (data) {
-            console.log(data);
-        });
-    };
-    var post = function (data, cb) {
-        $http({
-            method: 'post',
-            url: url + 'planforward',
-            data: {data: data, username: data.UserName}
-        }).success(function (fileName) {
-            Name = fileName;
-            cb(true);
-        });
-    };
-    return {
-        getTempData: function (cb) {
-            cb(tempData);
-        },
-        setTempData: function (data) {
-            tempData = data;
-        },
-        getData: get,
-        postData: post,
-        getName: function (cb) {
-            cb(Name);
-        },
-        setName: function (fileName) {
-            Name = fileName;
-        }
-    }
-});
-
-back.controller('backInitCtrl', ['$scope', 'backManager', 'user', 'history', function ($scope, manager, user, history) {
+back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', function ($scope, manager, user, history) {
     // tooltips
     $scope.brandTooltips = 'brandTooltips';
     $scope.attrTooltips = 'attrTooltips';
@@ -313,7 +118,7 @@ back.controller('backInitCtrl', ['$scope', 'backManager', 'user', 'history', fun
     };
 }]);
 
-back.controller('backAddCtrl', ['$scope', 'backManager', '$location', 'history', '$filter', function ($scope, manager, location, history, filter) {
+back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'history', '$filter', function ($scope, manager, location, history, filter) {
     $scope.lookBack = {};
     $scope.lookBack.output = {};
     $scope.lookBack.history = {};
@@ -322,23 +127,47 @@ back.controller('backAddCtrl', ['$scope', 'backManager', '$location', 'history',
 
     //main
     manager.getTempData(function (data) {
-            $scope.lookBack.output = data;
-            history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (dataArray) {
-                console.log('from history in lookback/add');
-                console.log(dataArray);
-                Object.keys(dataArray[0]).forEach(function (key) {
-                    var value = 0;
-                    dataArray.forEach(function (data) {
-                        value += data[key];
-                    });
-                    $scope.lookBack.history[key] = value;
+        $scope.lookBack.output = data;
+        history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (dataArray) {
+            console.log('from history in lookback/add');
+            console.log(dataArray);
+            Object.keys(dataArray[0]).forEach(function (key) {
+                var value = 0;
+                dataArray.forEach(function (data) {
+                    value += data[key];
                 });
+                $scope.lookBack.history[key] = value;
             });
-            $scope.lookBack.output.Spend = 5000000;
-            //$scope.lookBack.output.Spend = $scope.lookBack.history.Spend;
-            $scope.lookBack.output.included = "false";
-            console.log($scope.lookBack.output);
+        });
+        $scope.lookBack.output.Spend = 5000000;
+        //$scope.lookBack.output.Spend = $scope.lookBack.history.Spend;
+        $scope.lookBack.output.included = "false";
+        console.log($scope.lookBack.output);
     });
+    $scope.reRun = function () {
+        $scope.lookBack.output1.Algorithm = 2;
+        $scope.lookBack.output1.AlgStartingTime = "";
+        $scope.lookBack.output1.AlgEndingTime = "";
+        $scope.lookBack.output1.AlgDuration = "";
+        //SCENARIOID
+        var beginDay, endDay;
+        beginDay = new Date($scope.lookBack.output1.StartingTime);
+        beginDay = new Date(beginDay.getFullYear(), beginDay.getMonth() + 1, 1);
+        endDay = new Date($scope.lookBack.output1.EndingTime);
+        endDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1, 1);
+        $scope.lookBack.output1.scenarioId =
+            "SLFY-" + filter('date')(beginDay, 'MMMyyyy') + "-" +
+            filter('date')(endDay, 'MMMyyyy') + "-" +
+            $scope.lookBack.output1.lmTouch.charAt(0) + "-" + "00X";
+        //
+        $scope.lookBack.output1.dataThrough = $scope.lookBack.output.dataThrough;
+        $scope.lookBack.output1.from = "back";
+        //post data to R
+        manager.postData($scope.lookBack.output1, function (res) {
+            console.log(res);
+            location.path('lookback/output');
+        });
+    };
 
     $scope.run = function () {
 
@@ -356,38 +185,20 @@ back.controller('backAddCtrl', ['$scope', 'backManager', '$location', 'history',
         $scope.lookBack.output.EndingTime = filter('date')($scope.lookBack.output.endPeriod, 'yyyy-MM');
         $scope.lookBack.output.Algorithm = 1;
         manager.postData($scope.lookBack.output, function (res) {
-            var count,getJson;
+            console.log('from run1 in run back/add');
+            console.log(res);
+            var count;
+            $scope.getJson = false;
+            count = setInterval(doGet, 1000 * 1); //set frequency
             function doGet() {
                 if ($scope.getJson === false) {
                     manager.getData(function (data) {
                         if (data) {
-                            console.log("from doGet in forward/constrict after got Data");
+                            console.log("from doGet in rerun in forward/output");
                             console.log(data);
-                            getJson = true;
+                            $scope.getJson = true;
                             $scope.lookBack.output1 = data;
-
-                            //run2
-                            $scope.lookBack.output1.Algorithm = 2;
-                            $scope.lookBack.output1.AlgStartingTime = "";
-                            $scope.lookBack.output1.AlgEndingTime = "";
-                            $scope.lookBack.output1.AlgDuration = "";
-
-                            var beginDay = new Date($scope.lookBack.output1.StartingTime);
-                            beginDay = new Date(beginDay.getFullYear(), beginDay.getMonth() + 1, 1);
-                            var endDay = new Date($scope.lookBack.output1.EndingTime);
-                            endDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1, 1);
-
-                            $scope.lookBack.output1.scenarioId =
-                                "SLFY-" + filter('date')(beginDay, 'MMMyyyy') +
-                                "-" + filter('date')(endDay, 'MMMyyyy') + "-" +
-                                $scope.lookBack.output1.lmTouch.charAt(0) + "-" + "000";
-                            $scope.lookBack.output1.dataThrough = $scope.lookBack.output.dataThrough;
-                            $scope.lookBack.output1.from = "back";
-
-                            manager.postData($scope.lookBack.output1,function(res){
-                                console.log(res);
-                                location.path('lookback/output');
-                            })
+                            $scope.reRun();
                         }
                     });
                 }
@@ -395,17 +206,11 @@ back.controller('backAddCtrl', ['$scope', 'backManager', '$location', 'history',
                     clearInterval(count);
                 }
             }
-            console.log('from run1 in run back/add');
-            console.log(res);
-            if (res) {
-                getJson = false;
-                count = setInterval(doGet, 1000 * 1); //set frequency
-            }
         });
     }
 }]);
 
-back.controller('backOutputCtrl', ['$scope', 'backManager', '$location','history',function ($scope, manager, location,history) {
+back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'history', function ($scope, manager, location, history) {
 
     $scope.lookBack = {};
     $scope.lookBack.output = {};
@@ -461,8 +266,8 @@ back.controller('backOutputCtrl', ['$scope', 'backManager', '$location','history
                     console.log(data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
-                    history.getHistoryData(function(data){
-                        $scope.lookBack.history=data;
+                    history.getHistoryData(function (data) {
+                        $scope.lookBack.history = data;
                     });
 
                 }

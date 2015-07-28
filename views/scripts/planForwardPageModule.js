@@ -185,6 +185,9 @@ forward.factory('forwardManager', function ($http) {
         getTempData: function (cb) {
             cb(tempData);
         },
+        setTempData: function (data) {
+            tempData = data;
+        },
         getData: function (cb, id) {
             if (!id) {
                 get(cb, objID);
