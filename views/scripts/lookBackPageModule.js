@@ -331,7 +331,6 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
             clearInterval(count);
         }
     }
-
     $scope.showme = false;
     $scope.lookbackContentSize = 'col-sm-12';
     $scope.showGraph = 'Show Graph';
@@ -348,8 +347,6 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
             $scope.showGraph = 'Show Graph';
         }
     };
-
-
     $scope.$on('$destroy', function () {
         clearInterval(count);
     });

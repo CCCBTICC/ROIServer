@@ -191,10 +191,8 @@ app.factory('history', function ($http) {
                 });
                 cb(sum);
             });
-
         }
     }
-
 })
 ;
 app.filter('name', function () {

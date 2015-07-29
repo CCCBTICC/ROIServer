@@ -39,7 +39,7 @@ function initDB(db) {
                     "_id": new ObjectID('55b068284038186f07f83a82'),
                     "scenarioId": "data.scenarioId",
                     "begin": null,
-                    "end": "data.EndingTime",
+                    "end": "EndingTime",
                     "createDate": null,
                     "lmTouch": null,
                     "spend": "data.Spend",

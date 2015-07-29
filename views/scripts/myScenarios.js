@@ -142,7 +142,18 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.retrive = function () {
         var objectId = getSelectedId($scope.scenarios);
         forwardManager.setName(objectId);
-        $location.path('planforward/output');
+        var retriveIndex = -1;
+        $scope.scenarios.forEach(function (obj, index) {
+            if (obj._id === objectId) {
+                retriveIndex = index;
+            }
+        });
+        if ($scope.scenarios[retriveIndex].from === "forward") {
+            $location.path('planforward/output');
+        }
+        else {
+            $location.path('lookback/output')
+        }
     };
     $scope.delete = function () {
         var objectId = getSelectedId($scope.scenarios);
@@ -194,13 +205,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.share = function () {
         var objectId = getSelectedId($scope.scenarios);
         forwardManager.setName(objectId);
-        var exportIndex = -1;
-        $scope.scenarios.forEach(function (obj, index) {
-            if (obj._id === objectId) {
-                exportIndex = index;
-            }
-        });
-        scenarioManager.setSelectedScenario($scope.scenarios[exportIndex]);
         $location.path('myscenarios/share');
     };
     $scope.compare = function () {
@@ -222,7 +226,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         });
     });
 });
-scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager, $location) {
+scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager, $location, actionObjInfo, history) {
     //vars
     var format = {
         Excel: 'csv'
@@ -230,15 +234,15 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
 
     //functions
     function convertPlan(info, data) {
-        return "Scenario ID," + info.ScenarioID + ",,,,,,,,,,\n" +
-            "Owner," + data.UserName + ",,,,,,,,,,\n" +
-            "Create Date," + info.CreateDate + ",,,,,,,,,,\n" +
-            "Brand," + data.Brand + ",,,,,,,,,,\n" +
-            "Planned Spend," + data.Spend + ",,,,,,,,,,,\n" +
-            "Begin Period," + data.StartingTime + ",,,,,,,,,,\n" +
-            "End Period," + data.EndingTime + ",,,,,,,,,,\n" +
-            "Data Through Month," + info.DataThrough + ",,,,,,,,,,\n" +
-            "History Included?," + info.HistoryIncluded + ",,,,,,,,,,\n" +
+        return "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
+            "Owner," + info.owner + ",,,,,,,,,,\n" +
+            "Create Date," + info.createDate + ",,,,,,,,,,\n" +
+            "Brand," + info.brand + ",,,,,,,,,,\n" +
+            "Planned Spend," + info.spend + ",,,,,,,,,,,\n" +
+            "Begin Period," + info.begin + ",,,,,,,,,,\n" +
+            "End Period," + info.end + ",,,,,,,,,,\n" +
+            "Data Through Month," + info.dataThrough + ",,,,,,,,,,\n" +
+            "History Included?," + info.included + ",,,,,,,,,,\n" +
             ",,,,,,,,,,,\n" +
             "Channels in Portfolio,input,,,,,Optimized,,What-if,,Difference,\n" +
             ",Lower Bound,Min,Max,Upper Bound,Scaling,Spend,Revenue,Spend,Revenue,Spend,Revenue\n" +
@@ -253,20 +257,20 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
             "Partners," + data.parLB + "," + data.parMin + "," + data.parMax + "," + data.parUB + "," + data.parSF + "," + data.parSR + "," + data.parPR + "," + data.parAS + "," + data.parAR + "," + data.parSD + "," + data.parRD + "\n" +
             "Portfolio Total," + data.totLB + "," + data.totMin + "," + data.totMax + "," + data.totUB + "," + "" + "," + data.totSR + "," + data.totPR + "," + data.totAS + "," + data.totAR + "," + data.totSD + "," + data.totRD + "\n" +
             "Portfolio ROI,,,,,,," + data.run1ProjROI + ",," + data.run2ProjROI + "\n" +
-            "Note:," + info.Note + ",,,,,,,,,,\n";
+            "Note:," + info.note + ",,,,,,,,,,\n";
 
     }
 
     function convertLook(info, data) {
-        return "Scenario ID," + info.ScenarioID + ",,,,,,,,,,\n" +
-            "Owner," + data.UserName + ",,,,,,,,,,\n" +
-            "Create Date," + info.CreateDate + ",,,,,,,,,,\n" +
-            "Brand," + data.Brand + ",,,,,,,,,,\n" +
-            "Planned Spend," + data.Spend + ",,,,,,,,,,,\n" +
-            "Begin Period," + data.StartingTime + ",,,,,,,,,,\n" +
-            "End Period," + data.EndingTime + ",,,,,,,,,,\n" +
-            "Data Through Month," + info.DataThroughMonth + ",,,,,,,,,,\n" +
-            "History Included?," + info.HistoryIncluded + ",,,,,,,,,,\n" +
+        return "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
+            "Owner," + info.owner + ",,,,,,,,,,\n" +
+            "Create Date," + info.createDate + ",,,,,,,,,,\n" +
+            "Brand," + info.brand + ",,,,,,,,,,\n" +
+            "Planned Spend," + info.spend + ",,,,,,,,,,,\n" +
+            "Begin Period," + info.begin + ",,,,,,,,,,\n" +
+            "End Period," + info.end + ",,,,,,,,,,\n" +
+            "Data Through Month," + info.dataThrough + ",,,,,,,,,,\n" +
+            "History Included?," + info.included + ",,,,,,,,,,\n" +
             ",,,,,,,,,,,\n" +
             "Portfolio Channels,Actuals,,Optimized,,,,Difference,\n" +
             ",Spend,Revenue,Lower,Spend,Upper,Revenue,Spend,Revenue\n" +
@@ -281,14 +285,12 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
             "Partners," + data.parSR + "," + data.parPR + "," + data.parLB + "," + data.parSB + "," + data.parUB + "," + data.parAR + "," + data.parSD + "," + data.parAR + "\n" +
             "Total Portfolio," + data.totSR + "," + data.totPR + "," + data.totLB + "," + data.totSB + "," + data.totUB + "," + data.totAR + "," + data.totSD + "," + Number(data.totAR - data.totPR) + "\n" +
             "Portfolio ROI,,,,,,,,,,,\n" +
-            "Note:," + info.Note + ",,,,,,,,,,";
+            "Note:," + info.note + ",,,,,,,,,,";
     }
 
     //scope vars
     $scope.fileName = "my";
     $scope.format = 'Excel';
-    $scope.dataGot = false;
-    $scope.scenarioGot = false;
 
     //scope functions
     $scope.dataExport = function () {
@@ -300,61 +302,161 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
     };
 
     //main
-    scenarioManager.getSelectedScenario(function (scenario) {
-        if (scenario._id) {
-            $scope.scenario = scenario;
-            $scope.scenarioGot = true;
-            if ($scope.dataGot && $scope.scenarioGot) {
-                $scope.output = convertPlan($scope.scenario, $scope.data);
-                $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
+    if (!actionObjInfo[1]) {
+        forwardManager.getName(function (id) {
+            if (id) {
+                scenarioManager.getScenarioById(id, function (scenario) {
+                    $scope.scenario = scenario;
+                    if ($scope.scenario.from === "forward") {
+                        forwardManager.getData(function (data) {
+                            $scope.data = data;
+                            var modify = function () {
+                                $scope.data.semLB = Number($scope.data.semBLB) + Number($scope.data.semCLB) + Number($scope.data.semPLB) + Number($scope.data.semOLB);
+                                $scope.data.semMin = Number($scope.data.semBMin) + Number($scope.data.semCMin) + Number($scope.data.semPMin) + Number($scope.data.semOMin);
+                                $scope.data.semMax = Number($scope.data.semBMax) + Number($scope.data.semCMax) + Number($scope.data.semPMax) + Number($scope.data.semOMax);
+                                $scope.data.semUB = Number($scope.data.semBUB) + Number($scope.data.semCUB) + Number($scope.data.semPUB) + Number($scope.data.semOUB);
+
+                                $scope.data.totLB = Number($scope.data.semLB) + Number($scope.data.disLB) + Number($scope.data.socLB) + Number($scope.data.affLB) + Number($scope.data.parLB);
+                                $scope.data.totMin = Number($scope.data.semMin) + Number($scope.data.disMin) + Number($scope.data.socMin) + Number($scope.data.affMin) + Number($scope.data.parMin);
+                                $scope.data.totMax = Number($scope.data.semMax) + Number($scope.data.disMax) + Number($scope.data.socMax) + Number($scope.data.affMax) + Number($scope.data.parMax);
+                                $scope.data.totUB = Number($scope.data.semUB) + Number($scope.data.disUB) + Number($scope.data.socUB) + Number($scope.data.affUB) + Number($scope.data.parUB);
+
+                                $scope.data.semSD = Number($scope.data.semAS) - Number($scope.data.semSR);
+                                $scope.data.semCSD = Number($scope.data.semCAS) - Number($scope.data.semCSR);
+                                $scope.data.semBSD = Number($scope.data.semBAS) - Number($scope.data.semBSR);
+                                $scope.data.semPSD = Number($scope.data.semPAS) - Number($scope.data.semPSR);
+                                $scope.data.semOSD = Number($scope.data.semOAS) - Number($scope.data.semOSR);
+
+                                $scope.data.disSD = Number($scope.data.disAS) - Number($scope.data.disSR);
+                                $scope.data.socSD = Number($scope.data.socAS) - Number($scope.data.socSR);
+                                $scope.data.affSD = Number($scope.data.affAS) - Number($scope.data.affSR);
+                                $scope.data.parSD = Number($scope.data.parAS) - Number($scope.data.parSR);
+                                $scope.data.totSD = Number($scope.data.totAS) - Number($scope.data.totSR);
+                                $scope.data.semRD = Number($scope.data.semAR) - Number($scope.data.semPR);
+                                $scope.data.disRD = Number($scope.data.disAR) - Number($scope.data.disPR);
+                                $scope.data.socRD = Number($scope.data.socAR) - Number($scope.data.socPR);
+                                $scope.data.affRD = Number($scope.data.affAR) - Number($scope.data.affPR);
+                                $scope.data.parRD = Number($scope.data.parAR) - Number($scope.data.parPR);
+                                $scope.data.totRD = Number($scope.data.totAR) - Number($scope.data.totPR);
+                            };
+                            modify();
+                            $scope.output = convertPlan($scope.scenario, $scope.data);
+                            $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
+                        });
+                    } else {
+                        var back = {history: {}};
+                        forwardManager.getData(function (data) {
+                            back.output = data;
+                            history.getHistoryData(back.output.StartingTime, back.output.EndingTime, function (history) {
+                                back.history.semSR = history.SEM;
+                                back.history.semBSR = history.SEMBrand;
+                                back.history.semCSR = history.SEMCard;
+                                back.history.semOSR = history.SEMOther;
+                                back.history.semPSR = history.SEMPBook;
+                                back.history.disSR = history.Display;
+                                back.history.affSR = history.Affiliate;
+                                back.history.socSR = history.FB;
+                                back.history.parSR = history.Partners;
+                                back.history.totSR = history.Partners + history.FB + history.Affiliate + history.Display + history.SEM;
+                                back.history.totPR = history.Revenue;
+                                back.history.ROI = (back.history.totPR / back.history.totSR - 1) * 100;
+                                if (back.output.lmTouch === "Multi-Touch") {
+                                    back.history.semPR = history.SEM_MTA;
+                                    back.history.disPR = history.Display_MTA;
+                                    back.history.affPR = history.Affiliates_MTA;
+                                    back.history.socPR = history.FB_MTA;
+                                    back.history.parPR = history.Partners_MTA;
+                                } else {
+                                    back.history.semPR = history.SEM_LTA;
+                                    back.history.disPR = history.Display_LTA;
+                                    back.history.affPR = history.Affiliates_LTA;
+                                    back.history.socPR = history.FB_LTA;
+                                    back.history.parPR = history.Partners_LTA;
+                                }
+                                back.output.semSD = back.output.semSR - back.history.semSR;
+                                back.output.semBSD = back.output.semBSR - back.history.semBSR;
+                                back.output.semCSD = back.output.semCSR - back.history.semCSR;
+                                back.output.semOSD = back.output.semOSR - back.history.semOSR;
+                                back.output.semPSD = back.output.semPSR - back.history.semPSR;
+                                back.output.disSD = back.output.disSR - back.history.disSR;
+                                back.output.affSD = back.output.affSR - back.history.affSR;
+                                back.output.socSD = back.output.socSR - back.history.socSR;
+                                back.output.parSD = back.output.parSR - back.history.parSR;
+                                back.output.totSD = back.output.totSR - back.history.totSR;
+                                back.output.semRD = back.output.semPR - back.history.semPR;
+                                back.output.disRD = back.output.disPR - back.history.disPR;
+                                back.output.affRD = back.output.affPR - back.history.affPR;
+                                back.output.socRD = back.output.socPR - back.history.socPR;
+                                back.output.parRD = back.output.parPR - back.history.parPR;
+                                back.output.totRD = back.output.totPR - back.history.totPR;
+                                back.output.ROID = back.output.run1ProjROI.slice(0, -1) - back.history.ROI;
+                                back.output.changeR = back.output.ROID / back.history.ROI * 100;
+                            });
+
+                        });
+                        $scope.output=convertLook($scope.scenario, back);
+                        $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
+                    }
+                })
+
+            } else {
+                $location.path('myscenarios');
             }
-        }
-        else {
-            $location.path('myscenarios');
-        }
+        });
 
-    });
-    forwardManager.getData(function (data) {
-        $scope.data = data;
-        var modify = function () {
-            $scope.data.semLB = Number($scope.data.semBLB) + Number($scope.data.semCLB) + Number($scope.data.semPLB) + Number($scope.data.semOLB);
-            $scope.data.semMin = Number($scope.data.semBMin) + Number($scope.data.semCMin) + Number($scope.data.semPMin) + Number($scope.data.semOMin);
-            $scope.data.semMax = Number($scope.data.semBMax) + Number($scope.data.semCMax) + Number($scope.data.semPMax) + Number($scope.data.semOMax);
-            $scope.data.semUB = Number($scope.data.semBUB) + Number($scope.data.semCUB) + Number($scope.data.semPUB) + Number($scope.data.semOUB);
+    } else {
+        $scope.compareObj = {};
+        $scope.compareObj.difference = {};
+        $scope.firstGot = false;
+        $scope.secondGot = false;
+        forwardManager.getData(function (data) {
+            $scope.compareObj.first = data;
 
-            $scope.data.totLB = Number($scope.data.semLB) + Number($scope.data.disLB) + Number($scope.data.socLB) + Number($scope.data.affLB) + Number($scope.data.parLB);
-            $scope.data.totMin = Number($scope.data.semMin) + Number($scope.data.disMin) + Number($scope.data.socMin) + Number($scope.data.affMin) + Number($scope.data.parMin);
-            $scope.data.totMax = Number($scope.data.semMax) + Number($scope.data.disMax) + Number($scope.data.socMax) + Number($scope.data.affMax) + Number($scope.data.parMax);
-            $scope.data.totUB = Number($scope.data.semUB) + Number($scope.data.disUB) + Number($scope.data.socUB) + Number($scope.data.affUB) + Number($scope.data.parUB);
+            $scope.firstGot = true;
+            if ($scope.firstGot && $scope.secondGot) {
+                Object.keys($scope.compareObj.first).forEach(function (key) {
+                    $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+                });
+                $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
+            }
+        }, actionObjInfo[0]);
+        //forwardManager.getData(function (data) {
+        //    $scope.compareObj.second = data;
+        //
+        //    $scope.secondGot = true;
+        //    if ($scope.firstGot && $scope.secondGot) {
+        //        Object.keys($scope.compareObj.first).forEach(function (key) {
+        //            $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+        //        });
+        //        $scope.compareChart.data = [
+        //            {title: "SEM", value: -$scope.compareObj.difference.semAS},
+        //            {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+        //            {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+        //            {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+        //            {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+        //            {title: "Display", value: -$scope.compareObj.difference.disAS},
+        //            {title: "Social", value: -$scope.compareObj.difference.socAS},
+        //            {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+        //            {title: "Partners", value: -$scope.compareObj.difference.parAS},
+        //            {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+        //        ];
+        //    }
+        //}, 'run3');
+        forwardManager.getData(function (data) {
+            $scope.compareObj.second = data;
 
-            $scope.data.semSD = Number($scope.data.semAS) - Number($scope.data.semSR);
-            $scope.data.semCSD = Number($scope.data.semCAS) - Number($scope.data.semCSR);
-            $scope.data.semBSD = Number($scope.data.semBAS) - Number($scope.data.semBSR);
-            $scope.data.semPSD = Number($scope.data.semPAS) - Number($scope.data.semPSR);
-            $scope.data.semOSD = Number($scope.data.semOAS) - Number($scope.data.semOSR);
+            $scope.secondGot = true;
+            if ($scope.firstGot && $scope.secondGot) {
+                Object.keys($scope.compareObj.first).forEach(function (key) {
+                    $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+                });
+                $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
+            }
+        }, actionObjInfo[1]);
+    }
 
-            $scope.data.disSD = Number($scope.data.disAS) - Number($scope.data.disSR);
-            $scope.data.socSD = Number($scope.data.socAS) - Number($scope.data.socSR);
-            $scope.data.affSD = Number($scope.data.affAS) - Number($scope.data.affSR);
-            $scope.data.parSD = Number($scope.data.parAS) - Number($scope.data.parSR);
-            $scope.data.totSD = Number($scope.data.totAS) - Number($scope.data.totSR);
-            $scope.data.semRD = Number($scope.data.semAR) - Number($scope.data.semPR);
-            $scope.data.disRD = Number($scope.data.disAR) - Number($scope.data.disPR);
-            $scope.data.socRD = Number($scope.data.socAR) - Number($scope.data.socPR);
-            $scope.data.affRD = Number($scope.data.affAR) - Number($scope.data.affPR);
-            $scope.data.parRD = Number($scope.data.parAR) - Number($scope.data.parPR);
-            $scope.data.totRD = Number($scope.data.totAR) - Number($scope.data.totPR);
-        };
-        modify();
-        $scope.dataGot = true;
-        if ($scope.dataGot && $scope.scenarioGot) {
-            $scope.output = convertPlan($scope.scenario, $scope.data);
-            $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
-        }
-
-    });
 });
-scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioManager, $location) {
+scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioManager, $location, forwardManager) {
     //vars
 
     //functions
@@ -372,14 +474,16 @@ scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioMa
         });
     };
     //main
-    scenarioManager.getSelectedScenario(function (scenario) {
-        if (scenario._id) {
-            $scope.scenario = scenario;
-        }
-        else {
+    forwardManager.getName(function (id) {
+        console.log(id);
+        if (id) {
+            scenarioManager.getScenarioById(id, function (scenario) {
+                $scope.scenario = scenario;
+            })
+        } else {
             $location.path('myscenarios');
         }
-        //console.log($scope.scenario);
+
     });
     user.getUser(function (res) {
         $scope.user = res;
@@ -390,7 +494,7 @@ scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioMa
         })
     });
 });
-scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, scenarioManager, user,$location) {
+scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, scenarioManager, user, $location) {
     //vars
 
     //functions
@@ -410,7 +514,7 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, s
                 console.log(res);
                 if (res) {
                     alert("ScenarioInfo is  updated.")
-                }else{
+                } else {
                     alert(res)
                 }
             });
@@ -427,7 +531,8 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, s
                 }
             });
         }
-        else {$location.path("myscenarios");
+        else {
+            $location.path("myscenarios");
         }
     });
 });

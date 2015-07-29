@@ -377,7 +377,11 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                     //$scope.planForward.output.socAR = "";
                     //$scope.planForward.output.affAR = "";
                     //$scope.planForward.output.parAR = "";
-
+                    history.getHistoryDate(function(d){
+                        console.log('from history');
+                        console.log(d);
+                        $scope.planForward.output.dataThrough = d[1];
+                    });
                     var b = new Date($scope.planForward.output.StartingTime);
                     b = new Date(b.getFullYear(), b.getMonth() + 1);
                     console.log(b);
@@ -594,7 +598,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     };
     $scope.slideError = false;
     history.getHistoryDate(function(d){
-        $scope.historydate=d;
+        $scope.historydate=d[1];
     });
 
     //reset slideValue
