@@ -15,7 +15,7 @@ AlgStartingTime <-Sys.time()
 
 cat("############# Optimization Starts #################\n")
 source("RROI_Run_1_Optimization.R")
-SR <- 
+temp <- 
 Run_1_Optimization(
 Beg_Date      = Beg_Date,
 End_Date      = End_Date, 
@@ -23,6 +23,9 @@ Inputfile     = Inputfile,
 Estfile       = Estfile ,
 Date          = Date
 )
+SR<- temp[["SR"]]
+OptTotalRevenue <- temp[["OptTotalRevenue"]]
+rm("temp")
 cat("############# Optimization Ends #################\n")
 
 
@@ -138,6 +141,7 @@ commafmt <- function(x)  format(x,  big.mark=",", big.interval=3)
 
 
   cat(paste0('"', paste0(SRChannel,  'SR' ),  '": "', round(SR, roDgt), '",\n'))
+  cat(paste0('"OptTotalRevenue": ', '"', OptTotalRevenue, '",\n'))## added for optimizedTotalRevenue    
   cat(paste0('"', paste0(PRChannel,  'PR' ),  '": "', round(PR, roDgt), '",\n'))
 
   cat(paste0('"run1RevRange":',    '"', run1RevRange,  '",\n'))

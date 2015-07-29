@@ -664,7 +664,7 @@ OptSpend <- data.frame(matrix(optimal$par[1:templength], nrow=ndays),
                    TVImpression=c(rep(0,tvWindow[1]-1), optimal$par[(templength+1):length(optimal$par)], rep(0,ndays-tvWindow[2])))
 names(OptSpend)<- paste0("Opt_", tempchannel)
 
-temp <-data.frame( OptTotalRevenue = Revenue2(optimal$par),
+temp <-data.frame( OptTotalRevenue = Revenue(optimal$par),
                    RealTotalRevenue = data_CurrentYear$Revenue, 
                    FittedRevenue = Revenue2(Spend_CurrentYear),
                    OptSpend,
@@ -770,7 +770,7 @@ SR[1]= sum(SR[2:5])  #semSR
 
 print(SR)
 
-return(SR)
+return(list(SR=SR, OptTotalRevenue=OptTotalRevenue))
 
 
 }#Run_1_Optimization
