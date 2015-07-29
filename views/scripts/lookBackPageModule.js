@@ -6,10 +6,10 @@ var back = angular.module("ROIClientApp");
 
 back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history','actionObjInfo', function ($scope, manager, user, history,actionObjInfo) {
     // tooltips
-    $scope.brandTooltips = 'brandTooltips';
-    $scope.attrTooltips = 'attrTooltips';
-    $scope.beginPeriodTooltips = 'beginPeriodTooltips';
-    $scope.endPeriodTooltips = 'endPeriodTooltips';
+    $scope.brandTooltips = 'Please choose one of the brands from the list.';
+    $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.';
+    $scope.beginPeriodTooltips = 'Please choose the begin time.';
+    $scope.endPeriodTooltips = 'Please choose the end time.';
 
     // Calendar settings
     $scope.opened = {};
@@ -133,14 +133,17 @@ back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'histor
     $scope.lookBack = {};
     $scope.lookBack.output = {};
     $scope.lookBack.history = {};
-    $scope.spendTooltips = 'spendTooltips';
-    $scope.includeTooltips = 'includeTooltips';
+    $scope.spendTooltips = 'Portfolio Spend';
+    $scope.includeTooltips = 'Do you need to include the data through '+filter('date')($scope.lookBack.output.end,'MMM-dd-yyyy')+'?';
 
     //main
     manager.getTempData(function (data) {
         if (data.UserName) {
 
             $scope.lookBack.output = data;
+            $scope.includeTooltips = 'Do you need to include the data through '+
+                filter('date')($scope.lookBack.output.end,'MMM-dd-yyyy') +'?';
+
             $scope.begin = filter('date')($scope.lookBack.output.begin, 'yyyy-MM');
             $scope.end = filter('date')($scope.lookBack.output.end, 'yyyy-MM');
             history.getHistoryData($scope.begin, $scope.end, function (data) {

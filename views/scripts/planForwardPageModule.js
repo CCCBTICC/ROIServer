@@ -291,11 +291,11 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
 
         $scope.planForward.spend = "5000000";
         // tooltips
-        $scope.brandTooltips = 'brandTooltips';
-        $scope.attrTooltips = 'attrTooltips';
-        $scope.beginPeriodTooltips = 'beginPeriodTooltips';
-        $scope.endPeriodTooltips = 'endPeriodTooltips';
-        $scope.spendTooltips = 'spendTooltips';
+        $scope.brandTooltips = 'Please choose one of the brands from the list.';
+        $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.';
+        $scope.beginPeriodTooltips = 'Please choose the begin time.';
+        $scope.endPeriodTooltips = 'Please choose the end time.';
+        $scope.spendTooltips = 'Portfolio Spend';
     };
     $scope.Next = function () {
         var length = $scope.planForward.endPeriod.getMonth() - $scope.planForward.beginPeriod.getMonth() + 1;

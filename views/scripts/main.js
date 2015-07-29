@@ -96,13 +96,20 @@ app.controller("loginCtrl", function ($scope, $http) {
         });
     };
 });
-app.controller("indexCtrl", function ($scope, user, history) {
+app.controller("indexCtrl", function ($scope, user) {
     //var
     var username = window.sessionStorage.getItem('username');
     //function declare
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
         window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
+    };
+    $scope.help=function(){
+        //window.location.href = ('http://tinyurl.com/sfly-roi-fback');
+        var link = document.createElement('a');
+        link.href = 'http://tinyurl.com/sfly-roi-fback';
+        link.target="_blank";
+        link.click();
     };
     //main
     if (!username) {
