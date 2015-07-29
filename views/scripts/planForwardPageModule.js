@@ -269,6 +269,10 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
     // calender settings END
 
     //scope functions
+    $scope.logout = function () {
+        window.sessionStorage.removeItem('username');
+        window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
+    };
     $scope.initForm = function () {
         $scope.planForward = {};
         $scope.planForward.init = {};
@@ -317,6 +321,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
     };
     // main
     user.getUser(function (user) {
+        if(!user.name){$scope.logout()}
         $scope.user = user;
     });
     $scope.initForm();

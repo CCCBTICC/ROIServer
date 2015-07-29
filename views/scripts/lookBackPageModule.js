@@ -78,6 +78,10 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
     //calendar settings -END-
 
     // init data default
+    $scope.logout = function () {
+        window.sessionStorage.removeItem('username');
+        window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
+    };
     $scope.initForm = function () {
         console.log('from init');
         $scope.lookBack = {};
@@ -100,6 +104,7 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
     $scope.initForm();
     //get User Info
     user.getUser(function (user) {
+        if(!user.name){$scope.logout}
         $scope.user = user;
     });
     // get data template
@@ -322,6 +327,17 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
 
                         $scope.lookBack.output.ROID=$scope.lookBack.output.run1ProjROI.slice(0,-1)-$scope.lookBack.history.ROI;
                         $scope.lookBack.output.changeR=$scope.lookBack.output.ROID/$scope.lookBack.history.ROI*100;
+
+                        $scope.compareChart.data = [
+                            {title: "SEM", value: $scope.lookBack.output.semSD},
+                            {title: "Display", value: $scope.lookBack.output.disSD},
+                            {title: "Social", value: $scope.lookBack.output.socSD},
+                            {title: "Affiliates", value: $scope.lookBack.output.affSD},
+                            {title: "Partners", value: $scope.lookBack.output.parSD},
+                            {title: "Portfolio Total", value: $scope.lookBack.output.totSD}
+                        ];
+
+
                     });
 
                 }

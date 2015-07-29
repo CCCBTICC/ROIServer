@@ -43,11 +43,9 @@
             </div>
             <div class="form-group">
                 <label for="lookBackSpend" class="col-sm-3 control-label">Portfolio Spend :</label>
-
                 <div class="col-sm-4">
-                    <div class="well well-sm">
-                       {{lookBack.output.Spend | formatCurrency}}
-                    </div>
+                        <input class="form-control" id="lookBackSpend" type="text" ng-model="lookBack.output.Spend"
+                               format-input>
                     <!--<input class="form-control" id="lookBackSpend" type="text" ng-model="lookBack.output.Spend" format-input>-->
                 </div>
                 <div class="col-sm-1 help-info">

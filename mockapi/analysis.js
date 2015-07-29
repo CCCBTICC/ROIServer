@@ -23,7 +23,6 @@ router.post('/planforward', function (req, res) {
             lmTouch: reqData.lmTouch === 'Last Touch' ? 'Last Touch' : 'Multi Touch',
             spend: reqData.Spend,
             createDate: d,
-            revenue: reqData.Revenue,
             brand: reqData.Brand,
             owner: reqData.UserName,
             name: "",

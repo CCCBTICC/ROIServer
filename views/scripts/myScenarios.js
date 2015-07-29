@@ -89,6 +89,10 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.scenarios = [];
 
     //scope functions
+    $scope.logout = function () {
+        window.sessionStorage.removeItem('username');
+        window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
+    };
     $scope.selectRow = function (obj) {
         obj.isActive = !obj.isActive;
 
@@ -218,7 +222,11 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
 
     //main
     // get users scenarioList
+    while(actionObjInfo[0]){
+        actionObjInfo.shift();
+    }
     user.getUser(function (user) {
+        if(!user.name){$scope.logout();}
         $scope.user = user;
         scenarioManager.getScenarios($scope.user.name, function (data) {
             console.log(data);
