@@ -51,7 +51,7 @@
                     <div class="input-group">
                         <input id="planForwardBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
                                ng-model="planForward.beginPeriod" is-open="opened.planForwardBeginPeriod" ng-change="modifyEndDate()"
-                               min-date="{{minDate}}" max-date="{{maxDate}}" datepicker-options="dateOptions" datepicker-mode="'month'"
+                               min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" datepicker-mode="'month'"
                                ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event, 'planForwardBeginPeriod')">

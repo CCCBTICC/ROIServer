@@ -19,16 +19,18 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
         startingDay: 1,
         minMode: 'month'
     };
-    history.getHistoryDate(function (d) {
-        $scope.historydate = d;
-    });
-    var d = new Date($scope.historydate);
-    $scope.maxDate = new Date(d.getFullYear(), d.getMonth() + 2, 0);
-    //scope functions for calender settings
     $scope.initDate = function () {
-        var date = $scope.maxDate;
-        $scope.lookBack.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
-        $scope.lookBack.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        history.getHistoryDate(function (res) {
+            console.log(res);
+            $scope.historydate = res;
+            var d = new Date($scope.historydate[1]);
+            $scope.minDate = new Date($scope.historydate[0]);
+            $scope.maxDate = new Date(d.getFullYear(), d.getMonth() + 2, 0);
+            var date = $scope.maxDate;
+            $scope.lookBack.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
+            $scope.lookBack.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+        });
+
     };
     $scope.open = function ($event, model) {
         $event.preventDefault();
@@ -79,7 +81,6 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
     $scope.initForm = function () {
         console.log('from init');
         $scope.lookBack = {};
-
         // Brand
         $scope.brands = ['Shutterfly'];
         $scope.lookBack.brand = $scope.brands[0];
@@ -94,8 +95,9 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
         // init input
         $scope.lookBack.init = {};
     };
-    $scope.initForm();
 
+    //main
+    $scope.initForm();
     //get User Info
     user.getUser(function (user) {
         $scope.user = user;
@@ -111,8 +113,8 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
         $scope.lookBack.init.UserName = $scope.user.name;
         $scope.lookBack.init.Brand = $scope.lookBack.brand;
         $scope.lookBack.init.lmTouch = $scope.lookBack.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
-        $scope.lookBack.init.StartingTime = $scope.lookBack.beginPeriod;
-        $scope.lookBack.init.EndingTime = $scope.lookBack.endPeriod;
+        $scope.lookBack.init.begin = $scope.lookBack.beginPeriod;
+        $scope.lookBack.init.end = $scope.lookBack.endPeriod;
         manager.setTempData($scope.lookBack.init);
         console.log("data updated");
     };
@@ -127,22 +129,29 @@ back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'histor
 
     //main
     manager.getTempData(function (data) {
-        $scope.lookBack.output = data;
-        history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (dataArray) {
-            console.log('from history in lookback/add');
-            console.log(dataArray);
-            Object.keys(dataArray[0]).forEach(function (key) {
-                var value = 0;
-                dataArray.forEach(function (data) {
-                    value += data[key];
-                });
-                $scope.lookBack.history[key] = value;
+        if (data.UserName) {
+
+            $scope.lookBack.output = data;
+            $scope.begin = filter('date')($scope.lookBack.output.begin, 'yyyy-MM');
+            $scope.end = filter('date')($scope.lookBack.output.end, 'yyyy-MM');
+            history.getHistoryData($scope.begin, $scope.end, function (data) {
+                console.log('from history in lookback/add');
+                console.log(data);
+                $scope.lookBack.history = data;
+                $scope.lookBack.output.Spend =
+                    $scope.lookBack.history.SEM +
+                    $scope.lookBack.history.Affiliate +
+                    $scope.lookBack.history.Display +
+                    $scope.lookBack.history.FB +
+                    $scope.lookBack.history.Partners;
+
             });
-        });
-        $scope.lookBack.output.Spend = 5000000;
-        //$scope.lookBack.output.Spend = $scope.lookBack.history.Spend;
-        $scope.lookBack.output.included = "false";
-        console.log($scope.lookBack.output);
+            //$scope.lookBack.output.Spend = $scope.lookBack.history.Spend;
+            $scope.lookBack.output.included = "false";
+            console.log($scope.lookBack.output);
+        } else {
+            location.path('lookback/init')
+        }
     });
     $scope.reRun = function () {
         $scope.lookBack.output1.Algorithm = 2;
@@ -160,7 +169,15 @@ back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'histor
             filter('date')(endDay, 'MMMyyyy') + "-" +
             $scope.lookBack.output1.lmTouch.charAt(0) + "-" + "00X";
         //
-        $scope.lookBack.output1.dataThrough = $scope.lookBack.output.dataThrough;
+        if ($scope.lookBack.output.included) {
+            $scope.lookBack.output1.dataThrough = $scope.lookBack.output1.EndingTime;
+        }
+        else {
+            var d = new Date($scope.lookBack.output1.StartingTime);
+            $scope.lookBack.output1.dataThrough = new Date(d.getFullYear(), d.getMonth(), 1);
+            $scope.lookBack.output1.dataThrough = filter('date')($scope.lookBack.output1.dataThrough, 'yyyy-MM');
+        }
+        console.log($scope.lookBack.output1.dataThrough);
         $scope.lookBack.output1.from = "back";
         //post data to R
         manager.postData($scope.lookBack.output1, function (res) {
@@ -168,21 +185,11 @@ back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'histor
             location.path('lookback/output');
         });
     };
-
     $scope.run = function () {
-
-        if ($scope.lookBack.output.include) {
-            $scope.lookBack.output.dataThrough = filter('date')($scope.lookBack.output.EndingTime, 'yyyy-MM');
-        }
-        else {
-            var d = new Date($scope.lookBack.output.StartingTime);
-            $scope.lookBack.output.dataThrough = new Date(d.getFullYear(), d.getMonth(), 0);
-            $scope.lookBack.output.dataThrough = filter('date')($scope.lookBack.output.dataThrough, 'yyyy-MM');
-        }
         //run1
         //// first step input init
-        $scope.lookBack.output.StartingTime = filter('date')($scope.lookBack.output.StartingTime, 'yyyy-MM');
-        $scope.lookBack.output.EndingTime = filter('date')($scope.lookBack.output.endPeriod, 'yyyy-MM');
+        $scope.lookBack.output.StartingTime = $scope.begin;
+        $scope.lookBack.output.EndingTime = $scope.end;
         $scope.lookBack.output.Algorithm = 1;
         manager.postData($scope.lookBack.output, function (res) {
             console.log('from run1 in run back/add');
@@ -214,6 +221,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
 
     $scope.lookBack = {};
     $scope.lookBack.output = {};
+    $scope.lookBack.history = {}
 
     $scope.compareChart = {};
     $scope.lookBack.output.semSD = 10000;
@@ -240,15 +248,15 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
     $scope.edit = function () {
 
         location.path('lookback/edit');
-    };
+    }; //finished
     $scope.export = function () {
 
         location.path('myscenarios/export');
-    };
+    }; //pause
     $scope.share = function () {
 
         location.path('myscenarios/share');
-    };
+    };  // pause
     //main
     manager.getName(function (name) {
         if (!name) {
@@ -266,8 +274,54 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
                     console.log(data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
-                    history.getHistoryData(function (data) {
-                        $scope.lookBack.history = data;
+                    history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (history) {
+                        console.log(history);
+                        $scope.lookBack.history.semSR = history.SEM;
+                        $scope.lookBack.history.semBSR = history.SEMBrand;
+                        $scope.lookBack.history.semCSR = history.SEMCard;
+                        $scope.lookBack.history.semOSR = history.SEMOther;
+                        $scope.lookBack.history.semPSR = history.SEMPBook;
+                        $scope.lookBack.history.disSR = history.Display;
+                        $scope.lookBack.history.affSR = history.Affiliate;
+                        $scope.lookBack.history.socSR = history.FB;
+                        $scope.lookBack.history.parSR = history.Partners;
+                        $scope.lookBack.history.totSR =
+                            history.Partners + history.FB + history.Affiliate + history.Display + history.SEM;
+                        $scope.lookBack.history.totPR = history.Revenue;
+                        $scope.lookBack.history.ROI = ($scope.lookBack.history.totPR / $scope.lookBack.history.totSR - 1)*100;
+                        if ($scope.lookBack.output.lmTouch === "Multi-Touch") {
+                            $scope.lookBack.history.semPR = history.SEM_MTA;
+                            $scope.lookBack.history.disPR = history.Display_MTA;
+                            $scope.lookBack.history.affPR = history.Affiliates_MTA;
+                            $scope.lookBack.history.socPR = history.FB_MTA;
+                            $scope.lookBack.history.parPR = history.Partners_MTA;
+                        } else {
+                            $scope.lookBack.history.semPR = history.SEM_LTA;
+                            $scope.lookBack.history.disPR = history.Display_LTA;
+                            $scope.lookBack.history.affPR = history.Affiliates_LTA;
+                            $scope.lookBack.history.socPR = history.FB_LTA;
+                            $scope.lookBack.history.parPR = history.Partners_LTA;
+                        }
+                        $scope.lookBack.output.semSD = $scope.lookBack.output.semSR - $scope.lookBack.history.semSR;
+                        $scope.lookBack.output.semBSD = $scope.lookBack.output.semBSR - $scope.lookBack.history.semBSR;
+                        $scope.lookBack.output.semCSD = $scope.lookBack.output.semCSR - $scope.lookBack.history.semCSR;
+                        $scope.lookBack.output.semOSD = $scope.lookBack.output.semOSR - $scope.lookBack.history.semOSR;
+                        $scope.lookBack.output.semPSD = $scope.lookBack.output.semPSR - $scope.lookBack.history.semPSR;
+                        $scope.lookBack.output.disSD = $scope.lookBack.output.disSR - $scope.lookBack.history.disSR;
+                        $scope.lookBack.output.affSD = $scope.lookBack.output.affSR - $scope.lookBack.history.affSR;
+                        $scope.lookBack.output.socSD = $scope.lookBack.output.socSR - $scope.lookBack.history.socSR;
+                        $scope.lookBack.output.parSD = $scope.lookBack.output.parSR - $scope.lookBack.history.parSR;
+                        $scope.lookBack.output.totSD = $scope.lookBack.output.totSR - $scope.lookBack.history.totSR;
+
+                        $scope.lookBack.output.semRD = $scope.lookBack.output.semPR - $scope.lookBack.history.semPR;
+                        $scope.lookBack.output.disRD = $scope.lookBack.output.disPR - $scope.lookBack.history.disPR;
+                        $scope.lookBack.output.affRD = $scope.lookBack.output.affPR - $scope.lookBack.history.affPR;
+                        $scope.lookBack.output.socRD = $scope.lookBack.output.socPR - $scope.lookBack.history.socPR;
+                        $scope.lookBack.output.parRD = $scope.lookBack.output.parPR - $scope.lookBack.history.parPR;
+                        $scope.lookBack.output.totRD = $scope.lookBack.output.totPR - $scope.lookBack.history.totPR;
+
+                        $scope.lookBack.output.ROID=$scope.lookBack.output.run1ProjROI.slice(0,-1)-$scope.lookBack.history.ROI;
+                        $scope.lookBack.output.changeR=$scope.lookBack.output.ROID/$scope.lookBack.history.ROI*100;
                     });
 
                 }

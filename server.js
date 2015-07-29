@@ -28,6 +28,7 @@ var scenarios = require('./' + apiFolderName + '/scenarios');
 var analysis = require('./' + 'mockapi' + '/analysis');
 
 var users = require('./' + apiFolderName + '/users');
+var history = require('./' + apiFolderName + '/history');
 var app = express();
 var port = process.env.PORT || 3001;
 
@@ -51,6 +52,7 @@ app.use(function (req, res, next) {
 app.use('/scenarios', scenarios);
 app.use('/analysis', analysis);
 app.use('/users', users);
+app.use('/history',history);
 
 //=============================route API  user and scenario ======================
 

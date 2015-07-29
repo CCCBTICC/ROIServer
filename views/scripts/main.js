@@ -88,7 +88,7 @@ app.controller("loginCtrl", function ($scope, $http) {
             data: {action: 'login', data: $scope.login}
         }).success(function (res) {
             if (res) {
-                window.sessionStorage.setItem('username',res);
+                window.sessionStorage.setItem('username', res);
                 window.location.href = ('http://' + window.location.hostname + ':3001/home.html');
             } else {
                 console.log('uncorrect');
@@ -96,23 +96,22 @@ app.controller("loginCtrl", function ($scope, $http) {
         });
     };
 });
-app.controller("indexCtrl", function ($scope, user) {
+app.controller("indexCtrl", function ($scope, user, history) {
     //var
     var username = window.sessionStorage.getItem('username');
     //function declare
-    $scope.logout = function(){
+    $scope.logout = function () {
         window.sessionStorage.removeItem('username');
         window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
     };
     //main
-    if(!username){
+    if (!username) {
         $scope.logout();
     }
     user.setUser(username);
-    user.getUser(function(user){
-       $scope.user = user;
+    user.getUser(function (user) {
+        $scope.user = user;
     });
-
 });
 app.controller("savePlanCtrl", function ($scope, $http) {
     console.log('saveCtrl work');
@@ -155,25 +154,49 @@ app.factory('user', function ($http) {
     }
 });
 app.factory('history', function ($http) {
-    var historyDate = "2015-05";
-    var historyUrl="http://" + window.location.hostname + ":3001/history/";
-    var post=function(data,cb){
+    var historyDate=[];
+    var historyUrl = "http://" + window.location.hostname + ":3001/history/";
+    var post = function (data, cb) {
         $http({
-            method:'post',
-            url:historyUrl,
-            data:data
+            method: 'post',
+            url: historyUrl,
+            data: data
         }).success(cb)
     };
     return {
-        getHistoryDate:function(cb){
-            cb(historyDate);
+        getHistoryDate: function (cb) {
+            if (historyDate[0]) {
+                cb(historyDate);
+            }
+            else {
+                $http.get(historyUrl).success(function (res) {
+                        historyDate = res;
+                        cb(historyDate);
+                    }
+                );
+            }
         },
-        getHistoryData:function(begin,end,cb){
+        getHistoryData: function (begin, end, cb) {
+            var data={begin:begin,end:end};
+            post(data,function(res){
+                console.log(res);
+                var sum={};
+                Object.keys(res[0]).forEach(function(key){
+                    sum[key]=0;
+                    console.log(key);
+                    res.forEach(function(month){
+                        sum[key]+=Number(month[key]);
+                        console.log(month[key])
+                    });
+                });
+                cb(sum);
+            });
 
         }
     }
 
-});
+})
+;
 app.filter('name', function () {
     return function (input, scope) {
         if (input != null)

@@ -52,7 +52,7 @@
                         <input id="lookBackBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
                                ng-model="lookBack.beginPeriod" is-open="opened.lookBackBeginPeriod"
                                ng-change="modifyEndDate()"
-                               datepicker-options="dateOptions" datepicker-mode="'month'" max-date="{{maxDate}}"
+                               datepicker-options="dateOptions" datepicker-mode="'month'" min-date="minDate" max-date="maxDate"
                                ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default"

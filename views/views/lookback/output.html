@@ -181,9 +181,9 @@
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio ROI</td>
-                        <td colspan="2">{{lookBack.history.ROI | number }}%</td>
+                        <td colspan="2">{{lookBack.history.ROI | number:0}}%</td>
                         <td colspan="2">{{lookBack.output.run1ProjROI}}</td>
-                        <td colspan="2"></td>
+                        <td colspan="2">{{lookBack.output.ROID | number:0}}%</td>
                     </tr>
                     <tr>
                         <td colspan="7"></td>
@@ -191,7 +191,7 @@
                     <tr>
                         <td class="td-title">Change in Brand Total Revenue</td>
                         <td colspan="4"></td>
-                        <td colspan="2">{{lookBack.output.changeR | number}}%</td>
+                        <td colspan="2">{{lookBack.output.changeR | number:0}}%</td>
                     </tr>
                     </tbody>
                 </table>

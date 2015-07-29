@@ -29,7 +29,7 @@
                 <label for="lookBackBrand" class="col-sm-3 control-label">Begin Period:</label>
                 <div class="col-sm-4">
                     <div class="well well-sm">
-                        {{lookBack.output.StartingTime | date: 'MMM-dd-yyyy'}}
+                        {{lookBack.output.begin | date: 'MMM-dd-yyyy'}}
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                 <label for="lookBackBrand" class="col-sm-3 control-label">End Period:</label>
                 <div class="col-sm-4">
                     <div class="well well-sm">
-                        {{lookBack.output.EndingTime | date: 'MMM-dd-yyyy'}}
+                        {{lookBack.output.end | date: 'MMM-dd-yyyy'}}
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">
-                    Include data through {{lookBack.output.EndingTime | date: 'MMM-dd-yyyy'}}? :<br>
+                    Include data through {{lookBack.output.end | date: 'MMM-dd-yyyy'}}? :<br>
                 </label>
 
                 <div class="col-sm-4">

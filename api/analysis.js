@@ -53,8 +53,8 @@ router.post('/lookback', function (req, res){
     var end = req.body.end;
     var allMonth = [];
     var allMonthObj = [];
-    console.log(typeof allMonthObj);
-    if(end >= begin){
+    console.log(begin);
+
         allMonth = getAllMonth(begin,end);
         allMonth.forEach(function (monthStr,index){
             req.db.collection("history").findOne({Month:monthStr},{}, function (err, result){
@@ -68,9 +68,8 @@ router.post('/lookback', function (req, res){
                 res.send(allMonthObj);
             }
         });
-    }else{
-        console.log('end should latter than begin');
-    }   
+        setTimeout(function(){res.send(allMonthObj);},500);
+
 
 }); 
 
@@ -105,8 +104,9 @@ function getAllMonth (begin, end){
     var month = end.slice(5)  - begin.slice(5);
     var output = [];
     var temp = "";
+    var i,j;
     if(year>0){
-    for(var i=Number(begin.slice(5,7));i<=12;i++){
+    for( i=Number(begin.slice(5,7));i<=12;i++){
         if(i<10){
         temp = begin.slice(0,5)+"0"+i;
         output.push(temp);
@@ -115,8 +115,8 @@ function getAllMonth (begin, end){
         output.push(temp);   
         }
     }
-    for(var i=1;i<year;i++){
-       for(var j=1;j<=12;j++){
+    for( i=1;i<year;i++){
+       for(j=1;j<=12;j++){
              if(j<10){ 
                  temp = Number(Number(begin.slice(0,4))+i)+"-0"+j;
                  output.push(temp);
@@ -126,7 +126,7 @@ function getAllMonth (begin, end){
              }
             }
     }
-    for(var i=1;i<=Number(end.slice(5));i++){
+    for( i=1;i<=Number(end.slice(5));i++){
         if(i<10){
         temp = end.slice(0,4)+"-0"+i;
         output.push(temp);
@@ -136,7 +136,7 @@ function getAllMonth (begin, end){
         }
     }       
     }else{
-      for(var i=Number(begin.slice(5,7));i<=Number(end.slice(5,7));i++){
+      for( i=Number(begin.slice(5,7));i<=Number(end.slice(5,7));i++){
         if(i<10){
         temp = begin.slice(0,5)+"0"+i;
         output.push(temp);

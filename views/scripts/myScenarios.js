@@ -420,6 +420,7 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, s
     //main
     forwardManager.getName(function (id) {
         if (id) {
+            console.log(id);
             scenarioManager.getScenarioById(id, function (res) {
                 if (res) {
                     $scope.scenario = res;

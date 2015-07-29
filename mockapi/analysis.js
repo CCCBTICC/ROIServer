@@ -7,6 +7,7 @@ var fs = require('fs');
 //var Rmodule = require('./modules/Rmodule');
 var ObjectId = require('mongodb').ObjectID;
 
+
 router.post('/planforward', function (req, res) {
     var reqData = req.body.data;
     var reqUsername = req.body.username;
@@ -29,21 +30,19 @@ router.post('/planforward', function (req, res) {
             note: "",
             final: "No",
             dataThrough: reqData.dataThrough,
-            included: reqData.included ? reqData.included:'No',
+            included: reqData.included ? reqData.included : 'No',
             share: "No",
             exist: false,
-            from: reqData.from === 'forward'?'forward':'back'
+            from: reqData.from === 'forward' ? 'forward' : 'back'
         };
         console.log(scenario);
         req.db.collection("scenarios").insertOne(scenario, function (err, scenarioDoc) {
             req.db.collection('users').findOneAndUpdate({username: reqUsername}, {$push: {scenarios: scenarioDoc.ops[0]._id}}, function () {
-                //res.send(scenarioDoc.ops[0]._id);
-                res.send('55ab282fce84683817469e03');
+                res.send(scenarioDoc.ops[0]._id);
             });
         });
     } else {
-        //res.send(objectId);
-        res.send('55ab282fce84683817469e03-1');
+        res.send(objectId);
     }
     //  use Rmodule.sendRcompute function to write file and use commend line to send file to R
     console.log('after send');
@@ -51,6 +50,9 @@ router.post('/planforward', function (req, res) {
 });
 
 // using get method to  check the file change
+
+
+
 router.get('/:objectId', function (req, res) {
     var objectId = req.params.objectId;
     //var result = Rmodule.getRoutput(objectId);
@@ -200,17 +202,17 @@ router.get('/:objectId', function (req, res) {
             break;
         case "run2":
             res.send({
-                "UserName":"user1",
-                "Brand":"Shutterfly",
-                "Spend":"3000000",
-                "StartingTime":"2014-09",
-                "PlanMonths":"1",
-                "EndingTime":"2014-09",
-                "lmTouch":"Last Touch",
-                "Algorithm":"2",
-                "AlgStartingTime":"2014-09-26 07:57:39",
-                "AlgEndingTime":"2014-09-26 07:59:51",
-                "AlgDuration":"2.199252 mins",
+                "UserName": "user1",
+                "Brand": "Shutterfly",
+                "Spend": "3000000",
+                "StartingTime": "2014-09",
+                "PlanMonths": "1",
+                "EndingTime": "2014-09",
+                "lmTouch": "Last Touch",
+                "Algorithm": "2",
+                "AlgStartingTime": "2014-09-26 07:57:39",
+                "AlgEndingTime": "2014-09-26 07:59:51",
+                "AlgDuration": "2.199252 mins",
                 "semCLB": "84101",
                 "semPLB": "77755",
                 "semOLB": "22504",
@@ -253,13 +255,13 @@ router.get('/:objectId', function (req, res) {
                 "socSF": "1.0",
                 "affSF": "1.0",
                 "parSF": "1.0",
-                "dirSpendM1":"310263",
-                "dirSpendM2":"",
-                "dirSpendM3":"",
-                "tvBeginDate":"",
-                "tvEndDate":"",
-                "tvImpressions":"0",
-                "tvSpend":"0",
+                "dirSpendM1": "310263",
+                "dirSpendM2": "",
+                "dirSpendM3": "",
+                "tvBeginDate": "",
+                "tvEndDate": "",
+                "tvImpressions": "0",
+                "tvSpend": "0",
                 "semSR": "1202034",
                 "semCSR": "470036",
                 "semPSR": "115306",
@@ -276,9 +278,9 @@ router.get('/:objectId', function (req, res) {
                 "affPR": "449803",
                 "parPR": "2148935",
                 "totPR": "8896187",
-                "run1RevRange":"+/- 6%",
-                "run1ProjROI":"197%",
-                "run1ROIRange":"179%/214%",
+                "run1RevRange": "+/- 6%",
+                "run1ProjROI": "197%",
+                "run1ROIRange": "179%/214%",
                 "semCSlideLeft": "84101",
                 "semPSlideLeft": "77755",
                 "semOSlideLeft": "22504",
@@ -335,22 +337,22 @@ router.get('/:objectId', function (req, res) {
                 "affAR": "449803",
                 "parAR": "2148935",
                 "totAR": "8896187",
-                "run2ProjROI":"197%"
+                "run2ProjROI": "197%"
             });
             break;
         case "run3":
             res.send({
-                "UserName":"user1",
-                "Brand":"Shutterfly",
-                "Spend":"3000000",
-                "StartingTime":"2014-09",
-                "PlanMonths":"1",
-                "EndingTime":"2014-09",
-                "lmTouch":"Last Touch",
-                "Algorithm":"3",
-                "AlgStartingTime":"2014-09-26 08:02:27",
-                "AlgEndingTime":"2014-09-26 08:05:09",
-                "AlgDuration":"2.704022 mins",
+                "UserName": "user1",
+                "Brand": "Shutterfly",
+                "Spend": "3000000",
+                "StartingTime": "2014-09",
+                "PlanMonths": "1",
+                "EndingTime": "2014-09",
+                "lmTouch": "Last Touch",
+                "Algorithm": "3",
+                "AlgStartingTime": "2014-09-26 08:02:27",
+                "AlgEndingTime": "2014-09-26 08:05:09",
+                "AlgDuration": "2.704022 mins",
                 "semCLB": "84101",
                 "semPLB": "77755",
                 "semOLB": "22504",
@@ -393,13 +395,13 @@ router.get('/:objectId', function (req, res) {
                 "socSF": "1.0",
                 "affSF": "1.0",
                 "parSF": "1.0",
-                "dirSpendM1":"310263",
-                "dirSpendM2":"",
-                "dirSpendM3":"",
-                "tvBeginDate":"",
-                "tvEndDate":"",
-                "tvImpressions":"0",
-                "tvSpend":"0",
+                "dirSpendM1": "310263",
+                "dirSpendM2": "",
+                "dirSpendM3": "",
+                "tvBeginDate": "",
+                "tvEndDate": "",
+                "tvImpressions": "0",
+                "tvSpend": "0",
                 "semSR": "1202034",
                 "semCSR": "470036",
                 "semPSR": "115306",
@@ -416,9 +418,9 @@ router.get('/:objectId', function (req, res) {
                 "affPR": "449803",
                 "parPR": "2148935",
                 "totPR": "8896187",
-                "run1RevRange":"+/- 6%",
-                "run1ProjROI":"197%",
-                "run1ROIRange":"179%/214%",
+                "run1RevRange": "+/- 6%",
+                "run1ProjROI": "197%",
+                "run1ROIRange": "179%/214%",
                 "semCSlideLeft": "84101",
                 "semPSlideLeft": "77755",
                 "semOSlideLeft": "22504",
@@ -475,7 +477,7 @@ router.get('/:objectId', function (req, res) {
                 "affAR": "444040",
                 "parAR": "2045884",
                 "totAR": "8901437",
-                "run2ProjROI":"197%"
+                "run2ProjROI": "197%"
             });
             break;
         default:
@@ -622,4 +624,5 @@ router.get('/:objectId', function (req, res) {
             break;
     }
 });
+
 module.exports = router;
