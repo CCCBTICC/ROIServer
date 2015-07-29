@@ -4,7 +4,7 @@
 'use strict';
 var back = angular.module("ROIClientApp");
 
-back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', function ($scope, manager, user, history) {
+back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history','actionObjInfo', function ($scope, manager, user, history,actionObjInfo) {
     // tooltips
     $scope.brandTooltips = 'brandTooltips';
     $scope.attrTooltips = 'attrTooltips';
@@ -107,6 +107,10 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
         if(!user.name){$scope.logout}
         $scope.user = user;
     });
+    while(actionObjInfo[0]){
+        actionObjInfo.shift();
+    }
+
     // get data template
     manager.getTempData(function (data) {
         $scope.lookBack.init = data;
@@ -270,7 +274,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
     });
     var count;
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 1); //set frequency
+    count = setInterval(doGet, 1000 * 10); //set frequency
     function doGet() {
         if ($scope.getJson === false) {
             manager.getData(function (data) {

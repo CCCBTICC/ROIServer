@@ -206,7 +206,7 @@ forward.factory('forwardManager', function ($http) {
     }
 });
 
-forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter','history', function ($scope, manager, user, location, filter,history) {
+forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter','history','actionObjInfo', function ($scope, manager, user, location, filter,history,actionObjInfo) {
 
     // Calendar settings
     ////scope vars for calender settings
@@ -325,7 +325,9 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
         $scope.user = user;
     });
     $scope.initForm();
-
+    while(actionObjInfo[0]){
+        actionObjInfo.shift();
+    }
     manager.getTempData(function (data) {
         $scope.planForward.init = data;
     });
@@ -393,9 +395,11 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                     var e = new Date($scope.planForward.output.EndingTime);
                     e = new Date(e.getFullYear(), e.getMonth() + 1);
                     console.log(e);
+                    $scope.size=[1,2,3,4,5,6];
                     while (b <= e) {
                         $scope.planForward.ControlChannels.push(b);
                         b = new Date(b.getFullYear(), b.getMonth() + 1, 1);
+                        $scope.size.shift();
                     }
                     var month = ['dirSpendM1', 'dirSpendM2', 'dirSpendM3', 'dirSpendM4', 'dirSpendM5', 'dirSpendM6'];
                     month.forEach(function (key) {
@@ -555,6 +559,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
             location.path("planforward/output");
         });
     };
+
+    //main
 
     count = setInterval(doGet, 1000 * 1); //set frequency
     history.getHistoryDate(function(d){
@@ -919,7 +925,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     }
 
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 1); //set frequency
+    count = setInterval(doGet, 1000 * 10); //set frequency
 
     //graph Settings
     $scope.showme = false;
