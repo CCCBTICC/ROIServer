@@ -105,13 +105,15 @@ app.controller("indexCtrl", function ($scope, user, history) {
         window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
     };
     //main
+    console.log(username);
     if (!username) {
         $scope.logout();
+    } else {
+        user.setUser(username);
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
     }
-    user.setUser(username);
-    user.getUser(function (user) {
-        $scope.user = user;
-    });
 });
 app.controller("savePlanCtrl", function ($scope, $http) {
     console.log('saveCtrl work');
@@ -154,7 +156,7 @@ app.factory('user', function ($http) {
     }
 });
 app.factory('history', function ($http) {
-    var historyDate=[];
+    var historyDate = [];
     var historyUrl = "http://" + window.location.hostname + ":3001/history/";
     var post = function (data, cb) {
         $http({
@@ -177,15 +179,15 @@ app.factory('history', function ($http) {
             }
         },
         getHistoryData: function (begin, end, cb) {
-            var data={begin:begin,end:end};
-            post(data,function(res){
+            var data = {begin: begin, end: end};
+            post(data, function (res) {
                 console.log(res);
-                var sum={};
-                Object.keys(res[0]).forEach(function(key){
-                    sum[key]=0;
+                var sum = {};
+                Object.keys(res[0]).forEach(function (key) {
+                    sum[key] = 0;
                     console.log(key);
-                    res.forEach(function(month){
-                        sum[key]+=Number(month[key]);
+                    res.forEach(function (month) {
+                        sum[key] += Number(month[key]);
                         console.log(month[key])
                     });
                 });

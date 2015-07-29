@@ -19,6 +19,10 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
         startingDay: 1,
         minMode: 'month'
     };
+    $scope.logout = function () {
+        window.sessionStorage.removeItem('username');
+        window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
+    };
     $scope.initDate = function () {
         history.getHistoryDate(function (res) {
             console.log(res);
@@ -101,6 +105,7 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
     //get User Info
     user.getUser(function (user) {
         $scope.user = user;
+        if(!user.name){$scope.logout()}
     });
     // get data template
     manager.getTempData(function (data) {
@@ -217,7 +222,7 @@ back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'histor
     }
 }]);
 
-back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'history', function ($scope, manager, location, history) {
+back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'history','scenarioManager', function ($scope, manager, location, history,scenarioManager) {
 
     $scope.lookBack = {};
     $scope.lookBack.output = {};
@@ -274,6 +279,11 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
                     console.log(data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
+                    manager.getName(function (id) {
+                        scenarioManager.editScenario(data.UserName, id, {exist: true}, function (res) {
+                            console.log(res)
+                        });
+                    });
                     history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (history) {
                         console.log(history);
                         $scope.lookBack.history.semSR = history.SEM;

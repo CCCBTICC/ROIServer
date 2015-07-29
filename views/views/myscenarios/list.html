@@ -38,26 +38,26 @@
                     <td class="check col-0">
                         <label><input type="checkbox"></label>
                     </td>
-                    <td class="col-2">55</td>
-                    <td class="col-2">SFLY-May-2015-Optimized</td>
-                    <td class="col-3">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
-                    <td class="col-1">Mike</td>
-                    <td class="col-1">No</td>
-                    <td class="col-1">2015-07-21</td>
-                    <td class="col-1">Shutterfly</td>
-                    <td class="col-1">{{5000000| formatCurrency}}</td>
-                    <td class="col-1">2014-09</td>
-                    <td class="col-1">2014-10</td>
-                    <td class="col-1">Last Touch</td>
-                    <td class="col-1">2014-06</td>
-                    <td class="col-1">No</td>
-                    <td class="col-1">No</td>
+                    <td class="col-2 non-number">55</td>
+                    <td class="col-2 non-number">SFLY-May-2015-Optimized</td>
+                    <td class="col-3 non-number">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
+                    <td class="col-1 non-number">Mike</td>
+                    <td class="col-1 non-number">No</td>
+                    <td class="col-1 non-number">2015-07-21</td>
+                    <td class="col-1 non-number">Shutterfly</td>
+                    <td class="col-1 non-number">{{5000000| formatCurrency}}</td>
+                    <td class="col-1 non-number">2014-09</td>
+                    <td class="col-1 non-number">2014-10</td>
+                    <td class="col-1 non-number">Last Touch</td>
+                    <td class="col-1 non-number">2014-06</td>
+                    <td class="col-1 non-number">No</td>
+                    <td class="col-1 non-number">No</td>
                 </tr>
                 <tr ng-repeat="scenario in scenarios" ng-click="selectRow(scenario)">
                     <td class="check non-number">
                         <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
                     </td>
-                    <td class="non-number">{{scenario.scenarioId}}</td>
+                    <td class="non-number" ng-class="!scenario.exist? 'alert-danger':''">{{scenario.scenarioId}}</td>
                     <td class="non-number">{{scenario.name}}</td>
                     <td class="non-number">{{scenario.note}}</td>
                     <td class="non-number">{{scenario.owner}}</td>

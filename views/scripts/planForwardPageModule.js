@@ -206,18 +206,23 @@ forward.factory('forwardManager', function ($http) {
     }
 });
 
-forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter','history', function ($scope, manager, user, location, filter,history) {
+forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter', 'history', function ($scope, manager, user, location, filter, history) {
 
     // Calendar settings
     ////scope vars for calender settings
     $scope.opened = {};
-    $scope.minDate=new Date(2017,1,1);
+    $scope.minDate = new Date(2017, 1, 1);
     $scope.format = 'MMMM-dd-yyyy';
     $scope.dateOptions = {
         formatYear: 'yyyy',
         startingDay: 1,
         minMode: 'month'
     };
+    $scope.logout = function () {
+        window.sessionStorage.removeItem('username');
+        window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
+    };
+
     $scope.initDate = function () {
         var date = $scope.minDate;
         $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -275,9 +280,9 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
         $scope.brands = ['Shutterfly'];
         $scope.planForward.brand = $scope.brands[0];
         $scope.planForward.attribution = 'LTA';
-        history.getHistoryDate(function(res){
+        history.getHistoryDate(function (res) {
             console.log("from planforward");
-            $scope.historydate=res;
+            $scope.historydate = res;
             var d = new Date($scope.historydate[1]);
             $scope.minDate = new Date(d.getFullYear(), d.getMonth() + 2, 1);
             $scope.maxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 6, 0);
@@ -318,6 +323,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
     // main
     user.getUser(function (user) {
         $scope.user = user;
+        if(!user.name){$scope.logout()}
     });
     $scope.initForm();
 
@@ -327,7 +333,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
 
 }]);
 
-forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$location', '$filter','history', function ($scope, manager, location, filter,history) {
+forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$location', '$filter', 'history', function ($scope, manager, location, filter, history) {
     //check if data id exist in factory
     manager.getName(function (name) {
         if (!name) {
@@ -336,6 +342,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     });
 
     var count;
+
     function doGet() {
         if ($scope.getJson === false) {
             manager.getData(function (data) {
@@ -377,7 +384,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
                     //$scope.planForward.output.socAR = "";
                     //$scope.planForward.output.affAR = "";
                     //$scope.planForward.output.parAR = "";
-                    history.getHistoryDate(function(d){
+                    history.getHistoryDate(function (d) {
                         console.log('from history');
                         console.log(d);
                         $scope.planForward.output.dataThrough = d[1];
@@ -423,7 +430,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     //initial controller scope
     $scope.planForward = {
         output: {},
-        history:{},
+        history: {},
         ControlChannelsDM: [],
         ControlChannels: [],
         selectPlan: {
@@ -552,10 +559,10 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     };
 
     count = setInterval(doGet, 1000 * 1); //set frequency
-    history.getHistoryDate(function(d){
+    history.getHistoryDate(function (d) {
         $scope.planForward.output.dataThrough = d[1];
     });
-    history.getHistoryData("2015-01","2015-01",function(res){
+    history.getHistoryData("2015-01", "2015-01", function (res) {
         console.log("from history in planforward/constrict");
         console.log(res);
     });
@@ -564,7 +571,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
     });
 }]);
 
-forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', '$filter','history', function ($scope, manager, location, filter,history) {
+forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', '$filter', 'history', 'scenarioManager', function ($scope, manager, location, filter, history, scenarioManager) {
     manager.getName(function (name) {
         if (!name) {
             location.path("/planforward/init");
@@ -597,8 +604,8 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
         }
     };
     $scope.slideError = false;
-    history.getHistoryDate(function(d){
-        $scope.historydate=d[1];
+    history.getHistoryDate(function (d) {
+        $scope.historydate = d[1];
     });
 
     //reset slideValue
@@ -658,7 +665,11 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                             console.log(data);
                             $scope.getJson = true;
                             $scope.planForward.output = data;
-
+                            manager.getName(function (id) {
+                                scenarioManager.editScenario(data.UserName, id, {exist: true}, function (res) {
+                                    console.log(res)
+                                });
+                            });
                             var beginDay, endDay;
                             beginDay = new Date($scope.planForward.output.StartingTime);
                             beginDay = new Date(beginDay.getFullYear(), beginDay.getMonth() + 1, 1);
@@ -728,15 +739,15 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             }
         });
     };
-    $scope.share=function(){
+    $scope.share = function () {
 
         location.path('myscenarios/share');
     };
-    $scope.export=function(){
+    $scope.export = function () {
         //main
         location.path('/myscenarios/export');
     };
-    $scope.edit=function(){
+    $scope.edit = function () {
 
         location.path('/planforward/edit');
     };
@@ -843,7 +854,11 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                     console.log(data);
                     $scope.getJson = true;
                     $scope.planForward.output = data;
-
+                    manager.getName(function (id) {
+                        scenarioManager.editScenario(data.UserName, id, {exist: true}, function (res) {
+                            console.log(res)
+                        });
+                    });
                     var beginDay, endDay;
                     beginDay = new Date($scope.planForward.output.StartingTime);
                     beginDay = new Date(beginDay.getFullYear(), beginDay.getMonth() + 1, 1);
@@ -895,8 +910,8 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                     $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
                     $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
 
-                    $scope.planForward.output.ROID=Number($scope.planForward.output.run2ProjROI.substr(0,3))-Number($scope.planForward.output.run1ProjROI.substr(0,3));
-                    $scope.planForward.output.changeR=$scope.planForward.output.ROID/Number($scope.planForward.output.run1ProjROI.substr(0,3))*100;
+                    $scope.planForward.output.ROID = Number($scope.planForward.output.run2ProjROI.substr(0, 3)) - Number($scope.planForward.output.run1ProjROI.substr(0, 3));
+                    $scope.planForward.output.changeR = $scope.planForward.output.ROID / Number($scope.planForward.output.run1ProjROI.substr(0, 3)) * 100;
                     $scope.compareChart.data = [
                         {title: "SEM", value: $scope.planForward.output.semSD},
                         {title: "Display", value: $scope.planForward.output.disSD},
@@ -914,7 +929,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     }
 
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 1); //set frequency
+    count = setInterval(doGet, 1000 * 30); //set frequency
 
     //graph Settings
     $scope.showme = false;
