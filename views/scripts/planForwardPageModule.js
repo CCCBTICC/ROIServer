@@ -743,6 +743,9 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
                             $scope.planForward.output.affRD = Number($scope.planForward.output.affAR) - Number($scope.planForward.output.affPR);
                             $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
                             $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
+                            $scope.planForward.output.ROID = Number($scope.planForward.output.run2ProjROI.substr(0, 3)) - Number($scope.planForward.output.run1ProjROI.substr(0, 3));
+                            $scope.planForward.output.changeR = $scope.planForward.output.ROID / Number($scope.planForward.output.run1ProjROI.substr(0, 3)) * 100;
+
                             $scope.compareChart.data = [
                                 {title: "SEM", value: $scope.planForward.output.semSD},
                                 {title: "SEM-Brand", value: $scope.planForward.output.semBSD},
