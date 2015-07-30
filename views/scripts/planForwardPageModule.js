@@ -575,7 +575,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
 
     //main
 
-    count = setInterval(doGet, 1000 * 0.3); //set frequency
+    count = setInterval(doGet, 1000 * 1); //set frequency
     history.getHistoryDate(function (d) {
         $scope.planForward.output.dataThrough = d[1];
     });
@@ -686,7 +686,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             console.log(res);
             var count;
             $scope.getJson = false;
-            count = setInterval(doGet, 1000 * 0.3); //set frequency
+            count = setInterval(doGet, 1000 * 10); //set frequency
             function doGet() {
                 if ($scope.getJson === false) {
                     manager.getData(function (data) {
@@ -942,7 +942,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     }
 
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 0.3); //set frequency
+    count = setInterval(doGet, 1000 * 10); //set frequency
 
     //graph Settings
     $scope.showme = false;

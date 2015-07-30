@@ -293,7 +293,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
     });
     var count;
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 0.3); //set frequency
+    count = setInterval(doGet, 1000 * 10); //set frequency
     function doGet() {
         if ($scope.getJson === false) {
             manager.getData(function (data) {
