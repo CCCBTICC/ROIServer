@@ -29,11 +29,11 @@ define(['app','planForwardPageModule'],function(app){
                 //    controller: 'scenariosShareCtrl'
                 //})
                 //.when('/lookback/save', {
-                //    templateUrl: './views/lookback/save.html',
+                //    templateUrl: './views/lookback/edit.html',
                 //    controller: 'saveLookCtrl'
                 //})
                 //.when('/planforward/save', {
-                //    templateUrl: './views/planforward/save.html',
+                //    templateUrl: './views/planforward/edit.html',
                 //    controller: 'savePlanCtrl'
                 //})
                 .otherwise({

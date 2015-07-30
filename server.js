@@ -11,25 +11,30 @@ var assert = require('assert');
 var MongoClient = require('mongodb').MongoClient;
 var dbURL = 'mongodb://localhost:27017/ROIDB';
 var DB;
+var DBinitModule = require('./utilities/DBInitModule');
 
 MongoClient.connect(dbURL, function (err, db) {
     assert.equal(null, err);
     console.log('mongoDB conntected');
+    DBinitModule.initDB(db);
     DB = db;
 });
 
 //require api
-var apiFolderName = 'api';//Todo: Change to 'api' for integration test
+var apiFolderName = 'api';
+//var apiFolderName = 'mockapi';
 var scenarios = require('./' + apiFolderName + '/scenarios');
 var analysis = require('./' + apiFolderName + '/analysis');
+//var analysis = require('./' + 'mockapi' + '/analysis');
+
+var users = require('./' + apiFolderName + '/users');
+var history = require('./' + apiFolderName + '/history');
 var app = express();
 var port = process.env.PORT || 3001;
 
 // configuration ===============================================================
 
-
 // set up our express application
-
 
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -44,16 +49,12 @@ app.use(function (req, res, next) {
     next();
 });
 
-
-
-
 app.use('/scenarios', scenarios);
 app.use('/analysis', analysis);
+app.use('/users', users);
+app.use('/history',history);
 
 //=============================route API  user and scenario ======================
-
-// routes ======================================================================
-//require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
 app.listen(port);

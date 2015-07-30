@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="ROIClientApp">
 <head lang="en">
     <meta charset="UTF-8">
     <title>Welcome FocusKPI</title>
@@ -13,22 +13,25 @@
     <link rel="shortcut icon" href="img/favicon.ico"/>
     <link rel="stylesheet" href="styles/main.css">
 </head>
-<body>
+<body ng-controller="loginCtrl">
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12 login-title">
-            
+
             <h1>ROI Decision Support Tool</h1>
         </div>
     </div>
 </div>
 <div class="container">
     <div class="row">
-        <form class="form-horizontal login-form" method="post" action="/api/login">
+        <!--<form class="form-horizontal login-form" method="post" action="/api/login">-->
+        <div class="form-horizontal login-form">
             <div class="form-group">
                 <label for="username" class="col-sm-3 control-label">Email</label>
+
                 <div class="col-sm-5">
-                    <input ng-model="login.username" type="text" class="form-control" id="username" placeholder="Username" name="email">
+                    <input ng-model="login.username" type="text" class="form-control" id="username"
+                           placeholder="Username" name="email">
                 </div>
                 <label class="col-sm-4 help-info">
                     <a href="javascript:void(0)" ng-click="">Forget Username</a>
@@ -36,8 +39,10 @@
             </div>
             <div class="form-group">
                 <label for="password" class="col-sm-3 control-label">Password</label>
+
                 <div class="col-sm-5">
-                    <input ng-model="login.password" type="password" class="form-control" id="password" placeholder="Password" name="password">
+                    <input ng-model="login.password" type="password" class="form-control" id="password"
+                           placeholder="Password" name="password">
                 </div>
                 <label class="col-sm-4 help-info">
                     <a href="javascript:void(0)" ng-click="">Forget Password</a>
@@ -54,12 +59,33 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-9">
-                    <a href="mailto:lhz_work@hotmail.com" class="btn btn-orange" ng-click="">Request Access</a>
-                    <input class="btn btn-orange" type="submit" value="Sign in">
+                    <a href="mailto:ROI-supportk@focuskpi.com" class="btn btn-orange" ng-click="">Request Access</a>
+                    <input class="btn btn-orange" value="Sign in" ng-click="signIn()">
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+<!--<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>-->
+<!--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>-->
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js"></script>-->
+<!--<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular-route.min.js"></script>-->
+<!--<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-sanitize.js"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>-->
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<!--end cdn js Components-->
+<script src="./bower_components/jquery/dist/jquery.min.js"></script>
+<script src="./bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="./bower_components/angular/angular.min.js"></script>
+<script src="./bower_components/angular-route/angular-route.min.js"></script>
+<script src="./bower_components/angular-sanitize/angular-sanitize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+
+<script src="scripts/compareChart.js"></script>
+<script src="scripts/main.js"></script>
+<script src="scripts/lookBackPageModule.js"></script>
+<script src="scripts/planForwardPageModule.js"></script>
+<script src="scripts/myScenarios.js"></script>
+<script src="scripts/roi.directiveModules.js"></script>
 </body>
 </html>

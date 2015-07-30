@@ -8,16 +8,23 @@
             <li>Output</li>
         </ol>
     </div>
-    <div style="height: 400px" ng-hide="getJson">
-        <h1>WAITING PATIENTLY!!<br> THIS IS NOT AN ERROR!</h1>
+    <div style="height: 400px" ng-hide="getJson" >
+        <div class="jumbotron">
+        <h2>Tool is calculating the most optimal scenario for you.</h2>
+        <h2>Result will appear shortly!</h2>
+        <h3>(Average waiting time is 10min.)</h3>
+        </div>
     </div>
     <div class="row" ng-show="getJson">
-        <div class="well well-sm"><label>Scenario ID:</label>{{planForward.output.ScenarioID}}<br>
-            <label>Brand</label>: {{planForward.output.Brand}}
-            <label>Attribution</label>: {{planForward.output.lmTouch}}
-            <label>Begin Period</label>: {{planForward.output.StartingTime | date: 'MMM-dd-yyyy'}}
-            <label>End Period</label>: {{planForward.output.EndingTime | date: 'MMM-dd-yyyy'}}
-            <label>Portfolio Spend </label>: {{planForward.output.Spend | formatCurrency}}
+        <div class="well well-sm">
+            <label>Scenario ID:</label>{{scenario.scenarioId}}<br>
+            <label>Brand</label>: {{scenario.brand}}
+            <label>Attribution</label>: {{scenario.lmTouch}}
+            <label>Begin Period</label>: {{scenario.begin}}
+            <label>End Period</label>: {{scenario.end}}
+            <label>Portfolio Spend </label>: {{scenario.spend | formatCurrency}}
+            <label>Data through</label>: {{scenario.dataThrough}}
+            <span ng-show="slideError" style="color:red">{{slideErrorValue | formatCurrency}}</span>
         </div>
     </div>
     <div class="row" ng-show="getJson">
@@ -27,22 +34,22 @@
                     <thead>
                     <tr>
                         <th rowspan="2" class="col-1">Portfolio Channels</th>
-                        <th colspan="5" class="col-5">Input</th>
+                        <th colspan="5" class="col-5" ng-hide="showme">Input</th>
                         <th colspan="2" class="col-2">Optimized</th>
-                        <th colspan="5" class="col-5">What-if</th>
+                        <th colspan="2" class="col-2">What-if</th>
                         <th colspan="2" class="col-2">Different</th>
                     </tr>
                     <tr>
-                        <th class="col-1">Lower</th>
-                        <th class="col-1">Min</th>
-                        <th class="col-1">Max</th>
-                        <th class="col-1">Upper</th>
-                        <th class="col-1">Scaling</th>
+                        <th class="col-1" ng-hide="showme">Lower</th>
+                        <th class="col-1" ng-hide="showme">Min</th>
+                        <th class="col-1" ng-hide="showme">Max</th>
+                        <th class="col-1" ng-hide="showme">Upper</th>
+                        <th class="col-1" ng-hide="showme">Scaling</th>
                         <th class="col-1">Spend</th>
                         <th class="col-1">Rev</th>
-                        <th class="col-1">Min</th>
-                        <th class="col-1">Max</th>
-                        <th class="col-1">Scaling</th>
+                        <!--<th class="col-1">Min</th>-->
+                        <!--<th class="col-1">Max</th>-->
+                        <!--<th class="col-1">Scaling</th>-->
                         <th class="col-1">Spend</th>
                         <th class="col-1">Rev</th>
                         <th class="col-1">Spend</th>
@@ -55,213 +62,213 @@
                             <button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i
                                     ng-show="hideSemItems" class="fa fa-plus"></i></button>
                         </td>
-                        <td>{{planForward.output.semLB | formatCurrency}}</td>
-                        <td>{{planForward.output.semMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semBSF }}</td>
+                        <td ng-hide="showme">{{planForward.output.semLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semBSF }}</td>
                         <td>{{planForward.output.semSR | formatCurrency}}</td>
                         <td>{{planForward.output.semPR | formatCurrency}}</td>
-                        <td>{{planForward.output.semMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semBSF }}</td>
-                        <td>{{planForward.output.semAS}}</td>
+                        <!--<td>{{planForward.output.semMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semBSF }}</td>-->
+                        <td>{{planForward.output.semSlide | formatCurrency}}</td>
                         <td>{{planForward.output.semAR | formatCurrency}}</td>
-                        <td>{{planForward.output.semAS-planForward.output.semSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semAR-planForward.output.semPR | formatCurrency}}</td>
+                        <td>{{planForward.output.semSD | formatCurrency}}</td>
+                        <td>{{planForward.output.semRD | formatCurrency}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM - Brand</td>
-                        <td>{{planForward.output.semBLB | formatCurrency}}</td>
-                        <td>{{planForward.output.semBMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semBMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semBUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semBSF}}</td>
+                        <td ng-hide="showme">{{planForward.output.semBLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semBMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semBMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semBUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semBSF}}</td>
                         <td>{{planForward.output.semBSR | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semBMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semBMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semBSF}}</td>
+                        <!--<td>{{planForward.output.semBMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semBMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semBSF}}</td>-->
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.semBAS" min="planForward.output.semBMin"
+                            <range-input ng-model="planForward.output.semBSlide" min="planForward.output.semBMin"
                                          max="planForward.output.semBMax" ng-change="fix()"></range-input>
                         </td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semBAS-planForward.output.semBSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semBAR-planForward.output.semBPR | formatCurrency}}</td>
+                        <td>{{planForward.output.semBSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM - Card</td>
-                        <td>{{planForward.output.semCLB | formatCurrency}}</td>
-                        <td>{{planForward.output.semCMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semCMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semCUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semCSF}}</td>
+                        <td ng-hide="showme">{{planForward.output.semCLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semCMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semCMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semCUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semCSF}}</td>
                         <td>{{planForward.output.semCSR | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semCMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semCMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semCSF}}</td>
+                        <!--<td>{{planForward.output.semCMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semCMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semCSF}}</td>-->
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.semCAS" min="planForward.output.semCMin"
+                            <range-input ng-model="planForward.output.semCSlide" min="planForward.output.semCMin"
                                          max="planForward.output.semCMax" ng-change="fix()"></range-input>
                         </td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semCAS - planForward.output.semCSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semCAR - planForward.output.semCPR | formatCurrency}}</td>
+                        <td>{{planForward.output.semCSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM - Photobook</td>
-                        <td>{{planForward.output.semPLB | formatCurrency}}</td>
-                        <td>{{planForward.output.semPMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semPMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semPUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semPSF}}</td>
+                        <td ng-hide="showme">{{planForward.output.semPLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semPMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semPMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semPUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semPSF}}</td>
                         <td>{{planForward.output.semPSR | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semPMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semPMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semPSF}}</td>
+                        <!--<td>{{planForward.output.semPMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semPMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semPSF}}</td>-->
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.semPAS" min="planForward.output.semPMin"
+                            <range-input ng-model="planForward.output.semPSlide" min="planForward.output.semPMin"
                                          max="planForward.output.semPMax" ng-change="fix()"></range-input>
                         </td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semPAS- planForward.output.semPSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semPAR- planForward.output.semPPR | formatCurrency}}</td>
+                        <td>{{planForward.output.semPSD | formatCurrency}}</td>
+                        <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM - Others</td>
-                        <td>{{planForward.output.semOLB | formatCurrency}}</td>
-                        <td>{{planForward.output.semOMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semOMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semOUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semOSF}}</td>
+                        <td ng-hide="showme">{{planForward.output.semOLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semOMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semOMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semOUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.semOSF}}</td>
                         <td>{{planForward.output.semOSR | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td>{{planForward.output.semOMin | formatCurrency}}</td>
-                        <td>{{planForward.output.semOMax | formatCurrency}}</td>
-                        <td>{{planForward.output.semOSF}}</td>
+                        <!--<td>{{planForward.output.semOMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semOMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.semOSF}}</td>-->
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.semOAS" min="planForward.output.semOMin"
+                            <range-input ng-model="planForward.output.semOSlide" min="planForward.output.semOMin"
                                          max="planForward.output.semOMax" ng-change="fix()"></range-input>
                         </td>
                         <td class="disabled">-</td>
                         <td>{{planForward.output.semOAS-planForward.output.semOSR | formatCurrency}}</td>
-                        <td>{{planForward.output.semOAR-planForward.output.semOPR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
                     </tr>
                     <tr>
                         <td class="td-title">Display</td>
-                        <td>{{planForward.output.disLB | formatCurrency}}</td>
-                        <td>{{planForward.output.disMin | formatCurrency}}</td>
-                        <td>{{planForward.output.disMax | formatCurrency}}</td>
-                        <td>{{planForward.output.disUB | formatCurrency}}</td>
-                        <td>{{planForward.output.disSF}}</td>
+                        <td ng-hide="showme">{{planForward.output.disLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.disMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.disMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.disUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.disSF}}</td>
                         <td>{{planForward.output.disSR | formatCurrency}}</td>
                         <td>{{planForward.output.disPR | formatCurrency}}</td>
-                        <td>{{planForward.output.disMin | formatCurrency}}</td>
-                        <td>{{planForward.output.disMax | formatCurrency}}</td>
-                        <td>{{planForward.output.disSF}}</td>
+                        <!--<td>{{planForward.output.disMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.disMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.disSF}}</td>-->
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.disAS" min="planForward.output.disMin"
+                            <range-input ng-model="planForward.output.disSlide" min="planForward.output.disMin"
                                          max="planForward.output.disMax" ng-change="fix()"></range-input>
                         </td>
                         <td>{{planForward.output.disAR | formatCurrency}}</td>
-                        <td>{{planForward.output.disAS-planForward.output.disSR | formatCurrency}}</td>
-                        <td>{{planForward.output.disAR-planForward.output.disPR | formatCurrency}}</td>
+                        <td>{{planForward.output.disSD | formatCurrency}}</td>
+                        <td>{{planForward.output.disRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Social(FB)</td>
-                        <td>{{planForward.output.socLB | formatCurrency}}</td>
-                        <td>{{planForward.output.socMin | formatCurrency}}</td>
-                        <td>{{planForward.output.socMax | formatCurrency}}</td>
-                        <td>{{planForward.output.socUB | formatCurrency}}</td>
-                        <td>{{planForward.output.socSF}}</td>
+                        <td ng-hide="showme">{{planForward.output.socLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.socMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.socMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.socUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.socSF}}</td>
                         <td>{{planForward.output.socSR | formatCurrency}}</td>
                         <td>{{planForward.output.socPR | formatCurrency}}</td>
-                        <td>{{planForward.output.socMin | formatCurrency}}</td>
-                        <td>{{planForward.output.socMax | formatCurrency}}</td>
-                        <td>{{planForward.output.socSF}}</td>
+                        <!--<td>{{planForward.output.socMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.socMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.socSF}}</td>-->
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.socAS" min="planForward.output.disMin"
+                            <range-input ng-model="planForward.output.socSlide" min="planForward.output.disMin"
                                          max="planForward.output.disMax" ng-change="fix()"></range-input>
                         </td>
                         <td>{{planForward.output.socAR | formatCurrency}}</td>
-                        <td>{{planForward.output.socAS-planForward.output.socSR | formatCurrency}}</td>
-                        <td>{{planForward.output.socAR-planForward.output.socPR | formatCurrency}}</td>
+                        <td>{{planForward.output.socSD | formatCurrency}}</td>
+                        <td>{{planForward.output.socRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Affiliates</td>
-                        <td>{{planForward.output.affLB | formatCurrency}}</td>
-                        <td>{{planForward.output.affMin | formatCurrency}}</td>
-                        <td>{{planForward.output.affMax | formatCurrency}}</td>
-                        <td>{{planForward.output.affUB | formatCurrency}}</td>
-                        <td>{{planForward.output.affSF}}</td>
+                        <td ng-hide="showme">{{planForward.output.affLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.affMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.affMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.affUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.affSF}}</td>
                         <td>{{planForward.output.affSR | formatCurrency}}</td>
                         <td>{{planForward.output.affPR | formatCurrency}}</td>
-                        <td>{{planForward.output.affMin | formatCurrency}}</td>
-                        <td>{{planForward.output.affMax | formatCurrency}}</td>
-                        <td>{{planForward.output.affSF}}</td>
+                        <!--<td>{{planForward.output.affMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.affMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.affSF}}</td>-->
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.affAS" min="planForward.output.affMin"
+                            <range-input ng-model="planForward.output.affSlide" min="planForward.output.affMin"
                                          max="planForward.output.affMax" ng-change="fix()" planforward="planforward"></range-input>
                         </td>
                         <td>{{planForward.output.affAR | formatCurrency}}</td>
-                        <td>{{planForward.output.affAS-planForward.output.affSR | formatCurrency}}</td>
-                        <td>{{planForward.output.affAR-planForward.output.affPR | formatCurrency}}</td>
+                        <td>{{planForward.output.affSD | formatCurrency}}</td>
+                        <td>{{planForward.output.affRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Partners</td>
-                        <td>{{planForward.output.parLB | formatCurrency}}</td>
-                        <td>{{planForward.output.parMin | formatCurrency}}</td>
-                        <td>{{planForward.output.parMax | formatCurrency}}</td>
-                        <td>{{planForward.output.parUB | formatCurrency}}</td>
-                        <td>{{planForward.output.parSF}}</td>
+                        <td ng-hide="showme">{{planForward.output.parLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.parMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.parMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.parUB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.parSF}}</td>
                         <td>{{planForward.output.parSR | formatCurrency}}</td>
                         <td>{{planForward.output.parPR | formatCurrency}}</td>
-                        <td>{{planForward.output.parMin | formatCurrency}}</td>
-                        <td>{{planForward.output.parMax | formatCurrency}}</td>
-                        <td>{{planForward.output.parSF}}</td>
+                        <!--<td>{{planForward.output.parMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.parMax | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.parSF }}</td>-->
                         <td class="range-input">
-                            <range-input ng-model="planForward.output.parAS" min="planForward.output.parMin"
+                            <range-input ng-model="planForward.output.parSlide" min="planForward.output.parMin"
                                          max="planForward.output.parMax" fix="fix()"></range-input>
                         </td>
                         <td>{{planForward.output.parAR | formatCurrency}}</td>
-                        <td>{{planForward.output.parAS-planForward.output.parSR | formatCurrency}}</td>
-                        <td>{{planForward.output.parAR-planForward.output.parPR | formatCurrency}}</td>
+                        <td>{{planForward.output.parSD | formatCurrency}}</td>
+                        <td>{{planForward.output.parRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio Total</td>
-                        <td>{{planForward.output.totLB | formatCurrency}}</td>
-                        <td>{{planForward.output.totMin | formatCurrency}}</td>
-                        <td>{{planForward.output.totMax | formatCurrency}}</td>
-                        <td>{{planForward.output.totUB | formatCurrency}}</td>
-                        <td></td>
+                        <td ng-hide="showme">{{planForward.output.totLB | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.totMin | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.totMax | formatCurrency}}</td>
+                        <td ng-hide="showme">{{planForward.output.totUB | formatCurrency}}</td>
+                        <td ng-hide="showme"></td>
                         <td>{{planForward.output.totSR | formatCurrency}}</td>
                         <td>{{planForward.output.totPR | formatCurrency}}</td>
-                        <td>{{planForward.output.totMin | formatCurrency}}</td>
-                        <td>{{planForward.output.totMax | formatCurrency}}</td>
-                        <td></td>
-                        <td>{{planForward.output.totAS | formatCurrency}}</td>
+                        <!--<td>{{planForward.output.totMin | formatCurrency}}</td>-->
+                        <!--<td>{{planForward.output.totMax | formatCurrency}}</td>-->
+                        <!--<td></td>-->
+                        <td>{{planForward.output.totSlide | formatCurrency}}</td>
                         <td>{{planForward.output.totAR | formatCurrency}}</td>
-                        <td>{{planForward.output.totAS-planForward.output.totSR | formatCurrency}}</td>
-                        <td>{{planForward.output.totAR-planForward.output.totPR | formatCurrency}}</td>
+                        <td>{{planForward.output.totSD | formatCurrency}}</td>
+                        <td>{{planForward.output.totRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio ROI</td>
-                        <td colspan="5"></td>
+                        <td colspan="5" ng-hide="showme"></td>
                         <td colspan="2">{{planForward.output.run1ProjROI}}</td>
-                        <td colspan="5">{{planForward.output.run2ProjROI}}</td>
-                        <td></td>
-                        <td></td>
+                        <td colspan="2">{{planForward.output.run2ProjROI}}</td>
+                        <td colspan="2">{{planForward.output.ROID}}%</td>
                     </tr>
                     <tr>
                         <td colspan="all"></td>
                     </tr>
                     <tr>
-                        <td colspan="13">Change in Brand Total Revenue</td>
-                        <td>{{planForward.output.totAS/planForward.output.totSR-1}}</td>
-                        <td>{{planForward.output.totAR/planForward.output.totPR-1}}</td>
+                        <td class="td-title">Change in Brand Total Revenue</td>
+                        <td colspan="9" ng-hide="showme"></td>
+                        <td colspan="4" ng-show="showme"></td>
+                        <td colspan="2">{{planForward.output.changeR  | number:0}}%</td>
                     </tr>
                     </tbody>
                 </table>
@@ -269,29 +276,27 @@
 
         </div>
         <div class="col-sm-4" ng-show="showme">
-            <br/>
-            <h4 style="text-align:center">Spend Difference between optimized and what-if</h4>
+            <h4 style="text-align:center">Spend Difference</h4>
             <compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>
-            <h4 style="text-align:center">(-)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</h4>
         </div>
     </div>
     <div class="row table-buttons">
         <div class="col-sm-10 col-sm-offset-2">
             <div class="col-sm-3">
                 <div class="btn-group" dropdown>
-                    <a href="#/planforward/save" class="btn btn-default" ng-click="save()">Save</a>
+                    <button  class="btn btn-default" ng-click="edit()">Edit</button>
                     <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
                         <span class="caret"></span>
                         <span class="sr-only">Split button!</span>
                     </button>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="javascript:void(0)" ng-click="">Export</a></li>
-                        <li><a href="javascript:void(0)" ng-click="">Share</a></li>
+                        <li><a href="" ng-click="export()">Export</a></li>
+                        <li><a href="" ng-click="share()">Share</a></li>
                     </ul>
                 </div>
             </div>
             <div class="col-sm-3">
-                <button type="button" class="btn btn-default" ng-click="ReRun()">Re-run</button>
+                <button type="button" class="btn btn-default" ng-click="ReRun()" ng-class="{disabled:slideError}">Re-run</button>
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>

@@ -16,10 +16,10 @@
                     <thead>
                     <tr>
                         <th rowspan="2" class="col-1">Portfolio Channels</th>
-                        <th colspan="2" class="col-2">{{compareChart.actionObjInfo[0]}}</th>
-                        <th colspan="2" class="col-2">{{compareChart.actionObjInfo[1]}}</th>
+                        <th colspan="2" class="col-2">{{compareChart.actionObjInfo[0].scenarioId}}</th>
+                        <th colspan="2" class="col-2">{{compareChart.actionObjInfo[1].scenarioId}}</th>
                         <th colspan="2" class="col-2">Difference</th>
-                        <th rowspan="2" class="col-6">Chart</th>
+                        <th rowspan="2" class="col-6">Spend Difference</th>
                     </tr>
                     <tr>
                         <th class="col-1">Spend</th>
@@ -32,150 +32,108 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td class="td-title">SEM Total<button class="btn btn-xs btn-default" ng-click="hideSemItems = !hideSemItems"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
-                        <td>{{1085803 | formatCurrency}}</td>
-                        <td>{{6424142 | formatCurrency}}</td>
-                        <td ng-model="lookBack.input.semTSB = lookBack.input.semBSB - 1 + (lookBack.input.semCSB - 1) + (lookBack.input.semPSB - 1) + (lookBack.input.semOSB - 1) + 4">
-                            {{1194812 | formatCurrency}}
+                        <td class="td-title">SEM Total
+                            <button class="btn btn-xs btn-default" ng-click="hideSemItems = !hideSemItems"><i
+                                    ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems"
+                                                                                      class="fa fa-plus"></i></button>
                         </td>
-                        <td> {{6429560 | formatCurrency}}</td>
-                        <td ng-model="lookBack.output.semTSD = lookBack.output.semSR - lookBack.input.semTSB">
-                            {{1085803-1194812 | formatCurrency}}
-                        </td>
-                        <td>{{6424142-6429560 | formatCurrency}}</td>
+                        <td>{{compareObj.first.semAS | formatCurrency}}</td>
+                        <td>{{compareObj.first.semAR | formatCurrency}}</td>
+                        <td>{{compareObj.second.semAS | formatCurrency}}</td>
+                        <td>{{compareObj.second.semAR | formatCurrency}}</td>
+                        <td>{{compareObj.difference.semAS | formatCurrency}}</td>
+                        <td>{{compareObj.difference.semAR | formatCurrency}}</td>
                         <td rowspan="100" class="compare-chart">
-                            <compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>
+                            <compare-chart compare-data="compareChart.data"
+                                           config="compareChart.config"></compare-chart>
                         </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Brand</td>
-                        <td>{{lookBack.output.semBSR | formatCurrency}}</td>
+                        <td>{{compareObj.first.semBAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td ng-model="lookBack.output.semTSD = lookBack.output.semSR - lookBack.input.semTSB">
-                            {{lookBack.output.semTSD | formatCurrency}}
-                        </td>
+                        <td>{{compareObj.second.semBAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td ng-model="lookBack.output.semBSD = lookBack.output.semBSR - lookBack.input.semBSB">
-                            {{lookBack.output.semBSD | formatCurrency}}
-                        </td>
+                        <td>{{compareObj.difference.semBAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Cards</td>
-                        <td>{{lookBack.output.semCSR | formatCurrency}}</td>
+                        <td>{{compareObj.first.semCAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
-
-                        <td ng-model="lookBack.output.semTSD = lookBack.output.semSR - lookBack.input.semTSB">
-                            {{lookBack.output.semCSD | formatCurrency}}
-                        </td>
+                        <td>{{compareObj.second.semCAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td ng-model="lookBack.output.semCSD = lookBack.output.semCSR - lookBack.input.semCSB">
-                            {{lookBack.output.semCSD | formatCurrency}}
-                        </td>
+                        <td>{{compareObj.difference.semCAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Photobook</td>
-                        <td>{{lookBack.output.semPSR | formatCurrency}}</td>
+                        <td>{{compareObj.first.semPAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
-
-                        <td ng-model="lookBack.output.semBSD = lookBack.output.semBSR - lookBack.input.semBSB">
-                            {{lookBack.output.semBSD | formatCurrency}}
-                        </td>
+                        <td>{{compareObj.second.semPAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td ng-model="lookBack.output.semPSD = lookBack.output.semPSR - lookBack.input.semPSB">
-                            {{lookBack.output.semPSD | formatCurrency}}
-                        </td>
+                        <td>{{compareObj.difference.semPAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Others</td>
-                        <td>{{lookBack.output.semOSR | formatCurrency}}</td>
+                        <td>{{compareObj.first.semOAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
-
-                        <td ng-model="lookBack.output.semBSD = lookBack.output.semBSR - lookBack.input.semBSB">
-                            {{lookBack.output.semBSD | formatCurrency}}
-                        </td>
+                        <td>{{compareObj.second.semOAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
-                        <td ng-model="lookBack.output.semOSD = lookBack.output.semOSR - lookBack.input.semOSB">
-                            {{lookBack.output.semOSD | formatCurrency}}
-                        </td>
+                        <td>{{compareObj.difference.semOAS | formatCurrency}}</td>
                         <td class="disabled">-</td>
                     </tr>
                     <tr>
                         <td class="td-title">Display</td>
-                        <td>{{532792 | formatCurrency}}</td>
-                        <td>{{3032087 | formatCurrency}}</td>
-
-                        <td ng-model="lookBack.output.semBSD = lookBack.output.semBSR - lookBack.input.semBSB">
-                            {{660557 | formatCurrency}}
-                        </td>
-                        <td>{{3382826 | formatCurrency}}</td>
-                        <td ng-model="lookBack.output.disSD = lookBack.output.disSR - lookBack.input.disSB">
-                            {{532792-660557 | formatCurrency}}
-                        </td>
-                        <td>{{3032087-3382826 | formatCurrency}}</td>
+                        <td>{{compareObj.first.disAS | formatCurrency}}</td>
+                        <td>{{compareObj.first.disAR | formatCurrency}}</td>
+                        <td>{{compareObj.second.disAS | formatCurrency}}</td>
+                        <td>{{compareObj.second.disAR | formatCurrency}}</td>
+                        <td>{{compareObj.difference.disAS | formatCurrency}}</td>
+                        <td>{{compareObj.difference.disAR | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Social(FB)</td>
-                        <td>{{500000 | formatCurrency}}</td>
-                        <td>{{2789806 | formatCurrency}}</td>
-
-                        <td ng-model="lookBack.output.semBSD = lookBack.output.semBSR - lookBack.input.semBSB">
-                            {{37674 | formatCurrency}}
-                        </td>
-                        <td>{{293862 | formatCurrency}}</td>
-                        <td ng-model="lookBack.output.socSD = lookBack.output.socSR - lookBack.input.socSB">
-                            {{500000-37674 | formatCurrency}}
-                        </td>
-                        <td>{{2789806-293862 | formatCurrency}}</td>
+                        <td>{{compareObj.first.socAS | formatCurrency}}</td>
+                        <td>{{compareObj.first.socAR | formatCurrency}}</td>
+                        <td>{{compareObj.second.socAS | formatCurrency}}</td>
+                        <td>{{compareObj.second.socAR | formatCurrency}}</td>
+                        <td>{{compareObj.difference.socAS | formatCurrency}}</td>
+                        <td>{{compareObj.difference.socAR | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Affiliates</td>
-                        <td>{{93043 | formatCurrency}}</td>
-                        <td>{{1381622 | formatCurrency}}</td>
-
-                        <td ng-model="lookBack.output.semBSD = lookBack.output.semBSR - lookBack.input.semBSB">
-                            {{119488 | formatCurrency}}
-                        </td>
-                        <td>{{1444514 | formatCurrency}}</td>
-                        <td ng-model="lookBack.output.affSD = lookBack.output.affSR - lookBack.input.affSB">
-                            {{93043-119488 | formatCurrency}}
-                        </td>
-                        <td>{{1381622-1444514 | formatCurrency}}</td>
+                        <td>{{compareObj.first.affAS | formatCurrency}}</td>
+                        <td>{{compareObj.first.affAR | formatCurrency}}</td>
+                        <td>{{compareObj.second.affAS | formatCurrency}}</td>
+                        <td>{{compareObj.second.affAR | formatCurrency}}</td>
+                        <td>{{compareObj.difference.affAS | formatCurrency}}</td>
+                        <td>{{compareObj.difference.affAR | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Partners</td>
-                        <td>{{788362 | formatCurrency}}</td>
-                        <td>{{1858139 | formatCurrency}}</td>
-
-                        <td ng-model="lookBack.output.semBSD = lookBack.output.semBSR - lookBack.input.semBSB">
-                            {{987468 | formatCurrency}}
-                        </td>
-                        <td>{{2194748 | formatCurrency}}</td>
-                        <td ng-model="lookBack.output.parSD = lookBack.output.parSR - lookBack.input.parSB">
-                            {{788362-987468 | formatCurrency}}
-                        </td>
-                        <td>{{1858139-2194748 | formatCurrency}}</td>
+                        <td>{{compareObj.first.parAS | formatCurrency}}</td>
+                        <td>{{compareObj.first.parAR | formatCurrency}}</td>
+                        <td>{{compareObj.second.parAS | formatCurrency}}</td>
+                        <td>{{compareObj.second.parAR | formatCurrency}}</td>
+                        <td>{{compareObj.difference.parAS | formatCurrency}}</td>
+                        <td>{{compareObj.difference.parAR | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio Total</td>
-                        <td>{{3000000 | formatCurrency}}</td>
-                        <td>{{15485795 | formatCurrency}}</td>
-                        <td ng-model="lookBack.input.totSB = lookBack.input.semTSB + (lookBack.input.disSB - 1) + (lookBack.input.socSB - 1) + (lookBack.input.affSB - 1) + (lookBack.input.parSB - 1) + 4">
-                            {{3000000 | formatCurrency}}
-                        </td>
-                        <td>{{13745510 | formatCurrency}}</td>
-                        <td ng-model="lookBack.output.totSD = lookBack.output.semTSD + lookBack.output.disSD + lookBack.output.socSD + lookBack.output.affSD + lookBack.output.parSD">
-                            {{3000000- 3000000| formatCurrency}}
-                        </td>
-                        <td>{{15485795-13745510 | formatCurrency}}</td>
+                        <td>{{compareObj.first.totAS | formatCurrency}}</td>
+                        <td>{{compareObj.first.totAR | formatCurrency}}</td>
+                        <td>{{compareObj.second.totAS | formatCurrency}}</td>
+                        <td>{{compareObj.second.totAR | formatCurrency}}</td>
+                        <td>{{compareObj.difference.totAS | formatCurrency}}</td>
+                        <td>{{compareObj.difference.totAR | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio ROI</td>
-                        <td colspan="2">416%</td>
-                        <td colspan="2">358%</td>
-                        <td colspan="2">58%</td>
+                        <td colspan="2">{{compareObj.first.run2ProjROI}}</td>
+                        <td colspan="2">{{compareObj.second.run2ProjROI}}</td>
+                        <td colspan="2">{{compareObj.difference.run2ProjROI | filter:number}}%</td>
                     </tr>
                     </tbody>
                 </table>

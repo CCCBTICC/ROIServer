@@ -1,150 +1,173 @@
 /**
  * Created by ypling on 5/11/15.
  */
-var scenariosApp = angular.module("ROIClientApp")
-    .factory('scenarioManager', function ($http) {
-        var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
-        var scenarios = [];
-        var selectedscenario = {};
-        var get = function (callback) {
-            $http.get(scenariosUrl + '/list').success(callback);
-        };
-        var post = function (id, callback) {
-            $http({
-                method: 'post',
-                url: scenariosUrl,
-                data: {id: id, action: 'remove'}
-            }).success(callback);
-        };
-
-        return {
-            getScenarios: get,
-            setSelectedScenario: function (scenario) {
-                selectedscenario = scenario;
-                console.log(selectedscenario);
-            },
-            getSelectedScenario: function (cb) {
-
-                cb(selectedscenario);
-            },
-            getUsers: function () {
-            },
-
-            deleteScenario: post
+var scenariosApp = angular.module("ROIClientApp");
+scenariosApp.factory('scenarioManager', function ($http) {
+    var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
+    var scenarios = [];
+    var selectedScenario = {};
+    var post = function (data, callback) {
+        $http({
+            method: 'post',
+            url: scenariosUrl,
+            data: data
+        }).success(callback);
+    };
+    return {
+        getScenarios: function (username, cb) {
+            var data = {
+                action: 'list',
+                data: {username: username}
+            };
+            post(data, cb);
+        },
+        deleteScenario: function (id, user, cb) {
+            var data = {
+                action: 'remove',
+                data: {scenarioId: id, username: user}
+            };
+            post(data, cb);
+        },
+        shareScenario: function (username, id, cb) {
+            var data = {
+                action: 'share',
+                data: {targetUsername: username, scenarioId: id}
+            };
+            post(data, cb);
+        },
+        editScenario: function (username, id, update, cb) {
+            var data = {
+                action: 'edit',
+                data: {scenarioId: id, username: username, update: update}
+            };
+            post(data, cb);
+        },
+        getScenarioById: function (id, cb) {
+            $http.get(scenariosUrl + "/" + id).success(cb);
+        },
+        setSelectedScenario: function (scenario) {
+            selectedScenario = scenario;
+        },
+        getSelectedScenario: function (cb) {
+            cb(selectedScenario);
         }
-    })
-    .controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, forwardManager, scenarioManager) {
-        //vars
-        var viewNames = ['list', 'export', 'retrieve', 'share'];
+    }
+});
+scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, forwardManager, scenarioManager, user) {
+    //vars
 
-        //functions
-        function activeCount(arr) {
-            var result = 0;
-            arr.forEach(function (obj) {
-                if (obj.isActive) {
-                    result++;
-                }
-            });
-            return result;
-        }
-
-        function getSelectedId(arr) {
-            var id = 0;
-            arr.forEach(function (obj) {
-                if (obj.isActive) {
-                    id = obj._id
-                }
-            });
-            return id;
-        }
-
-        //scope vars
-        $scope.testCaseB = "this is the first scenario with Spend and no constraints and using MTA123512312124123123 as attribution method";
-        $scope.testCaseA = "abcdefghijklmnopqrstuvwxyz";
-
-        $scope.operations = {
-            compare: {disable: true},
-            delete: {disable: true},
-            export: {disable: true},
-            retrieve: {disable: true},
-            share: {disable: true},
-            edit:{disable:true}
-        };
-
-        $scope.scenarios = [];
-
-        scenarioManager.getScenarios(function (data) {
-            $scope.scenarios = data;
-
-        });
-
-
-        $scope.switchToView = function (viewName) {
-            $location.path("myscenarios/" + viewName);
-        };
-        $scope.export = function () {
-
-            var objectId = getSelectedId($scope.scenarios);
-            forwardManager.setName(objectId);
-
-            var exportIndex = -1;
-            $scope.scenarios.forEach(function (obj, index) {
-                if (obj._id === objectId) {
-                    exportIndex = index;
-                }
-            });
-            scenarioManager.setSelectedScenario($scope.scenarios[exportIndex]);
-        };
-        $scope.retrive = function () {
-            var objectId = getSelectedId($scope.scenarios);
-            forwardManager.setName(objectId);
-            $location.path('planforward/output');
-        };
-
-        //var actionObjInfo = [];
-
-        $scope.selectRow = function (obj) {
-            obj.isActive = !obj.isActive;
-
+    //functions
+    function activeCount(arr) {
+        var result = 0;
+        arr.forEach(function (obj) {
             if (obj.isActive) {
-                actionObjInfo.push(obj._id);
-            } else {
-                for (var i = actionObjInfo.length - 1; i >= 0; i--) {
-                    if (actionObjInfo[i] === obj._id) {
-                        delete actionObjInfo[i];
-                    }
+                result++;
+            }
+        });
+        return result;
+    }
+
+    function getSelectedId(arr) {
+        var id = 0;
+        arr.forEach(function (obj) {
+            if (obj.isActive) {
+                id = obj._id
+            }
+        });
+        return id;
+    }
+
+    //scope vars
+    $scope.operations = {
+        compare: {disable: true},
+        delete: {disable: true},
+        export: {disable: true},
+        retrieve: {disable: true},
+        share: {disable: true},
+        edit: {disable: true}
+    };
+    $scope.scenarios = [];
+
+    //scope functions
+    $scope.logout = function () {
+        window.sessionStorage.removeItem('username');
+        window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
+    };
+    $scope.selectRow = function (obj) {
+        obj.isActive = !obj.isActive;
+
+        if (obj.isActive) {
+            actionObjInfo.push(obj._id);
+        } else {
+            for (var i = actionObjInfo.length - 1; i >= 0; i--) {
+                if (actionObjInfo[i] === obj._id) {
+                    actionObjInfo.splice(i, 1);
                 }
             }
-            console.log(actionObjInfo);
+        }
+        console.log(actionObjInfo);
 
-            switch (activeCount($scope.scenarios)) {
-                case 0:
-                    Object.keys($scope.operations).forEach(function (key) {
-                        $scope.operations[key].disable = true;
-                    });
-                    break;
-                case 1:
-                    Object.keys($scope.operations).forEach(function (key) {
-                        $scope.operations[key].disable = (key === 'compare');
-                    });
-                    break;
-                case 2:
-                    Object.keys($scope.operations).forEach(function (key) {
-                        $scope.operations[key].disable = (key !== 'compare');
-                    });
-                    break;
-                default:
-                    Object.keys($scope.operations).forEach(function (key) {
-                        $scope.operations[key].disable = true;
-                    });
-                    break;
+        switch (activeCount($scope.scenarios)) {
+            case 0:
+                Object.keys($scope.operations).forEach(function (key) {
+                    $scope.operations[key].disable = true;
+                });
+                break;
+            case 1:
+                Object.keys($scope.operations).forEach(function (key) {
+                    $scope.operations[key].disable = (key === 'compare');
+                });
+                break;
+            case 2:
+                Object.keys($scope.operations).forEach(function (key) {
+                    $scope.operations[key].disable = (key !== 'compare');
+                });
+                break;
+            default:
+                Object.keys($scope.operations).forEach(function (key) {
+                    $scope.operations[key].disable = true;
+                });
+                break;
+        }
+    };
+    $scope.export = function () {
+        var objectId = getSelectedId($scope.scenarios);
+        forwardManager.setName(objectId);
+        var exportIndex = -1;
+        $scope.scenarios.forEach(function (obj, index) {
+            if (obj._id === objectId) {
+                exportIndex = index;
             }
-        };
+        });
+        scenarioManager.setSelectedScenario($scope.scenarios[exportIndex]);
+        $location.path("myscenarios/export");
 
-        $scope.delete = function () {
-            var objectId = getSelectedId($scope.scenarios);
-            scenarioManager.deleteScenario(objectId, function (data) {
-                console.log(data);
+    };
+    $scope.retrive = function () {
+        var objectId = getSelectedId($scope.scenarios);
+        forwardManager.setName(objectId);
+        var retriveIndex = -1;
+        $scope.scenarios.forEach(function (obj, index) {
+            if (obj._id === objectId) {
+                retriveIndex = index;
+            }
+        });
+        if ($scope.scenarios[retriveIndex].from === "forward") {
+            $location.path('planforward/output');
+        }
+        else {
+            $location.path('lookback/output')
+        }
+    };
+    $scope.delete = function () {
+        var objectId = getSelectedId($scope.scenarios);
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
+        scenarioManager.deleteScenario(objectId, $scope.user.name, function (data) {
+            console.log('from delete in scenarios');
+            console.log(data);
+            if (data) {
                 var deleteIndex = -1;
                 $scope.scenarios.forEach(function (obj, index) {
                     if (obj._id === objectId) {
@@ -178,113 +201,487 @@ var scenariosApp = angular.module("ROIClientApp")
                     }
 
                 }
-            });
-        };
-        //main
-    })
-    .controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager,$location) {
-        //vars
+            } else {
+                alert("You are not the original owner, data can not be deleted!");
+            }
+        });
+    };
+    $scope.share = function () {
+        var objectId = getSelectedId($scope.scenarios);
+        forwardManager.setName(objectId);
+        $location.path('myscenarios/share');
+    };
+    $scope.compare = function () {
+        $location.path('myscenarios/compare');
+    };
+    $scope.edit = function () {
+        var objectId = getSelectedId($scope.scenarios);
+        forwardManager.setName(objectId);
+        $location.path('myscenarios/edit');
+    };
 
-        //functions
-        function getCsv(jsonData) {
-            var output = "";
-            var key;
-            for (key in jsonData) {
-                output += '"' + key + '",';
+    //main
+    // get users scenarioList
+    while(actionObjInfo[0]){
+        actionObjInfo.shift();
+    }
+    user.getUser(function (user) {
+        if(!user.name){$scope.logout();}
+        $scope.user = user;
+        scenarioManager.getScenarios($scope.user.name, function (data) {
+            console.log(data);
+            $scope.scenarios = data;
+        });
+    });
+});
+scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager, $location, actionObjInfo, history) {
+    //vars
+    var format = {
+        Excel: 'csv'
+    };
+
+    //functions
+    function convertPlan(info, data) {
+        return "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
+            "Owner," + info.owner + ",,,,,,,,,,\n" +
+            "Create Date," + info.createDate + ",,,,,,,,,,\n" +
+            "Brand," + info.brand + ",,,,,,,,,,\n" +
+            "Planned Spend," + info.spend + ",,,,,,,,,,,\n" +
+            "Begin Period," + info.begin + ",,,,,,,,,,\n" +
+            "End Period," + info.end + ",,,,,,,,,,\n" +
+            "Data Through Month," + info.dataThrough + ",,,,,,,,,,\n" +
+            "History Included?," + info.included + ",,,,,,,,,,\n" +
+            ",,,,,,,,,,,\n" +
+            "Channels in Portfolio,input,,,,,Optimized,,What-if,,Difference,\n" +
+            ",Lower Bound,Min,Max,Upper Bound,Scaling,Spend,Revenue,Spend,Revenue,Spend,Revenue\n" +
+            "SEM Total," + data.semLB + "," + data.semMin + "," + data.semMax + "," + data.semUB + "," + "" + "," + data.semSR + "," + data.semPR + "," + data.semAS + "," + data.semAR + "," + data.semSD + "," + data.semRD + "\n" +
+            "SEM-Brand," + data.semBLB + "," + data.semBMin + "," + data.semBMax + "," + data.semBUB + "," + data.semBSF + "," + data.semBSR + ",," + data.semBAS + ",," + data.semBSD + ",\n" +
+            "SEM-Cards," + data.semCLB + "," + data.semCMin + "," + data.semCMax + "," + data.semCUB + "," + data.semCSF + "," + data.semCSR + ",," + data.semCAS + ",," + data.semCSD + ",\n" +
+            "SEM-Pbook," + data.semPLB + "," + data.semPMin + "," + data.semPMax + "," + data.semPUB + "," + data.semPSF + "," + data.semPSR + ",," + data.semPAS + ",," + data.semPSD + ",\n" +
+            "SEM-Others," + data.semOLB + "," + data.semOMin + "," + data.semOMax + "," + data.semOUB + "," + data.semOSF + "," + data.semOSR + ",," + data.semOAS + ",," + data.semOSD + ",\n" +
+            "Display," + data.disLB + "," + data.disMin + "," + data.disMax + "," + data.disUB + "," + data.disSF + "," + data.disSR + "," + data.disPR + "," + data.disAS + "," + data.disAR + "," + data.disSD + "," + data.disRD + "\n" +
+            "Social (FB)," + data.socLB + "," + data.socMin + "," + data.socMax + "," + data.socUB + "," + data.socSF + "," + data.socSR + "," + data.socPR + "," + data.socAS + "," + data.socAR + "," + data.socSD + "," + data.socRD + "\n" +
+            "Affiliates," + data.affLB + "," + data.affMin + "," + data.affMax + "," + data.affUB + "," + data.affSF + "," + data.affSR + "," + data.affPR + "," + data.affAS + "," + data.affAR + "," + data.affSD + "," + data.affRD + "\n" +
+            "Partners," + data.parLB + "," + data.parMin + "," + data.parMax + "," + data.parUB + "," + data.parSF + "," + data.parSR + "," + data.parPR + "," + data.parAS + "," + data.parAR + "," + data.parSD + "," + data.parRD + "\n" +
+            "Portfolio Total," + data.totLB + "," + data.totMin + "," + data.totMax + "," + data.totUB + "," + "" + "," + data.totSR + "," + data.totPR + "," + data.totAS + "," + data.totAR + "," + data.totSD + "," + data.totRD + "\n" +
+            "Portfolio ROI,,,,,,," + data.run1ProjROI + ",," + data.run2ProjROI + "\n" +
+            "Note:," + info.note + ",,,,,,,,,,\n";
+
+    }
+
+    function convertLook(info, data) {
+        return "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
+            "Owner," + info.owner + ",,,,,,,,,,\n" +
+            "Create Date," + info.createDate + ",,,,,,,,,,\n" +
+            "Brand," + info.brand + ",,,,,,,,,,\n" +
+            "Planned Spend," + info.spend + ",,,,,,,,,,,\n" +
+            "Begin Period," + info.begin + ",,,,,,,,,,\n" +
+            "End Period," + info.end + ",,,,,,,,,,\n" +
+            "Data Through Month," + info.dataThrough + ",,,,,,,,,,\n" +
+            "History Included?," + info.included + ",,,,,,,,,,\n" +
+            ",,,,,,,,,,,\n" +
+            "Portfolio Channels,Actuals,,Optimized,,,,Difference,\n" +
+            ",Spend,Revenue,Lower,Spend,Upper,Revenue,Spend,Revenue\n" +
+            "SEM Total," + data.semSR + "," + data.semPR + "," + data.semTLB + "," + data.semTSB + "," + data.semTUB + "," + data.semAR + "," + data.semTSD + "," + data.semAR + "\n" +
+            "SEM-Brand," + data.semBSR + ",," + data.semBLB + ",," + data.semBUB + ",," + data.semBSD + ",\n" +
+            "SEM-Cards," + data.semCSR + ",," + data.semCLB + ",," + data.semCUB + ",," + data.semCSD + ",\n" +
+            "SEM-Pbook," + data.semPSR + ",," + data.semPLB + ",," + data.semPUB + ",," + data.semPSD + ",\n" +
+            "SEM-Others," + data.semOSR + ",," + data.semOLB + ",," + data.semOUB + ",," + data.semOSD + ",\n" +
+            "Display," + data.disSR + "," + data.disPR + "," + data.disTLB + "," + data.disSB + "," + data.disUB + "," + data.disAR + "," + data.disTSD + "," + data.disAR + "\n" +
+            "Social (FB)," + data.socSR + "," + data.socPR + "," + data.socLB + "," + data.socSB + "," + data.socUB + "," + data.socAR + "," + data.socSD + "," + data.socAR + "\n" +
+            "Affiliates," + data.affSR + "," + data.affPR + "," + data.affLB + "," + data.affSB + "," + data.affUB + "," + data.affAR + "," + data.affSD + "," + data.affAR + "\n" +
+            "Partners," + data.parSR + "," + data.parPR + "," + data.parLB + "," + data.parSB + "," + data.parUB + "," + data.parAR + "," + data.parSD + "," + data.parAR + "\n" +
+            "Total Portfolio," + data.totSR + "," + data.totPR + "," + data.totLB + "," + data.totSB + "," + data.totUB + "," + data.totAR + "," + data.totSD + "," + Number(data.totAR - data.totPR) + "\n" +
+            "Portfolio ROI,,,,,,,,,,,\n" +
+            "Note:," + info.note + ",,,,,,,,,,";
+    }
+
+    //scope vars
+    $scope.fileName = "my";
+    $scope.format = 'Excel';
+
+    //scope functions
+    $scope.dataExport = function () {
+        console.log('from dataExport,clicked');
+        var link = document.createElement('a');
+        link.href = $scope.csvContent;
+        link.download = $scope.fileName + '.' + format[$scope.format];
+        link.click();
+    };
+
+    //main
+    if (!actionObjInfo[1]) {
+        forwardManager.getName(function (id) {
+            if (id) {
+                scenarioManager.getScenarioById(id, function (scenario) {
+                    $scope.scenario = scenario;
+                    if ($scope.scenario.from === "forward") {
+                        forwardManager.getData(function (data) {
+                            $scope.data = data;
+                            var modify = function () {
+                                $scope.data.semLB = Number($scope.data.semBLB) + Number($scope.data.semCLB) + Number($scope.data.semPLB) + Number($scope.data.semOLB);
+                                $scope.data.semMin = Number($scope.data.semBMin) + Number($scope.data.semCMin) + Number($scope.data.semPMin) + Number($scope.data.semOMin);
+                                $scope.data.semMax = Number($scope.data.semBMax) + Number($scope.data.semCMax) + Number($scope.data.semPMax) + Number($scope.data.semOMax);
+                                $scope.data.semUB = Number($scope.data.semBUB) + Number($scope.data.semCUB) + Number($scope.data.semPUB) + Number($scope.data.semOUB);
+
+                                $scope.data.totLB = Number($scope.data.semLB) + Number($scope.data.disLB) + Number($scope.data.socLB) + Number($scope.data.affLB) + Number($scope.data.parLB);
+                                $scope.data.totMin = Number($scope.data.semMin) + Number($scope.data.disMin) + Number($scope.data.socMin) + Number($scope.data.affMin) + Number($scope.data.parMin);
+                                $scope.data.totMax = Number($scope.data.semMax) + Number($scope.data.disMax) + Number($scope.data.socMax) + Number($scope.data.affMax) + Number($scope.data.parMax);
+                                $scope.data.totUB = Number($scope.data.semUB) + Number($scope.data.disUB) + Number($scope.data.socUB) + Number($scope.data.affUB) + Number($scope.data.parUB);
+
+                                $scope.data.semSD = Number($scope.data.semAS) - Number($scope.data.semSR);
+                                $scope.data.semCSD = Number($scope.data.semCAS) - Number($scope.data.semCSR);
+                                $scope.data.semBSD = Number($scope.data.semBAS) - Number($scope.data.semBSR);
+                                $scope.data.semPSD = Number($scope.data.semPAS) - Number($scope.data.semPSR);
+                                $scope.data.semOSD = Number($scope.data.semOAS) - Number($scope.data.semOSR);
+
+                                $scope.data.disSD = Number($scope.data.disAS) - Number($scope.data.disSR);
+                                $scope.data.socSD = Number($scope.data.socAS) - Number($scope.data.socSR);
+                                $scope.data.affSD = Number($scope.data.affAS) - Number($scope.data.affSR);
+                                $scope.data.parSD = Number($scope.data.parAS) - Number($scope.data.parSR);
+                                $scope.data.totSD = Number($scope.data.totAS) - Number($scope.data.totSR);
+                                $scope.data.semRD = Number($scope.data.semAR) - Number($scope.data.semPR);
+                                $scope.data.disRD = Number($scope.data.disAR) - Number($scope.data.disPR);
+                                $scope.data.socRD = Number($scope.data.socAR) - Number($scope.data.socPR);
+                                $scope.data.affRD = Number($scope.data.affAR) - Number($scope.data.affPR);
+                                $scope.data.parRD = Number($scope.data.parAR) - Number($scope.data.parPR);
+                                $scope.data.totRD = Number($scope.data.totAR) - Number($scope.data.totPR);
+                            };
+                            modify();
+                            $scope.output = convertPlan($scope.scenario, $scope.data);
+                            $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
+                        });
+                    } else {
+                        var back = {history: {}};
+                        forwardManager.getData(function (data) {
+                            back.output = data;
+                            history.getHistoryData(back.output.StartingTime, back.output.EndingTime, function (history) {
+                                back.history.semSR = history.SEM;
+                                back.history.semBSR = history.SEMBrand;
+                                back.history.semCSR = history.SEMCard;
+                                back.history.semOSR = history.SEMOther;
+                                back.history.semPSR = history.SEMPBook;
+                                back.history.disSR = history.Display;
+                                back.history.affSR = history.Affiliate;
+                                back.history.socSR = history.FB;
+                                back.history.parSR = history.Partners;
+                                back.history.totSR = history.Partners + history.FB + history.Affiliate + history.Display + history.SEM;
+                                back.history.totPR = history.Revenue;
+                                back.history.ROI = (back.history.totPR / back.history.totSR - 1) * 100;
+                                if (back.output.lmTouch === "Multi-Touch") {
+                                    back.history.semPR = history.SEM_MTA;
+                                    back.history.disPR = history.Display_MTA;
+                                    back.history.affPR = history.Affiliates_MTA;
+                                    back.history.socPR = history.FB_MTA;
+                                    back.history.parPR = history.Partners_MTA;
+                                } else {
+                                    back.history.semPR = history.SEM_LTA;
+                                    back.history.disPR = history.Display_LTA;
+                                    back.history.affPR = history.Affiliates_LTA;
+                                    back.history.socPR = history.FB_LTA;
+                                    back.history.parPR = history.Partners_LTA;
+                                }
+                                back.output.semSD = back.output.semSR - back.history.semSR;
+                                back.output.semBSD = back.output.semBSR - back.history.semBSR;
+                                back.output.semCSD = back.output.semCSR - back.history.semCSR;
+                                back.output.semOSD = back.output.semOSR - back.history.semOSR;
+                                back.output.semPSD = back.output.semPSR - back.history.semPSR;
+                                back.output.disSD = back.output.disSR - back.history.disSR;
+                                back.output.affSD = back.output.affSR - back.history.affSR;
+                                back.output.socSD = back.output.socSR - back.history.socSR;
+                                back.output.parSD = back.output.parSR - back.history.parSR;
+                                back.output.totSD = back.output.totSR - back.history.totSR;
+                                back.output.semRD = back.output.semPR - back.history.semPR;
+                                back.output.disRD = back.output.disPR - back.history.disPR;
+                                back.output.affRD = back.output.affPR - back.history.affPR;
+                                back.output.socRD = back.output.socPR - back.history.socPR;
+                                back.output.parRD = back.output.parPR - back.history.parPR;
+                                back.output.totRD = back.output.totPR - back.history.totPR;
+                                back.output.ROID = back.output.run1ProjROI.slice(0, -1) - back.history.ROI;
+                                back.output.changeR = back.output.ROID / back.history.ROI * 100;
+                            });
+
+                        });
+                        $scope.output=convertLook($scope.scenario, back);
+                        $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
+                    }
+                })
+
+            } else {
+                $location.path('myscenarios');
             }
-            output = output.slice(0, -1) + '\n';
-            for (key in jsonData) {
-                output += '"' + jsonData[key] + '",';
+        });
+
+    } else {
+        $scope.compareObj = {};
+        $scope.compareObj.difference = {};
+        $scope.firstGot = false;
+        $scope.secondGot = false;
+        forwardManager.getData(function (data) {
+            $scope.compareObj.first = data;
+
+            $scope.firstGot = true;
+            if ($scope.firstGot && $scope.secondGot) {
+                Object.keys($scope.compareObj.first).forEach(function (key) {
+                    $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+                });
+                $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
             }
-            output = output.slice(0, -1) + '\n';
-            return output;
+        }, actionObjInfo[0]);
+        //forwardManager.getData(function (data) {
+        //    $scope.compareObj.second = data;
+        //
+        //    $scope.secondGot = true;
+        //    if ($scope.firstGot && $scope.secondGot) {
+        //        Object.keys($scope.compareObj.first).forEach(function (key) {
+        //            $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+        //        });
+        //        $scope.compareChart.data = [
+        //            {title: "SEM", value: -$scope.compareObj.difference.semAS},
+        //            {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+        //            {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+        //            {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+        //            {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+        //            {title: "Display", value: -$scope.compareObj.difference.disAS},
+        //            {title: "Social", value: -$scope.compareObj.difference.socAS},
+        //            {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+        //            {title: "Partners", value: -$scope.compareObj.difference.parAS},
+        //            {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+        //        ];
+        //    }
+        //}, 'run3');
+        forwardManager.getData(function (data) {
+            $scope.compareObj.second = data;
+
+            $scope.secondGot = true;
+            if ($scope.firstGot && $scope.secondGot) {
+                Object.keys($scope.compareObj.first).forEach(function (key) {
+                    $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+                });
+                $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
+            }
+        }, actionObjInfo[1]);
+    }
+
+});
+scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioManager, $location, forwardManager) {
+    //vars
+
+    //functions
+
+    //scope vars
+    $scope.userList = [];
+    $scope.targetUsername;
+    //scope functions
+    $scope.share = function () {
+        console.log($scope.scenario._id);
+        console.log($scope.targetUsername);
+        scenarioManager.shareScenario($scope.targetUsername, $scope.scenario._id, function (res) {
+            console.log(res);
+            alert("Data is shared!");
+        });
+    };
+    //main
+    forwardManager.getName(function (id) {
+        console.log(id);
+        if (id) {
+            scenarioManager.getScenarioById(id, function (scenario) {
+                $scope.scenario = scenario;
+            })
+        } else {
+            $location.path('myscenarios');
         }
 
-        //scope vars
-        $scope.fileName="my";
-        //scope functions
-
-        scenarioManager.getSelectedScenario(function (scenario) {
-            $scope.scenario = scenario;
-        });
-        forwardManager.getData(function (data) {
-            console.log(data);
-            $scope.output = getCsv(data);
-            //+ $scope.output
-            $scope.csvContent = encodeURI("data:text/csv;charset=utf-8,"+$scope.output);
-        });
-        $scope.dataExport=function(){
-            var link = document.createElement('a');
-            link.href = 'data:attachment/csv,' + $scope.csvContent;
-            //link.target = '_blank';
-            link.download = $scope.fileName+'.csv';
-            link.click();
-        };
-    })
-    .controller("scenariosShareCtrl", function ($scope) {
-        //vars
-
-        //functions
-
-        //scope vars
-
-        //scope functions
-    })
-    .controller("saveCtrl", function ($scope) {
-        //vars
-
-        //functions
-
-        //scope vars
-
-        //scope functions
-
-
-    })
-    .controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo) {
-        //vars
-        $scope.compareChart = {};
-        console.log(actionObjInfo);
-        var compareObj = [];
-        $http.get('/scenarios/' + actionObjInfo[0]).success(function (data) {
-            compareObj[0] = data;
-            console.log(compareObj);
-        });
-        $http.get('/scenarios/' + actionObjInfo[1]).success(function (data) {
-            compareObj[1] = data;
-            console.log(compareObj);
-        });
-        $scope.compareChart.first = compareObj[0];
-        $scope.compareChart.second = compareObj[1];
-        $scope.compareChart.actionObjInfo = actionObjInfo;
-
-        //console.log(compareObj);
-
-        $scope.compareChart.data = [
-            {title: "SEM", value: -109009},
-            {title: "SEM-Bord", value: -8002},
-            {title: "SEM-Card", value: -24321},
-            {title: "SEM-Photobook", value: -25422},
-            {title: "SEM-Others", value: -45621},
-            {title: "Display", value: -127765},
-            {title: "Social", value: 462326},
-            {title: "Affiliates", value: -26445},
-            {title: "Partners", value: -199106},
-            {title: "Portfolio Total", value: 0}
-        ];
-        $scope.compareChart.config = {
-            width: 800,
-            height: 313,
-            margin: {left: 100, top: 0, right: 100, bottom: 30}
-        };
-        //functions
-
-        //scope vars
-
-        //scope functions
     });
+    user.getUser(function (res) {
+        $scope.user = res;
+        user.getUserList($scope.user.name, function (list) {
+            $scope.userList = list;
+            $scope.targetUsername = $scope.userList[0];
+
+        })
+    });
+});
+scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, scenarioManager, user, $location) {
+    //vars
+
+    //functions
+
+    //scope vars
+
+    //scope functions
+    $scope.update = function () {
+        console.log($scope.scenario.final);
+        $scope.update = {
+            name: $scope.scenario.name,
+            note: $scope.scenario.note,
+            final: $scope.scenario.final
+        };
+        user.getUser(function (user) {
+            scenarioManager.editScenario(user.name, $scope.scenario._id, $scope.update, function (res) {
+                console.log(res);
+                if (res) {
+                    alert("ScenarioInfo is  updated.")
+                } else {
+                    alert(res)
+                }
+            });
+        });
+
+    };
+    //main
+    forwardManager.getName(function (id) {
+        if (id) {
+            console.log(id);
+            scenarioManager.getScenarioById(id, function (res) {
+                if (res) {
+                    $scope.scenario = res;
+                }
+            });
+        }
+        else {
+            $location.path("myscenarios");
+        }
+    });
+});
+scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, forwardManager, $location,scenarioManager) {
+    if (!actionObjInfo[1]) {
+        $location.path('myscenarios');
+    }
+    //vars
+
+    //functions
+
+    //scope vars
+    $scope.compareChart = {};
+    $scope.compareObj = {};
+    $scope.compareObj.difference = {};
+    $scope.firstGot = false;
+    $scope.secondGot = false;
+    $scope.compareChart.data = [
+        {title: "SEM", value: -109009},
+        {title: "SEM-Brand", value: -8002},
+        {title: "SEM-Cards", value: -24321},
+        {title: "SEM-Photobook", value: -25422},
+        {title: "SEM-Others", value: -45621},
+        {title: "Display", value: -127765},
+        {title: "Social", value: 462326},
+        {title: "Affiliates", value: -26445},
+        {title: "Partners", value: -199106},
+        {title: "Portfolio Total", value: 0}
+    ];
+    $scope.compareChart.config = {
+        width: 800,
+        height: 313,
+        margin: {left: 130, top: 30, right: 100, bottom: 30}
+    };
+    //scope functions
+
+    //main
+    $scope.compareChart.actionObjInfo = [];
+    scenarioManager.getScenarioById(actionObjInfo[0],function(scenario){
+        $scope.compareChart.actionObjInfo[0]=scenario;
+        scenarioManager.getScenarioById(actionObjInfo[1],function(scenario2){
+            $scope.compareChart.actionObjInfo[1]=scenario2;
+        })
+    });
+
+    //forwardManager.getData(function (data) {
+    //    $scope.compareObj.first = data;
+    //
+    //    $scope.firstGot = true;
+    //    if ($scope.firstGot && $scope.secondGot) {
+    //        Object.keys($scope.compareObj.first).forEach(function (key) {
+    //            $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+    //        });
+    //        $scope.compareChart.data = [
+    //            {title: "SEM", value: -$scope.compareObj.difference.semAS},
+    //            {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+    //            {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+    //            {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+    //            {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+    //            {title: "Display", value: -$scope.compareObj.difference.disAS},
+    //            {title: "Social", value: -$scope.compareObj.difference.socAS},
+    //            {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+    //            {title: "Partners", value: -$scope.compareObj.difference.parAS},
+    //            {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+    //        ];
+    //    }
+    //}, 'run2');
+    forwardManager.getData(function (data) {
+        $scope.compareObj.first = data;
+
+        $scope.firstGot = true;
+        if ($scope.firstGot && $scope.secondGot) {
+            Object.keys($scope.compareObj.first).forEach(function (key) {
+                $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+            });
+            $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
+            console.log(Number($scope.compareObj.first.run2ProjROI.substr(0, 3)));
+            $scope.compareChart.data = [
+                {title: "SEM", value: -$scope.compareObj.difference.semAS},
+                {title: "SEM-Brand", value: -$scope.compareObj.difference.semBAS},
+                {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+                {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+                {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+                {title: "Display", value: -$scope.compareObj.difference.disAS},
+                {title: "Social", value: -$scope.compareObj.difference.socAS},
+                {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+                {title: "Partners", value: -$scope.compareObj.difference.parAS},
+                {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+            ];
+        }
+    }, actionObjInfo[0]);
+    //forwardManager.getData(function (data) {
+    //    $scope.compareObj.second = data;
+    //
+    //    $scope.secondGot = true;
+    //    if ($scope.firstGot && $scope.secondGot) {
+    //        Object.keys($scope.compareObj.first).forEach(function (key) {
+    //            $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+    //        });
+    //        $scope.compareChart.data = [
+    //            {title: "SEM", value: -$scope.compareObj.difference.semAS},
+    //            {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+    //            {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+    //            {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+    //            {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+    //            {title: "Display", value: -$scope.compareObj.difference.disAS},
+    //            {title: "Social", value: -$scope.compareObj.difference.socAS},
+    //            {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+    //            {title: "Partners", value: -$scope.compareObj.difference.parAS},
+    //            {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+    //        ];
+    //    }
+    //}, 'run3');
+    forwardManager.getData(function (data) {
+        $scope.compareObj.second = data;
+
+        $scope.secondGot = true;
+        if ($scope.firstGot && $scope.secondGot) {
+            Object.keys($scope.compareObj.first).forEach(function (key) {
+                $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+            });
+            $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
+            $scope.compareChart.data = [
+                {title: "SEM", value: -$scope.compareObj.difference.semAS},
+                {title: "SEM-Brand", value: -$scope.compareObj.difference.semBAS},
+                {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+                {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+                {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+                {title: "Display", value: -$scope.compareObj.difference.disAS},
+                {title: "Social", value: -$scope.compareObj.difference.socAS},
+                {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+                {title: "Partners", value: -$scope.compareObj.difference.parAS},
+                {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+            ];
+        }
+    }, actionObjInfo[1]);
+
+});
 
 scenariosApp.factory('actionObjInfo', function () {
     var actionObjInfo = [];
     return actionObjInfo;
 });
+

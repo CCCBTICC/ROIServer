@@ -10,11 +10,11 @@
         <form class="form-horizontal">
             <div class="form-group">
                 <label for="planForwardBrand" class="col-sm-3 control-label">Brand:</label>
-                <label class="col-sm-4">
+                <div class="col-sm-4">
                     <select id="planForwardBrand" class="form-control" ng-model="planForward.brand"
                             ng-options="b for b in brands">
                     </select>
-                </label>
+                </div>
 
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{brandTooltips}}"></i>
@@ -51,7 +51,7 @@
                     <div class="input-group">
                         <input id="planForwardBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
                                ng-model="planForward.beginPeriod" is-open="opened.planForwardBeginPeriod" ng-change="modifyEndDate()"
-                               min-date="{{minDate}}" max-date="{{maxDate}}" datepicker-options="dateOptions" datepicker-mode="'month'"
+                               min-date="minDate" max-date="maxDate" datepicker-options="dateOptions" datepicker-mode="'month'"
                                ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event, 'planForwardBeginPeriod')">
@@ -97,8 +97,8 @@
             </div>
             <div class="form-group">
                 <div class="col-sm-5 col-sm-offset-3">
-                    <a href="#/planforward/constrict" class="btn btn-default" ng-click="CInput()">Next
-                    </a>
+                    <btn href="" class="btn btn-default" ng-click="Next()">Next
+                    </btn>
                 </div>
             </div>
         </form>

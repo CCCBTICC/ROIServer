@@ -18,8 +18,8 @@
             <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                 <thead>
                 <tr>
-                    <th class="col-1" rowspan="2"></th>
-                    <th class="col-1" rowspan="2">ID</th>
+                    <th class="col-0" rowspan="2"><div></div></th>
+                    <th class="col-2" rowspan="2">ID </th>
                     <th class="col-2" rowspan="2">Name</th>
                     <th class="col-3" rowspan="2">Note</th>
                     <th class="col-1" rowspan="2">Owner</th>
@@ -43,9 +43,9 @@
                     <td class="check col-1">
                         <label><input type="checkbox"></label>
                     </td>
-                    <td class="non-number col-1" title="{{testCaseA}}">{{testCaseA | TLNR}}</td>
+                    <td class="non-number col-1">1</td>
                     <td class="non-number col-2">SFLY-May-2015-Optimized</td>
-                    <td class="non-number col-3" title="{{testCaseB}}">{{testCaseB | TLNR:3:2}}</td>
+                    <td class="non-number col-3">this is the first scenario with Spend and no constraints and using MTA as attribution method</td>
                     <td class="non-number col-1">Mike</td>
                     <td class="non-number col-1">No</td>
                     <td class="non-number col-1">2015-07-21</td>
@@ -192,22 +192,23 @@
                     <td class="non-number">No</td>
                 </tr>
                 <tr ng-repeat="scenario in scenarios" ng-click="selectRow(scenario)">
-                    <td class="check">
+                    <td class="check non-number col-0">
                         <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
                     </td>
-                    <td class="non-number">{{scenario._id}}</td>
-                    <td>{{scenario.Name}}</td>
-                    <td>{{scenario.Note}}</td>
-                    <td class="non-number">{{scenario.Owner}}</td>
-                    <td class="non-number">No</td>
-                    <td class="non-number">{{scenario.AlgEndingTime}}</td>
-                    <td class="non-number">{{scenario.Brand}}</td>
-                    <td class="non-number">{{scenario.Spend | formatCurrency}}</td>
-                    <td class="non-number">{{scenario.StartingTime}}-{{scenario.EndingTime}}</td>
-                    <td class="non-number">{{scenario.lmTouch}}</td>
-                    <td class="non-number">{{scenario.DataThrough}}</td>
-                    <td class="non-number">No</td>
-                    <td class="non-number">{{scenario.Share}}</td>
+                    <td class="non-number col-2">{{scenario.scenarioId}}</td>
+                    <td class="non-number col-2">{{scenario.name}}</td>
+                    <td class="non-number col-3">{{scenario.note}}</td>
+                    <td class="non-number col-1">{{scenario.owner}}</td>
+                    <td class="non-number col-1">{{scenario.final}}</td>
+                    <td class="non-number col-1">{{scenario.createDate | date: 'yyyy-MM-dd'}}</td>
+                    <td class="non-number col-1">{{scenario.brand}}</td>
+                    <td class="non-number col-1">{{scenario.spend | formatCurrency}}</td>
+                    <td class="non-number col-1">{{scenario.begin | date: 'yyyy-MM'}}</td>
+                    <td class="non-number col-1">{{scenario.end | date: 'yyyy-MM'}}</td>
+                    <td class="non-number col-1">{{scenario.lmTouch}}</td>
+                    <td class="non-number col-1">{{scenario.dataThrough | date: 'yyyy-MM'}}</td>
+                    <td class="non-number col-1">{{scenario.included}}</td>
+                    <td class="non-number col-1">{{scenario.share}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -218,14 +219,14 @@
     <div class="row">
         <div class="controls">
             <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}"
-                  ng-click="switchToView('compare')">compare</span>
+                  ng-click="compare()">compare</span>
             <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</span>
             <!-- todo: href="#myscenarios/export" deleted from tag a, move it to function. -->
             <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</span>
             <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}"
                   ng-click="retrive()">retrieve</span>
-            <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="switchToView('share')">share</span>
-            <span class="btn btn-orange" ng-class="{'disabled':operations.edit.disable}" ng-click="switchToView('edit')">edit</span>
+            <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="share()">share</span>
+            <span class="btn btn-orange" ng-class="{'disabled':operations.edit.disable}" ng-click="edit()">edit</span>
         </div>
     </div>
 </div>

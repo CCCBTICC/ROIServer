@@ -16,7 +16,7 @@
 
             <div class="col-sm-4">
                 <div class="well well-sm">
-                    SFLY-May2015-LTA-X-O-001-R1
+                    {{scenario.scenarioId}}
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
 
             <div class="col-sm-4">
                 <div class="well well-sm">
-                    SFLY May 2015 Optimized
+                    {{scenario.name}}
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
 
             <div class="col-sm-4">
                 <div class="well well-sm">
-                    This is the first scenario with Spend and no constraints and using MTA as attribution method
+                    {{scenario.note}}
                 </div>
             </div>
         </div>
@@ -45,8 +45,9 @@
             <label class="col-sm-2 control-label">Share With:</label>
 
             <div class="col-sm-4">
-                <label for="shareId" class="sr-only">share list</label>
-                <input id="shareId" class="form-control" type="email">
+                <!--<label for="shareId" class="sr-only">share list</label>-->
+                <!--<input id="shareId" class="form-control" type="email">-->
+                <select id="share" class="form-control" ng-model="targetUsername" ng-options="user for user in userList"></select>
             </div>
             <div class="col-sm-1 help-info">
                 <i class="fa fa-question-circle" tooltip-placement="right" tooltip="tooltip"></i>
@@ -68,7 +69,7 @@
         <!--button share and cancel-->
         <div class="form-group">
             <div class="col-xs-offset-0 col-sm-2 col-sm-offset-2">
-                <button type="button" class="btn btn-default">Share</button>
+                <button type="button" class="btn btn-default" ng-click="share()">Share</button>
             </div>
             <div class="col-sm-2">
                 <a href="#myscenarios"><button type="button" class="btn btn-default">Cancel</button></a>
