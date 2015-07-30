@@ -32,7 +32,18 @@ angular.module('CompareChart', [])
                         .append("svg");
                     chartSvg.attr("width", scope.config.width)
                         .attr("height", height);
-
+                    //draw direction text
+                    var decreaceText = chartSvg.append('text');
+                    decreaceText.text('decrease')
+                        .attr('x', midX / 2 + scope.config.margin.left)
+                        .attr('y', textHeight)
+                        .attr('font-size', 14)
+                        .attr('text-anchor', "end");
+                    var increaseText = chartSvg.append('text');
+                    increaseText.text('increase')
+                        .attr('x', midX / 2 * 3 - scope.config.margin.left)
+                        .attr('y', textHeight)
+                        .attr('font-size', 14);
 
                     data.forEach(function (item, index) {
                         //draw scale
@@ -42,6 +53,9 @@ angular.module('CompareChart', [])
                             .attr("stroke-width", 1)
                             .attr("stroke", "black");
                         //end scale
+
+
+                        //.attr('text-anchor',"end");
                         //draw background rectangle
                         var bgRect = chartSvg
                             .append('rect')
@@ -49,28 +63,26 @@ angular.module('CompareChart', [])
                             .attr('y', barHeight * index + scope.config.margin.top + 1)
                             .attr('width', scope.config.width - scope.config.margin.left - scope.config.margin.right)
                             .attr('height', barHeight - 1)
-                            .style('fill', '#eee');
+                            .style('fill', '#fafafa');
                         //end background
                         //draw rectangle
                         var rect = chartSvg
                             .append('rect')
-                            .attr("y", barHeight * index + scope.config.margin.top + 10)
-                            .attr("height", barHeight - 20)
-                            .style('fill', '#F05323');
+                            .attr("y", barHeight * index + scope.config.margin.top + 5)
+                            .attr("height", barHeight - 10);
                         //render title text
                         var titleText = chartSvg.append('text');
                         titleText.text(item.title)
                             .attr('x', 0)
                             .attr('y', barHeight * index + scope.config.margin.top + barHeight - 7)
-                            .attr('font-size', barHeight - 7)
                             //.attr('fill', 'rgba(255, 255, 255, .4)')
-                            .attr('font-weight', 0)
-                            .attr('font-size', 18)
+                            //.attr('font-weight', -50000)
+                            .attr('font-size', 14)
                             .attr('text-anchor', "left");
                         //end text
                         //render value text
                         var valueText = chartSvg.append('text');
-                        valueText.text(Math.abs(item.value))
+                        valueText.text(Math.abs(item.value).toFixed(0))
                             .attr('font-size', 18)
                             .attr('fill', '#222')
                             .attr('x', Number(oldData[index].value) * oldScaleFactor + midX)
@@ -82,14 +94,16 @@ angular.module('CompareChart', [])
                             rect.attr("x", midX)
                                 .attr("width", oldData[index].value * oldScaleFactor)
                                 .transition()
-                                .attr("width", item.value * scaleFactor);
+                                .attr("width", item.value * scaleFactor)
+                                .style('fill', '#03FE1B');
                             valueText.attr('text-anchor', 'end')
                         } else {
                             rect.attr("width", Math.abs(oldData[index].value) * oldScaleFactor)
                                 .attr("x", midX + Number(oldData[index].value) * oldScaleFactor)
                                 .transition()
                                 .attr("width", Math.abs(item.value) * scaleFactor)
-                                .attr("x", midX + Number(item.value) * scaleFactor);
+                                .attr("x", midX + Number(item.value) * scaleFactor)
+                                .style('fill', '#DADADA');
                         }
                         //end rectangle
                     });
@@ -114,8 +128,8 @@ angular.module('CompareChart', [])
                 }, true);
             },
             template: '' +
-            '<h4>{{title}}</h4>' +
-            '<div id="chart"></div>' +
-            '<h4>{{bottom}}</h4>'
+                //'<h4>{{title}}</h4>' +
+            '<div id="chart"></div>'
+            //'<h4>{{bottom}}</h4>'
         }
     });

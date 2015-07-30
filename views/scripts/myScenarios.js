@@ -133,7 +133,15 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.export = function () {
         var objectId = getSelectedId($scope.scenarios);
         forwardManager.setName(objectId);
+        var exportIndex = -1;
+        $scope.scenarios.forEach(function (obj, index) {
+            if (obj._id === objectId) {
+                exportIndex = index;
+            }
+        });
+        scenarioManager.setSelectedScenario($scope.scenarios[exportIndex]);
         $location.path("myscenarios/export");
+
     };
     $scope.retrive = function () {
         var objectId = getSelectedId($scope.scenarios);
@@ -214,10 +222,12 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
 
     //main
     // get users scenarioList
-    actionObjInfo = [];
+    while(actionObjInfo[0]){
+        actionObjInfo.shift();
+    }
     user.getUser(function (user) {
+        if(!user.name){$scope.logout();}
         $scope.user = user;
-        if(!user.name){$scope.logout()}
         scenarioManager.getScenarios($scope.user.name, function (data) {
             console.log(data);
             $scope.scenarios = data;
@@ -260,7 +270,6 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
     }
 
     function convertLook(info, data) {
-        console.log('in convert');
         return "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
             "Owner," + info.owner + ",,,,,,,,,,\n" +
             "Create Date," + info.createDate + ",,,,,,,,,,\n" +
@@ -273,16 +282,16 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
             ",,,,,,,,,,,\n" +
             "Portfolio Channels,Actuals,,Optimized,,,,Difference,\n" +
             ",Spend,Revenue,Lower,Spend,Upper,Revenue,Spend,Revenue\n" +
-            "SEM Total," + data.history.semSR + "," + data.history.semPR + "," + data.semTLB + "," + data.output.semSR + "," + data.semTUB + "," + data.output.semPR + "," + data.output.semSD + "," + data.output.semRD + "\n" +
-            "SEM-Brand," + data.history.semBSR + ",," + data.semBLB + "," + data.output.semBSR + "," + data.semBUB + ",," + data.output.semBSD + ",\n" +
-            "SEM-Cards," + data.history.semCSR + ",," + data.semCLB + "," + data.output.semCSR + "," + data.semCUB + ",," + data.output.semCSD + ",\n" +
-            "SEM-Pbook," + data.history.semPSR + ",," + data.semPLB + "," + data.output.semPSR + "," + data.semPUB + ",," + data.output.semPSD + ",\n" +
-            "SEM-Others," + data.history.semOSR + ",," + data.semOLB + "," + data.output.semOSR + "," + data.semOUB + ",," + data.output.semOSD + ",\n" +
-            "Display," + data.history.disSR + "," + data.history.disPR + "," + data.disTLB + "," + data.output.disSR + "," + data.disUB + "," + data.output.disPR + "," + data.output.disSD + "," + data.output.disRD + "\n" +
-            "Social (FB)," + data.history.socSR + "," + data.history.socPR + "," + data.socLB + "," + data.output.socSR + "," + data.socUB + "," + data.output.socPR + "," + data.output.socSD + "," + data.output.socRD + "\n" +
-            "Affiliates," + data.history.affSR + "," + data.history.affPR + "," + data.affLB + "," + data.output.affSR + "," + data.affUB + "," + data.output.affPR + "," + data.output.affSD + "," + data.output.affRD + "\n" +
-            "Partners," + data.history.parSR + "," + data.history.parPR + "," + data.parLB + "," + data.output.parSR + "," + data.parUB + "," + data.output.parPR + "," + data.output.parSD + "," + data.output.parRD + "\n" +
-            "Total Portfolio," + data.history.totSR + "," + data.history.totPR + "," + data.totLB + "," + data.output.totSR + "," + data.totUB + "," + data.output.totPR + "," + data.output.totSD + "," + data.output.totRD + "\n" +
+            "SEM Total," + data.semSR + "," + data.semPR + "," + data.semTLB + "," + data.semTSB + "," + data.semTUB + "," + data.semAR + "," + data.semTSD + "," + data.semAR + "\n" +
+            "SEM-Brand," + data.semBSR + ",," + data.semBLB + ",," + data.semBUB + ",," + data.semBSD + ",\n" +
+            "SEM-Cards," + data.semCSR + ",," + data.semCLB + ",," + data.semCUB + ",," + data.semCSD + ",\n" +
+            "SEM-Pbook," + data.semPSR + ",," + data.semPLB + ",," + data.semPUB + ",," + data.semPSD + ",\n" +
+            "SEM-Others," + data.semOSR + ",," + data.semOLB + ",," + data.semOUB + ",," + data.semOSD + ",\n" +
+            "Display," + data.disSR + "," + data.disPR + "," + data.disTLB + "," + data.disSB + "," + data.disUB + "," + data.disAR + "," + data.disTSD + "," + data.disAR + "\n" +
+            "Social (FB)," + data.socSR + "," + data.socPR + "," + data.socLB + "," + data.socSB + "," + data.socUB + "," + data.socAR + "," + data.socSD + "," + data.socAR + "\n" +
+            "Affiliates," + data.affSR + "," + data.affPR + "," + data.affLB + "," + data.affSB + "," + data.affUB + "," + data.affAR + "," + data.affSD + "," + data.affAR + "\n" +
+            "Partners," + data.parSR + "," + data.parPR + "," + data.parLB + "," + data.parSB + "," + data.parUB + "," + data.parAR + "," + data.parSD + "," + data.parAR + "\n" +
+            "Total Portfolio," + data.totSR + "," + data.totPR + "," + data.totLB + "," + data.totSB + "," + data.totUB + "," + data.totAR + "," + data.totSD + "," + Number(data.totAR - data.totPR) + "\n" +
             "Portfolio ROI,,,,,,,,,,,\n" +
             "Note:," + info.note + ",,,,,,,,,,";
     }
@@ -305,7 +314,6 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
         forwardManager.getName(function (id) {
             if (id) {
                 scenarioManager.getScenarioById(id, function (scenario) {
-
                     $scope.scenario = scenario;
                     if ($scope.scenario.from === "forward") {
                         forwardManager.getData(function (data) {
@@ -343,8 +351,7 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
                             $scope.output = convertPlan($scope.scenario, $scope.data);
                             $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
                         });
-                    }
-                    else {
+                    } else {
                         var back = {history: {}};
                         forwardManager.getData(function (data) {
                             back.output = data;
@@ -392,12 +399,11 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
                                 back.output.totRD = back.output.totPR - back.history.totPR;
                                 back.output.ROID = back.output.run1ProjROI.slice(0, -1) - back.history.ROI;
                                 back.output.changeR = back.output.ROID / back.history.ROI * 100;
-                                $scope.output = convertLook($scope.scenario, back);
-                                $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
-
                             });
 
                         });
+                        $scope.output=convertLook($scope.scenario, back);
+                        $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
                     }
                 })
 
@@ -422,6 +428,28 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
                 $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
             }
         }, actionObjInfo[0]);
+        //forwardManager.getData(function (data) {
+        //    $scope.compareObj.second = data;
+        //
+        //    $scope.secondGot = true;
+        //    if ($scope.firstGot && $scope.secondGot) {
+        //        Object.keys($scope.compareObj.first).forEach(function (key) {
+        //            $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+        //        });
+        //        $scope.compareChart.data = [
+        //            {title: "SEM", value: -$scope.compareObj.difference.semAS},
+        //            {title: "SEM-Bord", value: -$scope.compareObj.difference.semBAS},
+        //            {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
+        //            {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
+        //            {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
+        //            {title: "Display", value: -$scope.compareObj.difference.disAS},
+        //            {title: "Social", value: -$scope.compareObj.difference.socAS},
+        //            {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
+        //            {title: "Partners", value: -$scope.compareObj.difference.parAS},
+        //            {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+        //        ];
+        //    }
+        //}, 'run3');
         forwardManager.getData(function (data) {
             $scope.compareObj.second = data;
 
@@ -434,6 +462,7 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
             }
         }, actionObjInfo[1]);
     }
+
 });
 scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarioManager, $location, forwardManager) {
     //vars
@@ -515,7 +544,7 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, s
         }
     });
 });
-scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, forwardManager, $location) {
+scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, forwardManager, $location,scenarioManager) {
     if (!actionObjInfo[1]) {
         $location.path('myscenarios');
     }
@@ -531,8 +560,8 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
     $scope.secondGot = false;
     $scope.compareChart.data = [
         {title: "SEM", value: -109009},
-        {title: "SEM-Bord", value: -8002},
-        {title: "SEM-Card", value: -24321},
+        {title: "SEM-Brand", value: -8002},
+        {title: "SEM-Cards", value: -24321},
         {title: "SEM-Photobook", value: -25422},
         {title: "SEM-Others", value: -45621},
         {title: "Display", value: -127765},
@@ -544,12 +573,19 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
     $scope.compareChart.config = {
         width: 800,
         height: 313,
-        margin: {left: 100, top: 0, right: 100, bottom: 30}
+        margin: {left: 130, top: 30, right: 100, bottom: 30}
     };
     //scope functions
 
     //main
-    $scope.compareChart.actionObjInfo = actionObjInfo;
+    $scope.compareChart.actionObjInfo = [];
+    scenarioManager.getScenarioById(actionObjInfo[0],function(scenario){
+        $scope.compareChart.actionObjInfo[0]=scenario;
+        scenarioManager.getScenarioById(actionObjInfo[1],function(scenario2){
+            $scope.compareChart.actionObjInfo[1]=scenario2;
+        })
+    });
+
     //forwardManager.getData(function (data) {
     //    $scope.compareObj.first = data;
     //

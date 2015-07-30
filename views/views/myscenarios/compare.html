@@ -16,8 +16,8 @@
                     <thead>
                     <tr>
                         <th rowspan="2" class="col-1">Portfolio Channels</th>
-                        <th colspan="2" class="col-2">{{compareChart.actionObjInfo[0]}}</th>
-                        <th colspan="2" class="col-2">{{compareChart.actionObjInfo[1]}}</th>
+                        <th colspan="2" class="col-2">{{compareChart.actionObjInfo[0].scenarioId}}</th>
+                        <th colspan="2" class="col-2">{{compareChart.actionObjInfo[1].scenarioId}}</th>
                         <th colspan="2" class="col-2">Difference</th>
                         <th rowspan="2" class="col-6">Spend Difference</th>
                     </tr>
@@ -46,7 +46,6 @@
                         <td rowspan="100" class="compare-chart">
                             <compare-chart compare-data="compareChart.data"
                                            config="compareChart.config"></compare-chart>
-                            <h4 style="text-align:center">(-)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</h4>
                         </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
