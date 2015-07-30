@@ -560,8 +560,8 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
     $scope.secondGot = false;
     $scope.compareChart.data = [
         {title: "SEM", value: -109009},
-        {title: "SEM-Bord", value: -8002},
-        {title: "SEM-Card", value: -24321},
+        {title: "SEM-Brand", value: -8002},
+        {title: "SEM-Cards", value: -24321},
         {title: "SEM-Photobook", value: -25422},
         {title: "SEM-Others", value: -45621},
         {title: "Display", value: -127765},

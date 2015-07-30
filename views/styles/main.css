@@ -41,6 +41,8 @@ footer {
 }
 
 /*  Button settings  */
+:focus {outline:none;}
+button::-moz-focus-inner {border:0;}
 .btn-orange, .btn-orange:focus {
     margin-right: 15px;
     text-transform: uppercase;
@@ -420,8 +422,13 @@ table.thead-fixed-top > thead {
     position: absolute;
     top: 0;
     left: 0;
+    Z-index:1;
 }
+th div{
+    position:absolute;
+    background: transparent;
 
+}
 table.thead-fixed-top > tbody {
     position: relative;
 }

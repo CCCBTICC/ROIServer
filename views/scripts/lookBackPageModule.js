@@ -4,7 +4,7 @@
 'use strict';
 var back = angular.module("ROIClientApp");
 
-back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history','actionObjInfo', function ($scope, manager, user, history,actionObjInfo) {
+back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 'actionObjInfo', function ($scope, manager, user, history, actionObjInfo) {
     // tooltips
     $scope.brandTooltips = 'Please choose one of the brands from the list.';
     $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.';
@@ -104,10 +104,12 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history','
     $scope.initForm();
     //get User Info
     user.getUser(function (user) {
-        if(!user.name){$scope.logout}
+        if (!user.name) {
+            $scope.logout
+        }
         $scope.user = user;
     });
-    while(actionObjInfo[0]){
+    while (actionObjInfo[0]) {
         actionObjInfo.shift();
     }
 
@@ -134,15 +136,15 @@ back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'histor
     $scope.lookBack.output = {};
     $scope.lookBack.history = {};
     $scope.spendTooltips = 'Portfolio Spend';
-    $scope.includeTooltips = 'Do you need to include the data through '+filter('date')($scope.lookBack.output.end,'MMM-dd-yyyy')+'?';
+    $scope.includeTooltips = 'Do you need to include the data through ' + filter('date')($scope.lookBack.output.end, 'MMM-dd-yyyy') + '?';
 
     //main
     manager.getTempData(function (data) {
         if (data.UserName) {
 
             $scope.lookBack.output = data;
-            $scope.includeTooltips = 'Do you need to include the data through '+
-                filter('date')($scope.lookBack.output.end,'MMM-dd-yyyy') +'?';
+            $scope.includeTooltips = 'Do you need to include the data through ' +
+                filter('date')($scope.lookBack.output.end, 'MMM-dd-yyyy') + '?';
 
             $scope.begin = filter('date')($scope.lookBack.output.begin, 'yyyy-MM');
             $scope.end = filter('date')($scope.lookBack.output.end, 'yyyy-MM');
@@ -229,27 +231,36 @@ back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'histor
     }
 }]);
 
-back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'history', function ($scope, manager, location, history) {
+back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'history', 'scenarioManager', 'user', '$filter', function ($scope, manager, location, history, scenarioManager, user, filter) {
 
-    $scope.lookBack = {};
-    $scope.lookBack.output = {};
-    $scope.lookBack.history = {}
+    $scope.lookBack = {
+        output: {
+            semSD: 1000,
+            semBSD: 1000,
+            semCSD: 1000,
+            semPSD: 1000,
+            semOSD: 1000,
+            disSD: 10,
+            socSD: 10,
+            affSD:10,
+            parSD: 10,
+            totSD: 10
+        }
+    };
 
+    $scope.lookBack.history = {};
     $scope.compareChart = {};
-    $scope.lookBack.output.semSD = 10000;
-    $scope.lookBack.output.disSD = 0;
-    $scope.lookBack.output.socSD = 0;
-    $scope.lookBack.output.affSD = 0;
-    $scope.lookBack.output.parSD = 0;
-    $scope.lookBack.output.totSD = 0;
-
     $scope.compareChart.data = [
-        {title: "SEM", value: $scope.lookBack.output.semSD},
-        {title: "Display", value: $scope.lookBack.output.disSD},
-        {title: "Social", value: $scope.lookBack.output.socSD},
-        {title: "Affiliates", value: $scope.lookBack.output.affSD},
-        {title: "Partners", value: $scope.lookBack.output.parSD},
-        {title: "Portfolio Total", value: $scope.lookBack.output.totSD}
+        {title: "SEM", value: filter('number')($scope.lookBack.output.semSD, 0)},
+        {title: "SEM-Brand", value: filter('number')($scope.lookBack.output.semBSD, 0)},
+        {title: "SEM-Card", value: filter('number')($scope.lookBack.output.semCSD, 0)},
+        {title: "SEM-Photobook", value: filter('number')($scope.lookBack.output.semPSD, 0)},
+        {title: "SEM-Others", value: filter('number')($scope.lookBack.output.semOSD, 0)},
+        {title: "Display", value: filter('number')($scope.lookBack.output.disSD, 0)},
+        {title: "Social", value: filter('number')($scope.lookBack.output.socSD, 0)},
+        {title: "Affiliates", value: filter('number')($scope.lookBack.output.affSD, 0)},
+        {title: "Partners", value: filter('number')($scope.lookBack.output.parSD, 0)},
+        {title: "Portfolio Total", value: filter('number')($scope.lookBack.output.totSD, 0)}
     ];
     $scope.compareChart.config = {
         width: 800,
@@ -269,10 +280,16 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
 
         location.path('myscenarios/share');
     };  // pause
+
     //main
     manager.getName(function (name) {
         if (!name) {
             location.path("/lookback/init");
+        } else {
+            scenarioManager.getScenarioById(name, function (scenario) {
+                console.log(scenario);
+                $scope.scenario = scenario;
+            })
         }
     });
     var count;
@@ -286,6 +303,11 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
                     console.log(data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
+                    manager.getName(function (id) {
+                        scenarioManager.editScenario(data.UserName, id, {exist: true}, function (res) {
+                            console.log(res);
+                        })
+                    });
                     history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (history) {
                         console.log(history);
                         $scope.lookBack.history.semSR = history.SEM;
@@ -300,7 +322,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
                         $scope.lookBack.history.totSR =
                             history.Partners + history.FB + history.Affiliate + history.Display + history.SEM;
                         $scope.lookBack.history.totPR = history.Revenue;
-                        $scope.lookBack.history.ROI = ($scope.lookBack.history.totPR / $scope.lookBack.history.totSR - 1)*100;
+                        $scope.lookBack.history.ROI = ($scope.lookBack.history.totPR / $scope.lookBack.history.totSR - 1) * 100;
                         if ($scope.lookBack.output.lmTouch === "Multi-Touch") {
                             $scope.lookBack.history.semPR = history.SEM_MTA;
                             $scope.lookBack.history.disPR = history.Display_MTA;
@@ -332,21 +354,23 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
                         $scope.lookBack.output.parRD = $scope.lookBack.output.parPR - $scope.lookBack.history.parPR;
                         $scope.lookBack.output.totRD = $scope.lookBack.output.totPR - $scope.lookBack.history.totPR;
 
-                        $scope.lookBack.output.ROID=$scope.lookBack.output.run1ProjROI.slice(0,-1)-$scope.lookBack.history.ROI;
-                        $scope.lookBack.output.changeR=$scope.lookBack.output.ROID/$scope.lookBack.history.ROI*100;
+                        $scope.lookBack.output.ROID = $scope.lookBack.output.run1ProjROI.slice(0, -1) - $scope.lookBack.history.ROI;
+                        $scope.lookBack.output.changeR = $scope.lookBack.output.ROID / $scope.lookBack.history.ROI * 100;
+
 
                         $scope.compareChart.data = [
-                            {title: "SEM", value: $scope.lookBack.output.semSD},
-                            {title: "Display", value: $scope.lookBack.output.disSD},
-                            {title: "Social", value: $scope.lookBack.output.socSD},
-                            {title: "Affiliates", value: $scope.lookBack.output.affSD},
-                            {title: "Partners", value: $scope.lookBack.output.parSD},
-                            {title: "Portfolio Total", value: $scope.lookBack.output.totSD}
+                            {title: "SEM", value: filter('number')($scope.lookBack.output.semSD)},
+                            {title: "SEM-Brand", value: filter('number')($scope.lookBack.output.semBSD)},
+                            {title: "SEM-Card", value: filter('number')($scope.lookBack.output.semCSD)},
+                            {title: "SEM-Photobook", value: filter('number')($scope.lookBack.output.semPSD)},
+                            {title: "SEM-Others", value: filter('number')($scope.lookBack.output.semOSD)},
+                            {title: "Display", value: filter('number')($scope.lookBack.output.disSD)},
+                            {title: "Social", value: filter('number')($scope.lookBack.output.socSD)},
+                            {title: "Affiliates", value: filter('number')($scope.lookBack.output.affSD)},
+                            {title: "Partners", value: filter('number')($scope.lookBack.output.parSD)},
+                            {title: "Portfolio Total", value: filter('number')($scope.lookBack.output.totSD)}
                         ];
-
-
                     });
-
                 }
             });
         }
@@ -354,6 +378,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
             clearInterval(count);
         }
     }
+
     $scope.showme = false;
     $scope.lookbackContentSize = 'col-sm-12';
     $scope.showGraph = 'Show Graph';

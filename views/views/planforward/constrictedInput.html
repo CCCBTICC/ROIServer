@@ -10,9 +10,8 @@
     <div class="waiting" style="height: 400px;" ng-hide="getJson">
         <div class="jumbotron">
             <h2>Tool is calculating the most optimal scenario for you.</h2>
-
             <h2>Result will appear shortly!</h2>
-            <!--<h3>(Average waiting 10min)</h3>-->
+            <!--<h3>(Average waiting time is 10min.)</h3>-->
         </div>
 
     </div>
@@ -23,6 +22,7 @@
             <label>Begin Period</label>: {{planForward.output.StartingTime | date: 'MMM-dd-yyyy'}}
             <label>End Period</label>: {{planForward.output.EndingTime | date: 'MMM-dd-yyyy'}}
             <label>Portfolio Spend </label>: {{planForward.output.Spend | formatCurrency}}
+            <label>Data through</label>: {{planForward.output.dataThrough}}
             <!--{{"                            "}}-->
             <span ng-show="slideError" style="color:red">{{slideErrorValue | formatCurrency}}</span>
         </div>
@@ -65,7 +65,7 @@
                             <div ng-hide="planForward.semTotal">{{planForward.output.semMax | formatCurrency}}</div>
                         </td>
                         <td>{{planForward.output.semUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semBSF}}</td>
+                        <td></td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Brand</td>
@@ -92,7 +92,7 @@
                             </div>
                         </td>
                         <td>{{planForward.output.semBUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semBSF}}</td>
+                        <td><input type="number" ng-model="planForward.output.semBSF" min="0" max="2"  />{{planForward.output.semBSF}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Card</td>
@@ -118,7 +118,7 @@
                             </div>
                         </td>
                         <td>{{planForward.output.semCUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semCSF}}</td>
+                        <td><input type="number" ng-model="planForward.output.semCSF" min=".5" max="1.5" step="0.05" /></td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Photobook</td>
@@ -145,7 +145,7 @@
                             </div>
                         </td>
                         <td>{{planForward.output.semPUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semPSF}}</td>
+                        <td><input type="number" ng-model="planForward.output.semPSF" min=".5" max="1.5" step="0.05" /></td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Others</td>
@@ -172,7 +172,7 @@
                             </div>
                         </td>
                         <td>{{planForward.output.semOUB | formatCurrency}}</td>
-                        <td>{{planForward.output.semOSF}}</td>
+                        <td><input type="number" ng-model="planForward.output.semOSF" min=".5" max="1.5" step="0.05" /></td>
                     </tr>
                     <tr>
                         <td class="td-title">Display</td>
@@ -198,7 +198,7 @@
                             </div>
                         </td>
                         <td>{{planForward.output.disUB | formatCurrency}}</td>
-                        <td>{{planForward.output.disSF}}</td>
+                        <td><input type="number" ng-model="planForward.output.disSF" min=".5" max="1.5" step="0.05" /></td>
                     </tr>
                     <tr>
                         <td class="td-title">Social(FB)</td>
@@ -224,7 +224,7 @@
                             </div>
                         </td>
                         <td>{{planForward.output.socUB | formatCurrency}}</td>
-                        <td>{{planForward.output.socSF}}</td>
+                        <td><input type="number" ng-model="planForward.output.socSF" min=".5" max="1.5" step="0.05" /></td>
                     </tr>
                     <tr>
                         <td class="td-title">Affiliates</td>
@@ -251,7 +251,7 @@
                             </div>
                         </td>
                         <td>{{planForward.output.affUB | formatCurrency}}</td>
-                        <td>{{planForward.output.affSF}}</td>
+                        <td><input type="number" ng-model="planForward.output.affSF" min=".5" max="1.5" step="0.05" /></td>
                     </tr>
                     <tr>
                         <td class="td-title">Partners</td>
@@ -277,7 +277,7 @@
                             </div>
                         </td>
                         <td>{{planForward.output.parUB | formatCurrency}}</td>
-                        <td>{{planForward.output.parSF}}</td>
+                        <td><input type="number" ng-model="planForward.output.parSF" min=".5" max="1.5" step="0.05" /></td>
                     </tr>
                     </tbody>
                 </table>
@@ -306,7 +306,7 @@
                         </td>
                             <td ng-repeat="x in size track by $index" class="col-1"></td>
                     <tr>
-                        <td ng-repeat="spend in planForward.ControlChannelsDM">{{spend | formatCurrency}}</td>
+                        <td ng-repeat="spend in planForward.ControlChannelsDM"><input type="text" ng-model="spend" format-input/></td>
                         <td ng-repeat="x in size track by $index"></td>
                     </tr>
                     </tbody>
@@ -326,13 +326,14 @@
                         <th class="col-0" colspan="2">Impressions</th>
                     </tr>
                     <tr>
-                        <td colspan="2" class="col-0">{{planForward.output.tvBeginDate}}</td>
-                        <td colspan="2" class="col-0">{{planForward.output.tvEndDate}}</td>
+                        <td colspan="2" class="col-0"><input type="text" ng-model="planForward.output.tvBeginDate"/></td>
+                        <td colspan="2" class="col-0"><input type="text" ng-model="planForward.output.tvEndDate"/></td>
+                        <!--<td colspan="2" class="col-0">{{planForward.output.tvEndDate}}</td>-->
                         <td colspan="2" class="col-0">
                             <input type="text" ng-model="planForward.output.tvSpend" format-input>
                         </td>
                         <td colspan="2" class="col-0">
-                            <input type="text" ng-model="planForward.output.tvImpressions" format-input>
+                            <input type="text" ng-model="planForward.output.tvImpressions | number:0" />
                         </td>
                     </tr>
                 </table>
