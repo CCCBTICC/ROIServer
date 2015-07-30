@@ -24,7 +24,6 @@
             <label>End Period</label>: {{scenario.end}}
             <label>Portfolio Spend </label>: {{scenario.spend | formatCurrency}}
             <label>Data through</label>: {{scenario.dataThrough}}
-            <span ng-show="slideError" style="color:red">{{slideErrorValue | formatCurrency}}</span>
         </div>
     </div>
     <div class="row" ng-show="getJson">
@@ -297,6 +296,7 @@
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="ReRun()" ng-class="{disabled:slideError}">Re-run</button>
+                <span ng-show="slideError" style="color:red">{{slideErrorValue}}</span>
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>

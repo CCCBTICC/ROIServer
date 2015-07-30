@@ -15,15 +15,71 @@ function initDB(db) {
                     scenarios: [new ObjectID('55b068284038186f07f83a82')]
                 },
                 {
-                    username: 'user2',
-                    password: 'test',
+                    username: 'Jorie',
+                    password: 'Jorie',
                     scenarios: []
                 },
                 {
-                    username: 'user3',
-                    password: 'test',
+                    username: 'Ed',
+                    password: 'Ed',
+                    scenarios: []
+                },
+                {
+                    username: 'Ben',
+                    password: 'Ben',
+                    scenarios: []
+                },
+                {
+                    username: 'Yun',
+                    password: 'Yun',
+                    scenarios: []
+                },
+                {
+                    username: 'Sean',
+                    password: 'Sean',
+                    scenarios: []
+                },
+                {
+                    username: 'David',
+                    password: 'David',
+                    scenarios: []
+                },
+                {
+                    username: 'Ranny',
+                    password: 'Ranny',
+                    scenarios: []
+                },
+                {
+                    username: 'Meena',
+                    password: 'Meena',
+                    scenarios: []
+                },
+                {
+                    username: 'Mitra',
+                    password: 'Mitra',
+                    scenarios: []
+                },
+                {
+                    username: 'Regina',
+                    password: 'Regina',
+                    scenarios: []
+                },
+                {
+                    username: 'Nadir',
+                    password: 'Nadir',
+                    scenarios: []
+                },
+                {
+                    username: 'Sara',
+                    password: 'Sara',
+                    scenarios: []
+                },
+                {
+                    username: 'Kevin',
+                    password: 'Kevin',
                     scenarios: []
                 }
+
             ],
             {w: 1},
             function () {
@@ -75,11 +131,11 @@ function importCollection(collectionName){
         var exec = require('child_process').exec;
         var last = exec(cmd);
         last.stdout.on('data', function (data) {
-            console.log('outputï¼?' + data);
+            console.log('outputï¿½?' + data);
         });
         last.on('exit', function (code) {
             //code 0 --> success    code >1  --> fail
-            console.log('import action finished. codeï¼?' + code);
+            console.log('import action finished. codeï¿½?' + code);
         return !code;
 
         });

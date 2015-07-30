@@ -291,8 +291,8 @@ forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$loc
 
         $scope.planForward.spend = "5000000";
         // tooltips
-        $scope.brandTooltips = 'Please choose one of the brands from the list.';
-        $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.';
+        $scope.brandTooltips = 'Default is Shutterfly. As other brands are added, they will appear in drop-down list.';
+        $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for forecasted revenue.';
         $scope.beginPeriodTooltips = 'Please choose the begin time.';
         $scope.endPeriodTooltips = 'Please choose the end time.';
         $scope.spendTooltips = 'Portfolio Spend';
@@ -346,7 +346,9 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
 
     var count;
 
-    function doGet() {
+    function doGet()
+
+    {
         if ($scope.getJson === false) {
             manager.getData(function (data) {
                 if (data) {
@@ -541,12 +543,12 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
 
         if (Number($scope.planForward.output.Spend) < min) {
             $scope.slideError = true;
-            $scope.slideErrorValue = Number($scope.planForward.output.Spend) - min;
+            $scope.slideErrorValue = "Your 'min' is over by $"+filter('number')((min-$scope.planForward.output.Spend),0);
             return;
         }
         if (Number($scope.planForward.output.Spend) > max) {
             $scope.slideError = true;
-            $scope.slideErrorValue = Number($scope.planForward.output.Spend) - max;
+            $scope.slideErrorValue = "Your 'max' is lower by $"+filter('number')(($scope.planForward.output.Spend - max),0);
         }
     };
     //post data to R
@@ -686,7 +688,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             console.log(res);
             var count;
             $scope.getJson = false;
-            count = setInterval(doGet, 1000 * 10); //set frequency
+            count = setInterval(doGet, 1000 * 5); //set frequency
             function doGet() {
                 if ($scope.getJson === false) {
                     manager.getData(function (data) {
@@ -857,12 +859,12 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             if (Number($scope.planForward.output.totSR) < sum) {
                 console.log(sum);
                 $scope.slideError = true;
-                $scope.slideErrorValue = $scope.planForward.output.totSR - sum;
+                $scope.slideErrorValue = "Your 'min' is over by $"+ filter('number')((sum-$scope.planForward.output.totSR),0);
                 return;
             }
             if (Number($scope.planForward.output.totSR) > sumMax) {
                 $scope.slideError = true;
-                $scope.slideErrorValue = $scope.planForward.output.totSR - sum;
+                $scope.slideErrorValue = "Your 'max' is lower by $"+ filter('number')(($scope.planForward.output.totSR-sumMax),0);
                 return;
             }
             $scope.slideError = false;
@@ -945,7 +947,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     }
 
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 10); //set frequency
+    count = setInterval(doGet, 1000 * 5); //set frequency
 
     //graph Settings
     $scope.showme = false;

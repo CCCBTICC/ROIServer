@@ -6,8 +6,8 @@ var back = angular.module("ROIClientApp");
 
 back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 'actionObjInfo', function ($scope, manager, user, history, actionObjInfo) {
     // tooltips
-    $scope.brandTooltips = 'Please choose one of the brands from the list.';
-    $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.';
+    $scope.brandTooltips = 'Default is Shutterfly. As other brands are added, they will appear in drop-down list. ';
+    $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for forecasted revenue.';
     $scope.beginPeriodTooltips = 'Please choose the begin time.';
     $scope.endPeriodTooltips = 'Please choose the end time.';
 
@@ -302,7 +302,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
     });
     var count;
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 10); //set frequency
+    count = setInterval(doGet, 1000 * 5); //set frequency
     function doGet() {
         if ($scope.getJson === false) {
             manager.getData(function (data) {

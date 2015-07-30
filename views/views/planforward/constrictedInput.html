@@ -24,7 +24,6 @@
             <label>Portfolio Spend </label>: {{planForward.output.Spend | formatCurrency}}
             <label>Data through</label>: {{planForward.output.dataThrough}}
             <!--{{"                            "}}-->
-            <span ng-show="slideError" style="color:red">{{slideErrorValue | formatCurrency}}</span>
         </div>
     </div>
     <div class="row" ng-show="getJson">
@@ -348,6 +347,7 @@
                 <button class="btn btn-default" ng-class="{disabled:slideError}"
                         ng-click="run()">Next
                 </button>
+                <span ng-show="slideError" style="color:red">{{slideErrorValue}}</span>
             </div>
         </form>
     </div>
