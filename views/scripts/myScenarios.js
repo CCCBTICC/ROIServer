@@ -4,8 +4,8 @@
 var scenariosApp = angular.module("ROIClientApp");
 scenariosApp.factory('scenarioManager', function ($http) {
     var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
+    var initScenario={};
     var scenarios = [];
-    var selectedScenario = {};
     var post = function (data, callback) {
         $http({
             method: 'post',
@@ -45,13 +45,9 @@ scenariosApp.factory('scenarioManager', function ($http) {
         getScenarioById: function (id, cb) {
             $http.get(scenariosUrl + "/" + id).success(cb);
         },
-        setSelectedScenario: function (scenario) {
-            selectedScenario = scenario;
-        },
-        getSelectedScenario: function (cb) {
-            cb(selectedScenario);
-        }
+        initScenario:initScenario
     }
+
 });
 scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, forwardManager, scenarioManager, user) {
     //vars
@@ -133,13 +129,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.export = function () {
         var objectId = getSelectedId($scope.scenarios);
         forwardManager.setName(objectId);
-        var exportIndex = -1;
-        $scope.scenarios.forEach(function (obj, index) {
-            if (obj._id === objectId) {
-                exportIndex = index;
-            }
-        });
-        scenarioManager.setSelectedScenario($scope.scenarios[exportIndex]);
         $location.path("myscenarios/export");
 
     };

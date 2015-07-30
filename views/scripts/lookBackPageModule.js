@@ -113,6 +113,7 @@ back.controller('backInitCtrl', ['$scope', 'forwardManager', 'user', 'history', 
 
     // get data template
     manager.getTempData(function (data) {
+        console.log(data);
         $scope.lookBack.init = data;
     });
     //set tempData
