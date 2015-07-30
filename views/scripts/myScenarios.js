@@ -302,11 +302,33 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager,
 
     //scope functions
     $scope.dataExport = function () {
-        console.log('from dataExport,clicked');
-        var link = document.createElement('a');
-        link.href = $scope.csvContent;
-        link.download = $scope.fileName + '.' + format[$scope.format];
-        link.click();
+        {
+            if(msieversion()){
+                var IEwindow = window.open();
+                IEwindow.document.write('sep=,\r\n' + $scope.csvContent);
+                IEwindow.document.close();
+                IEwindow.document.execCommand('SaveAs', true, $scope.fileName + '.' + format[$scope.format]);
+                IEwindow.close();
+            } else {
+                var link = document.createElement('a');
+                link.href = $scope.csvContent;
+                link.download = $scope.fileName + '.' + format[$scope.format];
+                link.click();
+            }
+
+            function msieversion() {
+                var ua = window.navigator.userAgent;
+                var msie = ua.indexOf("MSIE ");
+                return (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./)); // If Internet Explorer, return version number
+
+            }
+        }
+
+
+
+
+
+
     };
 
     //main
