@@ -544,7 +544,7 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, forwardManager, s
         }
     });
 });
-scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, forwardManager, $location) {
+scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, forwardManager, $location,scenarioManager) {
     if (!actionObjInfo[1]) {
         $location.path('myscenarios');
     }
@@ -573,12 +573,19 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
     $scope.compareChart.config = {
         width: 800,
         height: 313,
-        margin: {left: 100, top: 0, right: 100, bottom: 30}
+        margin: {left: 130, top: 30, right: 100, bottom: 30}
     };
     //scope functions
 
     //main
-    $scope.compareChart.actionObjInfo = actionObjInfo;
+    $scope.compareChart.actionObjInfo = [];
+    scenarioManager.getScenarioById(actionObjInfo[0],function(scenario){
+        $scope.compareChart.actionObjInfo[0]=scenario;
+        scenarioManager.getScenarioById(actionObjInfo[1],function(scenario2){
+            $scope.compareChart.actionObjInfo[1]=scenario2;
+        })
+    });
+
     //forwardManager.getData(function (data) {
     //    $scope.compareObj.first = data;
     //

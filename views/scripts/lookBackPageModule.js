@@ -242,30 +242,31 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
             semOSD: 1000,
             disSD: 10,
             socSD: 10,
-            affSD:10,
+            affSD: 10,
             parSD: 10,
             totSD: 10
         }
     };
 
     $scope.lookBack.history = {};
-    $scope.compareChart = {};
-    $scope.compareChart.data = [
-        {title: "SEM", value: filter('number')($scope.lookBack.output.semSD, 0)},
-        {title: "SEM-Brand", value: filter('number')($scope.lookBack.output.semBSD, 0)},
-        {title: "SEM-Card", value: filter('number')($scope.lookBack.output.semCSD, 0)},
-        {title: "SEM-Photobook", value: filter('number')($scope.lookBack.output.semPSD, 0)},
-        {title: "SEM-Others", value: filter('number')($scope.lookBack.output.semOSD, 0)},
-        {title: "Display", value: filter('number')($scope.lookBack.output.disSD, 0)},
-        {title: "Social", value: filter('number')($scope.lookBack.output.socSD, 0)},
-        {title: "Affiliates", value: filter('number')($scope.lookBack.output.affSD, 0)},
-        {title: "Partners", value: filter('number')($scope.lookBack.output.parSD, 0)},
-        {title: "Portfolio Total", value: filter('number')($scope.lookBack.output.totSD, 0)}
-    ];
-    $scope.compareChart.config = {
-        width: 800,
-        height: 313,
-        margin: {left: 100, top: 0, right: 100, bottom: 30}
+    $scope.compareChart = {
+        data: [
+            {title: "SEM", value: filter('number')($scope.lookBack.output.semSD, 0)},
+            {title: "SEM-Brand", value: filter('number')($scope.lookBack.output.semBSD, 0)},
+            {title: "SEM-Cards", value: filter('number')($scope.lookBack.output.semCSD, 0)},
+            {title: "SEM-Photobook", value: filter('number')($scope.lookBack.output.semPSD, 0)},
+            {title: "SEM-Others", value: filter('number')($scope.lookBack.output.semOSD, 0)},
+            {title: "Display", value: filter('number')($scope.lookBack.output.disSD, 0)},
+            {title: "Social", value: filter('number')($scope.lookBack.output.socSD, 0)},
+            {title: "Affiliates", value: filter('number')($scope.lookBack.output.affSD, 0)},
+            {title: "Partners", value: filter('number')($scope.lookBack.output.parSD, 0)},
+            {title: "Portfolio Total", value: filter('number')($scope.lookBack.output.totSD, 0)}
+        ],
+        config: {
+            width: 800,
+            barHeight: 28,
+            margin: {left: 130, top: 30, right: 100, bottom: 30}
+        }
     };
 
     $scope.edit = function () {
@@ -294,7 +295,7 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
     });
     var count;
     $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 10); //set frequency
+    count = setInterval(doGet, 1000 * 0.3); //set frequency
     function doGet() {
         if ($scope.getJson === false) {
             manager.getData(function (data) {
@@ -359,17 +360,18 @@ back.controller('backOutputCtrl', ['$scope', 'forwardManager', '$location', 'his
 
 
                         $scope.compareChart.data = [
-                            {title: "SEM", value: filter('number')($scope.lookBack.output.semSD)},
-                            {title: "SEM-Brand", value: filter('number')($scope.lookBack.output.semBSD)},
-                            {title: "SEM-Card", value: filter('number')($scope.lookBack.output.semCSD)},
-                            {title: "SEM-Photobook", value: filter('number')($scope.lookBack.output.semPSD)},
-                            {title: "SEM-Others", value: filter('number')($scope.lookBack.output.semOSD)},
-                            {title: "Display", value: filter('number')($scope.lookBack.output.disSD)},
-                            {title: "Social", value: filter('number')($scope.lookBack.output.socSD)},
-                            {title: "Affiliates", value: filter('number')($scope.lookBack.output.affSD)},
-                            {title: "Partners", value: filter('number')($scope.lookBack.output.parSD)},
-                            {title: "Portfolio Total", value: filter('number')($scope.lookBack.output.totSD)}
+                            {title: "SEM", value: $scope.lookBack.output.semSD},
+                            {title: "SEM-Brand", value: $scope.lookBack.output.semBSD},
+                            {title: "SEM-Card", value: $scope.lookBack.output.semCSD},
+                            {title: "SEM-Photobook", value: $scope.lookBack.output.semPSD},
+                            {title: "SEM-Others", value: $scope.lookBack.output.semOSD},
+                            {title: "Display", value: $scope.lookBack.output.disSD},
+                            {title: "Social", value: $scope.lookBack.output.socSD},
+                            {title: "Affiliates", value: $scope.lookBack.output.affSD},
+                            {title: "Partners", value: $scope.lookBack.output.parSD},
+                            {title: "Portfolio Total", value: $scope.lookBack.output.totSD}
                         ];
+
                     });
                 }
             });
