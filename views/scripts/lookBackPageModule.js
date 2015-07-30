@@ -200,10 +200,19 @@ back.controller('backAddCtrl', ['$scope', 'forwardManager', '$location', 'histor
     };
     $scope.run = function () {
         //run1
+        var beginDate=new Date($scope.begin);
+        var endDate=new Date($scope.end);
         //// first step input init
+        var length = endDate.getMonth() - beginDate.getMonth() + 1;
+        if (length <= 0) {
+            length += 12;
+        }
+        console.log(length);
+        $scope.lookBack.output.PlanMonths=length;
         $scope.lookBack.output.StartingTime = $scope.begin;
         $scope.lookBack.output.EndingTime = $scope.end;
         $scope.lookBack.output.Algorithm = 1;
+        console.log($scope.lookBack.output);
         manager.postData($scope.lookBack.output, function (res) {
             console.log('from run1 in run back/add');
             console.log(res);
