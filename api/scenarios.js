@@ -5,7 +5,16 @@ var express = require('express');
 var router = express.Router();
 var fs = require('fs');
 var assert = require('assert');
+var Rmodule = require('./modules/Rmodule');
 var ObjectId = require('mongodb').ObjectID;
+
+router.post('/status',function(req, res){
+    var list = req.body;
+    list.forEach(function(single, index){
+        single.scenario = Rmodule.getRoutput(single.id);
+    });
+    res.send(list);
+});
 
 //  the list json data
 router.get('/:objectId', function (req, res) {
