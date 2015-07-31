@@ -18,24 +18,15 @@
             <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                 <thead>
                 <tr>
-                    <th class="col-0" rowspan="2"><div></div></th>
-                    <th class="col-2" rowspan="2">ID </th>
-                    <th class="col-2" rowspan="2">Name</th>
-                    <th class="col-3" rowspan="2">Note</th>
-                    <th class="col-1" rowspan="2">Owner</th>
-                    <th class="col-1" rowspan="2">Final?</th>
-                    <th class="col-1" rowspan="2">Create Date</th>
-                    <th class="col-1" rowspan="2">Brand</th>
-                    <th class="col-1" rowspan="2">Planned Spend</th>
-                    <th class="col-2" colspan="2">Planning Period</th>
-                    <th class="col-1" rowspan="2">Attribution Method</th>
-                    <th class="col-1" rowspan="2">Data Through</th>
-                    <th class="col-1" rowspan="2">History included?</th>
-                    <th class="col-1" rowspan="2">Shared?</th>
-                </tr>
-                <tr>
-                    <th class="col-1">Start Date</th>
-                    <th class="col-1">End Date</th>
+                    <th class="col-0" rowspan="1"><div></div></th>
+                    <th class="col-3" rowspan="1">ID </th>
+                    <th class="col-2" rowspan="1">Name</th>
+                    <th class="col-1" rowspan="1">Owner</th>
+                    <th class="col-2" rowspan="1">Create Date</th>
+                    <th class="col-2" rowspan="1">Planned Spend</th>
+                    <th class="col-2" rowspan="1">Data Through</th>
+                    <th class="col-1" rowspan="1">History Included?</th>
+                    <th class="col-3" rowspan="1">Note</th>
                 </tr>
                 </thead>
                 <tbody class="row-2">
@@ -43,20 +34,14 @@
                     <td class="check non-number col-0">
                         <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
                     </td>
-                    <td class="non-number col-2">{{scenario.scenarioId}}</td>
+                    <td class="scenario-id col-3">{{scenario.scenarioId}}</td>
                     <td class="non-number col-2">{{scenario.name}}</td>
-                    <td class="non-number col-3">{{scenario.note}}</td>
                     <td class="non-number col-1">{{scenario.owner}}</td>
-                    <td class="non-number col-1">{{scenario.final}}</td>
-                    <td class="non-number col-1">{{scenario.createDate | date: 'yyyy-MM-dd'}}</td>
-                    <td class="non-number col-1">{{scenario.brand}}</td>
-                    <td class="non-number col-1">{{scenario.spend | formatCurrency}}</td>
-                    <td class="non-number col-1">{{scenario.begin | date: 'yyyy-MM'}}</td>
-                    <td class="non-number col-1">{{scenario.end | date: 'yyyy-MM'}}</td>
-                    <td class="non-number col-1">{{scenario.lmTouch}}</td>
-                    <td class="non-number col-1">{{scenario.dataThrough | date: 'yyyy-MM'}}</td>
-                    <td class="non-number col-1">{{scenario.included}}</td>
-                    <td class="non-number col-1">{{scenario.share}}</td>
+                    <td class="non-number col-2">{{scenario.createDate | date: 'yyyy-MM-dd'}}</td>
+                    <td class="non-number col-2">{{scenario.spend | formatCurrency}}</td>
+                    <td class="non-number col-2">{{scenario.dataThrough | date: 'yyyy-MM'}}</td>
+                    <td class="yes-no col-1">{{scenario.included}}</td>
+                    <td class="non-number col-3">{{scenario.note}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -66,15 +51,43 @@
     <!--button bar-->
     <div class="row">
         <div class="controls">
-            <span class="btn btn-orange" ng-class="{'disabled':operations.compare.disable}"
-                  ng-click="compare()">compare</span>
-            <span class="btn btn-orange" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</span>
+            <div class="col-sm-12">
+                <div class="col-sm-3">
+            <button class="btn btn-default" ng-class="{'disabled':operations.compare.disable}"
+                  ng-click="compare()">compare</button>
+                </div>
+                <div class="col-sm-3">
+            <div class="btn-group" dropdown>
+                <button class="btn btn-default" ng-class="{'disabled':operations.retrieve.disable}"
+                      ng-click="retrive()">retrieve</button>
+                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+                    <span class="caret"></span>
+                    <span class="sr-only">Split button!</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a class="btn btn-default" ng-class="{'disabled':operations.edit.disable}" ng-click="edit()">edit</a></li>
+                    <li><a class="btn btn-default" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</a></li>
+                </ul>
+            </div>
+                </div>
+                <div class="col-sm-3">
+            <div class="btn-group" dropdown>
+                <button class="btn btn-default" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</button>
+                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+                    <span class="caret"></span>
+                    <span class="sr-only">Split button!</span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a class="btn btn-default" ng-class="{'disabled':operations.share.disable}" ng-click="share()">share</a></li>
+                </ul>
+            </div>
+            </div>
+            </div>
             <!-- todo: href="#myscenarios/export" deleted from tag a, move it to function. -->
-            <span class="btn btn-orange" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</span>
-            <span class="btn btn-orange" ng-class="{'disabled':operations.retrieve.disable}"
-                  ng-click="retrive()">retrieve</span>
-            <span class="btn btn-orange" ng-class="{'disabled':operations.share.disable}" ng-click="share()">share</span>
-            <span class="btn btn-orange" ng-class="{'disabled':operations.edit.disable}" ng-click="edit()">edit</span>
+
+
+
+
         </div>
     </div>
 </div>

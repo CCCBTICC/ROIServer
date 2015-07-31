@@ -95,7 +95,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     };
     $scope.selectRow = function (obj) {
         obj.isActive = !obj.isActive;
-
         if (obj.isActive) {
             actionObjInfo.push(obj._id);
         } else {

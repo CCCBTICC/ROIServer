@@ -65,6 +65,10 @@ footer {
     border-bottom: #F05323 solid 1px;
     border-top: #F05323 solid 3px;
 }
+.btn-default{
+    text-transform: capitalize;
+}
+
 
 /*  Input type='range'  */
 /*  General  */
@@ -158,6 +162,9 @@ input[type=text]:disabled{
     background: #fff;
 }
 
+input[type=checkbox]{
+    margin-left: 0px;
+}
 /*  a  */
 /*  General  */
 a, a:visited, a:focus, a:active, a:hover{
@@ -421,8 +428,9 @@ a, a:visited, a:focus, a:active, a:hover{
 
 /*  Tables setting  */
 .table-responsive {
-    max-height: calc(100vh - 205px);
+     max-height: calc(100vh - 205px);
     position: relative;
+    width:100.9%;
 }
 
 table.roi-table {
@@ -438,8 +446,7 @@ table.thead-fixed-top {
 }
 
 table.thead-fixed-top > thead {
-    background-color: #F05323;
-    color: #FFF;
+    background-color: #fafafa;
     display: block;
 }
 
@@ -467,50 +474,50 @@ table.roi-table tr:first-child > th:first-child {
 }
 
 table.roi-table tr > .col-0 {
-    min-width: 50px;
-    max-width: 50px;
+    min-width: 40px;
+    max-width: 40px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-1 {
-    min-width: 100px;
-    max-width: 160px;
+    min-width: 80px;
+    max-width: 80px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-2 {
-    min-width: 200px;
-    max-width: 320px;
+    min-width: 120px;
+    max-width: 120px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-3 {
-    min-width: 300px;
-    max-width: 480px;
+    min-width: 200px;
+    max-width: 200px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-4 {
-    min-width: 400px;
-    max-width: 640px;
+    min-width: 480px;
+    max-width: 480px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-5 {
-    min-width: 500px;
-    max-width: 800px;
+    min-width: 600px;
+    max-width: 600px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-6 {
-    min-width: 600px;
-    max-width: 960px;
+    min-width: 720px;
+    max-width: 720px;
     overflow: hidden;
 }
 
 table.roi-table tr > td {
     vertical-align: middle;
-    padding: 5px 15px 5px 0;
+    padding: 0;
     text-overflow: ellipsis;
 }
 
@@ -556,10 +563,16 @@ table.roi-table tr.active-row > td {
 }
 
 table.roi-table tr > td.non-number {
-    padding-left: 15px;
+    padding-left: 20px;
     text-align: left;
 }
-
+table.roi-table tr > td.scenario-id {
+    padding-left: 2px;
+    text-align: left;
+}
+table.roi-table tr > td.yes-no {
+    text-align: center;
+}
 table.roi-table tr > td input {
     text-align: right;
 }
