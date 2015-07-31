@@ -13,6 +13,7 @@ router.post('/status',function(req, res){
     list.forEach(function(single, index){
         single.scenario = Rmodule.getRoutput(single.id);
     });
+
     res.send(list);
 });
 

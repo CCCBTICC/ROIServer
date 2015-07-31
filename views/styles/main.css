@@ -6,6 +6,8 @@
  *****      0.1 - body header footer         *****
  *****      0.2 - customer button setting    *****
  *****      0.3 - customer range input       *****
+ *****      0.4 - customer text input        *****
+ *****      0.5 - a                          *****
  *****  1 - Login Page                       *****
  *****  2 - Shell Page                       *****
  *****      2.1 - Navigation bar             *****
@@ -145,6 +147,21 @@ input[type=range]::-ms-thumb {
     width: 15px;
     border-radius: 50%;
     background: #fff;
+}
+
+/*  Input type='text'  */
+/*  General  */
+input[type=text]:enabled{
+
+}
+input[type=text]:disabled{
+    background: #fff;
+}
+
+/*  a  */
+/*  General  */
+a, a:visited, a:focus, a:active, a:hover{
+    outline:0 none !important;
 }
 
 /*************************************************
