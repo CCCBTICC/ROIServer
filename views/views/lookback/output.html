@@ -59,8 +59,8 @@
                         <td>{{lookBack.output.semSR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semTUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.semPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.semSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.semRD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.semSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.semRD | formatCurrency}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Brand</td>
@@ -75,7 +75,7 @@
                         <td>{{lookBack.output.semBSR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semBPR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
-                        <td>{{lookBack.output.semBSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.semBSD | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semBRD | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                     </tr>
@@ -92,7 +92,7 @@
                         <td>{{lookBack.output.semCSR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semCPR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
-                        <td>{{lookBack.output.semCSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.semCSD | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semCRD | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                     </tr>
@@ -109,7 +109,7 @@
                         <td>{{lookBack.output.semPSR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semPPR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
-                        <td>{{lookBack.output.semPSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.semPSD | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semPRD | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                     </tr>
@@ -127,7 +127,7 @@
                         <td>{{lookBack.output.semOSR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semOPR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
-                        <td>{{lookBack.output.semOSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.semOSD | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.semORD | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                     </tr>
@@ -143,8 +143,8 @@
 
                         <td>{{lookBack.output.disSR | formatCurrency}}</td>
                         <td>{{lookBack.output.disPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.disSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.disRD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.disSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.disRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Social(FB)</td>
@@ -157,8 +157,8 @@
                         <!--<td>{{lookBack.output.socUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.socSR | formatCurrency}}</td>
                         <td>{{lookBack.output.socPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.socSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.socRD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.socSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.socRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Affiliates</td>
@@ -171,8 +171,8 @@
                         <!--<td>{{lookBack.output.affUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.affSR | formatCurrency}}</td>
                         <td>{{lookBack.output.affPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.affSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.affRD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.affSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.affRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Partners</td>
@@ -185,8 +185,8 @@
                         <!--<td>{{lookBack.output.parUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.parSR | formatCurrency}}</td>
                         <td>{{lookBack.output.parPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.parSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.parRD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.parSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.parRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio Total</td>
@@ -197,14 +197,14 @@
                         <!--<td>{{lookBack.output.totUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.totSR | formatCurrency}}</td>
                         <td>{{lookBack.output.totPR | formatCurrency}}</td>
-                        <td>{{lookBack.output.totSD | formatCurrency}}</td>
-                        <td>{{lookBack.output.totRD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.totSD | formatCurrency}}</td>
+                        <td>{{lookBack.difference.totRD | formatCurrency}}</td>
                     </tr>
                     <tr>
                         <td class="td-title">Portfolio ROI</td>
                         <td colspan="2">{{lookBack.history.ROI | number:0}}%</td>
                         <td colspan="2">{{lookBack.output.run1ProjROI}}</td>
-                        <td colspan="2">{{lookBack.output.ROID | number:0}}%</td>
+                        <td colspan="2">{{lookBack.difference.ROID | number:0}}%</td>
                     </tr>
                     <tr>
                         <td colspan="7"></td>
@@ -212,7 +212,7 @@
                     <tr>
                         <td class="td-title">Change in Brand Total Revenue</td>
                         <td colspan="4"></td>
-                        <td colspan="2">{{lookBack.output.changeR | number:0}}%</td>
+                        <td colspan="2">{{lookBack.difference.changeR | number:0}}%</td>
                     </tr>
                     </tbody>
                 </table>

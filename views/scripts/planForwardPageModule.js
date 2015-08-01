@@ -4,7 +4,7 @@
  */
 'use strict';
 var forward = angular.module("forwardModule", []);
-forward.factory('forwardManager', function ($http) {
+forward.factory('analysis', function ($http) {
     var tempData = {
         "UserName": "",
         "Brand": "",
@@ -17,16 +17,15 @@ forward.factory('forwardManager', function ($http) {
         "AlgStartingTime": "",
         "AlgEndingTime": "",
         "AlgDuration": "",
-        "semLB": "",
         "semCLB": "",
         "semPLB": "",
         "semOLB": "",
         "semBLB": "",
+        "SpendLB":"",
         "disLB": "",
         "socLB": "",
         "affLB": "",
         "parLB": "",
-        "semMin": "",
         "semCMin": "",
         "semPMin": "",
         "semOMin": "",
@@ -35,7 +34,6 @@ forward.factory('forwardManager', function ($http) {
         "socMin": "",
         "affMin": "",
         "parMin": "",
-        "semMax": "",
         "semCMax": "",
         "semPMax": "",
         "semOMax": "",
@@ -44,7 +42,6 @@ forward.factory('forwardManager', function ($http) {
         "socMax": "",
         "affMax": "",
         "parMax": "",
-        "semUB": "",
         "semCUB": "",
         "semPUB": "",
         "semOUB": "",
@@ -53,7 +50,7 @@ forward.factory('forwardManager', function ($http) {
         "socUB": "",
         "affUB": "",
         "parUB": "",
-        "semSF": "",
+        "SpendUB":"",
         "semCSF": "",
         "semPSF": "",
         "semOSF": "",
@@ -92,7 +89,6 @@ forward.factory('forwardManager', function ($http) {
         "run1RevRange": "",
         "run1ProjROI": "",
         "run1ROIRange": "",
-        "semSlideLeft": "",
         "semCSlideLeft": "",
         "semPSlideLeft": "",
         "semOSlideLeft": "",
@@ -101,7 +97,6 @@ forward.factory('forwardManager', function ($http) {
         "socSlideLeft": "",
         "affSlideLeft": "",
         "parSlideLeft": "",
-        "semSlide": "",
         "semCSlide": "",
         "semPSlide": "",
         "semOSlide": "",
@@ -110,7 +105,6 @@ forward.factory('forwardManager', function ($http) {
         "socSlide": "",
         "affSlide": "",
         "parSlide": "",
-        "semSlideRight": "",
         "semCSlideRight": "",
         "semPSlideRight": "",
         "semOSlideRight": "",
@@ -119,7 +113,6 @@ forward.factory('forwardManager', function ($http) {
         "socSlideRight": "",
         "affSlideRight": "",
         "parSlideRight": "",
-        "semSlideDivMin": "",
         "semCSlideDivMin": "",
         "semPSlideDivMin": "",
         "semOSlideDivMin": "",
@@ -128,7 +121,6 @@ forward.factory('forwardManager', function ($http) {
         "socSlideDivMin": "",
         "affSlideDivMin": "",
         "parSlideDivMin": "",
-        "semSlideDivMax": "",
         "semCSlideDivMax": "",
         "semPSlideDivMax": "",
         "semOSlideDivMax": "",
@@ -148,10 +140,6 @@ forward.factory('forwardManager', function ($http) {
         "parAS": "",
         "totAS": "",
         "semAR": "",
-        "semCAR": "",
-        "semPAR": "",
-        "semOAR": "",
-        "semBAR": "",
         "disAR": "",
         "socAR": "",
         "affAR": "",
@@ -159,180 +147,172 @@ forward.factory('forwardManager', function ($http) {
         "totAR": "",
         "run2ProjROI": ""
     };
-    var objID = "";
-    var url = "http://" + window.location.hostname + ":3001/analysis/";
-    var get = function (cb, id) {
+    var objIds = {current:''};
+    //var url = "http://" + window.location.hostname + ":3001/analysis/";
+    var url = "http://54.166.49.92:3001/analysis/";
+    var get = function (id, cb) {
         $http({
             method: 'get',
             url: url + id
         }).success(function (data) {
             cb(data);
-
         });
     };
     var post = function (data, cb) {
         $http({
             method: 'post',
             url: url + 'planforward',
-            data: {data: data, username: data.UserName}
+            data: data
         }).success(function (id) {
-            objID = id;
-            cb(objID);
+            objIds.current = id;
+            objIds[id]=id;
+            cb(objIds.current);
         });
     };
-
     return {
-        getTempData: function (cb) {
-            cb(tempData);
-        },
-        setTempData: function (data) {
-            tempData = data;
-        },
+        tempData:tempData,
+        objIds:objIds,
         getData: function (cb, id) {
             if (!id) {
-                get(cb, objID);
+                get(objIds.current,cb);
             }
             else {
-                get(cb, id);
+                get(id, cb);
             }
         },
-        postData: post,
-        getName: function (cb) {
-            cb(objID);
-        },
-        setName: function (id) {
-            objID = id;
+        postData: function(data,info,cb){
+            var body={data: data, username: data.UserName,info:info};
+            post(body,cb);
         }
     }
 });
 
-forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter', 'history', 'actionObjInfo', function ($scope, manager, user, location, filter, history, actionObjInfo) {
+forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location', '$filter', 'history', 'actionObjInfo', function ($scope, manager, user, location, filter, history, actionObjInfo) {
+    //scope vars
+    $scope.tooltips = {
+        brand: "Please choose one of the brands from the list.",
+        attr: "Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.",
+        beginPeriod: "Please choose the begin time.",
+        endPeriod: "Please choose the end time.",
+        spend: "Portfolio Spend",
+        included: "Do you need to include the data through the end time?"
+    };
+    $scope.calender = {
+        minDate: null,
+        maxDate: null,
+        eMaxDate: null,
+        opened: {beginPeriod: false, endPeriod: false},
+        format: 'MMMM-dd-yyyy',
+        dateOptions: {
+            formatYear: 'yyyy',
+            startingDay: 1,
+            minMode: 'month'
+        },
+        initDate: function () {
+            history.getHistoryDate(function (res) {
+                console.log(res);
+                if (res[0]) {
+                    var d = new Date(res[1]);
+                    $scope.calender.minDate = new Date(d.getFullYear(), d.getMonth() + 2, 1);
+                    $scope.calender.maxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 6, 0);
+                    var date = $scope.calender.minDate;
+                    $scope.dataInfo.beginDate =  new Date(date.getFullYear(), date.getMonth(), 1);
+                    $scope.dataInfo.endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                    $scope.calender.modifyDate();
+                } else {
+                    alert("HistoryDate is not exist")
+                }
+            });
+        },
+        open: function (event, model) {
+            event.preventDefault();
+            event.stopPropagation();
 
-    // Calendar settings
-    ////scope vars for calender settings
-    $scope.opened = {};
-    $scope.format = 'MMMM-dd-yyyy';
-    $scope.dateOptions = {
-        formatYear: 'yyyy',
-        startingDay: 1,
-        minMode: 'month'
+            if (model === 'lookBackBeginPeriod') {
+                $scope.calender.opened.beginPeriod = !$scope.calender.opened.beginPeriod;
+                $scope.calender.opened.endPeriod = false;
+            } else {
+                $scope.calender.opened.endPeriod = !$scope.calender.opened.endPeriod;
+                $scope.calender.opened.beginPeriod = false;
+            }
+        },
+        modifyDate: function () {
+            var d;
+            if (!$scope.dataInfo.beginDate || $scope.dataInfo.beginDate < $scope.calender.minDate||$scope.dataInfo.beginDate > $scope.calender.maxDate) {
+                $scope.dataInfo.beginDate = $scope.calender.minDate;
+            }
+            d = new Date($scope.dataInfo.beginDate);
+            $scope.dataInfo.beginDate = new Date(d.getFullYear(), d.getMonth(), 1);
+            if (new Date(d.getFullYear(), d.getMonth() + 6, 0) < new Date($scope.calender.minDate.getFullYear(), $scope.calender.minDate.getMonth() + 8, 0)) {
+                $scope.calender.eMaxDate = new Date(d.getFullYear(), d.getMonth() + 6, 0)
+            } else {
+                $scope.calender.eMaxDate = new Date($scope.calender.minDate.getFullYear(), $scope.calender.minDate.getMonth() + 8, 0);
+            }
+            if (!$scope.dataInfo.endDate || $scope.dataInfo.endDate < $scope.dataInfo.beginDate) {
+                $scope.dataInfo.endDate = $scope.dataInfo.beginDate;
+            }
+            if ($scope.calender.eMaxDate < $scope.dataInfo.endDate) {
+                $scope.dataInfo.endDate = $scope.eMaxDate;
+            }
+            d = new Date($scope.dataInfo.endDate);
+            $scope.dataInfo.endDate = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+        }
     };
-    $scope.initDate = function () {
-        var date = $scope.minDate;
-        $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
-        $scope.planForward.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0);
+    $scope.dataInfo={};
 
-    };
-    $scope.open = function ($event, model) {
-        $event.preventDefault();
-        $event.stopPropagation();
-        if (model === 'planForwardBeginPeriod') {
-            $scope.opened.planForwardBeginPeriod = !$scope.opened.planForwardBeginPeriod;
-            $scope.opened.planForwardEndPeriod = false;
-        } else {
-            $scope.opened.planForwardEndPeriod = !$scope.opened.planForwardEndPeriod;
-            $scope.opened.planForwardBeginPeriod = false;
-        }
-    };
-    $scope.getLastDate = function () {
-        if (!$scope.planForward.endPeriod) {
-            $scope.planForward.endPeriod = $scope.planForward.beginPeriod;
-        }
-        var d = new Date($scope.planForward.endPeriod);
-        $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-        $scope.modifyEndDate();
-    };
-    $scope.modifyEndDate = function () {
-        if (!$scope.planForward.beginPeriod) {
-            $scope.planForward.beginPeriod = $scope.minDate;
-        }
-        var d = new Date($scope.planForward.beginPeriod);
-        if (d > $scope.maxDate) {
-            d = $scope.maxDate
-        }
-        $scope.planForward.beginPeriod = new Date(d.getFullYear(), d.getMonth(), 1);
-        if (new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0) < new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 8, 0)) {
-            $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0);
-        } else {
-            $scope.eMaxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 8, 0)
-        }
-        if ($scope.eMaxDate < $scope.planForward.endPeriod) {
-            $scope.planForward.endPeriod = $scope.eMaxDate;
-        }
-        if ($scope.planForward.beginPeriod > $scope.planForward.endPeriod) {
-            d = new Date($scope.planForward.beginPeriod);
-            $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-        }
-    };
-    // calender settings END
+    $scope.planForward={init:{}};
+
 
     //scope functions
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
         window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
     };
-    $scope.initForm = function () {
-        $scope.planForward = {};
-        $scope.planForward.init = {};
-        $scope.brands = ['Shutterfly'];
-        $scope.planForward.brand = $scope.brands[0];
-        $scope.planForward.attribution = 'LTA';
-        history.getHistoryDate(function (res) {
-            console.log("from planforward");
-            $scope.historydate = res;
-            var d = new Date($scope.historydate[1]);
-            $scope.minDate = new Date(d.getFullYear(), d.getMonth() + 2, 1);
-            $scope.maxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 6, 0);
-            console.log($scope.minDate);
-            $scope.initDate();
+    $scope.nextPage = function () {
+        passInfoToData();
+        //post input info to R
+        manager.postData($scope.planForward.init,$scope.dataInfo, function (res) {
+            console.log(res);
+            location.path('planforward/constrict');
         });
-
-        $scope.planForward.spend = "5000000";
-        // tooltips
-        $scope.brandTooltips = 'Please choose one of the brands from the list.';
-        $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.';
-        $scope.beginPeriodTooltips = 'Please choose the begin time.';
-        $scope.endPeriodTooltips = 'Please choose the end time.';
-        $scope.spendTooltips = 'Portfolio Spend';
     };
-    $scope.Next = function () {
-        var length = $scope.planForward.endPeriod.getMonth() - $scope.planForward.beginPeriod.getMonth() + 1;
+    //functions
+    function passInfoToData(){
+        var length = $scope.dataInfo.endDate.getMonth() - $scope.dataInfo.beginDate.getMonth() + 1;
         if (length <= 0) {
             length += 12;
         }
         // first step input init
         $scope.planForward.init.UserName = $scope.user.name;
-        $scope.planForward.init.Brand = $scope.planForward.brand;
-        $scope.planForward.init.lmTouch = $scope.planForward.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
-        $scope.planForward.init.StartingTime = filter('date')($scope.planForward.beginPeriod, 'yyyy-MM');
-        $scope.planForward.init.EndingTime = filter('date')($scope.planForward.endPeriod, 'yyyy-MM');
-        $scope.planForward.init.Spend = $scope.planForward.spend;
+        $scope.planForward.init.Brand = $scope.dataInfo.brand;
+        $scope.planForward.init.lmTouch = $scope.dataInfo.lmTouch === 'LTA' ? 'Last Touch' : 'Multi-Touch';
+        $scope.planForward.init.StartingTime = filter('date')($scope.dataInfo.beginDate, 'yyyy-MM');
+        $scope.planForward.init.EndingTime = filter('date')($scope.dataInfo.endDate, 'yyyy-MM');
+        $scope.planForward.init.Spend = $scope.dataInfo.spend;
         $scope.planForward.init.PlanMonths = length;
         $scope.planForward.init.Algorithm = 1;
-        //post input info to R
-        manager.postData($scope.planForward.init, function (res) {
-            console.log('from next() in forward/init');
-            console.log(res);
-            location.path('planforward/constrict');
+    }
 
-        });
-    };
     // main
     user.getUser(function (user) {
+        $scope.user = user;
         if (!user.name) {
             $scope.logout()
         }
-        $scope.user = user;
     });
-    $scope.initForm();
+    //init actionObjInfo
     while (actionObjInfo[0]) {
         actionObjInfo.shift();
     }
-    manager.getTempData(function (data) {
-        console.log(data);
-        $scope.planForward.init = data;
+    //init analysis.tempData
+    Object.keys(analysis.tempData).forEach(function (key) {
+        analysis.tempData[key] = "";
     });
+    // get data template and dataInfo
+    $scope.planForward.init = analysis.tempData;
+    $scope.dataInfo = scenarios.dataInfo;
+    //init calender
+    $scope.calender.initDate();
 
 }]);
 //forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter', 'history', 'actionObjInfo', function ($scope, manager, user, location, filter, history, actionObjInfo) {

@@ -2,9 +2,21 @@
  * Created by ypling on 5/11/15.
  */
 var scenariosApp = angular.module("ROIClientApp");
-scenariosApp.factory('scenarioManager', function ($http) {
-    var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
-    var initScenario={};
+scenariosApp.factory('scenarios', function ($http) {
+    var scenariosUrl = "http://54.166.49.92:3001/scenarios";
+    //var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
+    var dataInfo={
+        scenarioId:"",
+        brands:['Shutterfly'],
+        brand: 'Shutterfly',
+        lmTouch: 'MTA',
+        beginDate: null,
+        endDate: null,
+        spend: null,
+        included: 'Yes',
+        dataThrough: null,
+        from:""
+    };
     var scenarios = [];
     var post = function (data, callback) {
         $http({
@@ -45,11 +57,11 @@ scenariosApp.factory('scenarioManager', function ($http) {
         getScenarioById: function (id, cb) {
             $http.get(scenariosUrl + "/" + id).success(cb);
         },
-        initScenario:initScenario
+        dataInfo:dataInfo
     }
 
 });
-scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, forwardManager, scenarioManager, user) {
+scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, analysis, scenarios, user) {
     //vars
 
     //functions
@@ -127,17 +139,15 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         }
     };
     $scope.export = function () {
-        var objectId = getSelectedId($scope.scenarios);
-        forwardManager.setName(objectId);
+        analysis.objIds.current = getSelectedId($scope.scenarios);
         $location.path("myscenarios/export");
 
     };
     $scope.retrive = function () {
-        var objectId = getSelectedId($scope.scenarios);
-        forwardManager.setName(objectId);
+        analysis.objIds.current= getSelectedId($scope.scenarios);
         var retriveIndex = -1;
         $scope.scenarios.forEach(function (obj, index) {
-            if (obj._id === objectId) {
+            if (obj._id === analysis.objIds.current) {
                 retriveIndex = index;
             }
         });
@@ -148,12 +158,12 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             $location.path('lookback/output')
         }
     };
-    $scope.delete = function () {
+    $scope.delete = function () {s
         var objectId = getSelectedId($scope.scenarios);
         user.getUser(function (user) {
             $scope.user = user;
         });
-        scenarioManager.deleteScenario(objectId, $scope.user.name, function (data) {
+        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
             console.log('from delete in scenarios');
             console.log(data);
             if (data) {
@@ -196,15 +206,14 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         });
     };
     $scope.share = function () {
-        var objectId = getSelectedId($scope.scenarios);
-        forwardManager.setName(objectId);
+       analysis.objIds.current= getSelectedId($scope.scenarios);
         $location.path('myscenarios/share');
     };
     $scope.compare = function () {
         $location.path('myscenarios/compare');
     };
     $scope.edit = function () {
-        var objectId = getSelectedId($scope.scenarios);
+        analysis.objIds.current= getSelectedId($scope.scenarios);
         forwardManager.setName(objectId);
         $location.path('myscenarios/edit');
     };
@@ -217,7 +226,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     user.getUser(function (user) {
         if(!user.name){$scope.logout();}
         $scope.user = user;
-        scenarioManager.getScenarios($scope.user.name, function (data) {
+        scenarios.getScenarios($scope.user.name, function (data) {
             console.log(data);
             $scope.scenarios = data;
         });

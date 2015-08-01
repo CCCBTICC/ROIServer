@@ -82,11 +82,11 @@ angular.module('CompareChart', [])
                         //end text
                         //render value text
                         var valueText = chartSvg.append('text');
-                        valueText.text(Math.abs(item.value).toFixed(0))
-                            .attr('font-size', 18)
+                        valueText.text('$'+item.string+' ('+Math.abs(item.value).toFixed(2)*100+'%)')
+                            .attr('font-size', 12)
                             .attr('fill', '#222')
                             .attr('x', Number(oldData[index].value) * oldScaleFactor + midX)
-                            .attr('y', barHeight * index + scope.config.margin.top + textHeight + textMargin)
+                            .attr('y', barHeight * index + scope.config.margin.top + textHeight + textMargin-3)
                             .transition()
                             .attr('x', Number(item.value) * scaleFactor + midX);
                         //end text

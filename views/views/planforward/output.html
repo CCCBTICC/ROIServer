@@ -231,7 +231,7 @@
                         <!--<td>{{planForward.output.parSF }}</td>-->
                         <td class="range-input">
                             <range-input ng-model="planForward.output.parSlide" min="planForward.output.parMin"
-                                         max="planForward.output.parMax" fix="fix()"></range-input>
+                                         max="planForward.output.parMax" ng-change="fix()"></range-input>
                         </td>
                         <td>{{planForward.output.parAR | formatCurrency}}</td>
                         <td>{{planForward.output.parSD | formatCurrency}}</td>

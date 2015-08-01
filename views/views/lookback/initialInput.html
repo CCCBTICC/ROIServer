@@ -12,11 +12,11 @@
                 <label for="lookBackBrand" class="col-sm-3 control-label">Brand:</label>
 
                 <div class="col-sm-4">
-                    <select id="lookBackBrand" class="form-control" ng-model="lookBack.brand"
-                            ng-options="b for b in brands"></select>
+                    <select id="lookBackBrand" class="form-control" ng-model="dataInfo.brand"
+                            ng-options="b for b in dataInfo.brands"></select>
                 </div>
                 <div class="col-sm-1 help-info">
-                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{brandTooltips}}"></i>
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.brand}}"></i>
                 </div>
             </div>
             <div class="form-group">
@@ -25,10 +25,10 @@
                 <div class="col-sm-4" id="lookBackAttribution">
 
                     <label class="radio-inline">
-                        <input type="radio" ng-model="lookBack.attribution" value="LTA">LTA
+                        <input type="radio" ng-model="dataInfo.lmTouch" value="LTA">LTA
                     </label>
                     <label class="radio-inline">
-                        <input type="radio" ng-model="lookBack.attribution" value="MTA">MTA
+                        <input type="radio" ng-model="dataInfo.lmTouch" value="MTA">MTA
                     </label>
                     <!--
                     <label class="btn btn-default" ng-model="lookBack.attribution" btn-radio="'LTA'" uncheckable>
@@ -41,7 +41,7 @@
 
                 </div>
                 <div class="col-sm-1 help-info">
-                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{attrTooltips}}"></i>
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.attr}}"></i>
                 </div>
             </div>
             <div class="form-group">
@@ -49,21 +49,21 @@
 
                 <div class="col-sm-4">
                     <div class="input-group">
-                        <input id="lookBackBeginPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
-                               ng-model="lookBack.beginPeriod" is-open="opened.lookBackBeginPeriod"
-                               ng-change="modifyEndDate()"
-                               datepicker-options="dateOptions" datepicker-mode="'month'" min-date="minDate" max-date="maxDate"
+                        <input id="lookBackBeginPeriod" type="text" class="form-control" datepicker-popup="{{calender.format}}"
+                               ng-model="dataInfo.beginDate" is-open="calender.opened.beginPeriod"
+                               ng-change="calender.modifyDate()"
+                               datepicker-options="calender.dateOptions" datepicker-mode="'month'" min-date="calender.minDate" max-date="calender.maxDate"
                                ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default"
-                                    ng-click="open($event, 'lookBackBeginPeriod')">
+                                    ng-click="calender.open($event, 'lookBackBeginPeriod')">
                                 <i class="glyphicon glyphicon-calendar"></i>
                             </button>
                         </span>
                     </div>
                 </div>
                 <div class="col-sm-1 help-info">
-                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{beginPeriodTooltips}}"></i>
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.beginPeriod}}"></i>
                 </div>
             </div>
             <div class="form-group">
@@ -71,11 +71,11 @@
 
                 <div class="col-sm-4">
                     <div class="input-group">
-                        <input id="lookBackEndPeriod" type="text" class="form-control" datepicker-popup="{{format}}"
-                               ng-model="lookBack.endPeriod" is-open="opened.lookBackEndPeriod"
-                               ng-change="getLastDate()"
-                               min-date="lookBack.beginPeriod" datepicker-options="dateOptions"
-                               datepicker-mode="'month'" disabled max-date="eMaxDate" ng-required="true"
+                        <input id="lookBackEndPeriod" type="text" class="form-control" datepicker-popup="{{calender.format}}"
+                               ng-model="dataInfo.endDate" is-open="opened.lookBackEndPeriod"
+                               ng-change="calender.modifyDate()"
+                               min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
+                               datepicker-mode="'month'" disabled max-date="calender.eMaxDate" ng-required="true"
                                close-text="Close">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event, 'lookBackEndPeriod')">
@@ -85,13 +85,12 @@
                     </div>
                 </div>
                 <div class="col-sm-1 help-info">
-                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{endPeriodTooltips}}"></i>
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.endPeriod}}"></i>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-5 col-sm-offset-3">
-                    <a type="button" class="btn btn-default" href="#/lookback/add" ng-click="nextPage()">Next
-                    </a>
+                    <button type="button" class="btn btn-default" ng-click="nextPage()">Next</button>
                 </div>
             </div>
         </form>

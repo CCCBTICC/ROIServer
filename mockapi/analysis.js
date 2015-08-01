@@ -8,7 +8,7 @@ var fs = require('fs');
 var ObjectId = require('mongodb').ObjectID;
 
 
-router.post('/planforward', function (req, res) {
+router.post('/R', function (req, res) {
     var reqData = req.body.data;
     var reqUsername = req.body.username;
     var objectId = new ObjectId();
@@ -18,8 +18,8 @@ router.post('/planforward', function (req, res) {
         scenario = {
             _id: objectId,
             scenarioId: reqData.scenarioId,
-            begin: reqData.StartingTime,
-            end: reqData.EndingTime,
+            beginDate: reqData.StartingTime,
+            endDate: reqData.EndingTime,
             lmTouch: reqData.lmTouch === 'Last Touch' ? 'Last Touch' : 'Multi Touch',
             spend: reqData.Spend,
             createDate: d,

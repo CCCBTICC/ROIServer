@@ -6,10 +6,6 @@
 var app = angular.module('ROIClientApp', ['ngRoute', 'ui.bootstrap', 'ngSanitize', 'CompareChart', 'forwardModule']);
 app.config(function ($routeProvider) {
     $routeProvider
-        //.when('/',{
-        //    templateUrl:'/index.html',
-        //    controller:'indexCtrl'
-        //})
         .when('/planforward/init', {
             templateUrl: './views/planforward/initialInput.html',
             controller: 'forwardInitCtrl'
@@ -105,7 +101,6 @@ app.controller("indexCtrl", function ($scope, user) {
         window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
     };
     $scope.help=function(){
-        //window.location.href = ('http://tinyurl.com/sfly-roi-fback');
         var link = document.createElement('a');
         link.href = 'http://tinyurl.com/sfly-roi-fback';
         link.target="_blank";
@@ -121,17 +116,6 @@ app.controller("indexCtrl", function ($scope, user) {
             $scope.user = user;
         });
     }
-});
-app.controller("savePlanCtrl", function ($scope, $http) {
-    console.log('saveCtrl work');
-
-    $scope.savePlanForward = function () {
-        var sendData = {};
-        $http.post('/scenarios', sendData).success(function (data) {
-            if (data) alert("saved!");
-        });
-    };
-
 });
 app.factory('user', function ($http) {
     var user = {};
@@ -181,21 +165,17 @@ app.factory('history', function ($http) {
                 $http.get(historyUrl).success(function (res) {
                         historyDate = res;
                         cb(historyDate);
-                    }
-                );
+                    });
             }
         },
         getHistoryData: function (begin, end, cb) {
             var data = {begin: begin, end: end};
             post(data, function (res) {
-                console.log(res);
                 var sum = {};
                 Object.keys(res[0]).forEach(function (key) {
                     sum[key] = 0;
-                    console.log(key);
                     res.forEach(function (month) {
                         sum[key] += Number(month[key]);
-                        console.log(month[key])
                     });
                 });
                 cb(sum);
