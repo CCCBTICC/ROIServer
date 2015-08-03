@@ -95,6 +95,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     };
     $scope.selectRow = function (obj) {
         obj.isActive = !obj.isActive;
+
         if (obj.isActive) {
             actionObjInfo.push(obj._id);
         } else {
@@ -232,6 +233,8 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             $scope.scenarios = data;
         });
     });
+    // check status
+
 });
 scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager, $location, actionObjInfo, history) {
     //vars

@@ -8,6 +8,7 @@
  *****      0.3 - customer range input       *****
  *****      0.4 - customer text input        *****
  *****      0.5 - a                          *****
+ *****      0.6 - final font                 *****
  *****  1 - Login Page                       *****
  *****  2 - Shell Page                       *****
  *****      2.1 - Navigation bar             *****
@@ -170,6 +171,21 @@ input[type=checkbox]{
 a, a:visited, a:focus, a:active, a:hover{
     outline:0 none !important;
 }
+/*  font awesome  */
+/*  General  */
+
+.fa-spin{
+    color:#7aa4bc;
+    font-size:19px;
+}
+
+/*  font awesome  */
+/*  General  */
+.final{
+    color:#f05323;
+    font-size:12px;
+}
+
 
 /*************************************************
  ******                                     ******
@@ -434,7 +450,7 @@ a, a:visited, a:focus, a:active, a:hover{
 }
 
 table.roi-table {
-    width: 98%;
+    width: 100%;
     margin-right: 20px;
     text-align: right;
     position: static!important;
@@ -470,7 +486,7 @@ table.roi-table tr > th {
 
 table.roi-table tr:first-child > th:first-child {
     padding: 5px 0 5px 15px;
-    text-align: left;
+    text-align: center;
 }
 
 table.roi-table tr > .col-0 {
@@ -492,8 +508,8 @@ table.roi-table tr > .col-2 {
 }
 
 table.roi-table tr > .col-3 {
-    min-width: 200px;
-    max-width: 200px;
+    min-width: 220px;
+    max-width: 220px;
     overflow: hidden;
 }
 
@@ -558,8 +574,8 @@ table.roi-table tr > td.disabled {
 }
 
 table.roi-table tr.active-row > td {
-    background-color: #F05323;
-    color: #f8f8f8;
+    background-color: #d6d4d4;
+    color: #333333;
 }
 
 table.roi-table tr > td.non-number {
@@ -567,7 +583,7 @@ table.roi-table tr > td.non-number {
     text-align: left;
 }
 table.roi-table tr > td.scenario-id {
-    padding-left: 2px;
+    padding-left: 1px;
     text-align: left;
 }
 table.roi-table tr > td.yes-no {

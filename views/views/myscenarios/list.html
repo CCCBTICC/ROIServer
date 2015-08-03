@@ -1,4 +1,6 @@
-<div class="container-fluid">
+
+<div class="container-fluid" unselectable="on" style="-moz-user-select:none;-webkit-user-select:none;" onselectstart="return false;">
+<!--add unselectable attributes-->
     <!--nav bar-->
     <div class="row">
         <ol class="breadcrumb path path-myscenarios">
@@ -18,8 +20,8 @@
             <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                 <thead>
                 <tr>
-                    <th class="col-0" rowspan="1"><div></div></th>
-                    <th class="col-3" rowspan="1">ID </th>
+                    <!--<th class="col-0" rowspan="1"><div></div></th>-->
+                    <th class="col-3" rowspan="1">ID</th>
                     <th class="col-2" rowspan="1">Name</th>
                     <th class="col-1" rowspan="1">Owner</th>
                     <th class="col-2" rowspan="1">Create Date</th>
@@ -30,11 +32,11 @@
                 </tr>
                 </thead>
                 <tbody class="row-2">
-                <tr ng-repeat="scenario in scenarios" ng-click="selectRow(scenario)">
-                    <td class="check non-number col-0">
-                        <input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">
-                    </td>
-                    <td class="scenario-id col-3">{{scenario.scenarioId}}</td>
+                <tr ng-repeat="scenario in scenarios" ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
+                    <!--<td class="check non-number col-0">-->
+                        <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
+                    <!--</td>-->
+                    <td class="scenario-id col-3"><i>{{scenario.scenarioId}}</i> <i class="final" tooltip-placement="top" tooltip="Final">(F)</i> <i class="fa fa-cog fa-spin" tooltip-placement="top" tooltip="Running"></i></td>
                     <td class="non-number col-2">{{scenario.name}}</td>
                     <td class="non-number col-1">{{scenario.owner}}</td>
                     <td class="non-number col-2">{{scenario.createDate | date: 'yyyy-MM-dd'}}</td>

@@ -8,13 +8,48 @@ var assert = require('assert');
 var Rmodule = require('./modules/Rmodule');
 var ObjectId = require('mongodb').ObjectID;
 
-router.post('/status',function(req, res){
-    var list = req.body;
-    list.forEach(function(single, index){
-        single.scenario = Rmodule.getRoutput(single.id);
-    });
 
-    res.send(list);
+
+router.post('/status',function(req, res) {
+    var list = req.body;
+    var currentDate = new Date();
+    list.forEach(function (listSingle, index) {
+        listSingle.scenario = Rmodule.getRoutput(listSingle.id);
+        if(!listSingle.scenario){
+            req.db.collection('scenarios').findOne({_id:new ObjectId(listSingle.id)},{}, function (err,scenario) {
+                if(scenario){
+                    //listSingle.runningTime = scenario.createDate;
+                    listSingle.runningTime = currentDate.getTime() - scenario.createDate.getTime();
+                }else{
+                   console.log("can't find:"+listSingle.id);
+                }
+            });
+        }else{
+            listSingle.runningTime = "0";
+        }
+    });
+     setTimeout(function(){res.send(list);},500);
+    /*
+    list.forEach(function (listSingle, index) {
+        scenariosList.push(listSingle.id);
+        listSingle.scenario = Rmodule.getRoutput(listSingle.id);
+    if(scenariosList.length === list.length){
+        req.db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
+            console.log(result);
+            if (!err) {
+                result.forEach(function (resultSingle, index) {
+                    //single.runningTime = currentDate.getTime() - scenario.createDate.getTime();
+                    resultSingle.runningTime = resultSingle.createDate;
+                });
+                res.send(list);
+            } else {
+                res.send({err: err});
+            }
+        });
+    }
+    });
+    */
+
 });
 
 //  the list json data
@@ -60,6 +95,7 @@ function share(db, requestData, res) {
 }
 
 function list(db, requestData, res) {
+    var currentDate = new Date();
     var username = requestData.username;
     db.collection('users').findOne({username: username}, {fields: {scenarios: 1}}, function (err, user) {
         var scenariosList = [];
