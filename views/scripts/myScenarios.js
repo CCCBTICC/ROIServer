@@ -255,8 +255,8 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     });
     // check status
 
-    //setTimeout(function(){getStatus();},200);
     setTimeout(function(){getStatus();},500);
+    setTimeout(function(){getStatus();},1000);
     var checkStatusLoop = setInterval(getStatus,5*1000);
 
     $scope.$on('$destroy', function () {
