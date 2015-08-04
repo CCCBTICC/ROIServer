@@ -39,9 +39,9 @@
                     <td class="scenario-id col-3"><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)">(F)</i> </td>
                     <td class="non-number col-2">{{scenario.name}} {{scenario.final}} </td>
                     <td class="non-number col-1">{{scenario.owner}}</td>
-                    <td class="non-number col-2">{{scenario.createDate | date: 'yyyy-MM-dd'}}</td>
+                    <td class="non-number col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>
                     <td class="non-number col-2">{{scenario.spend | formatCurrency}}</td>
-                    <td class="non-number col-2">{{scenario.dataThrough | date: 'yyyy-MM'}}</td>
+                    <td class="non-number col-2">{{scenario.dataThrough}}</td>
                     <td class="yes-no col-1">{{scenario.included}}</td>
                     <td class="non-number col-3">{{scenario.note}}</td>
                 </tr>
