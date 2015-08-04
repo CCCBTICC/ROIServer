@@ -1,0 +1,83 @@
+<div class="container-fluid" id="Additional Input">
+    <div class="row">
+        <ol class="breadcrumb path path-lookback">
+            <li><a href="#/">Home</a></li>
+            <li>Look Back</li>
+            <li><a href="#/lookback/init">Initial Input</a></li>
+            <li>Additional Input</li>
+        </ol>
+    </div>
+    <div class="row">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">Brand:</label>
+                <div class="col-sm-4">
+                    <div class="well well-sm">
+                        {{dataInfo.brand}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">Attribution:</label>
+                <div class="col-sm-4">
+                    <div class="well well-sm">
+                        {{dataInfo.lmTouch}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">Begin Period:</label>
+                <div class="col-sm-4">
+                    <div class="well well-sm">
+                        {{dataInfo.beginDate | date: 'MMM-dd-yyyy'}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackBrand" class="col-sm-3 control-label">End Period:</label>
+                <div class="col-sm-4">
+                    <div class="well well-sm">
+                        {{dataInfo.endDate | date: 'MMM-dd-yyyy'}}
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lookBackSpend" class="col-sm-3 control-label">Portfolio Spend :</label>
+                <div class="col-sm-4">
+                        <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend" ng-change="error=false" format-input>
+                    <span style="color:red" ng-show="error"> Spend should be in the  range [{{lookBack.output.SpendLB | formatCurrency}}, {{lookBack.output.SpendUB | formatCurrency}}]</span>
+                    <!--<input class="form-control" id="lookBackSpend" type="text" ng-model="lookBack.output.Spend" format-input>-->
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    Include data through {{dataInfo.endDate | date: 'MMM-dd-yyyy'}}? :<br>
+                </label>
+
+                <div class="col-sm-4">
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="dataInfo.included" value="Yes">Yes
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="dataInfo.included" value="No">No
+                    </label>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.included}}"></i>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 col-sm-offset-3">
+                    <a type="button" class="btn btn-default" href="#/lookback/init">Prev</a>
+                </div>
+                <div class="col-sm-2">
+                    <!--<button type="button" class="btn btn-default" ng-class="{disabled:error}" ng-click="nextPage()">Next</button>-->
+                    <button type="button" class="btn btn-default"  ng-click="nextPage()">Next</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

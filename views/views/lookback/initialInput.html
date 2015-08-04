@@ -1,7 +1,7 @@
 <div class="container-fluid" id="Initial Input">
     <div class="row">
         <ol class="breadcrumb path path-lookback">
-            <li><a href="#/">Home</a></li>
+            <li><a href="#">Home</a></li>
             <li>Look Back</li>
             <li>Initial Input</li>
         </ol>
@@ -72,13 +72,13 @@
                 <div class="col-sm-4">
                     <div class="input-group">
                         <input id="lookBackEndPeriod" type="text" class="form-control" datepicker-popup="{{calender.format}}"
-                               ng-model="dataInfo.endDate" is-open="opened.lookBackEndPeriod"
+                               ng-model="dataInfo.endDate" is-open="calender.opened.endPeriod"
                                ng-change="calender.modifyDate()"
                                min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
                                datepicker-mode="'month'" disabled max-date="calender.eMaxDate" ng-required="true"
                                close-text="Close">
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="open($event, 'lookBackEndPeriod')">
+                            <button type="button" class="btn btn-default" ng-click="calender.open($event, 'lookBackEndPeriod')">
                                 <i class="glyphicon glyphicon-calendar"></i>
                             </button>
                         </span>
@@ -88,6 +88,25 @@
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.endPeriod}}"></i>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                    <!--Include data through {{dataInfo.endDate | date: 'MMM-dd-yyyy'}}? :<br>-->
+                    Include data through end period? :
+                </label>
+
+                <div class="col-sm-4">
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="dataInfo.included" value="Yes">Yes
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="dataInfo.included" value="No">No
+                    </label>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.included}}"></i>
+                </div>
+            </div>
+
             <div class="form-group">
                 <div class="col-sm-5 col-sm-offset-3">
                     <button type="button" class="btn btn-default" ng-click="nextPage()">Next</button>

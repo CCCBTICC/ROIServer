@@ -3,20 +3,9 @@
  */
 var scenariosApp = angular.module("ROIClientApp");
 scenariosApp.factory('scenarios', function ($http) {
-    var scenariosUrl = "http://54.166.49.92:3001/scenarios";
-    //var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
-    var dataInfo={
-        scenarioId:"",
-        brands:['Shutterfly'],
-        brand: 'Shutterfly',
-        lmTouch: 'MTA',
-        beginDate: null,
-        endDate: null,
-        spend: null,
-        included: 'Yes',
-        dataThrough: null,
-        from:""
-    };
+    //var scenariosUrl = "http://54.166.49.92:3001/scenarios";
+    var scenariosUrl = "http://" + window.location.hostname + ":3001/scenarios";
+    var dataInfo={};
     var scenarios = [];
     var post = function (data, callback) {
         $http({

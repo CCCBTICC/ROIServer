@@ -8,18 +8,18 @@
             <li>Output</li>
         </ol>
     </div>
-    <div class="row" ng-show="getJson">
+    <div class="row" ng-show="getJson" id="info">
         <div class="well well-sm">
             <label>Scenario ID:</label>{{scenario.scenarioId}} <br>
             <label>Brand</label>: {{scenario.brand}}
             <label>Attribution</label>: {{scenario.lmTouch}}
-            <label>Begin Period</label>: {{scenario.begin}}
-            <label>End Period</label>: {{scenario.end}}
+            <label>Begin Period</label>: {{scenario.begin | date:'yyyy-MM-dd'}}
+            <label>End Period</label>: {{scenario.end | date:'yyyy-MM-dd'}}
             <label>Portfolio Spend </label>: {{scenario.spend | formatCurrency}}
             <label>Data through</label>: {{scenario.dataThrough}}
         </div>
     </div>
-    <div class="waiting" style="height: 400px;" ng-hide="getJson">
+    <div class="waiting" style="height: 400px;" ng-hide="getJson" id="progress">
         <div class="jumbotron">
             <h2>Tool is calculating the most optimal scenario for you.</h2>
             <h2>Result will appear shortly!</h2>
@@ -28,7 +28,7 @@
 
     </div>
 
-    <div class="row" ng-show="getJson">
+    <div class="row" ng-show="getJson" id="data">
         <div class="{{lookbackContentSize}}">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-condensed roi-table">
@@ -55,9 +55,7 @@
                         <td class="td-title" ng-click="hideSemItems = !hideSemItems">SEM Total<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
                         <td>{{lookBack.history.semSR | formatCurrency}}</td>
                         <td>{{lookBack.history.semPR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semTLB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.semSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semTUB | formatCurrency}}</td>-->
                         <td>{{lookBack.output.semPR | formatCurrency}}</td>
                         <td>{{lookBack.difference.semSD | formatCurrency}}</td>
                         <td>{{lookBack.difference.semRD | formatCurrency}}</td>
@@ -65,70 +63,55 @@
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Brand</td>
                         <td>{{lookBack.history.semBSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.history.semBPR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
-                        <!--<td>{{lookBack.output.semBLB | formatCurrency}}</td>-->
-                        <!--<td class="range-input">-->
-                            <!--<range-input ng-model="lookBack.input.semBSB" min="lookBack.output.semBLB" max="lookBack.output.semBUB"></range-input>-->
-                        <!--</td>-->
-                        <!--<td>{{lookBack.output.semBUB | formatCurrency}}</td>-->
-                        <td>{{lookBack.output.semBSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semBPR | formatCurrency}}</td>-->
+                        <td class="range-input">
+                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.semBSlide" min="lookBack.output.semBMin" max="lookBack.output.semBMax"></range-input>
+                        </td>
+                        <!--<td>{{lookBack.output.semBSR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                         <td>{{lookBack.difference.semBSD | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semBRD | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Cards</td>
                         <td>{{lookBack.history.semCSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.history.semCPR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                         <!--<td>{{lookBack.output.semCLB | formatCurrency}}</td>-->
-                        <!--<td class="range-input">-->
-                            <!--<range-input ng-model="lookBack.input.semCSB" min="lookBack.output.semCLB" max="lookBack.output.semCUB"></range-input>-->
-                        <!--</td>-->
+                        <td class="range-input">
+                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.semCSlide" min="lookBack.output.semCMin" max="lookBack.output.semCMax"></range-input>
+                        </td>
                         <!--<td>{{lookBack.output.semCUB | formatCurrency}}</td>-->
-                        <td>{{lookBack.output.semCSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semCPR | formatCurrency}}</td>-->
+                        <!--<td>{{lookBack.output.semCSR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                         <td>{{lookBack.difference.semCSD | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semCRD | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Photobook</td>
                         <td>{{lookBack.history.semPSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.history.semPPR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                         <!--<td>{{lookBack.output.semPLB | formatCurrency}}</td>-->
-                        <!--<td class="range-input">-->
-                            <!--<range-input ng-model="lookBack.input.semPSB" min="lookBack.output.semPLB" max="lookBack.output.semPUB"></range-input>-->
-                        <!--</td>-->
+                        <td class="range-input">
+                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.semPSlide" min="lookBack.output.semPMin" max="lookBack.output.semPMax"></range-input>
+                        </td>
                         <!--<td>{{lookBack.output.semPUB | formatCurrency}}</td>-->
-                        <td>{{lookBack.output.semPSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semPPR | formatCurrency}}</td>-->
+                        <!--<td>{{lookBack.output.semPSR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                         <td>{{lookBack.difference.semPSD | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semPRD | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Others</td>
                         <td>{{lookBack.history.semOSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.history.semOPR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
-                        <!--<td class="disabled">-</td>-->
                         <!--<td>{{lookBack.output.semOLB | formatCurrency}}</td>-->
-                        <!--<td class="range-input">-->
-                            <!--<range-input ng-model="lookBack.input.semOSB" min="lookBack.output.semOLB" max="lookBack.output.semOUB"></range-input>-->
-                        <!--</td>-->
+                        <td class="range-input">
+                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.semOSlide" min="lookBack.output.semOMin" max="lookBack.output.semOMax"></range-input>
+                        </td>
                         <!--<td>{{lookBack.output.semOUB | formatCurrency}}</td>-->
-                        <td>{{lookBack.output.semOSR | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semOPR | formatCurrency}}</td>-->
+                        <!--<td>{{lookBack.output.semOSR | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                         <td>{{lookBack.difference.semOSD | formatCurrency}}</td>
-                        <!--<td>{{lookBack.output.semORD | formatCurrency}}</td>-->
                         <td class="disabled">-</td>
                     </tr>
                     <tr>
@@ -136,12 +119,12 @@
                         <td>{{lookBack.history.disSR | formatCurrency}}</td>
                         <td>{{lookBack.history.disPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.disLB | formatCurrency}}</td>-->
-                        <!--<td class="range-input">-->
-                            <!--<range-input ng-model="lookBack.input.disSB" min="lookBack.output.disLB" max="lookBack.output.disUB"></range-input>-->
-                        <!--</td>-->
+                        <td class="range-input">
+                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.disSlide" min="lookBack.output.disMin" max="lookBack.output.disMax"></range-input>
+                        </td>
                         <!--<td>{{lookBack.output.disUB | formatCurrency}}</td>-->
 
-                        <td>{{lookBack.output.disSR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.disSR | formatCurrency}}</td>-->
                         <td>{{lookBack.output.disPR | formatCurrency}}</td>
                         <td>{{lookBack.difference.disSD | formatCurrency}}</td>
                         <td>{{lookBack.difference.disRD | formatCurrency}}</td>
@@ -151,11 +134,11 @@
                         <td>{{lookBack.history.socSR | formatCurrency}}</td>
                         <td>{{lookBack.history.socPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.socLB | formatCurrency}}</td>-->
-                        <!--<td class="range-input">-->
-                            <!--<range-input ng-model="lookBack.input.socSB" min="lookBack.output.socLB" max="lookBack.output.socUB"></range-input>-->
-                        <!--</td>-->
+                        <td class="range-input">
+                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.socSlide" min="lookBack.output.socMin" max="lookBack.output.socMax"></range-input>
+                        </td>
                         <!--<td>{{lookBack.output.socUB | formatCurrency}}</td>-->
-                        <td>{{lookBack.output.socSR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.socSR | formatCurrency}}</td>-->
                         <td>{{lookBack.output.socPR | formatCurrency}}</td>
                         <td>{{lookBack.difference.socSD | formatCurrency}}</td>
                         <td>{{lookBack.difference.socRD | formatCurrency}}</td>
@@ -165,11 +148,11 @@
                         <td>{{lookBack.history.affSR | formatCurrency}}</td>
                         <td>{{lookBack.history.affPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.affLB | formatCurrency}}</td>-->
-                        <!--<td class="range-input">-->
-                            <!--<range-input ng-model="lookBack.input.affSB" min="lookBack.output.affLB" max="lookBack.output.affUB"></range-input>-->
-                        <!--</td>-->
+                        <td class="range-input">
+                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.affSlide" min="lookBack.output.affMin" max="lookBack.output.affMax"></range-input>
+                        </td>
                         <!--<td>{{lookBack.output.affUB | formatCurrency}}</td>-->
-                        <td>{{lookBack.output.affSR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.affSR | formatCurrency}}</td>-->
                         <td>{{lookBack.output.affPR | formatCurrency}}</td>
                         <td>{{lookBack.difference.affSD | formatCurrency}}</td>
                         <td>{{lookBack.difference.affRD | formatCurrency}}</td>
@@ -179,11 +162,11 @@
                         <td>{{lookBack.history.parSR | formatCurrency}}</td>
                         <td>{{lookBack.history.parPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.parLB | formatCurrency}}</td>-->
-                        <!--<td class="range-input">-->
-                            <!--<range-input ng-model="lookBack.input.parSB" min="lookBack.output.parLB" max="lookBack.output.parUB"></range-input>-->
-                        <!--</td>-->
+                        <td class="range-input">
+                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.parSlide" min="lookBack.output.parMin" max="lookBack.output.parMax"></range-input>
+                        </td>
                         <!--<td>{{lookBack.output.parUB | formatCurrency}}</td>-->
-                        <td>{{lookBack.output.parSR | formatCurrency}}</td>
+                        <!--<td>{{lookBack.output.parSR | formatCurrency}}</td>-->
                         <td>{{lookBack.output.parPR | formatCurrency}}</td>
                         <td>{{lookBack.difference.parSD | formatCurrency}}</td>
                         <td>{{lookBack.difference.parRD | formatCurrency}}</td>
@@ -241,15 +224,17 @@
                 </div>
 
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-default" ng-click="reRun()" ng-class="{disabled:slideError}">Re-run</button>
+                <span ng-show="slideError" style="color:red">{{slideErrorValue}}</span>
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-default" ng-click="reset()">Reset</button>
+            </div>
+            <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="toggle()">{{showGraph}}</button>
             </div>
-            <!--<div class="col-sm-3">-->
-                <!--<button type="button" class="btn btn-default" ng-click="">Re-run</button>-->
-            <!--</div>-->
-            <!--<div class="col-sm-3">-->
-                <!--<a type="button" class="btn btn-default" href="#/lookback/init">Reset</a>-->
-            <!--</div>-->
+
         </div>
     </div>
 </div>

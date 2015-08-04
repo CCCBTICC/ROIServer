@@ -500,6 +500,7 @@ table.roi-table tr > td {
 table.roi-table tr > td.td-title {
     padding: 5px 0 5px 15px;
     min-width: 150px;
+    max-width:150px;
     position: relative;
     text-align: left;
 }
@@ -516,7 +517,7 @@ table.roi-table tr > td.td-subtitle {
 
 table.roi-table tr > td.range-input {
     height: 50px;
-    min-width: 150px;
+    min-width: 100px;
     width: 160px;
     padding: 0;
 }

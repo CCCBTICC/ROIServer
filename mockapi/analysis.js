@@ -10,6 +10,7 @@ var ObjectId = require('mongodb').ObjectID;
 
 router.post('/R', function (req, res) {
     var reqData = req.body.data;
+    var reqInfo=req.body.info;
     var reqUsername = req.body.username;
     var objectId = new ObjectId();
     var d = new Date();
@@ -17,22 +18,22 @@ router.post('/R', function (req, res) {
     if (reqData.Algorithm !== 1) {
         scenario = {
             _id: objectId,
-            scenarioId: reqData.scenarioId,
-            beginDate: reqData.StartingTime,
-            endDate: reqData.EndingTime,
-            lmTouch: reqData.lmTouch === 'Last Touch' ? 'Last Touch' : 'Multi Touch',
-            spend: reqData.Spend,
+            scenarioId:reqInfo.scenarioId,
+            begin: reqInfo.beginDate,
+            end: reqInfo.endDate,
+            lmTouch: reqInfo.lmTouch === 'Last Touch' ? 'Last Touch' : 'Multi Touch',
+            spend: reqInfo.spend,
             createDate: d,
-            brand: reqData.Brand,
+            brand: reqInfo.brand,
             owner: reqData.UserName,
             name: "",
             note: "",
             final: "No",
-            dataThrough: reqData.dataThrough,
-            included: reqData.included ? reqData.included : 'No',
+            dataThrough: reqInfo.dataThrough,
+            included: reqData.included ==='Yes'?'Yes' : 'No',
             share: "No",
-            exist: false,
-            from: reqData.from === 'forward' ? 'forward' : 'back'
+            exist:false,
+            from:reqInfo.from
         };
         console.log(scenario);
         req.db.collection("scenarios").insertOne(scenario, function (err, scenarioDoc) {

@@ -21,7 +21,7 @@ forward.factory('analysis', function ($http) {
         "semPLB": "",
         "semOLB": "",
         "semBLB": "",
-        "SpendLB":"",
+        "SpendLB": "",
         "disLB": "",
         "socLB": "",
         "affLB": "",
@@ -50,7 +50,7 @@ forward.factory('analysis', function ($http) {
         "socUB": "",
         "affUB": "",
         "parUB": "",
-        "SpendUB":"",
+        "SpendUB": "",
         "semCSF": "",
         "semPSF": "",
         "semOSF": "",
@@ -147,9 +147,9 @@ forward.factory('analysis', function ($http) {
         "totAR": "",
         "run2ProjROI": ""
     };
-    var objIds = {current:''};
-    //var url = "http://" + window.location.hostname + ":3001/analysis/";
-    var url = "http://54.166.49.92:3001/analysis/";
+    var objIds = {current: ''};
+    var url = "http://" + window.location.hostname + ":3001/analysis/";
+    //var url = "http://54.166.49.92:3001/analysis/";
     var get = function (id, cb) {
         $http({
             method: 'get',
@@ -161,33 +161,33 @@ forward.factory('analysis', function ($http) {
     var post = function (data, cb) {
         $http({
             method: 'post',
-            url: url + 'planforward',
+            url: url + 'R',
             data: data
         }).success(function (id) {
             objIds.current = id;
-            objIds[id]=id;
+            objIds[id] = id;
             cb(objIds.current);
         });
     };
     return {
-        tempData:tempData,
-        objIds:objIds,
+        tempData: tempData,
+        objIds: objIds,
         getData: function (cb, id) {
             if (!id) {
-                get(objIds.current,cb);
+                get(objIds.current, cb);
             }
             else {
                 get(id, cb);
             }
         },
-        postData: function(data,info,cb){
-            var body={data: data, username: data.UserName,info:info};
-            post(body,cb);
+        postData: function (data, info, cb) {
+            var body = {data: data, username: data.UserName, info: info};
+            post(body, cb);
         }
     }
 });
 
-forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location', '$filter', 'history', 'actionObjInfo', function ($scope, manager, user, location, filter, history, actionObjInfo) {
+forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', '$location', '$filter', 'history', 'actionObjInfo', function ($scope, analysis, scenarios, user, location, filter, history, actionObjInfo) {
     //scope vars
     $scope.tooltips = {
         brand: "Please choose one of the brands from the list.",
@@ -213,14 +213,13 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location'
                 console.log(res);
                 if (res[0]) {
                     var d = new Date(res[1]);
+                    $scope.dataInfo.dataThrough = res[1];
                     $scope.calender.minDate = new Date(d.getFullYear(), d.getMonth() + 2, 1);
-                    $scope.calender.maxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 6, 0);
+                    $scope.calender.maxDate = new Date($scope.calender.minDate.getFullYear(), $scope.calender.minDate.getMonth() + 6, 0);
                     var date = $scope.calender.minDate;
-                    $scope.dataInfo.beginDate =  new Date(date.getFullYear(), date.getMonth(), 1);
+                    $scope.dataInfo.beginDate = new Date(date.getFullYear(), date.getMonth(), 1);
                     $scope.dataInfo.endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
                     $scope.calender.modifyDate();
-                } else {
-                    alert("HistoryDate is not exist")
                 }
             });
         },
@@ -228,7 +227,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location'
             event.preventDefault();
             event.stopPropagation();
 
-            if (model === 'lookBackBeginPeriod') {
+            if (model === 'planForwardBeginPeriod') {
                 $scope.calender.opened.beginPeriod = !$scope.calender.opened.beginPeriod;
                 $scope.calender.opened.endPeriod = false;
             } else {
@@ -238,7 +237,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location'
         },
         modifyDate: function () {
             var d;
-            if (!$scope.dataInfo.beginDate || $scope.dataInfo.beginDate < $scope.calender.minDate||$scope.dataInfo.beginDate > $scope.calender.maxDate) {
+            if (!$scope.dataInfo.beginDate || $scope.dataInfo.beginDate < $scope.calender.minDate || $scope.dataInfo.beginDate > $scope.calender.maxDate) {
                 $scope.dataInfo.beginDate = $scope.calender.minDate;
             }
             d = new Date($scope.dataInfo.beginDate);
@@ -258,10 +257,20 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location'
             $scope.dataInfo.endDate = new Date(d.getFullYear(), d.getMonth() + 1, 0);
         }
     };
-    $scope.dataInfo={};
-
-    $scope.planForward={init:{}};
-
+    $scope.dataInfo = {
+        scenarioId: "",
+        brands: ['Shutterfly'],
+        brand: 'Shutterfly',
+        lmTouch: 'MTA',
+        beginDate: null,
+        endDate: null,
+        spend: null,
+        included: 'Yes',
+        dataThrough: null,
+        from: "",
+        owner: ""
+    };
+    $scope.planForward = {init: {}};
 
     //scope functions
     $scope.logout = function () {
@@ -269,15 +278,16 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location'
         window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
     };
     $scope.nextPage = function () {
+        completeDataInfo();
         passInfoToData();
         //post input info to R
-        manager.postData($scope.planForward.init,$scope.dataInfo, function (res) {
+        analysis.postData($scope.planForward.init, $scope.dataInfo, function (res) {
             console.log(res);
             location.path('planforward/constrict');
         });
     };
     //functions
-    function passInfoToData(){
+    function passInfoToData() {
         var length = $scope.dataInfo.endDate.getMonth() - $scope.dataInfo.beginDate.getMonth() + 1;
         if (length <= 0) {
             length += 12;
@@ -291,6 +301,15 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location'
         $scope.planForward.init.Spend = $scope.dataInfo.spend;
         $scope.planForward.init.PlanMonths = length;
         $scope.planForward.init.Algorithm = 1;
+    }
+
+    function completeDataInfo() {
+        $scope.dataInfo.scenarioId = "SLFY-" +
+            filter('date')($scope.dataInfo.beginDate, 'MMMyyyy') + "-" +
+            filter('date')($scope.dataInfo.endDate, 'MMMyyyy') + "-" +
+            $scope.dataInfo.lmTouch.charAt(0) + "-000";
+        //$scope.dataInfo.dataThrough = filter('date')(new Date($scope.calender.minDate.getFullYear(),$scope.calender.minDate.getMonth(),0), 'yyyy-MM');
+        $scope.dataInfo.from = "from";
     }
 
     // main
@@ -310,198 +329,178 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'user', '$location'
     });
     // get data template and dataInfo
     $scope.planForward.init = analysis.tempData;
-    $scope.dataInfo = scenarios.dataInfo;
+    scenarios.dataInfo = $scope.dataInfo;
     //init calender
     $scope.calender.initDate();
 
 }]);
-//forward.controller('forwardInitCtrl', ['$scope', 'forwardManager', 'user', '$location', '$filter', 'history', 'actionObjInfo', function ($scope, manager, user, location, filter, history, actionObjInfo) {
-//
-//    // Calendar settings
-//    ////scope vars for calender settings
-//    $scope.opened = {};
-//    $scope.minDate= new Date(2017,1,1);
-//    $scope.format = 'MMMM-dd-yyyy';
-//    $scope.dateOptions = {
-//        formatYear: 'yyyy',
-//        startingDay: 1,
-//        minMode: 'month'
-//    };
-//    $scope.initDate = function () {
-//        var date = $scope.minDate;
-//        $scope.planForward.beginPeriod = new Date(date.getFullYear(), date.getMonth(), 1);
-//        $scope.planForward.endPeriod = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-//        $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0);
-//
-//    };
-//    $scope.open = function ($event, model) {
-//        $event.preventDefault();
-//        $event.stopPropagation();
-//        if (model === 'planForwardBeginPeriod') {
-//            $scope.opened.planForwardBeginPeriod = !$scope.opened.planForwardBeginPeriod;
-//            $scope.opened.planForwardEndPeriod = false;
-//        } else {
-//            $scope.opened.planForwardEndPeriod = !$scope.opened.planForwardEndPeriod;
-//            $scope.opened.planForwardBeginPeriod = false;
-//        }
-//    };
-//    $scope.getLastDate = function () {
-//        if (!$scope.planForward.endPeriod) {
-//            $scope.planForward.endPeriod = $scope.planForward.beginPeriod;
-//        }
-//        var d = new Date($scope.planForward.endPeriod);
-//        $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-//        $scope.modifyEndDate();
-//    };
-//    $scope.modifyEndDate = function () {
-//        if (!$scope.planForward.beginPeriod) {
-//            $scope.planForward.beginPeriod = $scope.minDate;
-//        }
-//        var d = new Date($scope.planForward.beginPeriod);
-//        if (d > $scope.maxDate) {
-//            d = $scope.maxDate
-//        }
-//        $scope.planForward.beginPeriod = new Date(d.getFullYear(), d.getMonth(), 1);
-//        if (new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0) < new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 8, 0)) {
-//            $scope.eMaxDate = new Date($scope.planForward.beginPeriod.getFullYear(), $scope.planForward.beginPeriod.getMonth() + 6, 0);
-//        } else {
-//            $scope.eMaxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 8, 0)
-//        }
-//        if ($scope.eMaxDate < $scope.planForward.endPeriod) {
-//            $scope.planForward.endPeriod = $scope.eMaxDate;
-//        }
-//        if ($scope.planForward.beginPeriod > $scope.planForward.endPeriod) {
-//            d = new Date($scope.planForward.beginPeriod);
-//            $scope.planForward.endPeriod = new Date(d.getFullYear(), d.getMonth() + 1, 0);
-//        }
-//    };
-//    // calender settings END
-//
-//    //scope functions
-//    $scope.logout = function () {
-//        window.sessionStorage.removeItem('username');
-//        window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
-//    };
-//    $scope.initForm = function () {
-//        $scope.planForward = {};
-//        $scope.planForward.init = {};
-//        $scope.brands = ['Shutterfly'];
-//        $scope.planForward.brand = $scope.brands[0];
-//        $scope.planForward.attribution = 'LTA';
-//        history.getHistoryDate(function (res) {
-//            console.log("from planforward");
-//            $scope.historydate = res;
-//            var d = new Date($scope.historydate[1]);
-//            $scope.minDate = new Date(d.getFullYear(), d.getMonth() + 2, 1);
-//            $scope.maxDate = new Date($scope.minDate.getFullYear(), $scope.minDate.getMonth() + 6, 0);
-//            console.log($scope.minDate);
-//            $scope.initDate();
-//        });
-//
-//        $scope.planForward.spend = "5000000";
-//        // tooltips
-//        $scope.brandTooltips = 'Please choose one of the brands from the list.';
-//        $scope.attrTooltips = 'Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.';
-//        $scope.beginPeriodTooltips = 'Please choose the begin time.';
-//        $scope.endPeriodTooltips = 'Please choose the end time.';
-//        $scope.spendTooltips = 'Portfolio Spend';
-//    };
-//    $scope.Next = function () {
-//        var length = $scope.planForward.endPeriod.getMonth() - $scope.planForward.beginPeriod.getMonth() + 1;
-//        if (length <= 0) {
-//            length += 12;
-//        }
-//        // first step input init
-//        $scope.planForward.init.UserName = $scope.user.name;
-//        $scope.planForward.init.Brand = $scope.planForward.brand;
-//        $scope.planForward.init.lmTouch = $scope.planForward.attribution === 'LTA' ? 'Last Touch' : 'Multi-Touch';
-//        $scope.planForward.init.StartingTime = filter('date')($scope.planForward.beginPeriod, 'yyyy-MM');
-//        $scope.planForward.init.EndingTime = filter('date')($scope.planForward.endPeriod, 'yyyy-MM');
-//        $scope.planForward.init.Spend = $scope.planForward.spend;
-//        $scope.planForward.init.PlanMonths = length;
-//        $scope.planForward.init.Algorithm = 1;
-//        //post input info to R
-//        manager.postData($scope.planForward.init, function (res) {
-//            console.log('from next() in forward/init');
-//            console.log(res);
-//            location.path('planforward/constrict');
-//
-//        });
-//    };
-//    // main
-//    user.getUser(function (user) {
-//        if (!user.name) {
-//            $scope.logout()
-//        }
-//        $scope.user = user;
-//    });
-//    $scope.initForm();
-//    while (actionObjInfo[0]) {
-//        actionObjInfo.shift();
-//    }
-//    manager.getTempData(function (data) {
-//        $scope.planForward.init = data;
-//    });
-//
-//}]);
 
-forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$location', '$filter', 'history', 'scenarioManager', function ($scope, manager, location, filter, history, scenarioManager) {
-    //check if data id exist in factory
-    manager.getName(function (name) {
-        if (!name) {
-            location.path("/planforward/init");
+forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '$location', '$filter', 'history', function ($scope, analysis, scenarios, location, filter, history) {
+    //scope vars
+    $scope.tooltips = {
+        brand: "Please choose one of the brands from the list.",
+        attr: "Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.",
+        beginPeriod: "Please choose the begin time.",
+        endPeriod: "Please choose the end time.",
+        spend: "Portfolio Spend",
+        included: "Do you need to include the data through the end time?"
+    };
+    $scope.dataInfo = {};
+    $scope.planForward = {
+        output: {
+            semBSF: 1,
+            semCSF: 1,
+            semPSF: 1,
+            semOSF: 1,
+            disSF: 1,
+            socSF: 1,
+            affSF: 1,
+            parSF: 1
+        },
+        history: {},
+        ControlChannelsDM: [],
+        ControlChannels: []
+    };
+    $scope.getJson = false;
+    $scope.error = false;
+    $scope.selectPlan = {
+        disable: {
+            semTotal: false,
+            semBrand: false,
+            semCard: false,
+            semPhotobook: false,
+            semOthers: false,
+            display: false,
+            social: false,
+            affiliates: false,
+            partners: false
+        },
+        checkBox: {
+            semBrand: false,
+            semCard: false,
+            semPhotobook: false,
+            semOthers: false,
+            display: false,
+            social: false,
+            affiliates: false,
+            partners: false
+        },
+        semTotalCheckBox: false,
+        count: function () {
+            var count = 0;
+            $scope.selectPlan.disable = {
+                semTotal: false,
+                semBrand: false,
+                semCard: false,
+                semPhotobook: false,
+                semOthers: false,
+                display: false,
+                social: false,
+                affiliates: false,
+                partners: false
+            };
+            Object.keys($scope.selectPlan.checkBox).forEach(function (key) {
+                if ($scope.selectPlan.checkBox[key]) {
+                    count++;
+                }
+            });
+            if (count > 2) {
+                if (!$scope.selectPlan.semTotalCheckBox) {
+                    $scope.selectPlan.disable.semTotal = true;
+                }
+            }
+            if (count > 5) {
+                Object.keys($scope.selectPlan.checkBox).forEach(function (key) {
+                    if (!$scope.selectPlan.checkBox[key]) {
+                        $scope.selectPlan.disable[key] = true;
+                    }
+                });
+            }
+            console.log($scope.selectPlan.disable.semTotal);
+        },
+        totCheck: function () {
+            if (!$scope.selectPlan.semTotalCheckBox) {
+                Object.keys($scope.selectPlan.checkBox).forEach(function (key) {
+                    $scope.selectPlan.checkBox[key] = key.toString().indexOf('sem') < 0 ? $scope.selectPlan.checkBox[key] : false;
+                });
+            } else {
+                Object.keys($scope.selectPlan.checkBox).forEach(function (key) {
+                    $scope.selectPlan.checkBox[key] = key.toString().indexOf('sem') < 0 ? $scope.selectPlan.checkBox[key] : true;
+                });
+            }
+            $scope.selectPlan.count();
+            fix();
+        },
+        subCheck: function () {
+            $scope.selectPlan.semTotalCheckBox = !!($scope.selectPlan.checkBox.semBrand && $scope.selectPlan.checkBox.semCard && $scope.selectPlan.checkBox.semPhotobook && $scope.selectPlan.checkBox.semOthers);
+            $scope.selectPlan.count();
+            fix();
         }
-    });
+    };
+
+    $scope.nextPage = function () {
+        spendValidate();
+        if (!$scope.error) {
+            passInfoToData();
+            //post data to R
+            analysis.postData($scope.planForward.output, $scope.dataInfo, function (res) {
+                console.log(res);
+                location.path('planforward/output');
+            });
+        }
+    };
 
     var count;
 
     function doGet() {
         if ($scope.getJson === false) {
-            manager.getData(function (data) {
+            analysis.getData(function (data) {
                 if (data) {
                     console.log("from doGet in forward/constrict after got Data");
                     console.log(data);
                     $scope.getJson = true;
                     $scope.planForward.output = data;
+                    history.getHistoryDate(function (res) {
+                        var d=new Date(res[1]);
+                        d=new Date(d.getFullYear(), d.getMonth()+2-$scope.planForward.output.PlanMonths,1);
+                        history.getHistoryData(filter('date')(d,'yyyy-MM'),res[1], function (history) {
+                            $scope.planForward.history = {
+                                semSR: history.SEM,
+                                semBSR: history.SEMBrand,
+                                semCSR: history.SEMCard,
+                                semOSR: history.SEMOther,
+                                semPSR: history.SEMPBook,
+                                disSR: history.Display,
+                                affSR: history.Affiliate,
+                                socSR: history.FB,
+                                parSR: history.Partners,
+                                totSR: history.Partners + history.FB + history.Affiliate + history.Display + history.SEM,
+                                semPR: history.SEM_MTA,
+                                disPR: history.Display_MTA,
+                                affPR: history.Affiliates_MTA,
+                                socPR: history.FB_MTA,
+                                parPR: history.Partners_MTA,
+                                totPR: history.SEM_MTA + history.Display_MTA + history.Affiliates_MTA + history.FB_MTA + history.Partners_MTA
+                            };
+                            if ($scope.planForward.output.lmTouch === "Last Touch") {
+                                $scope.planForward.history.semPR = history.SEM_LTA;
+                                $scope.planForward.history.disPR = history.Display_LTA;
+                                $scope.planForward.history.affPR = history.Affiliates_LTA;
+                                $scope.planForward.history.socPR = history.FB_LTA;
+                                $scope.planForward.history.parPR = history.Partners_LTA;
+                                $scope.planForward.history.totPR = history.SEM_LTA + history.Display_LTA + history.Affiliates_LTA + history.FB_LTA + history.Partners_LTA;
+                            }
+                            $scope.planForward.history.ROI = ($scope.planForward.history.totPR / $scope.planForward.history.totSR - 1) * 100;
+                            $scope.dataInfo.spend = $scope.planForward.history.totSR;
+                        });
+                    });
 
-                    //change type for calculating
+                    //prepare for show
                     $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
                     $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
                     $scope.planForward.output.semMin = $scope.planForward.output.semLB;
                     $scope.planForward.output.semMax = $scope.planForward.output.semUB;
-                    $scope.planForward.output.semBMin = $scope.planForward.output.semBLB;
-                    $scope.planForward.output.semBMax = $scope.planForward.output.semBUB;
-                    $scope.planForward.output.semCMin = $scope.planForward.output.semCLB;
-                    $scope.planForward.output.semCMax = $scope.planForward.output.semCUB;
-                    $scope.planForward.output.semPMin = $scope.planForward.output.semPLB;
-                    $scope.planForward.output.semPMax = $scope.planForward.output.semPUB;
-                    $scope.planForward.output.semOMin = $scope.planForward.output.semOLB;
-                    $scope.planForward.output.semOMax = $scope.planForward.output.semOUB;
-                    $scope.planForward.output.disMin = $scope.planForward.output.disLB;
-                    $scope.planForward.output.disMax = $scope.planForward.output.disUB;
-                    $scope.planForward.output.socMin = $scope.planForward.output.socLB;
-                    $scope.planForward.output.socMax = $scope.planForward.output.socUB;
-                    $scope.planForward.output.affMin = $scope.planForward.output.affLB;
-                    $scope.planForward.output.affMax = $scope.planForward.output.affUB;
-                    $scope.planForward.output.parMin = $scope.planForward.output.parLB;
-                    $scope.planForward.output.parMax = $scope.planForward.output.parUB;
-                    $scope.fix();
-
-                    //$scope.planForward.output.semPR = "";
-                    //$scope.planForward.output.disPR = "";
-                    //$scope.planForward.output.socPR = "";
-                    //$scope.planForward.output.affPR = "";
-                    //$scope.planForward.output.parPR = "";
-                    //$scope.planForward.output.semAR = "";
-                    //$scope.planForward.output.disAR = "";
-                    //$scope.planForward.output.socAR = "";
-                    //$scope.planForward.output.affAR = "";
-                    //$scope.planForward.output.parAR = "";
-                    history.getHistoryDate(function (d) {
-                        console.log('from history');
-                        console.log(d);
-                        $scope.planForward.output.dataThrough = d[1];
-                    });
+                    fix();
                     var b = new Date($scope.planForward.output.StartingTime);
                     b = new Date(b.getFullYear(), b.getMonth() + 1);
                     console.log(b);
@@ -542,94 +541,72 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
         }
     }
 
-    //initial controller scope
-    $scope.planForward = {
-        output: {
-            semBSF:1,
-            semCSF:1,
-            semPSF:1,
-            semOSF:1,
-            disSF:1,
-            socSF:1,
-            affSF:1,
-            parSF:1
-        },
-        history: {},
-        ControlChannelsDM: [],
-        ControlChannels: [],
-        selectPlan: {
-            semBrand: false,
-            semCard: false,
-            semPhotobook: false,
-            semOthers: false,
-            display: false,
-            social: false,
-            affiliates: false,
-            partners: false
-        },
-        semTotal: false
-    };
-    $scope.slideError = false;
-    $scope.getJson = false;
+    function prepareForShow() {
 
-    //checkbox validation
-    $scope.Count = function () {
-        var count = 0;
-        $scope.disable = {
-            semTotal: false,
-            semBrand: false,
-            semCard: false,
-            semPhotobook: false,
-            semOthers: false,
-            display: false,
-            social: false,
-            affiliates: false,
-            partners: false
-        };
-        Object.keys($scope.planForward.selectPlan).forEach(function (key) {
-            if ($scope.planForward.selectPlan[key]) {
-                count++;
-                // min=max=$scope.planForward.history[key];
-            }
-        });
-        if (count > 2) {
-            if (!$scope.planForward.semTotal) {
-                $scope.disable.semTotal = true;
-            }
+    }
+
+    function passInfoToData() {
+        $scope.planForward.output.Algorithm = 2;
+        $scope.planForward.output.AlgStartingTime = "";
+        $scope.planForward.output.AlgEndingTime = "";
+        $scope.planForward.output.AlgDuration = "";
+        $scope.planForward.output.Spend = $scope.dataInfo.spend;
+    }
+
+    function fix() {
+        $scope.planForward.output.semMin =  $scope.planForward.output.semLB;
+        $scope.planForward.output.semMax =  $scope.planForward.output.semUB;
+        $scope.planForward.output.semBMin = $scope.planForward.output.semBLB;
+        $scope.planForward.output.semBMax = $scope.planForward.output.semBUB;
+        $scope.planForward.output.semCMin = $scope.planForward.output.semCLB;
+        $scope.planForward.output.semCMax = $scope.planForward.output.semCUB;
+        $scope.planForward.output.semPMin = $scope.planForward.output.semPLB;
+        $scope.planForward.output.semPMax = $scope.planForward.output.semPUB;
+        $scope.planForward.output.semOMin = $scope.planForward.output.semOLB;
+        $scope.planForward.output.semOMax = $scope.planForward.output.semOUB;
+        $scope.planForward.output.disMin =  $scope.planForward.output.disLB;
+        $scope.planForward.output.disMax =  $scope.planForward.output.disUB;
+        $scope.planForward.output.socMin =  $scope.planForward.output.socLB;
+        $scope.planForward.output.socMax =  $scope.planForward.output.socUB;
+        $scope.planForward.output.affMin =  $scope.planForward.output.affLB;
+        $scope.planForward.output.affMax =  $scope.planForward.output.affUB;
+        $scope.planForward.output.parMin =  $scope.planForward.output.parLB;
+        $scope.planForward.output.parMax =  $scope.planForward.output.parUB;
+
+        if ($scope.selectPlan.checkBox.semBrand) {
+            $scope.planForward.output.semBMin = $scope.planForward.output.semBMax = $scope.planForward.history.semBSR;
         }
-        if (count > 5) {
-            Object.keys($scope.planForward.selectPlan).forEach(function (key) {
-                if (!$scope.planForward.selectPlan[key]) {
-                    $scope.disable[key] = true;
-                }
-            });
+        if ($scope.selectPlan.checkBox.semCard) {
+            $scope.planForward.output.semCMin = $scope.planForward.output.semCMax = $scope.planForward.history.semCSR;
         }
-    };
-    $scope.totCheck = function () {
-        if (!$scope.planForward.semTotal) {
-            Object.keys($scope.planForward.selectPlan).forEach(function (key) {
-                $scope.planForward.selectPlan[key] = key.toString().indexOf('sem') < 0 ? $scope.planForward.selectPlan[key] : false;
-            });
-        } else {
-            Object.keys($scope.planForward.selectPlan).forEach(function (key) {
-                $scope.planForward.selectPlan[key] = key.toString().indexOf('sem') < 0 ? $scope.planForward.selectPlan[key] : true;
-            });
+        if ($scope.selectPlan.checkBox.semPhotobook) {
+            $scope.planForward.output.semPMin = $scope.planForward.output.semPMax = $scope.planForward.history.semPSR;
         }
-        $scope.Count();
-    };
-    $scope.subCheck = function () {
-        $scope.planForward.semTotal = !!($scope.planForward.selectPlan.semBrand && $scope.planForward.selectPlan.semCard && $scope.planForward.selectPlan.semPhotobook && $scope.planForward.selectPlan.semOthers);
-        $scope.Count();
-    };
-    //min max validation
-    $scope.fix = function () {
-        $scope.slideError = false;
+        if ($scope.selectPlan.checkBox.semOthers) {
+            $scope.planForward.output.semOMin = $scope.planForward.output.semOMax = $scope.planForward.history.semOSR;
+        }
+        if ($scope.selectPlan.checkBox.display) {
+            $scope.planForward.output.disMin = $scope.planForward.output.disMax = $scope.planForward.history.disSR;
+        }
+        if ($scope.selectPlan.checkBox.social) {
+            $scope.planForward.output.socMin = $scope.planForward.output.socMax = $scope.planForward.history.socSR;
+        }
+        if ($scope.selectPlan.checkBox.affiliates) {
+            $scope.planForward.output.affMin = $scope.planForward.output.affMax = $scope.planForward.history.affSR;
+        }
+        if ($scope.selectPlan.checkBox.partners) {
+            $scope.planForward.output.parMin = $scope.planForward.output.parMax = $scope.planForward.history.parSR;
+        }
+        spendValidate();
+    }
+
+    function spendValidate() {
         $scope.planForward.output.semMin =
             Number($scope.planForward.output.semBMin) +
             Number($scope.planForward.output.semCMin) +
             Number($scope.planForward.output.semPMin) +
             Number($scope.planForward.output.semOMin);
-        var min =
+        $scope.min =
             Number($scope.planForward.output.semMin) +
             Number($scope.planForward.output.disMin) +
             Number($scope.planForward.output.socMin) +
@@ -641,74 +618,36 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'forwardManager', '$locati
             Number($scope.planForward.output.semCMax) +
             Number($scope.planForward.output.semPMax) +
             Number($scope.planForward.output.semOMax);
-        var max =
+        $scope.max =
             Number($scope.planForward.output.semMax) +
             Number($scope.planForward.output.disMax) +
             Number($scope.planForward.output.socMax) +
             Number($scope.planForward.output.affMax) +
             Number($scope.planForward.output.parMax);
 
-        if (Number($scope.planForward.output.Spend) < min) {
-            $scope.slideError = true;
-            $scope.slideErrorValue = Number($scope.planForward.output.Spend) - min;
-            return;
+        if (Number($scope.dataInfo.spend) < $scope.min || Number($scope.dataInfo.spend) > $scope.max) {
+            $scope.error = true;
         }
-        if (Number($scope.planForward.output.Spend) > max) {
-            $scope.slideError = true;
-            $scope.slideErrorValue = Number($scope.planForward.output.Spend) - max;
-        }
-    };
-    //post data to R
-    $scope.run = function () {
-        $scope.planForward.output.Algorithm = 2;
-        $scope.planForward.output.AlgStartingTime = "";
-        $scope.planForward.output.AlgEndingTime = "";
-        $scope.planForward.output.AlgDuration = "";
-
-        var beginDay = new Date($scope.planForward.output.StartingTime);
-        beginDay = new Date(beginDay.getFullYear(), beginDay.getMonth() + 1, 1);
-        var endDay = new Date($scope.planForward.output.EndingTime);
-        endDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1, 1);
-
-        $scope.planForward.output.scenarioId =
-            "SLFY-" + filter('date')(beginDay, 'MMMyyyy') +
-            "-" + filter('date')(endDay, 'MMMyyyy') + "-" +
-            $scope.planForward.output.lmTouch.charAt(0) + "-" + "000";
-        $scope.planForward.output.from = "forward";
-        //post data to R
-        manager.postData($scope.planForward.output, function (res) {
-            console.log(res);
-            location.path("planforward/output");
-        });
-    };
+        console.log($scope.error);
+    }
 
     //main
-
-    count = setInterval(doGet, 1000 * 1); //set frequency
-    history.getHistoryDate(function (d) {
-        $scope.planForward.output.dataThrough = d[1];
-    });
-    history.getHistoryData("2015-01", "2015-01", function (res) {
-        console.log("from history in planforward/constrict");
-        console.log(res);
-    });
+    //check objId
+    if (!analysis.objIds.current) {
+        location.path('planforward/init')
+    }
+    //get output Data
+    doGet();
+    count = setInterval(doGet, 1000 * 0.3);
+    $scope.dataInfo = scenarios.dataInfo;
+    console.log($scope.dataInfo);
     $scope.$on('$destroy', function () {
         clearInterval(count);
-    });
+    });//stop get request
 }]);
 
-forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location', '$filter', 'history', 'scenarioManager', function ($scope, manager, location, filter, history, scenarioManager) {
-    manager.getName(function (name) {
-        if (!name) {
-            location.path("/planforward/init");
-        } else {
-            scenarioManager.getScenarioById(name, function (scenario) {
-                console.log(scenario);
-                $scope.scenario = scenario;
-            })
-        }
-    });
-    //init controller scope
+forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$location', '$filter', 'user', function ($scope, analysis, scenarios, location, filter, user) {
+    //scope vars
     $scope.planForward = {
         output: {
             semSD: 1000.123123123123,
@@ -725,29 +664,53 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
     };
     $scope.compareChart = {
         data: [
-            {title: "SEM", value: $scope.planForward.output.semSD},
-            {title: "SEM-Brand", value: $scope.planForward.output.semBSD},
-            {title: "SEM-Card", value: $scope.planForward.output.semCSD},
-            {title: "SEM-Photobook", value: $scope.planForward.output.semPSD},
-            {title: "SEM-Others", value: $scope.planForward.output.semOSD},
-            {title: "Display", value: $scope.planForward.output.disSD},
-            {title: "Social", value: $scope.planForward.output.socSD},
-            {title: "Affiliates", value: $scope.planForward.output.affSD},
-            {title: "Partners", value: $scope.planForward.output.parSD},
-            {title: "Portfolio Total", value: $scope.planForward.output.totSD}
+            {title: "SEM", value: 0, string: ""},
+            {title: "SEM-Brand", value: 0, string: ""},
+            {title: "SEM-Card", value: 0, string: ""},
+            {title: "SEM-Photobook", value: 0, string: ""},
+            {title: "SEM-Others", value: 0, string: ""},
+            {title: "Display", value: 0, string: ""},
+            {title: "Social", value: 0, string: ""},
+            {title: "Affiliates", value: 0, string: ""},
+            {title: "Partners", value: 0, string: ""},
+            {title: "Portfolio Total", value: 0, string: ""}
         ],
         config: {
             width: 800,
-            barHeight: 45,
-            margin: {left: 130, top: 30, right: 100, bottom: 30}
+            barHeight: 28,
+            margin: {left: 130, top: 30, right: 200, bottom: 30}
         }
     };
     $scope.slideError = false;
-    history.getHistoryDate(function (d) {
-        $scope.historydate = d[1];
-    });
+    $scope.getJson = false;
+    $scope.showme = false;
+    $scope.planforwardContentSize = 'col-sm-12';
+    $scope.showGraph = 'Show Graph';
 
-    //reset slideValue
+    //scope functions
+    $scope.edit = function () {
+        location.path('planforward/edit');
+    }; //finished
+    $scope.export = function () {
+        location.path('myscenarios/export');
+    }; //pause
+    $scope.share = function () {
+        location.path('myscenarios/share');
+    };  // pause
+    $scope.toggle = function () {
+
+        if ($scope.showme == false) {
+            $scope.planforwardContentSize = 'col-sm-6';
+            $scope.showme = true;
+            $scope.showGraph = 'Hide Graph';
+        }
+        else {
+            $scope.planforwardContentSize = 'col-sm-12';
+            $scope.showme = false;
+            $scope.showGraph = 'Show Graph';
+        }
+    }; // show&hide graph
+
     $scope.reSet = function () {
         //Slide=AS;
         $scope.slideError = false;
@@ -771,54 +734,28 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             Number($scope.planForward.output.affSlide) +
             Number($scope.planForward.output.parSlide);
     };
-    //reRun
     $scope.ReRun = function () {
-        $scope.planForward.output.Algorithm = 3;
-        $scope.planForward.output.AlgStartingTime = "";
-        $scope.planForward.output.AlgEndingTime = "";
-        $scope.planForward.output.AlgDuration = "";
+        passInfoToData();
         //SCENARIOID
-        var beginDay, endDay;
-        beginDay = new Date($scope.planForward.output.StartingTime);
-        beginDay = new Date(beginDay.getFullYear(), beginDay.getMonth() + 1, 1);
-        endDay = new Date($scope.planForward.output.EndingTime);
-        endDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1, 1);
-        $scope.planForward.output.scenarioId =
-            "SLFY-" + filter('date')(beginDay, 'MMMyyyy') + "-" +
-            filter('date')(endDay, 'MMMyyyy') + "-" +
-            $scope.planForward.output.lmTouch.charAt(0) + "-" + "00X";
-        //
-        $scope.planForward.output.dataThrough = $scope.historydate;
-        $scope.planForward.output.from = "forward";
+        $scope.scenario.scenarioId = $scope.scenario.scenarioId.slice(0, -1) + "X";
         //post data to R
-        manager.postData($scope.planForward.output, function (res) {
+        analysis.postData($scope.planForward.output, function (res) {
             console.log(res);
             var count;
             $scope.getJson = false;
             count = setInterval(doGet, 1000 * 10); //set frequency
             function doGet() {
                 if ($scope.getJson === false) {
-                    manager.getData(function (data) {
+                    analysis.getData(function (data) {
                         if (data) {
                             console.log("from doGet in rerun in forward/output");
                             console.log(data);
                             $scope.getJson = true;
                             $scope.planForward.output = data;
-                            manager.getName(function (id) {
-                                scenarioManager.editScenario(data.UserName, id, {exist: true}, function (res) {
-                                    console.log(res);
-                                })
-                            });
 
-                            var beginDay, endDay;
-                            beginDay = new Date($scope.planForward.output.StartingTime);
-                            beginDay = new Date(beginDay.getFullYear(), beginDay.getMonth() + 1, 1);
-                            endDay = new Date($scope.planForward.output.EndingTime);
-                            endDay = new Date(endDay.getFullYear(), endDay.getMonth() + 1, 1);
-                            $scope.planForward.output.scenarioId =
-                                "SLFY-" + filter('date')(beginDay, 'MMMyyyy') + "-" +
-                                filter('date')(endDay, 'MMMyyyy') + "-" +
-                                $scope.planForward.output.lmTouch.charAt(0) + "-" + "00X";
+                            scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
+                                console.log(res);
+                            });
 
                             //get sum for semTotal's elements
                             $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
@@ -873,20 +810,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
             }
         });
     };
-    $scope.share = function () {
-
-        location.path('myscenarios/share');
-    };
-    $scope.export = function () {
-        //main
-        location.path('/myscenarios/export');
-    };
-    $scope.edit = function () {
-
-        location.path('/planforward/edit');
-    };
-    //slide validation
-    $scope.fix = function () {
+    $scope.slideValidate = function () {
         $scope.planForward.output.semSlide =
             Number($scope.planForward.output.semCSlide) +
             Number($scope.planForward.output.semPSlide) +
@@ -977,22 +901,84 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
         sumValidate();
     };
 
-    //get the initial Data from the server side
     var count;
+
+    //functions
+
+    function calculateDifference() {
+
+        $scope.compareChart.data = [
+            {
+                title: "SEM",
+                value: $scope.lookBack.difference.semSD / $scope.lookBack.history.semSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.semSD), 0)
+            },
+            {
+                title: "SEM-Brand",
+                value: $scope.lookBack.difference.semBSD / $scope.lookBack.history.semBSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.semBSD), 0)
+            },
+            {
+                title: "SEM-Card",
+                value: $scope.lookBack.difference.semCSD / $scope.lookBack.history.semCSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.semCSD), 0)
+            },
+            {
+                title: "SEM-Photobook",
+                value: $scope.lookBack.difference.semPSD / $scope.lookBack.history.semPSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.semPSD), 0)
+            },
+            {
+                title: "SEM-Others",
+                value: $scope.lookBack.difference.semOSD / $scope.lookBack.history.semOSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.semOSD), 0)
+            },
+            {
+                title: "Display",
+                value: $scope.lookBack.difference.disSD / $scope.lookBack.history.disSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.disSD), 0)
+            },
+            {
+                title: "Social",
+                value: $scope.lookBack.difference.socSD / $scope.lookBack.history.socSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.socSD), 0)
+            },
+            {
+                title: "Affiliates",
+                value: $scope.lookBack.difference.affSD / $scope.lookBack.history.affSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.affSD), 0)
+            },
+            {
+                title: "Partners",
+                value: $scope.lookBack.difference.parSD / $scope.lookBack.history.parSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.parSD), 0)
+            },
+            {
+                title: "Portfolio Total",
+                value: $scope.lookBack.difference.totSD / $scope.lookBack.history.totSR,
+                string: filter('number')(Math.abs($scope.lookBack.difference.totSD), 0)
+            }
+        ];
+
+    }
+
+    function passInfoToData() {
+        $scope.planForward.output.Algorithm = 3;
+        $scope.planForward.output.AlgStartingTime = "";
+        $scope.planForward.output.AlgEndingTime = "";
+        $scope.planForward.output.AlgDuration = "";
+    }
 
     function doGet() {
         if ($scope.getJson === false) {
-            manager.getData(function (data) {
+            analysis.getData(function (data) {
                 if (data) {
                     console.log("from doGet in forward/output");
                     console.log(data);
                     $scope.getJson = true;
-                    manager.getName(function (id) {
-                        scenarioManager.editScenario(data.UserName, id, {exist: true}, function (res) {
-                            console.log(res);
-                        })
+                    scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
+                        console.log(res);
                     });
-
                     $scope.planForward.output = data;
                     $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
                     $scope.planForward.output.semMin = Number($scope.planForward.output.semBMin) + Number($scope.planForward.output.semCMin) + Number($scope.planForward.output.semPMin) + Number($scope.planForward.output.semOMin);
@@ -1050,26 +1036,20 @@ forward.controller('forwardOutputCtrl', ['$scope', 'forwardManager', '$location'
         }
     }
 
-    $scope.getJson = false;
-    count = setInterval(doGet, 1000 * 10); //set frequency
-
-    //graph Settings
-    $scope.showme = false;
-    $scope.planforwardContentSize = 'col-sm-12';
-    $scope.showGraph = 'Show Graph';
-    $scope.toggle = function () {
-
-        if ($scope.showme == false) {
-            $scope.planforwardContentSize = 'col-sm-6';
-            $scope.showme = true;
-            $scope.showGraph = 'Hide Graph';
-        }
-        else {
-            $scope.planforwardContentSize = 'col-sm-12';
-            $scope.showme = false;
-            $scope.showGraph = 'Show Graph';
-        }
-    };
+    //main
+    //check objId
+    if (!analysis.objIds.current) {
+        location.path("/lookback/init");
+    }
+    user.getUser(function (user) {
+        $scope.user = user;
+    });
+    scenarios.getScenarioById(analysis.objIds.current, function (scenario) {
+        console.log(scenario);
+        $scope.scenario = scenario;
+    });
+    doGet();
+    count = setInterval(doGet, 1000 * 0.3); //set frequency
 
     $scope.$on('$destroy', function () {
         clearInterval(count);
