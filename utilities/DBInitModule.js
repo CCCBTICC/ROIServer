@@ -12,7 +12,7 @@ function initDB(db) {
                 {
                     username: 'user1',
                     password: 'test',
-                    scenarios: [new ObjectID('55b068284038186f07f83a82')]
+                    scenarios: []
                 },
                 {
                     username: 'Jorie',

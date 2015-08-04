@@ -10,47 +10,48 @@ var ObjectId = require('mongodb').ObjectID;
 
 
 
-router.post('/status',function(req, res) {
-    var list = req.body;
-    var currentDate = new Date();
-    list.forEach(function (listSingle, index) {
-        listSingle.scenario = Rmodule.getRoutput(listSingle.id);
-        if(!listSingle.scenario){
-            req.db.collection('scenarios').findOne({_id:new ObjectId(listSingle.id)},{}, function (err,scenario) {
-                if(scenario){
-                    //listSingle.runningTime = scenario.createDate;
-                    listSingle.runningTime = currentDate.getTime() - scenario.createDate.getTime();
-                }else{
-                   console.log("can't find:"+listSingle.id);
-                }
-            });
-        }else{
-            listSingle.runningTime = "0";
-        }
-    });
-     setTimeout(function(){res.send(list);},500);
-    /*
-    list.forEach(function (listSingle, index) {
-        scenariosList.push(listSingle.id);
-        listSingle.scenario = Rmodule.getRoutput(listSingle.id);
-    if(scenariosList.length === list.length){
-        req.db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
-            console.log(result);
-            if (!err) {
-                result.forEach(function (resultSingle, index) {
-                    //single.runningTime = currentDate.getTime() - scenario.createDate.getTime();
-                    resultSingle.runningTime = resultSingle.createDate;
-                });
-                res.send(list);
-            } else {
-                res.send({err: err});
-            }
-        });
-    }
-    });
-    */
-
-});
+//router.post('/status',function(req, res) {
+//    var list = req.body;
+//    var currentDate = new Date();
+//    list.forEach(function (listSingle, index) {
+//        //listSingle.scenario = Rmodule.getRoutput(listSingle.id);
+//        if(!Rmodule.getRoutput(listSingle.id)){
+//            req.db.collection('scenarios').findOne({_id:new ObjectId(listSingle.id)},{}, function (err,scenario) {
+//                if(scenario){
+//                    //listSingle.runningTime = scenario.createDate;
+//                    listSingle.runningTime = currentDate.getTime() - scenario.createDate.getTime();
+//                    listSingle.final = scenario.final;
+//                }else{
+//                   console.log("can't find:"+listSingle.id);
+//                }
+//            });
+//        }else{
+//            listSingle.runningTime = "0";
+//        }
+//    });
+//     setTimeout(function(){res.send(list);},500);
+//    /*
+//    list.forEach(function (listSingle, index) {
+//        scenariosList.push(listSingle.id);
+//        listSingle.scenario = Rmodule.getRoutput(listSingle.id);
+//    if(scenariosList.length === list.length){
+//        req.db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
+//            console.log(result);
+//            if (!err) {
+//                result.forEach(function (resultSingle, index) {
+//                    //single.runningTime = currentDate.getTime() - scenario.createDate.getTime();
+//                    resultSingle.runningTime = resultSingle.createDate;
+//                });
+//                res.send(list);
+//            } else {
+//                res.send({err: err});
+//            }
+//        });
+//    }
+//    });
+//    */
+//
+//});
 
 //  the list json data
 router.get('/:objectId', function (req, res) {
@@ -68,6 +69,9 @@ router.post('/', function (req, res) {
     var requestData = req.body.data;
     var reqAction = req.body.action;
     switch (reqAction) {
+        case "status":
+            status(req.db, requestData, res);
+            break;
         case "list":
             list(req.db, requestData, res);
             break;
@@ -85,6 +89,26 @@ router.post('/', function (req, res) {
             break;
     }
 });
+
+function status(db, requestData, res){
+    var currentDate = new Date();
+    requestData.forEach(function (listSingle, index) {
+
+            db.collection('scenarios').findOne({_id:new ObjectId(listSingle.id)},{}, function (err,scenario) {
+                if(scenario){
+                    listSingle.final = scenario.final;
+                    if((!Rmodule.getRoutput(listSingle.id))) {
+                        listSingle.runningTime = currentDate.getTime() - scenario.createDate.getTime();
+                    }else{
+                        listSingle.runningTime = "0";
+                    }
+                }else{
+                    console.log("can't find:"+listSingle.id);
+                }
+            });
+    });
+    setTimeout(function(){res.send(requestData);},500);
+}
 
 function share(db, requestData, res) {
     var scenarioId = requestData.scenarioId;

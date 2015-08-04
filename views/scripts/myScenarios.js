@@ -14,6 +14,21 @@ scenariosApp.factory('scenarioManager', function ($http) {
         }).success(callback);
     };
     return {
+        checkScenariosStatus: function (idArray, cb) {
+            var actionData = [];
+            idArray.forEach(function(idArraySingle){
+                var tempObj = {
+                    "id": idArraySingle,
+                    "final": "",
+                    "runningTime":""};
+                actionData.push(tempObj);
+            });
+            var data = {
+                action: 'status',
+                data: actionData
+            };
+            post(data, cb);
+        },
         getScenarios: function (username, cb) {
             var data = {
                 action: 'list',
@@ -225,16 +240,58 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     while(actionObjInfo[0]){
         actionObjInfo.shift();
     }
+
+    var tempIdArray = [];
     user.getUser(function (user) {
         if(!user.name){$scope.logout();}
         $scope.user = user;
         scenarioManager.getScenarios($scope.user.name, function (data) {
             console.log(data);
             $scope.scenarios = data;
+            data.forEach(function(singleScenario){
+                tempIdArray.push(singleScenario._id);
+            });
         });
     });
     // check status
 
+    setTimeout(function(){getStatus();},200);
+    var checkStatusLoop = setInterval(getStatus,1*1000);
+
+    $scope.$on('$destroy', function () {
+        clearInterval(checkStatusLoop);
+    });
+    $scope.yesOrNo = function(s){
+        if(s === "No"){
+            return false;
+        }else{return true;}
+    };
+    $scope.runCheck = function(s){
+        if(s === "0"){
+            return false;
+        }else{return true;}
+    };
+    $scope.convertRunningTime = function(t){
+        var s = Number(Math.floor(t/1000));
+        return Number(Math.floor(s/60)+1000).toString().slice(-2) + ":"+Number(s%60+1000).toString().slice(-2);
+
+    };
+    function getStatus() {
+        scenarioManager.checkScenariosStatus(tempIdArray, function(data){
+            console.log(tempIdArray);
+            //$scope.tempIdArray = tempIdArray;
+            //console.log(data);
+            $scope.scenarios.forEach(function(singleScenario){
+                data.forEach(function(singleData){
+                    if(singleScenario._id === singleData.id){
+                        singleScenario.final          =   singleData.final;
+                        singleScenario.runningTime    =   singleData.runningTime;
+                    }
+                });
+            });
+            console.log($scope.scenarios);
+        });
+    }
 });
 scenariosApp.controller("scenariosExportCtrl", function ($scope, forwardManager, scenarioManager, $location, actionObjInfo, history) {
     //vars

@@ -9,6 +9,7 @@
  *****      0.4 - customer text input        *****
  *****      0.5 - a                          *****
  *****      0.6 - final font                 *****
+ *****      0.7 - tooltip                    *****
  *****  1 - Login Page                       *****
  *****  2 - Shell Page                       *****
  *****      2.1 - Navigation bar             *****
@@ -179,12 +180,16 @@ a, a:visited, a:focus, a:active, a:hover{
     font-size:19px;
 }
 
-/*  font awesome  */
+/*  final  */
 /*  General  */
 .final{
     color:#f05323;
     font-size:12px;
 }
+/*  tooltip  */
+/*  General  */
+.grey-tooltip + .tooltip > .tooltip-inner {background-color: #85abc1; color:#333333;}
+.grey-tooltip + .tooltip > .tooltip-arrow { border-bottom-color:#85abc1; color:#333333;}
 
 
 /*************************************************
