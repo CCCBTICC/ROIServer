@@ -21,27 +21,27 @@
                 <thead>
                 <tr>
                     <!--<th class="col-0" rowspan="1"><div></div></th>-->
-                    <th class="col-3" rowspan="1">ID</th>
-                    <th class="col-2" rowspan="1">Name</th>
-                    <th class="col-1" rowspan="1">Owner</th>
-                    <th class="col-2" rowspan="1">Create Date</th>
-                    <th class="col-2" rowspan="1">Planned Spend</th>
-                    <th class="col-2" rowspan="1">Data Through</th>
-                    <th class="col-1" rowspan="1">History Included?</th>
-                    <th class="col-3" rowspan="1">Note</th>
+                    <th class="col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('scenarioId')">ID</a> <span class="sortorder" ng-show="predicate === 'scenarioId'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('name')">Name</a> <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('owner')">Owner</a> <span class="sortorder" ng-show="predicate === 'owner'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('createDate')">Create Date</a> <span class="sortorder" ng-show="predicate === 'createDate'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('spend')">Planned Spend</a><span class="sortorder" ng-show="predicate === 'spend'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('dataThrough')">Data Through</a><span class="sortorder" ng-show="predicate === 'dataThrough'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('included')">History <span class="sortorder" ng-show="predicate === 'included'" ng-class="{reverse:reverse}"></span> Included?</a></th>
+                    <th class="col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('note')">Note</a><span class="sortorder" ng-show="predicate === 'note'" ng-class="{reverse:reverse}"></span></th>
                 </tr>
                 </thead>
                 <tbody class="row-2">
-                <tr ng-repeat="scenario in scenarios" ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
+                <tr ng-repeat="scenario in scenarios | orderBy:predicate:reverse" ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
                     <!--<td class="check non-number col-0">-->
                         <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
                     <td class="scenario-id col-3"><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)">(F)</i> </td>
-                    <td class="non-number col-2">{{scenario.name}} {{scenario.final}} </td>
+                    <td class="non-number col-2">{{scenario.name}}</td>
                     <td class="non-number col-1">{{scenario.owner}}</td>
                     <td class="non-number col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>
                     <td class="non-number col-2">{{scenario.spend | formatCurrency}}</td>
-                    <td class="non-number col-2">{{scenario.dataThrough}}</td>
+                    <td class="non-number col-2">{{scenario.dataThrough | date: 'MMM-yyyy'}}</td>
                     <td class="yes-no col-1">{{scenario.included}}</td>
                     <td class="non-number col-3">{{scenario.note}}</td>
                 </tr>

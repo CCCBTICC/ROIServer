@@ -172,6 +172,7 @@ input[type=checkbox]{
 a, a:visited, a:focus, a:active, a:hover{
     outline:0 none !important;
 }
+
 /*  font awesome  */
 /*  General  */
 
@@ -402,6 +403,8 @@ a, a:visited, a:focus, a:active, a:hover{
     transition: padding-left .3s;
 }
 
+
+
 /*************************************************
  ******                                     ******
  ******            Views Settings           ******
@@ -452,6 +455,17 @@ a, a:visited, a:focus, a:active, a:hover{
      max-height: calc(100vh - 205px);
     position: relative;
     width:100.9%;
+}
+.table-responsive .sortorder:after {
+    content: '\25b2';
+    color:#333333;
+}
+.table-responsive .sortorder.reverse:after {
+    content: '\25bc';
+    color:#333333;
+}
+.table-responsive a{
+    color:#333333;
 }
 
 table.roi-table {
@@ -510,6 +524,7 @@ table.roi-table tr > .col-2 {
     min-width: 120px;
     max-width: 120px;
     overflow: hidden;
+    padding:5px;
 }
 
 table.roi-table tr > .col-3 {
@@ -588,7 +603,7 @@ table.roi-table tr > td.non-number {
     text-align: left;
 }
 table.roi-table tr > td.scenario-id {
-    padding-left: 1px;
+    padding-left: 3px;
     text-align: left;
 }
 table.roi-table tr > td.yes-no {

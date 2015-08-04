@@ -255,27 +255,39 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     });
     // check status
 
-    setTimeout(function(){getStatus();},200);
-    var checkStatusLoop = setInterval(getStatus,1*1000);
+    //setTimeout(function(){getStatus();},200);
+    setTimeout(function(){getStatus();},500);
+    var checkStatusLoop = setInterval(getStatus,5*1000);
 
     $scope.$on('$destroy', function () {
         clearInterval(checkStatusLoop);
     });
+
     $scope.yesOrNo = function(s){
         if(s === "No"){
             return false;
         }else{return true;}
     };
+
     $scope.runCheck = function(s){
         if(s === "0"){
             return false;
         }else{return true;}
     };
+
     $scope.convertRunningTime = function(t){
         var s = Number(Math.floor(t/1000));
         return Number(Math.floor(s/60)+1000).toString().slice(-2) + ":"+Number(s%60+1000).toString().slice(-2);
-
     };
+
+    $scope.order = function(predicate) {
+        $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
+        $scope.predicate = predicate;
+    };
+
+    $scope.predicate = 'createDate';
+    $scope.reverse = true;
+
     function getStatus() {
         scenarioManager.checkScenariosStatus(tempIdArray, function(data){
             console.log(tempIdArray);
