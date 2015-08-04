@@ -191,7 +191,11 @@ a, a:visited, a:focus, a:active, a:hover{
 /*  General  */
 .grey-tooltip + .tooltip > .tooltip-inner {background-color: #85abc1; color:#333333;}
 .grey-tooltip + .tooltip > .tooltip-arrow { border-bottom-color:#85abc1; color:#333333;}
-
+form .tooltip-inner {
+    max-width: 160px;
+    /* If max-width does not work, try using width instead */
+    width:120px;
+}
 
 /*************************************************
  ******                                     ******
@@ -454,7 +458,7 @@ a, a:visited, a:focus, a:active, a:hover{
 .table-responsive {
      max-height: calc(100vh - 205px);
     position: relative;
-    width:100.9%;
+    width:99.9%;
 }
 .table-responsive .sortorder:after {
     content: '\25b2';
@@ -510,7 +514,7 @@ table.roi-table tr:first-child > th:first-child {
 
 table.roi-table tr > .col-0 {
     min-width: 40px;
-    max-width: 40px;
+    max-width: 60px;
     overflow: hidden;
 }
 
@@ -522,32 +526,32 @@ table.roi-table tr > .col-1 {
 
 table.roi-table tr > .col-2 {
     min-width: 120px;
-    max-width: 120px;
+    max-width: 160px;
     overflow: hidden;
     padding:5px;
 }
 
 table.roi-table tr > .col-3 {
     min-width: 220px;
-    max-width: 220px;
+    max-width: 300px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-4 {
     min-width: 480px;
-    max-width: 480px;
+    max-width: 520px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-5 {
     min-width: 600px;
-    max-width: 600px;
+    max-width: 640px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-6 {
     min-width: 720px;
-    max-width: 720px;
+    max-width: 760px;
     overflow: hidden;
 }
 
