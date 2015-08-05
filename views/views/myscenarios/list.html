@@ -43,7 +43,7 @@
                     <!--<td class="check non-number col-0">-->
                         <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
-                    <td class="scenario-id col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-show="runCheck(scenario.runningTime)"></i> </td>
+                    <td class="scenario-id col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-hide="!yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-hide="!runCheck(scenario.runningTime)"></i> </td>
                     <td class="non-number col-2">{{scenario.name}}</td>
                     <td class="non-number col-1">{{scenario.owner}}</td>
                     <td class="non-number col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>
