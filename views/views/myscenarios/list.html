@@ -28,14 +28,14 @@
                 <thead>
                 <tr>
                     <!--<th class="col-0" rowspan="1"><div></div></th>-->
-                    <th class="col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('scenarioId')">ID</a> <span class="sortorder" ng-show="predicate === 'scenarioId'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('name')">Name</a> <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('owner')">Owner</a> <span class="sortorder" ng-show="predicate === 'owner'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('createDate')">Create Date</a> <span class="sortorder" ng-show="predicate === 'createDate'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('spend')">Planned Spend</a><span class="sortorder" ng-show="predicate === 'spend'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('dataThrough')">Data Through</a><span class="sortorder" ng-show="predicate === 'dataThrough'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('included')">History <span class="sortorder" ng-show="predicate === 'included'" ng-class="{reverse:reverse}"></span> Included?</a></th>
-                    <th class="col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('note')">Note</a><span class="sortorder" ng-show="predicate === 'note'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('scenarioId')">ID</a> <span class="sortorder" ng-show="predicate === 'scenarioId'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('name')">Name</a> <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('owner')">Owner</a> <span class="sortorder" ng-show="predicate === 'owner'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('createDate')">Create Date</a> <span class="sortorder" ng-show="predicate === 'createDate'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('spend')">Planned Spend</a><span class="sortorder" ng-show="predicate === 'spend'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('dataThrough')">Data Through</a><span class="sortorder" ng-show="predicate === 'dataThrough'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('included')">History <span class="sortorder" ng-show="predicate === 'included'" ng-class="{reverse:reverse}"></span> Included?</a></th>
+                    <th class="list-col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('note')">Note</a><span class="sortorder" ng-show="predicate === 'note'" ng-class="{reverse:reverse}"></span></th>
                 </tr>
                 </thead>
                 <tbody class="row-2">
@@ -43,14 +43,14 @@
                     <!--<td class="check non-number col-0">-->
                         <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
-                    <td class="scenario-id col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-hide="!yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-hide="!runCheck(scenario.runningTime)"></i> </td>
-                    <td class="non-number col-2">{{scenario.name}}</td>
-                    <td class="non-number col-1">{{scenario.owner}}</td>
-                    <td class="non-number col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>
-                    <td class="non-number col-2">{{scenario.spend | formatCurrency}}</td>
-                    <td class="non-number col-2">{{scenario.dataThrough | date: 'MMM-yyyy'}}</td>
-                    <td class="yes-no col-1">{{scenario.included}}</td>
-                    <td class="non-number col-3">{{scenario.note}}</td>
+                    <td class="scenario-id list-col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-hide="!yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-hide="!runCheck(scenario.runningTime)"></i> </td>
+                    <td class="non-number list-col-2">{{scenario.name}}</td>
+                    <td class="non-number list-col-1">{{scenario.owner}}</td>
+                    <td class="non-number list-col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>
+                    <td class="non-number list-col-2">{{scenario.spend | formatCurrency}}</td>
+                    <td class="non-number list-col-2">{{scenario.dataThrough | date: 'MMM-yyyy'}}</td>
+                    <td class="yes-no list-col-1">{{scenario.included}}</td>
+                    <td class="non-number list-col-3">{{scenario.note}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -66,7 +66,7 @@
                   ng-click="compare()">compare</button>
                 </div>
                 <div class="col-sm-3">
-            <div class="btn-group" dropdown>
+            <div class="btn-group dropup" dropdown>
                 <button class="btn btn-default" ng-class="{'disabled':operations.retrieve.disable}"
                       ng-click="retrive()">retrieve</button>
                 <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
@@ -80,7 +80,7 @@
             </div>
                 </div>
                 <div class="col-sm-3">
-            <div class="btn-group" dropdown>
+            <div class="btn-group dropup" dropdown>
                 <button class="btn btn-default" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</button>
                 <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
                     <span class="caret"></span>

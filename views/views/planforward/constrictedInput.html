@@ -7,41 +7,61 @@
             <li>Constraints Input</li>
         </ol>
     </div>
-    <div class="waiting" style="height: 400px;" ng-hide="getJson">
+    <div class="waiting" style="height: 400px;" ng-hide="getJson" id="progress">
         <div class="jumbotron">
             <h2>Tool is calculating the most optimal scenario for you.</h2>
+
             <h2>Result will appear shortly!</h2>
             <!--<h3>(Average waiting time is 10min.)</h3>-->
         </div>
 
     </div>
-    <div class="row">
+    <div class="row" id="info">
         <div class="col-sm-12 well well-sm" ng-show="getJson">
-            <label>Brand</label>: {{planForward.output.Brand}}
-            <label>Attribution</label>: {{planForward.output.lmTouch}}
-            <label>Begin Period</label>: {{planForward.output.StartingTime | date: 'MMM-dd-yyyy'}}
-            <label>End Period</label>: {{planForward.output.EndingTime | date: 'MMM-dd-yyyy'}}
-            <label>Portfolio Spend </label>: {{planForward.output.Spend | formatCurrency}}
-            <label>Data through</label>: {{planForward.output.dataThrough}}
-            <!--{{"                            "}}-->
+            <label>Scenario ID:</label>{{dataInfo.scenarioId}} <br>
+            <label>Brand</label>: {{dataInfo.brand}}
+            <label>Attribution</label>: {{dataInfo.lmTouch}}
+            <label>Begin Period</label>: {{dataInfo.beginDate | date: 'MMM-yyyy'}}
+            <label>End Period</label>: {{dataInfo.endDate | date: 'MMM-dd-yyyy'}}
+            <label>Data through</label>: {{dataInfo.dataThrough | date: 'MMM-dd-yyyy'}}
         </div>
     </div>
-    <div class="row" ng-show="getJson">
-        <div class="col-sm-12">
+    <div class="row" id="spend" ng-show="getJson">
+        <br>
+
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="lookBackSpend" class="col-sm-3 control-label">Portfolio Spend :</label>
+
+                <div class="col-sm-4">
+                    <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend"
+                           ng-change="error=false" format-input>
+                    <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
+                </div>
+                <div class="col-sm-1 help-info">
+                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div class="row" id="data" ng-show="getJson">
+        <div class="col-sm-12 col-md-11 col-xs-12 col-lg-9">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-condensed roi-table">
                     <thead>
                     <tr>
-                        <th class="col-1" rowspan="2">Portfolio Channels</th>
+                        <th class="col-1" rowspan="2" style="width:150px">Portfolio Channels</th>
                         <th class="col-0" rowspan="2">Maintain current Spend?</th>
                         <th class="col-1" rowspan="2">Lower Bound</th>
-                        <th class="col-3" colspan="2">Spend Constraints</th>
+                        <th class="col-2" colspan="2">Spend Constraints</th>
                         <th class="col-1" rowspan="2">Upper Bound</th>
-                        <th class="col-0" rowspan="2">Scaling Factor</th>
+                        <th class="col-0" rowspan="2" style="width: 80px">Scaling Factor</th>
                     </tr>
                     <tr>
-                        <th class="col-2">Minimum</th>
-                        <th class="col-2">Maximum</th>
+                        <th class="col-1">Minimum</th>
+                        <th class="col-1">Maximum</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -52,231 +72,262 @@
                         </td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.semTotal" ng-disabled="disable.semTotal"
-                                       ng-click="totCheck()">
+                                <input type="checkbox" ng-model="selectPlan.semTotalCheckBox"
+                                       ng-disabled="selectPlan.disable.semTotal"
+                                       ng-click="selectPlan.totCheck()">
                             </label>
                         </td>
                         <td>{{planForward.output.semLB | formatCurrency}}</td>
-                        <td ng-class="{disabled:planForward.semTotal}">
-                            <div ng-hide="planForward.semTotal">{{planForward.output.semMin | formatCurrency}}</div>
+                        <td ng-class="{disabled:selectPlan.semTotalCheckBox}">
+                            <div>{{planForward.output.semMin | formatCurrency}}</div>
                         </td>
-                        <td ng-class="{disabled:planForward.semTotal}">
-                            <div ng-hide="planForward.semTotal">{{planForward.output.semMax | formatCurrency}}</div>
+                        <td ng-class="{disabled:selectPlan.semTotalCheckBox}">
+                            <div>{{planForward.output.semMax | formatCurrency}}</div>
                         </td>
                         <td>{{planForward.output.semUB | formatCurrency}}</td>
-                        <td></td>
+                        <td class="check"></td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Brand</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.semBrand"
-                                       ng-disabled="disable.semBrand" ng-click="subCheck()">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.semBrand"
+                                       ng-disabled="selectPlan.disable.semBrand" ng-click="selectPlan.subCheck()">
                             </label>
                         </td>
                         <td>{{planForward.output.semBLB | formatCurrency}}</td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.semBrand}">
-                            <div ng-hide="planForward.selectPlan.semBrand">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semBrand}">
+                            <div ng-hide="selectPlan.checkBox.semBrand">
                                 <range-input ng-model="planForward.output.semBMin"
-                                " ng-change="fix()" min="planForward.output.semBLB"
-                                max="planForward.output.semBMax"></range-input>
+                                             ng-change="fix()" min="planForward.output.semBLB"
+                                             max="planForward.output.semBMax"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMin | formatCurrency}}</div>
                         </td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.semBrand}">
-                            <div ng-hide="planForward.selectPlan.semBrand">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semBrand}">
+                            <div ng-hide="selectPlan.checkBox.semBrand">
                                 <range-input ng-model="planForward.output.semBMax"
-                                             ng-class="{disabled:planForward.selectPlan.semBrand}" ng-change="fix()"
-                                             min="planForward.output.semBMin"
+                                             ng-change="fix()" min="planForward.output.semBMin"
                                              max="planForward.output.semBUB"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMax | formatCurrency}} </div>
                         </td>
                         <td>{{planForward.output.semBUB | formatCurrency}}</td>
-                        <td><input type="number" ng-model="planForward.output.semBSF" min="0.5" max="1.5" step="0.05"></td>
+                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.semBSF"
+                                                 min="0.5"
+                                                 max="1.5" step="0.05" style="width:80px"></td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Card</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.semCard"
-                                       ng-disabled="disable.semCard" ng-click="subCheck()">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.semCard"
+                                       ng-disabled="selectPlan.disable.semCard" ng-click="selectPlan.subCheck()">
                             </label>
                         </td>
                         <td>{{planForward.output.semCLB | formatCurrency}}</td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.semCard}">
-                            <div ng-hide="planForward.selectPlan.semCard">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semCard}">
+                            <div ng-hide="selectPlan.checkBox.semCard">
                                 <range-input ng-model="planForward.output.semCMin" ng-change="fix()"
                                              min="planForward.output.semCLB"
                                              max="planForward.output.semCMax"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.semCard">{{planForward.output.semCMin | formatCurrency}}</div>
                         </td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.semCard}">
-                            <div ng-hide="planForward.selectPlan.semCard">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semCard}">
+                            <div ng-hide="selectPlan.checkBox.semCard">
                                 <range-input ng-model="planForward.output.semCMax" ng-change="fix()"
                                              min="planForward.output.semCMin"
                                              max="planForward.output.semCUB"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.semCard">{{planForward.output.semCMin | formatCurrency}}</div>
                         </td>
                         <td>{{planForward.output.semCUB | formatCurrency}}</td>
-                        <td><input type="number" ng-model="planForward.output.semCSF" min=".5" max="1.5" step="0.05"></td>
+                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.semCSF"
+                                                 min=".5" max="1.5" step="0.05" style="width:80px">
+                        </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Photobook</td>
                         <td class="check">
                             <label class="check">
-                                <input type="checkbox" ng-model="planForward.selectPlan.semPhotobook"
-                                       ng-disabled="disable.semPhotobook"
-                                       ng-click="subCheck()">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.semPhotobook"
+                                       ng-disabled="selectPlan.disable.semPhotobook"
+                                       ng-click="selectPlan.subCheck()">
                             </label>
                         </td>
                         <td>{{planForward.output.semPLB | formatCurrency}}</td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.semPhotobook}">
-                            <div ng-hide="planForward.selectPlan.semPhotobook">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semPhotobook}">
+                            <div ng-hide="selectPlan.checkBox.semPhotobook">
                                 <range-input ng-model="planForward.output.semPMin" ng-change="fix()"
                                              min="planForward.output.semPLB"
-                                             max="planForward.output.semPMax"></range-input>
+                                             max="planForward.output.semPMax"> </range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax | formatCurrency}}</div>
                         </td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.semPhotobook}">
-                            <div ng-hide="planForward.selectPlan.semPhotobook">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semPhotobook}">
+                            <div ng-hide="selectPlan.checkBox.semPhotobook">
                                 <range-input ng-model="planForward.output.semPMax" ng-change="fix()"
                                              min="planForward.output.semPMin"
                                              max="planForward.output.semPUB"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax | formatCurrency}} </div>
                         </td>
                         <td>{{planForward.output.semPUB | formatCurrency}}</td>
-                        <td><input type="number" ng-model="planForward.output.semPSF" min=".5" max="1.5" step="0.05" /></td>
+                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.semPSF"
+                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                        </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Others</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.semOthers"
-                                       ng-disabled="disable.semOthers"
-                                       ng-click="subCheck()">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.semOthers"
+                                       ng-disabled="selectPlan.disable.semOthers"
+                                       ng-click="selectPlan.subCheck()">
                             </label>
                         </td>
                         <td>{{planForward.output.semOLB | formatCurrency}}</td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.semOthers}">
-                            <div ng-hide="planForward.selectPlan.semOthers">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semOthers}">
+                            <div ng-hide="selectPlan.checkBox.semOthers">
                                 <range-input ng-model="planForward.output.semOMin" ng-change="fix()"
                                              min="planForward.output.semOLB"
                                              max="planForward.output.semOMax"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.semOthers">{{planForward.output.semOMin | formatCurrency}}</div>
                         </td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.semOthers}">
-                            <div ng-hide="planForward.selectPlan.semOthers">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semOthers}">
+                            <div ng-hide="selectPlan.checkBox.semOthers">
                                 <range-input ng-model="planForward.output.semOMax" ng-change="fix()"
                                              min="planForward.output.semOMin"
                                              max="planForward.output.semOUB"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.semOthers">{{planForward.output.semOMin | formatCurrency}}</div>
                         </td>
                         <td>{{planForward.output.semOUB | formatCurrency}}</td>
-                        <td><input type="number" ng-model="planForward.output.semOSF" min=".5" max="1.5" step="0.05" /></td>
+                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.semOSF"
+                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-title">Display</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.display"
-                                       ng-disabled="disable.display" ng-click="Count()">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.display"
+                                       ng-disabled="selectPlan.disable.display" ng-click="selectPlan.count()">
                             </label>
                         </td>
                         <td>{{planForward.output.disLB | formatCurrency}}</td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.display}">
-                            <div ng-hide="planForward.selectPlan.display">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.display}">
+                            <div ng-hide="selectPlan.checkBox.display">
                                 <range-input ng-model="planForward.output.disMin" ng-change="fix()"
                                              min="planForward.output.disLB"
                                              max="planForward.output.disMax"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.display">{{planForward.output.disMin | formatCurrency}}</div>
                         </td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.display}">
-                            <div ng-hide="planForward.selectPlan.display">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.display}">
+                            <div ng-hide="selectPlan.checkBox.display">
                                 <range-input ng-model="planForward.output.disMax" ng-change="fix()"
                                              min="planForward.output.disMin"
                                              max="planForward.output.disUB"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.display">{{planForward.output.disMin | formatCurrency}}</div>
                         </td>
                         <td>{{planForward.output.disUB | formatCurrency}}</td>
-                        <td><input type="number" ng-model="planForward.output.disSF" min=".5" max="1.5" step="0.05" /></td>
+                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.disSF"
+                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-title">Social(FB)</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.social"
-                                       ng-disabled="disable.social" ng-click="Count()">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.social"
+                                       ng-disabled="selectPlan.disable.social" ng-click="selectPlan.count()">
                             </label>
                         </td>
                         <td>{{planForward.output.socLB | formatCurrency}}</td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.social}">
-                            <div ng-hide="planForward.selectPlan.social">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.social}">
+                            <div ng-hide="selectPlan.checkBox.social">
                                 <range-input ng-model="planForward.output.socMin" ng-change="fix()"
                                              min="planForward.output.socLB"
                                              max="planForward.output.socMax"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.social">{{planForward.output.socMin | formatCurrency}}</div>
                         </td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.social}">
-                            <div ng-hide="planForward.selectPlan.social">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.social}">
+                            <div ng-hide="selectPlan.checkBox.social">
                                 <range-input ng-model="planForward.output.socMax" ng-change="fix()"
                                              min="planForward.output.socMin"
                                              max="planForward.output.socUB"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.social">{{planForward.output.socMin | formatCurrency}}</div>
                         </td>
                         <td>{{planForward.output.socUB | formatCurrency}}</td>
-                        <td><input type="number" ng-model="planForward.output.socSF" min=".5" max="1.5" step="0.05" /></td>
+                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.socSF"
+                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-title">Affiliates</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.affiliates"
-                                       ng-disabled="disable.affiliates" ng-click="Count()">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.affiliates"
+                                       ng-disabled="selectPlan.disable.affiliates" ng-click="selectPlan.count()">
                             </label>
                         </td>
                         <td>{{planForward.output.affLB | formatCurrency}}</td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.affiliates}">
-
-                            <div ng-hide="planForward.selectPlan.affiliates">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.affiliates}">
+                            <div ng-hide="selectPlan.checkBox.affiliates">
                                 <range-input ng-model="planForward.output.affMin" ng-change="fix()"
                                              min="planForward.output.affLB"
                                              max="planForward.output.affMax"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.affiliates">{{planForward.output.affMin | formatCurrency}}</div>
                         </td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.affiliates}">
-                            <div ng-hide="planForward.selectPlan.affiliates">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.affiliates}">
+                            <div ng-hide="selectPlan.checkBox.affiliates">
                                 <range-input ng-model="planForward.output.affMax" ng-change="fix()"
                                              min="planForward.output.affMin"
                                              max="planForward.output.affUB"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.affiliates">{{planForward.output.affMin | formatCurrency}}</div>
                         </td>
                         <td>{{planForward.output.affUB | formatCurrency}}</td>
-                        <td><input type="number" ng-model="planForward.output.affSF" min=".5" max="1.5" step="0.05" /></td>
+                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.affSF"
+                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                        </td>
                     </tr>
                     <tr>
                         <td class="td-title">Partners</td>
                         <td class="check">
                             <label>
-                                <input type="checkbox" ng-model="planForward.selectPlan.partners"
-                                       ng-disabled="disable.partners" ng-click="Count()">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.partners"
+                                       ng-disabled="selectPlan.disable.partners" ng-click="selectPlan.count()">
                             </label>
                         </td>
                         <td>{{planForward.output.parLB | formatCurrency}}</td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.partners}">
-                            <div ng-hide="planForward.selectPlan.partners">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.partners}">
+                            <div ng-hide="selectPlan.checkBox.partners">
                                 <range-input ng-model="planForward.output.parMin" ng-change="fix()"
                                              min="planForward.output.parLB"
                                              max="planForward.output.parMax"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.partners">{{planForward.output.parMin | formatCurrency}}</div>
                         </td>
-                        <td class="range-input" ng-class="{disabled:planForward.selectPlan.partners}">
-                            <div ng-hide="planForward.selectPlan.partners">
+                        <td class="range-input" ng-class="{disabled:selectPlan.checkBox.partners}">
+                            <div ng-hide="selectPlan.checkBox.partners">
                                 <range-input ng-model="planForward.output.parMax" ng-change="fix()"
                                              min="planForward.output.parMin"
                                              max="planForward.output.parUB"></range-input>
                             </div>
+                            <div ng-show="selectPlan.checkBox.partners">{{planForward.output.parMin | formatCurrency}}</div>
                         </td>
                         <td>{{planForward.output.parUB | formatCurrency}}</td>
-                        <td><input type="number" ng-model="planForward.output.parSF" min=".5" max="1.5" step="0.05" /></td>
+                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.parSF"
+                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -284,7 +335,7 @@
         </div>
     </div>
 
-    <div class="row" ng-show="getJson">
+    <div class="row" ng-show="getJson" id="option1">
         <div class="col-sm-12">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-condensed roi-table">
@@ -300,11 +351,12 @@
                     <tr>
                         <td rowspan="2" class="td-title">DM</td>
                         <td ng-repeat="month in planForward.ControlChannels" class="col-1">{{month | date:
-                            'yyyy-MM'}}
+                            'MMM-yyyy'}}
                         </td>
-                            <td ng-repeat="x in size track by $index" class="col-1"></td>
+                        <td ng-repeat="x in size track by $index" class="col-1"></td>
                     <tr>
-                        <td ng-repeat="spend in planForward.ControlChannelsDM"><input type="text" ng-model="spend" format-input/></td>
+                        <td ng-repeat="spend in planForward.ControlChannelsDM" class="check">
+                            <input type="text" ng-model="spend" class="form-control" format-input/></td>
                         <td ng-repeat="x in size track by $index"></td>
                     </tr>
                     </tbody>
@@ -312,44 +364,81 @@
             </div>
         </div>
     </div>
-    <div class="row" ng-show="getJson">
+    <div class="row" ng-show="getJson" id="option2">
         <div class="col-sm-12">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-condensed roi-table">
                     <tr>
                         <th rowspan="2" class="col-0">TV</th>
-                        <th class="col-0" colspan="2">Begin Date</th>
-                        <th class="col-0" colspan="2">End Date</th>
-                        <th class="col-0" colspan="2">Spend ($)</th>
-                        <th class="col-0" colspan="2">Impressions</th>
+                        <th class="col-2" colspan="2">Begin Date</th>
+                        <th class="col-2" colspan="2">End Date</th>
+                        <th class="col-2" colspan="2">Spend ($)</th>
+                        <th class="col-2" colspan="2">Impressions</th>
                     </tr>
                     <tr>
-                        <td colspan="2" class="col-0"><input type="text" ng-model="planForward.output.tvBeginDate"/></td>
-                        <td colspan="2" class="col-0"><input type="text" ng-model="planForward.output.tvEndDate"/></td>
-                        <!--<td colspan="2" class="col-0">{{planForward.output.tvEndDate}}</td>-->
-                        <td colspan="2" class="col-0">
-                            <input type="text" ng-model="planForward.output.tvSpend" format-input>
+                        <!--<td colspan="2" class="col-0"><input type="text" ng-model="planForward.output.tvBeginDate"/></td>-->
+                        <td colspan="2" class="col-0 range-input" style="overflow: visible">
+                            <div class="input-group">
+                                <input type="text" class="form-control" datepicker-popup="{{calender.format}}"
+                                       ng-model="planForward.output.tvBeginDate" is-open="calender.opened.beginPeriod"
+                                       ng-change="calender.modifyDate()"
+                                       min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
+                                       datepicker-mode="'day'" disabled max-date="calender.eMaxDate"
+                                       ng-required="true"
+                                       close-text="Close">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"
+                                    ng-click="calender.open($event, 'tvBeginPeriod')">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                            </div>
+                            </span></td>
+                        <!--<td colspan="2" class="col-0"><input type="text" ng-model="planForward.output.tvEndDate"/></td>-->
+                        <td colspan="2" class="col-0 range-input" style="overflow: visible">
+                            <div class="input-group">
+                                <input type="text" class="form-control" datepicker-popup="{{calender.format}}"
+                                       ng-model="planForward.output.tvEndDate" is-open="calender.opened.endPeriod"
+                                       ng-change="calender.modifyDate()"
+                                       min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
+                                       datepicker-mode="'day'" disabled max-date="calender.eMaxDate"
+                                       ng-required="true"
+                                       close-text="Close">
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default"
+                                    ng-click="calender.open($event, 'tvEndPeriod')">
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            </button>
+                        </span>
+                            </div>
                         </td>
-                        <td colspan="2" class="col-0">
-                            <input type="text" ng-model="planForward.output.tvImpressions | number:0" />
+                        <!--<td colspan="2" class="col-0">{{planForward.output.tvEndDate}}</td>-->
+                        <td colspan="2" class="col-0 range-input">
+                            <div>
+                                <input type="text" class="form-control" ng-model="planForward.output.tvSpend"
+                                       format-input>
+                            </div>
+                        </td>
+                        <td colspan="2" class="col-0 range-input">
+                            <div>
+                                <input type="text" class="form-control" ng-model="planForward.output.tvImpressions"
+                                       format-input2/></div>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
-    </div>
-    <div class="row"  ng-show="getJson">
-        <form class="form-group form-horizontal">
-            <div class="col-sm-2 col-sm-offset-3">
-                <a href="#/planforward/init" class="btn btn-default">Prev</a>
-            </div>
-            <div class="col-sm-2">
-                <button class="btn btn-default" ng-class="{disabled:slideError}"
-                        ng-click="run()">Next
-                </button>
-                <span ng-show="slideError" style="color:red">{{slideErrorValue}}</span>
-            </div>
-        </form>
+        <div class="row" ng-show="getJson" id="Button">
+            <form class="form-group form-horizontal">
+                <div class="col-sm-2 col-sm-offset-3">
+                    <a href="#/planforward/init" class="btn btn-default">Prev</a>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-default" ng-class="{disabled:slideError}"
+                            ng-click="nextPage()">Next
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-
