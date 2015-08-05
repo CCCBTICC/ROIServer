@@ -16,7 +16,14 @@
         });
     </script>
     <div class="row">
+
         <div class="table-responsive">
+            <div class="input-group table-search">
+                <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                            <span class="input-group-btn">
+                                <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+            </div>
             <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                 <thead>
                 <tr>
@@ -36,7 +43,7 @@
                     <!--<td class="check non-number col-0">-->
                         <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
-                    <td class="scenario-id col-3"><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)">(F)</i> </td>
+                    <td class="scenario-id col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-show="runCheck(scenario.runningTime)"></i> </td>
                     <td class="non-number col-2">{{scenario.name}}</td>
                     <td class="non-number col-1">{{scenario.owner}}</td>
                     <td class="non-number col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>

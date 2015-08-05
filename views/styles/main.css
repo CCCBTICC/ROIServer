@@ -184,8 +184,14 @@ a, a:visited, a:focus, a:active, a:hover{
 /*  final  */
 /*  General  */
 .final{
+    color:#04723b;
+    font-size:18px;
+}
+.stop{
     color:#f05323;
-    font-size:12px;
+    font-size:18px;
+    float: right;
+    margin-right: 5px;
 }
 /*  tooltip  */
 /*  General  */
@@ -471,7 +477,11 @@ form .tooltip-inner {
 .table-responsive a{
     color:#333333;
 }
-
+.table-responsive .table-search{
+    float:right;
+    margin:0 20px 10px 0;
+    width: 200px;
+}
 table.roi-table {
     width: 100%;
     margin-right: 20px;
@@ -532,7 +542,7 @@ table.roi-table tr > .col-2 {
 }
 
 table.roi-table tr > .col-3 {
-    min-width: 220px;
+    min-width: 240px;
     max-width: 300px;
     overflow: hidden;
 }
