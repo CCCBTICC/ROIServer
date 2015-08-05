@@ -17,14 +17,14 @@
     </div>
     <div class="row" ng-show="getJson">
         <div class="well well-sm">
-            <label>Scenario ID:</label>{{scenarioI.scenarioId}}<br>
+            <label>Scenario ID:</label>{{scenario.scenarioId}}<br>
             <label>Brand</label>: {{scenario.brand}}
             <label>Attribution</label>: {{scenario.lmTouch}}
-            <label>Begin Period</label>: {{scenario.begin}}
-            <label>End Period</label>: {{scenario.end}}
+            <label>Begin Period</label>: {{scenario.begin | date:'yyyy-MM-dd'}}
+            <label>End Period</label>: {{scenario.end | date:'yyyy-MM-dd'}}
             <label>Portfolio Spend </label>: {{scenario.spend | formatCurrency}}
             <label>Data through</label>: {{scenario.dataThrough}}
-            <span ng-show="slideError" style="color:red">{{slideErrorValue | formatCurrency}}</span>
+            <span ng-show="slideError" style="color:red">{{slideErrorValue}}</span>
         </div>
     </div>
     <div class="row" ng-show="getJson">
@@ -91,7 +91,7 @@
                         <!--<td>{{planForward.output.semBSF}}</td>-->
                         <td class="range-input">
                             <range-input ng-model="planForward.output.semBSlide" min="planForward.output.semBMin"
-                                         max="planForward.output.semBMax" ng-change="fix()"></range-input>
+                                         max="planForward.output.semBMax" ng-change="slideValidate()"></range-input>
                         </td>
                         <td class="disabled">-</td>
                         <td>{{planForward.output.semBSD | formatCurrency}}</td>
@@ -111,7 +111,7 @@
                         <!--<td>{{planForward.output.semCSF}}</td>-->
                         <td class="range-input">
                             <range-input ng-model="planForward.output.semCSlide" min="planForward.output.semCMin"
-                                         max="planForward.output.semCMax" ng-change="fix()"></range-input>
+                                         max="planForward.output.semCMax" ng-change="slideValidate()"></range-input>
                         </td>
                         <td class="disabled">-</td>
                         <td>{{planForward.output.semCSD | formatCurrency}}</td>
@@ -211,7 +211,7 @@
                         <!--<td>{{planForward.output.affSF}}</td>-->
                         <td class="range-input">
                             <range-input ng-model="planForward.output.affSlide" min="planForward.output.affMin"
-                                         max="planForward.output.affMax" ng-change="slideValidate()" planforward="planforward"></range-input>
+                                         max="planForward.output.affMax" ng-change="slideValidate()" ></range-input>
                         </td>
                         <td>{{planForward.output.affAR | formatCurrency}}</td>
                         <td>{{planForward.output.affSD | formatCurrency}}</td>
@@ -296,7 +296,7 @@
                 </div>
             </div>
             <div class="col-sm-3">
-                <button type="button" class="btn btn-default" ng-click="ReRun()" ng-class="{disabled:slideError}">Re-run</button>
+                <button type="button" class="btn btn-default" ng-click="reRun()" ng-class="{disabled:slideError}">Re-run</button>
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>

@@ -131,7 +131,9 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
             filter('date')($scope.dataInfo.beginDate, 'MMMyyyy') + "-" +
             filter('date')($scope.dataInfo.endDate, 'MMMyyyy') + "-" +
             $scope.dataInfo.lmTouch.charAt(0) + "-000";
-        $scope.dataInfo.dataThrough = $scope.dataInfo.included ? filter('date')($scope.dataInfo.endDate, 'yyyy-MM') : filter('date')($scope.dataInfo.beginDate, 'yyyy-MM');
+        $scope.dataInfo.dataThrough = $scope.dataInfo.included ==='Yes' ?
+            $scope.dataInfo.endDate:
+            new Date($scope.dataInfo.beginDate.getFullYear(),$scope.dataInfo.beginDate.getMonth(),0);
         $scope.dataInfo.from = "back";
     }
 
@@ -496,7 +498,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         }
         if (Number($scope.lookBack.output.totSR) > sumMax) {
             $scope.slideError = true;
-            $scope.slideErrorValue = "Your 'max' is lower by " + filter('formatCurrency')($scope.planForward.output.totSR - sumMax);
+            $scope.slideErrorValue = "Your 'max' is lower by " + filter('formatCurrency')($scope.lookBack.output.totSR - sumMax);
         }
         console.log($scope.slideError);
     };
@@ -521,6 +523,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
                             scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
                                 console.log(res);
                             });
+                            calculateDifference();
                         }
                     });
                 }
@@ -568,6 +571,8 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     };  // show&hide graph
 
     //functions
+    var count;
+
     function calculateDifference() {
         $scope.lookBack.difference = {
             semSD: $scope.lookBack.output.semSR - $scope.lookBack.history.semSR,
@@ -653,21 +658,6 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         $scope.lookBack.output.AlgDuration = "";
     }
 
-    //main
-    //check objId
-    if (!analysis.objIds.current) {
-        location.path("/lookback/init");
-    }
-    scenarios.getScenarioById(analysis.objIds.current, function (scenario) {
-        console.log(scenario);
-        scenarios.dataInfo = scenario;
-        $scope.scenario = scenario;
-    });
-
-    var count;
-    $scope.getJson = false;
-    doGet();
-    count = setInterval(doGet, 1000 * 0.3); //set frequency
     function doGet() {
         if ($scope.getJson === false) {
             analysis.getData(function (data) {
@@ -720,6 +710,23 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         }
     }
 
+
+    //main
+    //check objId
+    if (!analysis.objIds.current) {
+        location.path("/lookback/init");
+    }
+    user.getUser(function (user) {
+        $scope.user = user;
+    });
+    scenarios.getScenarioById(analysis.objIds.current, function (scenario) {
+        console.log(scenario);
+        scenarios.dataInfo = scenario;
+        $scope.scenario = scenario;
+    });
+    $scope.getJson = false;
+    doGet();
+    count = setInterval(doGet, 1000 * 0.3); //set frequency
     $scope.$on('$destroy', function () {
         clearInterval(count);
     });

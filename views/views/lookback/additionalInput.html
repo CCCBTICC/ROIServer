@@ -19,6 +19,7 @@
     </div>
     <div class="row" id="spend">
         <br>
+
         <form class="form-horizontal">
             <div class="form-group">
                 <label for="lookBackSpend" class="col-sm-3 control-label">Portfolio Spend :</label>
@@ -36,131 +37,133 @@
         </form>
     </div>
     <div class="row" ng-show="getJson" id="select">
-            <div class="col-sm-10 col-sm-offset-1  col-md-7 col-md-offset-2 col-lg-6  col-lg-offset-2 container">
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-condensed roi-table">
-                        <thead>
-                        <tr>
-                            <th class="col-1" rowspan="2">Portfolio Channels</th>
-                            <th class="col-0" rowspan="2">Maintain Spend?</th>
-                            <th class="col-2" colspan="2">Actuals</th>
-                        </tr>
-                        <tr>
-                            <th class="col-1">Spend</th>
-                            <th class="col-1">Revenue</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="td-title" ng-click="hideSemItems = !hideSemItems">SEM Total
-                                <button class="btn btn-xs btn-default"><i ng-hide="hideSemItems"
-                                                                          class="fa fa-minus"></i><i
-                                        ng-show="hideSemItems" class="fa fa-plus"></i></button>
-                            </td>
-                            <td class="check">
-                                <label>
-                                    <input type="checkbox" ng-model="selectPlan.semTotalCheckBox"
-                                           ng-disabled="selectPlan.disable.semTotal" ng-click="selectPlan.totCheck()">
-                                </label>
-                            </td>
-                            <td>{{lookBack.history.semSR | formatCurrency}}</td>
-                            <td>{{lookBack.history.semPR | formatCurrency}}</td>
-                        </tr>
-                        <tr ng-hide="hideSemItems">
-                            <td class="td-subtitle">SEM-Brand</td>
-                            <td class="check">
-                                <label>
-                                    <input type="checkbox" ng-model="selectPlan.checkBox.semBrand"
-                                           ng-disabled="selectPlan.disable.semBrand" ng-click="selectPlan.subCheck()">
-                                </label>
-                            </td>
-                            <td>{{lookBack.history.semBSR | formatCurrency}}</td>
-                            <td class="disabled">-</td>
-                        <tr ng-hide="hideSemItems">
-                            <td class="td-subtitle">SEM-Card</td>
-                            <td class="check">
-                                <label>
-                                    <input type="checkbox" ng-model="selectPlan.checkBox.semCard"
-                                           ng-disabled="selectPlan.disable.semCard" ng-click="selectPlan.subCheck()">
-                                </label>
-                            </td>
-                            <td>{{lookBack.history.semCSR | formatCurrency}}</td>
-                            <td class="disabled">-</td>
-                        </tr>
-                        <tr ng-hide="hideSemItems">
-                            <td class="td-subtitle">SEM-Photobook</td>
-                            <td class="check">
-                                <label class="check">
-                                    <input type="checkbox" ng-model="selectPlan.checkBox.semPhotobook"
-                                           ng-disabled="selectPlan.disable.semPhotobook"
-                                           ng-click="selectPlan.subCheck()">
-                                </label>
-                            <td>{{lookBack.history.semPSR | formatCurrency}}</td>
-                            <td class="disabled">-</td>
-                        </tr>
-                        <tr ng-hide="hideSemItems">
-                            <td class="td-subtitle">SEM-Others</td>
-                            <td class="check">
-                                <label>
-                                    <input type="checkbox" ng-model="selectPlan.checkBox.semOthers"
-                                           ng-disabled="selectPlan.disable.semOthers"
-                                           ng-click="selectPlan.subCheck()">
-                                </label>
-                            </td>
-                            <td>{{lookBack.history.semOSR | formatCurrency}}</td>
-                            <td class="disabled">-</td>
-                        </tr>
-                        <tr>
-                            <td class="td-title">Display</td>
-                            <td class="check">
-                                <label>
-                                    <input type="checkbox" ng-model="selectPlan.checkBox.display"
-                                           ng-disabled="selectPlan.disable.display" ng-click="selectPlan.count()">
-                                </label>
-                            </td>
-                            <td>{{lookBack.history.disSR | formatCurrency}}</td>
-                            <td>{{lookBack.history.disPR | formatCurrency}}</td>
-                        </tr>
-                        <tr>
-                            <td class="td-title">Social(FB)</td>
-                            <td class="check">
-                                <label>
-                                    <input type="checkbox" ng-model="selectPlan.checkBox.social"
-                                           ng-disabled="selectPlan.disable.social" ng-click="selectPlan.count()">
-                                </label>
-                            </td>
-                            <td>{{lookBack.history.socSR | formatCurrency}}</td>
-                            <td>{{lookBack.history.socPR | formatCurrency}}</td>
-                        </tr>
-                        <tr>
-                            <td class="td-title">Affiliates</td>
-                            <td class="check">
-                                <label>
-                                    <input type="checkbox" ng-model="selectPlan.checkBox.affiliates"
-                                           ng-disabled="selectPlan.disable.affiliates" ng-click="selectPlan.count()">
-                                </label>
-                            </td>
-                            <td>{{lookBack.history.affSR | formatCurrency}}</td>
-                            <td>{{lookBack.history.affPR | formatCurrency}}</td>
-                        </tr>
-                        <tr>
-                            <td class="td-title">Partners</td>
-                            <td class="check">
-                                <label>
-                                    <input type="checkbox" ng-model="selectPlan.checkBox.partners"
-                                           ng-disabled="selectPlan.disable.partners" ng-click="selectPlan.count()">
-                                </label>
-                            </td>
-                            <td>{{lookBack.history.parSR | formatCurrency}}</td>
-                            <td>{{lookBack.history.parPR | formatCurrency}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <!--<div class="col-sm-10 col-sm-offset-1  col-md-7 col-md-offset-2 col-lg-6  col-lg-offset-2 container">-->
+        <div class="container-fluid">
+            <!--<div class="table-responsive col-sm-offset-3 col-sm-6">-->
+                <table class="table table-striped table-bordered table-condensed roi-table thead-fixed-top" >
+                    <thead >
+                    <tr>
+                        <th class="col-1" rowspan="2">Portfolio Channels</th>
+                        <th class="col-0" rowspan="2">Maintain Spend?</th>
+                        <th class="col-2" colspan="2">Actuals</th>
+                    </tr>
+                    <tr>
+                        <th class="col-1">Spend</th>
+                        <th class="col-1">Revenue</th>
+                    </tr>
+                    </thead>
+                    <tbody >
+                    <tr>
+                        <td class="td-title col-1" ng-click="hideSemItems = !hideSemItems">SEM Total
+                            <button class="btn btn-xs btn-default"><i ng-hide="hideSemItems"
+                                                                      class="fa fa-minus"></i><i
+                                    ng-show="hideSemItems" class="fa fa-plus"></i></button>
+                        </td>
+                        <td class="check col-0">
+                            <label>
+                                <input type="checkbox" ng-model="selectPlan.semTotalCheckBox"
+                                       ng-disabled="selectPlan.disable.semTotal" ng-click="selectPlan.totCheck()">
+                            </label>
+                        </td>
+                        <td class="col-1">{{lookBack.history.semSR | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.history.semPR | formatCurrency}}</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Brand</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="selectPlan.checkBox.semBrand"
+                                       ng-disabled="selectPlan.disable.semBrand" ng-click="selectPlan.subCheck()">
+                            </label>
+                        </td>
+                        <td>{{lookBack.history.semBSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Card</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="selectPlan.checkBox.semCard"
+                                       ng-disabled="selectPlan.disable.semCard" ng-click="selectPlan.subCheck()">
+                            </label>
+                        </td>
+                        <td>{{lookBack.history.semCSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Photobook</td>
+                        <td class="check">
+                            <label class="check">
+                                <input type="checkbox" ng-model="selectPlan.checkBox.semPhotobook"
+                                       ng-disabled="selectPlan.disable.semPhotobook"
+                                       ng-click="selectPlan.subCheck()">
+                            </label>
+                        <td>{{lookBack.history.semPSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="td-subtitle">SEM-Others</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="selectPlan.checkBox.semOthers"
+                                       ng-disabled="selectPlan.disable.semOthers"
+                                       ng-click="selectPlan.subCheck()">
+                            </label>
+                        </td>
+                        <td>{{lookBack.history.semOSR | formatCurrency}}</td>
+                        <td class="disabled">-</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Display</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="selectPlan.checkBox.display"
+                                       ng-disabled="selectPlan.disable.display" ng-click="selectPlan.count()">
+                            </label>
+                        </td>
+                        <td>{{lookBack.history.disSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.disPR | formatCurrency}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Social(FB)</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="selectPlan.checkBox.social"
+                                       ng-disabled="selectPlan.disable.social" ng-click="selectPlan.count()">
+                            </label>
+                        </td>
+                        <td>{{lookBack.history.socSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.socPR | formatCurrency}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Affiliates</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="selectPlan.checkBox.affiliates"
+                                       ng-disabled="selectPlan.disable.affiliates" ng-click="selectPlan.count()">
+                            </label>
+                        </td>
+                        <td>{{lookBack.history.affSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.affPR | formatCurrency}}</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title">Partners</td>
+                        <td class="check">
+                            <label>
+                                <input type="checkbox" ng-model="selectPlan.checkBox.partners"
+                                       ng-disabled="selectPlan.disable.partners" ng-click="selectPlan.count()">
+                            </label>
+                        </td>
+                        <td>{{lookBack.history.parSR | formatCurrency}}</td>
+                        <td>{{lookBack.history.parPR | formatCurrency}}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
+        <!--</div>-->
     </div>
 
-    <div class="row" id="button">
+    <div class="row controls" id="button">
         <div class="form-group">
             <div class="col-sm-2 col-sm-offset-3">
                 <a type="button" class="btn btn-default" href="#/lookback/init">Prev</a>

@@ -213,7 +213,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
                 console.log(res);
                 if (res[0]) {
                     var d = new Date(res[1]);
-                    $scope.dataInfo.dataThrough = res[1];
+                    $scope.dataInfo.dataThrough = new Date(d.getFullYear(), d.getMonth() + 2, 0);
                     $scope.calender.minDate = new Date(d.getFullYear(), d.getMonth() + 2, 1);
                     $scope.calender.maxDate = new Date($scope.calender.minDate.getFullYear(), $scope.calender.minDate.getMonth() + 6, 0);
                     var date = $scope.calender.minDate;
@@ -309,7 +309,8 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
             filter('date')($scope.dataInfo.endDate, 'MMMyyyy') + "-" +
             $scope.dataInfo.lmTouch.charAt(0) + "-000";
         //$scope.dataInfo.dataThrough = filter('date')(new Date($scope.calender.minDate.getFullYear(),$scope.calender.minDate.getMonth(),0), 'yyyy-MM');
-        $scope.dataInfo.from = "from";
+        $scope.dataInfo.from = "forward";
+        $scope.dataInfo.included='No';
     }
 
     // main
@@ -437,6 +438,43 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             fix();
         }
     };
+    $scope.calender = {
+        minDate: null,
+        maxDate: null,
+        eMaxDate: null,
+        opened: {beginPeriod:false,endPeriod:false},
+        format: 'MMM-dd-yyyy',
+        dateOptions: {
+            formatYear: 'yyyy',
+            startingDay: 1
+        },
+        initDate: function () {
+            $scope.calender.minDate = $scope.dataInfo.beginDate;
+            $scope.calender.maxDate = $scope.dataInfo.endDate;
+            $scope.calender.modifyDate();
+        },
+        open: function (event, model) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (model === 'tvBeginPeriod') {
+                $scope.calender.opened.beginPeriod = !$scope.calender.opened.beginPeriod;
+                $scope.calender.opened.endPeriod = false;
+            } else {
+                $scope.calender.opened.endPeriod = !$scope.calender.opened.endPeriod;
+                $scope.calender.opened.beginPeriod = false;
+            }
+        },
+        modifyDate: function () {
+            if (!$scope.planForward.output.tvBeginDate || $scope.planForward.output.tvBeginDate < $scope.calender.minDate || $scope.planForward.output.tvBeginDate > $scope.calender.maxDate) {
+                $scope.planForward.output.tvBeginDate = $scope.calender.minDate;
+            }
+
+            if (!$scope.planForward.output.tvEndDate || $scope.planForward.output.tvEndDate < $scope.dataInfo.beginDate || $scope.planForward.output.tvEndDate > $scope.calender.maxDate) {
+                $scope.planForward.output.tvEndDate = $scope.planForward.output.tvBeginDate;
+            }
+        }
+    };
 
     $scope.nextPage = function () {
         spendValidate();
@@ -461,9 +499,9 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                     $scope.getJson = true;
                     $scope.planForward.output = data;
                     history.getHistoryDate(function (res) {
-                        var d=new Date(res[1]);
-                        d=new Date(d.getFullYear(), d.getMonth()+2-$scope.planForward.output.PlanMonths,1);
-                        history.getHistoryData(filter('date')(d,'yyyy-MM'),res[1], function (history) {
+                        var d = new Date(res[1]);
+                        d = new Date(d.getFullYear(), d.getMonth() + 2 - $scope.planForward.output.PlanMonths, 1);
+                        history.getHistoryData(filter('date')(d, 'yyyy-MM'), res[1], function (history) {
                             $scope.planForward.history = {
                                 semSR: history.SEM,
                                 semBSR: history.SEMBrand,
@@ -490,17 +528,15 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                                 $scope.planForward.history.parPR = history.Partners_LTA;
                                 $scope.planForward.history.totPR = history.SEM_LTA + history.Display_LTA + history.Affiliates_LTA + history.FB_LTA + history.Partners_LTA;
                             }
-                            $scope.planForward.history.ROI = ($scope.planForward.history.totPR / $scope.planForward.history.totSR - 1) * 100;
+                            //$scope.planForward.history.ROI = ($scope.planForward.history.totPR / $scope.planForward.history.totSR - 1) * 100;
                             $scope.dataInfo.spend = $scope.planForward.history.totSR;
+                            fix();
                         });
                     });
-
                     //prepare for show
                     $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
                     $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
-                    $scope.planForward.output.semMin = $scope.planForward.output.semLB;
-                    $scope.planForward.output.semMax = $scope.planForward.output.semUB;
-                    fix();
+
                     var b = new Date($scope.planForward.output.StartingTime);
                     b = new Date(b.getFullYear(), b.getMonth() + 1);
                     console.log(b);
@@ -519,30 +555,12 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                             $scope.planForward.ControlChannelsDM.push($scope.planForward.output[key]);
                         }
                     });
-
-                    //get historyData
-                    //history.getHistoryData($scope.planForward.StartingTime,$scope.planForward.EndingTime,function(dataArray){
-                    //    console.log('from history in doGet in forward/constrict');
-                    //    console.log(dataArray);
-                    //    Object.keys(dataArray[0]).forEach(function(key){
-                    //        var value=0;
-                    //        dataArray.forEach(function(data){
-                    //            value+=data[key];
-                    //        });
-                    //        $scope.planForward.history[key]=value;
-                    //    });
-                    //});
-
                 }
             });
         }
         else {
             clearInterval(count);
         }
-    }
-
-    function prepareForShow() {
-
     }
 
     function passInfoToData() {
@@ -554,8 +572,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     }
 
     function fix() {
-        $scope.planForward.output.semMin =  $scope.planForward.output.semLB;
-        $scope.planForward.output.semMax =  $scope.planForward.output.semUB;
+        $scope.planForward.output.semMin = $scope.planForward.output.semLB;
+        $scope.planForward.output.semMax = $scope.planForward.output.semUB;
         $scope.planForward.output.semBMin = $scope.planForward.output.semBLB;
         $scope.planForward.output.semBMax = $scope.planForward.output.semBUB;
         $scope.planForward.output.semCMin = $scope.planForward.output.semCLB;
@@ -564,14 +582,14 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         $scope.planForward.output.semPMax = $scope.planForward.output.semPUB;
         $scope.planForward.output.semOMin = $scope.planForward.output.semOLB;
         $scope.planForward.output.semOMax = $scope.planForward.output.semOUB;
-        $scope.planForward.output.disMin =  $scope.planForward.output.disLB;
-        $scope.planForward.output.disMax =  $scope.planForward.output.disUB;
-        $scope.planForward.output.socMin =  $scope.planForward.output.socLB;
-        $scope.planForward.output.socMax =  $scope.planForward.output.socUB;
-        $scope.planForward.output.affMin =  $scope.planForward.output.affLB;
-        $scope.planForward.output.affMax =  $scope.planForward.output.affUB;
-        $scope.planForward.output.parMin =  $scope.planForward.output.parLB;
-        $scope.planForward.output.parMax =  $scope.planForward.output.parUB;
+        $scope.planForward.output.disMin = $scope.planForward.output.disLB;
+        $scope.planForward.output.disMax = $scope.planForward.output.disUB;
+        $scope.planForward.output.socMin = $scope.planForward.output.socLB;
+        $scope.planForward.output.socMax = $scope.planForward.output.socUB;
+        $scope.planForward.output.affMin = $scope.planForward.output.affLB;
+        $scope.planForward.output.affMax = $scope.planForward.output.affUB;
+        $scope.planForward.output.parMin = $scope.planForward.output.parLB;
+        $scope.planForward.output.parMax = $scope.planForward.output.parUB;
 
         if ($scope.selectPlan.checkBox.semBrand) {
             $scope.planForward.output.semBMin = $scope.planForward.output.semBMax = $scope.planForward.history.semBSR;
@@ -601,6 +619,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     }
 
     function spendValidate() {
+        console.log($scope.error);
         $scope.planForward.output.semMin =
             Number($scope.planForward.output.semBMin) +
             Number($scope.planForward.output.semCMin) +
@@ -626,6 +645,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             Number($scope.planForward.output.parMax);
 
         if (Number($scope.dataInfo.spend) < $scope.min || Number($scope.dataInfo.spend) > $scope.max) {
+            console.log((Number($scope.dataInfo.spend) < $scope.min || Number($scope.dataInfo.spend) > $scope.max));
             $scope.error = true;
         }
         console.log($scope.error);
@@ -648,20 +668,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
 
 forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$location', '$filter', 'user', function ($scope, analysis, scenarios, location, filter, user) {
     //scope vars
-    $scope.planForward = {
-        output: {
-            semSD: 1000.123123123123,
-            semBSD: 1000.12312312321321,
-            semCSD: 1000.1312323123,
-            semPSD: 1000.123123,
-            semOSD: 1000.12312312,
-            disSD: 0,
-            socSD: 0,
-            affSD: 0,
-            parSD: 0,
-            totSD: 0
-        }
-    };
+    $scope.planForward = {output: {}};
     $scope.compareChart = {
         data: [
             {title: "SEM", value: 0, string: ""},
@@ -734,15 +741,15 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             Number($scope.planForward.output.affSlide) +
             Number($scope.planForward.output.parSlide);
     };
-    $scope.ReRun = function () {
+    $scope.reRun = function () {
         passInfoToData();
-        //SCENARIOID
         $scope.scenario.scenarioId = $scope.scenario.scenarioId.slice(0, -1) + "X";
         //post data to R
-        analysis.postData($scope.planForward.output, function (res) {
+        analysis.postData($scope.planForward.output,$scope.scenario, function (res) {
             console.log(res);
             var count;
             $scope.getJson = false;
+            doGet();
             count = setInterval(doGet, 1000 * 10); //set frequency
             function doGet() {
                 if ($scope.getJson === false) {
@@ -752,55 +759,10 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
                             console.log(data);
                             $scope.getJson = true;
                             $scope.planForward.output = data;
-
                             scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
                                 console.log(res);
                             });
-
-                            //get sum for semTotal's elements
-                            $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
-                            $scope.planForward.output.semMin = Number($scope.planForward.output.semBMin) + Number($scope.planForward.output.semCMin) + Number($scope.planForward.output.semPMin) + Number($scope.planForward.output.semOMin);
-                            $scope.planForward.output.semMax = Number($scope.planForward.output.semBMax) + Number($scope.planForward.output.semCMax) + Number($scope.planForward.output.semPMax) + Number($scope.planForward.output.semOMax);
-                            $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);
-
-                            //get portfolio total
-                            $scope.planForward.output.totLB = Number($scope.planForward.output.semLB) + Number($scope.planForward.output.disLB) + Number($scope.planForward.output.socLB) + Number($scope.planForward.output.affLB) + Number($scope.planForward.output.parLB);
-                            $scope.planForward.output.totMin = Number($scope.planForward.output.semMin) + Number($scope.planForward.output.disMin) + Number($scope.planForward.output.socMin) + Number($scope.planForward.output.affMin) + Number($scope.planForward.output.parMin);
-                            $scope.planForward.output.totMax = Number($scope.planForward.output.semMax) + Number($scope.planForward.output.disMax) + Number($scope.planForward.output.socMax) + Number($scope.planForward.output.affMax) + Number($scope.planForward.output.parMax);
-                            $scope.planForward.output.totUB = Number($scope.planForward.output.semUB) + Number($scope.planForward.output.disUB) + Number($scope.planForward.output.socUB) + Number($scope.planForward.output.affUB) + Number($scope.planForward.output.parUB);
-                            $scope.planForward.output.semSlide = Number($scope.planForward.output.semAS);
-                            $scope.planForward.output.totSlide = Number($scope.planForward.output.totAS);
-
-                            //compareChart
-                            $scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
-                            $scope.planForward.output.semCSD = Number($scope.planForward.output.semCAS) - Number($scope.planForward.output.semCSR);
-                            $scope.planForward.output.semBSD = Number($scope.planForward.output.semBAS) - Number($scope.planForward.output.semBSR);
-                            $scope.planForward.output.semPSD = Number($scope.planForward.output.semPAS) - Number($scope.planForward.output.semPSR);
-                            $scope.planForward.output.semOSD = Number($scope.planForward.output.semOAS) - Number($scope.planForward.output.semOSR);
-                            $scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
-                            $scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
-                            $scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
-                            $scope.planForward.output.parSD = Number($scope.planForward.output.parAS) - Number($scope.planForward.output.parSR);
-                            $scope.planForward.output.totSD = Number($scope.planForward.output.totAS) - Number($scope.planForward.output.totSR);
-
-                            $scope.planForward.output.semRD = Number($scope.planForward.output.semAR) - Number($scope.planForward.output.semPR);
-                            $scope.planForward.output.disRD = Number($scope.planForward.output.disAR) - Number($scope.planForward.output.disPR);
-                            $scope.planForward.output.socRD = Number($scope.planForward.output.socAR) - Number($scope.planForward.output.socPR);
-                            $scope.planForward.output.affRD = Number($scope.planForward.output.affAR) - Number($scope.planForward.output.affPR);
-                            $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
-                            $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
-                            $scope.compareChart.data = [
-                                {title: "SEM", value: $scope.planForward.output.semSD},
-                                {title: "SEM-Brand", value: $scope.planForward.output.semBSD},
-                                {title: "SEM-Card", value: $scope.planForward.output.semCSD},
-                                {title: "SEM-Photobook", value: $scope.planForward.output.semPSD},
-                                {title: "SEM-Others", value: $scope.planForward.output.semOSD},
-                                {title: "Display", value: $scope.planForward.output.disSD},
-                                {title: "Social", value: $scope.planForward.output.socSD},
-                                {title: "Affiliates", value: $scope.planForward.output.affSD},
-                                {title: "Partners", value: $scope.planForward.output.parSD},
-                                {title: "Portfolio Total", value: $scope.planForward.output.totSD}
-                            ];
+                            calculateDifference();
                         }
                     });
                 }
@@ -811,6 +773,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
         });
     };
     $scope.slideValidate = function () {
+        $scope.slideError = false;
         $scope.planForward.output.semSlide =
             Number($scope.planForward.output.semCSlide) +
             Number($scope.planForward.output.semPSlide) +
@@ -822,21 +785,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             Number($scope.planForward.output.socSlide) +
             Number($scope.planForward.output.affSlide) +
             Number($scope.planForward.output.parSlide);
-        //$scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
-        //$scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
-        //$scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
-        //$scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
-        //$scope.planForward.output.parSD = Number($scope.planForward.output.parAS) - Number($scope.planForward.output.parSR);
-        //$scope.planForward.output.totSD = Number($scope.planForward.output.totAS) - Number($scope.planForward.output.totSR);
-        //
-        //$scope.compareChart.data = [
-        //    {title: "SEM", value: $scope.planForward.output.semSD},
-        //    {title: "Display", value: $scope.planForward.output.disSD},
-        //    {title: "Social", value: $scope.planForward.output.socSD},
-        //    {title: "Affiliates", value: $scope.planForward.output.affSD},
-        //    {title: "Partners", value: $scope.planForward.output.parSD},
-        //    {title: "Portfolio Total", value: $scope.planForward.output.totSD}
-        //];
+
         var sldChgFlg = {
             semCSlide: $scope.planForward.output.semCAS - $scope.planForward.output.semCSlide,
             semPSlide: $scope.planForward.output.semPAS - $scope.planForward.output.semPSlide,
@@ -887,12 +836,12 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             if (Number($scope.planForward.output.totSR) < sum) {
                 console.log(sum);
                 $scope.slideError = true;
-                $scope.slideErrorValue = $scope.planForward.output.totSR - sum;
+                $scope.slideErrorValue ="Your 'min' is over than " + filter('formatCurrency')(sum - $scope.planForward.output.totSR);
                 return;
             }
             if (Number($scope.planForward.output.totSR) > sumMax) {
                 $scope.slideError = true;
-                $scope.slideErrorValue = $scope.planForward.output.totSR - sum;
+                $scope.slideErrorValue ="Your 'max' is lower by " + filter('formatCurrency')($scope.planForward.output.totSR - sumMax);
                 return;
             }
             $scope.slideError = false;
@@ -906,63 +855,85 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     //functions
 
     function calculateDifference() {
+        //compareChart
+        $scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
+        $scope.planForward.output.semCSD = Number($scope.planForward.output.semCAS) - Number($scope.planForward.output.semCSR);
+        $scope.planForward.output.semBSD = Number($scope.planForward.output.semBAS) - Number($scope.planForward.output.semBSR);
+        $scope.planForward.output.semPSD = Number($scope.planForward.output.semPAS) - Number($scope.planForward.output.semPSR);
+        $scope.planForward.output.semOSD = Number($scope.planForward.output.semOAS) - Number($scope.planForward.output.semOSR);
 
+        $scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
+        $scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
+        $scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
+        $scope.planForward.output.parSD = Number($scope.planForward.output.parAS) - Number($scope.planForward.output.parSR);
+        $scope.planForward.output.totSD = Number($scope.planForward.output.totAS) - Number($scope.planForward.output.totSR);
+
+        $scope.planForward.output.semRD = Number($scope.planForward.output.semAR) - Number($scope.planForward.output.semPR);
+        $scope.planForward.output.disRD = Number($scope.planForward.output.disAR) - Number($scope.planForward.output.disPR);
+        $scope.planForward.output.socRD = Number($scope.planForward.output.socAR) - Number($scope.planForward.output.socPR);
+        $scope.planForward.output.affRD = Number($scope.planForward.output.affAR) - Number($scope.planForward.output.affPR);
+        $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
+        $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
+
+        $scope.planForward.output.ROID = Number($scope.planForward.output.run2ProjROI.substr(0, 3)) - Number($scope.planForward.output.run1ProjROI.substr(0, 3));
+        $scope.planForward.output.changeR = $scope.planForward.output.ROID / Number($scope.planForward.output.run1ProjROI.substr(0, 3)) * 100;
         $scope.compareChart.data = [
             {
                 title: "SEM",
-                value: $scope.lookBack.difference.semSD / $scope.lookBack.history.semSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.semSD), 0)
+                value: $scope.planForward.output.semSD / $scope.planForward.output.semSR,
+                string: filter('number')(Math.abs($scope.planForward.output.semSD), 0)
             },
             {
                 title: "SEM-Brand",
-                value: $scope.lookBack.difference.semBSD / $scope.lookBack.history.semBSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.semBSD), 0)
+                value: $scope.planForward.output.semBSD / $scope.planForward.output.semBSR,
+                string: filter('number')(Math.abs($scope.planForward.output.semBSD), 0)
             },
             {
                 title: "SEM-Card",
-                value: $scope.lookBack.difference.semCSD / $scope.lookBack.history.semCSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.semCSD), 0)
+                value: $scope.planForward.output.semCSD / $scope.planForward.output.semCSR,
+                string: filter('number')(Math.abs($scope.planForward.output.semCSD), 0)
             },
             {
                 title: "SEM-Photobook",
-                value: $scope.lookBack.difference.semPSD / $scope.lookBack.history.semPSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.semPSD), 0)
+                value: $scope.planForward.output.semPSD / $scope.planForward.output.semPSR,
+                string: filter('number')(Math.abs($scope.planForward.output.semPSD), 0)
             },
             {
                 title: "SEM-Others",
-                value: $scope.lookBack.difference.semOSD / $scope.lookBack.history.semOSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.semOSD), 0)
+                value: $scope.planForward.output.semOSD / $scope.planForward.output.semOSR,
+                string: filter('number')(Math.abs($scope.planForward.output.semOSD), 0)
             },
             {
                 title: "Display",
-                value: $scope.lookBack.difference.disSD / $scope.lookBack.history.disSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.disSD), 0)
+                value: $scope.planForward.output.disSD / $scope.planForward.output.disSR,
+                string: filter('number')(Math.abs($scope.planForward.output.disSD), 0)
             },
             {
                 title: "Social",
-                value: $scope.lookBack.difference.socSD / $scope.lookBack.history.socSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.socSD), 0)
+                value: $scope.planForward.output.socSD / $scope.planForward.output.socSR,
+                string: filter('number')(Math.abs($scope.planForward.output.socSD), 0)
             },
             {
                 title: "Affiliates",
-                value: $scope.lookBack.difference.affSD / $scope.lookBack.history.affSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.affSD), 0)
+                value: $scope.planForward.output.affSD / $scope.planForward.output.affSR,
+                string: filter('number')(Math.abs($scope.planForward.output.affSD), 0)
             },
             {
                 title: "Partners",
-                value: $scope.lookBack.difference.parSD / $scope.lookBack.history.parSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.parSD), 0)
+                value: $scope.planForward.output.parSD / $scope.planForward.output.parSR,
+                string: filter('number')(Math.abs($scope.planForward.output.parSD), 0)
             },
             {
                 title: "Portfolio Total",
-                value: $scope.lookBack.difference.totSD / $scope.lookBack.history.totSR,
-                string: filter('number')(Math.abs($scope.lookBack.difference.totSD), 0)
+                value: $scope.planForward.output.totSD / $scope.planForward.output.totSR,
+                string: filter('number')(Math.abs($scope.planForward.output.totSD), 0)
             }
         ];
 
     }
 
     function passInfoToData() {
+        $scope.planForward.output.UserName = $scope.user.name;
         $scope.planForward.output.Algorithm = 3;
         $scope.planForward.output.AlgStartingTime = "";
         $scope.planForward.output.AlgEndingTime = "";
@@ -994,40 +965,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
 
                     $scope.planForward.output.totSlide = Number($scope.planForward.output.totAS);
 
-                    //compareChart
-                    $scope.planForward.output.semSD = Number($scope.planForward.output.semAS) - Number($scope.planForward.output.semSR);
-                    $scope.planForward.output.semCSD = Number($scope.planForward.output.semCAS) - Number($scope.planForward.output.semCSR);
-                    $scope.planForward.output.semBSD = Number($scope.planForward.output.semBAS) - Number($scope.planForward.output.semBSR);
-                    $scope.planForward.output.semPSD = Number($scope.planForward.output.semPAS) - Number($scope.planForward.output.semPSR);
-                    $scope.planForward.output.semOSD = Number($scope.planForward.output.semOAS) - Number($scope.planForward.output.semOSR);
-
-                    $scope.planForward.output.disSD = Number($scope.planForward.output.disAS) - Number($scope.planForward.output.disSR);
-                    $scope.planForward.output.socSD = Number($scope.planForward.output.socAS) - Number($scope.planForward.output.socSR);
-                    $scope.planForward.output.affSD = Number($scope.planForward.output.affAS) - Number($scope.planForward.output.affSR);
-                    $scope.planForward.output.parSD = Number($scope.planForward.output.parAS) - Number($scope.planForward.output.parSR);
-                    $scope.planForward.output.totSD = Number($scope.planForward.output.totAS) - Number($scope.planForward.output.totSR);
-
-                    $scope.planForward.output.semRD = Number($scope.planForward.output.semAR) - Number($scope.planForward.output.semPR);
-                    $scope.planForward.output.disRD = Number($scope.planForward.output.disAR) - Number($scope.planForward.output.disPR);
-                    $scope.planForward.output.socRD = Number($scope.planForward.output.socAR) - Number($scope.planForward.output.socPR);
-                    $scope.planForward.output.affRD = Number($scope.planForward.output.affAR) - Number($scope.planForward.output.affPR);
-                    $scope.planForward.output.parRD = Number($scope.planForward.output.parAR) - Number($scope.planForward.output.parPR);
-                    $scope.planForward.output.totRD = Number($scope.planForward.output.totAR) - Number($scope.planForward.output.totPR);
-
-                    $scope.planForward.output.ROID = Number($scope.planForward.output.run2ProjROI.substr(0, 3)) - Number($scope.planForward.output.run1ProjROI.substr(0, 3));
-                    $scope.planForward.output.changeR = $scope.planForward.output.ROID / Number($scope.planForward.output.run1ProjROI.substr(0, 3)) * 100;
-                    $scope.compareChart.data = [
-                        {title: "SEM", value: $scope.planForward.output.semSD},
-                        {title: "SEM-Brand", value: $scope.planForward.output.semBSD},
-                        {title: "SEM-Card", value: $scope.planForward.output.semCSD},
-                        {title: "SEM-Photobook", value: $scope.planForward.output.semPSD},
-                        {title: "SEM-Others", value: $scope.planForward.output.semOSD},
-                        {title: "Display", value: $scope.planForward.output.disSD},
-                        {title: "Social", value: $scope.planForward.output.socSD},
-                        {title: "Affiliates", value: $scope.planForward.output.affSD},
-                        {title: "Partners", value: $scope.planForward.output.parSD},
-                        {title: "Portfolio Total", value: $scope.planForward.output.totSD}
-                    ];
+                   calculateDifference();
                 }
             });
         }
@@ -1039,7 +977,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     //main
     //check objId
     if (!analysis.objIds.current) {
-        location.path("/lookback/init");
+        location.path("/planforward/init");
     }
     user.getUser(function (user) {
         $scope.user = user;
@@ -1050,7 +988,6 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     });
     doGet();
     count = setInterval(doGet, 1000 * 0.3); //set frequency
-
     $scope.$on('$destroy', function () {
         clearInterval(count);
     });
@@ -1128,3 +1065,21 @@ forward.directive('formatInput', ['$filter', function ($filter) {
         height: 450,
         margin: {left: 0, top: 80, right: 0, bottom: 30}
     });
+forward.directive('formatInput2', ['$filter', function ($filter) {
+    return {
+        require: 'ngModel',
+        link: function (scope, elem, attrs, ngModel) {
+            if (!ngModel) return;
+
+            ngModel.$formatters.unshift(function (a) {
+                return $filter('number')(ngModel.$modelValue, 0)
+            });
+
+            ngModel.$parsers.unshift(function (viewValue) {
+                var plainNumber = viewValue.replace(/[^\d|\-+|\.+]/g, '');
+                elem.val($filter('number')(plainNumber, 0));
+                return plainNumber;
+            });
+        }
+    };
+}]);

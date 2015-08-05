@@ -73,7 +73,7 @@
                     <div class="input-group">
                         <input id="lookBackEndPeriod" type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                ng-model="dataInfo.endDate" is-open="calender.opened.endPeriod"
-                               ng-change="calender.modifyDate()"
+                               ng-change="calender.modifyDate()" show-button-bar=false
                                min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
                                datepicker-mode="'month'" disabled max-date="calender.eMaxDate" ng-required="true"
                                close-text="Close">

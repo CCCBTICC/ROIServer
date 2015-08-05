@@ -404,7 +404,7 @@ input[type=range]::-ms-thumb {
 
 /*  Tables setting  */
 .table-responsive {
-    max-height: calc(100vh - 205px);
+    max-height: calc(88vh - 205px);
     position: relative;
 }
 
@@ -427,7 +427,7 @@ table.thead-fixed-top > thead {
 }
 
 table.thead-fixed-top > tbody {
-    max-height: calc(100vh - 335px);
+    max-height: calc(88vh - 335px);
     overflow-y: scroll;
     overflow-x: hidden;
     display: block;
@@ -456,7 +456,7 @@ table.roi-table tr > .col-0 {
 }
 
 table.roi-table tr > .col-1 {
-    min-width: 100px;
+    min-width: 150px;
     max-width: 160px;
     overflow: hidden;
 }
@@ -516,7 +516,7 @@ table.roi-table tr > td.td-subtitle {
 }
 
 table.roi-table tr > td.range-input {
-    height: 50px;
+    height: 40px;
     min-width: 100px;
     width: 160px;
     padding: 0;

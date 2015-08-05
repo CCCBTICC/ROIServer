@@ -30,7 +30,7 @@ router.post('/R', function (req, res) {
             note: "",
             final: "No",
             dataThrough: reqInfo.dataThrough,
-            included: reqData.included ==='Yes'?'Yes' : 'No',
+            included: reqInfo.included,
             share: "No",
             exist:false,
             from:reqInfo.from
