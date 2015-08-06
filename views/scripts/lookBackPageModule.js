@@ -442,7 +442,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         }
     };
     $scope.showme = false;
-    $scope.lookbackContentSize = 'col-sm-10';
+    $scope.lookbackContentSize = 'col-sm-12';
     $scope.showGraph = 'Show Graph';
 
     //scope functions

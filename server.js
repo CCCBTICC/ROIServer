@@ -24,8 +24,8 @@ MongoClient.connect(dbURL, function (err, db) {
 var apiFolderName = 'api';
 //var apiFolderName = 'mockapi';
 var scenarios = require('./' + apiFolderName + '/scenarios');
-var analysis = require('./' + apiFolderName + '/analysis');
-//var analysis = require('./' + 'mockapi' + '/analysis');
+//var analysis = require('./' + apiFolderName + '/analysis');
+var analysis = require('./' + 'mockapi' + '/analysis');
 
 var users = require('./' + apiFolderName + '/users');
 var history = require('./' + apiFolderName + '/history');
@@ -40,7 +40,7 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(session({secret: 'ROIServersessionkey'}));
+//app.use(session({secret: 'ROIServersessionkey'}));
 app.use(flash());
 app.use(express.static(__dirname + '/views'));
 

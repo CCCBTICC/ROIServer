@@ -191,3 +191,10 @@ app.filter('name', function () {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 });
+app.filter('startFrom', function() {
+    return function(input, start) {
+        if(input[0]){
+            start = +start; //parse to int
+            return input.slice(start);}
+    }
+});

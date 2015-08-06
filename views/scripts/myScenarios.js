@@ -99,6 +99,12 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         edit: {disable: true}
     };
     $scope.scenarios = [];
+    $scope.pagination={
+        currentPage:0,
+        maxSize:5,
+        total:0,
+        pageSize:3
+    };
 
     //scope functions
     $scope.logout = function () {
@@ -180,6 +186,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 if (deleteIndex !== -1) {
                     console.log(deleteIndex);
                     $scope.scenarios.splice(deleteIndex, 1);
+                    //$scope.pagination.total=$scope.scenarios.length;
                     switch (activeCount($scope.scenarios)) {
                         case 0:
                             Object.keys($scope.operations).forEach(function (key) {
@@ -221,6 +228,13 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         //analysis.setName(objectId);
         $location.path('myscenarios/edit');
     };
+    $scope.myStyle=function(from){
+        if(from==='back'){
+            return {backgroundColor:'yellow'};
+        }else{
+            return {backgroundColor:'pink'};
+        }
+    };
 
     //main
     // get users scenarioList
@@ -237,6 +251,10 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         scenarios.getScenarios($scope.user.name, function (data) {
             console.log(data);
             $scope.scenarios = data;
+            $scope.$watchCollection('scenarios',function(newValue, oldValue){
+                $scope.pagination.total=$scope.scenarios.length;
+            });
+
             data.forEach(function(singleScenario){
                 tempIdArray.push(singleScenario._id);
             });
@@ -564,13 +582,13 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenari
     //scope functions
     $scope.update = function () {
         console.log($scope.scenario.final);
-        $scope.update = {
+        $scope.updateData = {
             name: $scope.scenario.name,
             note: $scope.scenario.note,
             final: $scope.scenario.final
         };
         user.getUser(function (user) {
-            scenarios.editScenario(user.name, $scope.scenario._id, $scope.update, function (res) {
+            scenarios.editScenario(user.name, $scope.scenario._id, $scope.updateData, function (res) {
                 console.log(res);
                 if (res) {
                     alert("ScenarioInfo is  updated.")
