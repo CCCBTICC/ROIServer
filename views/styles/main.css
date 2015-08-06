@@ -192,15 +192,20 @@ a, a:visited, a:focus, a:active, a:hover{
     font-size:18px;
     float: right;
     margin-right: 5px;
+    cursor: hand;
+}
+a .running{
+    text-decoration: none;
 }
 /*  tooltip  */
 /*  General  */
 .grey-tooltip + .tooltip > .tooltip-inner {background-color: #85abc1; color:#333333;}
 .grey-tooltip + .tooltip > .tooltip-arrow { border-bottom-color:#85abc1; color:#333333;}
 form .tooltip-inner {
-    max-width: 160px;
     /* If max-width does not work, try using width instead */
-    width:120px;
+    width:180px;
+    text-align: left;
+    padding-left:17px;
 }
 
 /*************************************************
@@ -479,9 +484,38 @@ form .tooltip-inner {
 }
 .table-responsive .table-search{
     float:right;
-    margin:0 20px 10px 0;
-    width: 200px;
 }
+
+.table-responsive .table-search input.search-query {
+    padding-left:26px;
+    width: 180px;
+    margin:0 20px 10px 0;
+}
+.table-responsive .table-search form.form-search {
+    position: relative;
+    float: right;
+}
+.table-responsive .table-search form.form-search:before {
+    display: block;
+    width: 14px;
+    height: 14px;
+    content: "\e003";
+    font-family: 'Glyphicons Halflings';
+    background-position: -48px 0;
+    position: absolute;
+    top:8px;
+    left:8px;
+    opacity: .5;
+    z-index: 1000;
+}
+.table-responsive .everyPageNumber{
+    width: 60px;
+    float: right;
+    text-align: center;
+    padding-right: 5px;
+    margin-right: 5px;
+}
+
 table.roi-table {
     width: 100%;
     margin-right: 20px;
@@ -586,6 +620,7 @@ table.roi-table tr > .list-col-3 {
     min-width: 240px;
     max-width: 300px;
     overflow: hidden;
+    padding:0;
 }
 
 table.roi-table tr > .list-col-4 {
@@ -608,7 +643,7 @@ table.roi-table tr > .list-col-6 {
 
 table.roi-table tr > td {
     vertical-align: middle;
-    padding: 0;
+    padding: 5px 15px 5px 0;
     text-overflow: ellipsis;
 }
 
@@ -709,3 +744,5 @@ div.controls > span:last-child {
  ******         Customer animate            ******
  ******                                     ******
  *************************************************/
+
+

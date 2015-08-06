@@ -18,11 +18,35 @@
     <div class="row">
 
         <div class="table-responsive">
-            <div class="input-group table-search">
-                <input type="text" name="q" class="form-control" placeholder="Search..."/>
-                            <span class="input-group-btn">
-                                <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-                            </span>
+            <div class="table-search">
+
+                <form class="form-search form-inline">
+                    <input type="text" class="form-control search-query" placeholder="Search..." ng-model="searchText" ng-change="pageChanged(currentPage,numPerPage)"/>
+                </form>
+
+
+
+
+                <input type="number" min="1" max="100" class="form-control everyPageNumber" ng-model="numPerPage" ng-change="pageChanged(currentPage,numPerPage)">
+                <!--<div class="btn-group search-filter" dropdown>-->
+                    <!--<button class="btn btn-default" ng-class="{'disabled':true}"-->
+                            <!--ng-click="">Filter</button>-->
+                    <!--<button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>-->
+                        <!--<span class="caret"></span>-->
+                        <!--<span class="sr-only">Split button!</span>-->
+                    <!--</button>-->
+                    <!--<ul class="dropdown-menu" role="menu">-->
+                        <!--<li><a class="btn btn-default"  ng-click="">All</a></li>-->
+                        <!--<li><a class="btn btn-default"  ng-click="">ID</a></li>-->
+                        <!--<li><a class="btn btn-default"  ng-click="">Name</a></li>-->
+                        <!--<li><a class="btn btn-default"  ng-click="">Owner</a></li>-->
+                        <!--<li><a class="btn btn-default"  ng-click="">Create Date</a></li>-->
+                        <!--<li><a class="btn btn-default"  ng-click="">Planned Spend</a></li>-->
+                        <!--<li><a class="btn btn-default"  ng-click="">Data Through</a></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+
+
             </div>
             <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                 <thead>
@@ -39,11 +63,11 @@
                 </tr>
                 </thead>
                 <tbody class="row-2">
-                <tr ng-repeat="scenario in scenarios | orderBy:predicate:reverse" ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
+                <tr ng-repeat="scenario in filteredScenarioss | filter:searchText | orderBy:predicate:reverse" ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
                     <!--<td class="check non-number col-0">-->
                         <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
-                    <td class="scenario-id list-col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-hide="!yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-hide="!runCheck(scenario.runningTime)"></i> </td>
+                    <td class="scenario-id list-col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-show="runCheck(scenario.runningTime)" tooltip-placement="right" tooltip="Cancel" ng-click="stop(scenario)"></i> </td>
                     <td class="non-number list-col-2">{{scenario.name}}</td>
                     <td class="non-number list-col-1">{{scenario.owner}}</td>
                     <td class="non-number list-col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>
@@ -93,8 +117,21 @@
             </div>
             </div>
             <!-- todo: href="#myscenarios/export" deleted from tag a, move it to function. -->
+            <pagination
+                    boundary-links="true"
+                    total-items="filteredScenarios.length"
+                    ng-model="currentPage"
+                    ng-change="pageChanged(currentPage,numPerPage)"
+                    items-per-page="numPerPage"
+                    max-size="maxSize"
+                    class="pagination-sm"
+                    previous-text="&lsaquo;"
+                    next-text="&rsaquo;"
+                    first-text="&laquo;"
+                    last-text="&raquo;">
 
-
+            </pagination>
+            <span>{{filteredScenarios.length}}</span>
 
 
         </div>

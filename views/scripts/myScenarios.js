@@ -65,7 +65,7 @@ scenariosApp.factory('scenarios', function ($http) {
     }
 
 });
-scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, analysis, scenarios, user) {
+scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, analysis, scenarios, user, $filter) {
     //vars
 
     //functions
@@ -99,7 +99,11 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         edit: {disable: true}
     };
     $scope.scenarios = [];
-
+    $scope.filteredScenarios = [];
+    $scope.currentPage = 1;
+    $scope.numPerPage = 4;
+    $scope.maxSize = 5;
+    $scope.itemsPerPage = 1;
     //scope functions
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
@@ -163,7 +167,9 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         }
     };
     $scope.delete = function () {
+        console.log("1");
         var objectId = getSelectedId($scope.scenarios);
+        console.log(objectId);
         user.getUser(function (user) {
             $scope.user = user;
         });
@@ -209,6 +215,51 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             }
         });
     };
+    $scope.stop = function (obj) {
+        var objectId = obj._id;
+        console.log(objectId);
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
+        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
+            if(data){
+                var deleteIndex = -1;
+                $scope.scenarios.forEach(function (obj, index) {
+                    if (obj._id === objectId) {
+                        deleteIndex = index;
+                    }
+                });
+                if (deleteIndex !== -1) {
+                    console.log(deleteIndex);
+                    $scope.filteredScenarios.splice(deleteIndex, 1);
+                    switch (activeCount($scope.filteredScenarios)) {
+                        case 0:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = true;
+                            });
+                            break;
+                        case 1:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key === 'compare');
+                            });
+                            break;
+                        case 2:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key !== 'delete' && key !== 'compare');
+                            });
+                            break;
+                        default:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key !== 'delete');
+                            });
+                            break;
+                    }
+
+                }
+            console.log("delete it");
+            }
+        });
+    };
     $scope.share = function () {
         analysis.objIds.current = getSelectedId($scope.scenarios);
         $location.path('myscenarios/share');
@@ -244,8 +295,8 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     });
     // check status
 
-    setTimeout(function(){getStatus();},500);
-    setTimeout(function(){getStatus();},1000);
+    setTimeout(function(){getStatus();$scope.pageChanged($scope.currentPage, $scope.numPerPage);},500);
+    setTimeout(function(){getStatus();$scope.pageChanged($scope.currentPage, $scope.numPerPage);},1000);
     var checkStatusLoop = setInterval(getStatus,5*1000);
 
     $scope.$on('$destroy', function () {
@@ -293,6 +344,13 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             console.log($scope.scenarios);
         });
     }
+    $scope.pageChanged = function (current, numPerPage) {
+        console.log(current + "--" + numPerPage);
+        var begin = (current - 1) * numPerPage;
+        var end = begin + numPerPage;
+        $scope.filteredScenarios    = $filter('filter')($scope.scenarios,$scope.searchText);
+        $scope.filteredScenarioss   = $scope.filteredScenarios.slice(begin,end);
+    };
 });
 scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scenarios, $location, actionObjInfo, history) {
     //vars
