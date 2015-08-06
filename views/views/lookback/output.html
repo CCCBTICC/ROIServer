@@ -13,8 +13,8 @@
             <label>Scenario ID:</label>{{scenario.scenarioId}} <br>
             <label>Brand</label>: {{scenario.brand}}
             <label>Attribution</label>: {{scenario.lmTouch}}
-            <label>Begin Period</label>: {{scenario.begin | date:'MMM-yyyy'}}
-            <label>End Period</label>: {{scenario.end | date:'MMM-yyyy'}}
+            <label>Begin Period</label>: {{scenario.beginDate | date:'MMM-yyyy'}}
+            <label>End Period</label>: {{scenario.endDate | date:'MMM-yyyy'}}
             <label>Portfolio Spend </label>: {{scenario.spend | formatCurrency}}
             <label>Data through</label>: {{scenario.dataThrough | date:'MMM-yyyy'}}
         </div>

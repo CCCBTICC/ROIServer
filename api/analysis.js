@@ -19,8 +19,8 @@ router.post('/R', function (req, res) {
         scenario = {
             _id: objectId,
             scenarioId:reqInfo.scenarioId,
-            begin: reqInfo.beginDate,
-            end: reqInfo.endDate,
+            beginDate: reqInfo.beginDate,
+            endDate: reqInfo.endDate,
             lmTouch: reqInfo.lmTouch === 'Last Touch' ? 'Last Touch' : 'Multi Touch',
             spend: reqInfo.spend,
             createDate: d,

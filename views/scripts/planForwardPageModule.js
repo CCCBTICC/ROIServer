@@ -348,16 +348,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     };
     $scope.dataInfo = {};
     $scope.planForward = {
-        output: {
-            semBSF: 1,
-            semCSF: 1,
-            semPSF: 1,
-            semOSF: 1,
-            disSF: 1,
-            socSF: 1,
-            affSF: 1,
-            parSF: 1
-        },
+        output: {},
         history: {},
         ControlChannelsDM: [],
         ControlChannels: []
@@ -483,7 +474,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             //post data to R
             analysis.postData($scope.planForward.output, $scope.dataInfo, function (res) {
                 console.log(res);
-                location.path('planforward/output');
+                //location.path('planforward/output');
+                location.path('myscenarios');
             });
         }
     };
@@ -748,29 +740,30 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
         //post data to R
         analysis.postData($scope.planForward.output,$scope.scenario, function (res) {
             console.log(res);
-            var count;
-            $scope.getJson = false;
-            doGet();
-            count = setInterval(doGet, 1000 * 10); //set frequency
-            function doGet() {
-                if ($scope.getJson === false) {
-                    analysis.getData(function (data) {
-                        if (data) {
-                            console.log("from doGet in rerun in forward/output");
-                            console.log(data);
-                            $scope.getJson = true;
-                            $scope.planForward.output = data;
-                            scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
-                                console.log(res);
-                            });
-                            calculateDifference();
-                        }
-                    });
-                }
-                else {
-                    clearInterval(count);
-                }
-            }
+            //var count;
+            //$scope.getJson = false;
+            //doGet();
+            //count = setInterval(doGet, 1000 * 10); //set frequency
+            //function doGet() {
+            //    if ($scope.getJson === false) {
+            //        analysis.getData(function (data) {
+            //            if (data) {
+            //                console.log("from doGet in rerun in forward/output");
+            //                console.log(data);
+            //                $scope.getJson = true;
+            //                $scope.planForward.output = data;
+            //                scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
+            //                    console.log(res);
+            //                });
+            //                calculateDifference();
+            //            }
+            //        });
+            //    }
+            //    else {
+            //        clearInterval(count);
+            //    }
+            //}
+            location.path('myscenarios');
         });
     };
     $scope.slideValidate = function () {

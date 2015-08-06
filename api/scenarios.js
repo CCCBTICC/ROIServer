@@ -84,12 +84,25 @@ router.post('/', function (req, res) {
         case "remove":
             remove(req.db, requestData, res);
             break;
+        case "checkFinal":
+            checkFinal(req.db, requestData, res);
+        break;
         default:
             res.send('invalid actions');
             break;
     }
 });
 
+function checkFinal(db,requestData,res){
+    db.collection('scenarios').find(requestData).toArray(function(err,result){
+        console.log(result);
+        if (!err) {
+            res.send(result);
+        } else {
+            res.send({err: err});
+        }
+    })
+}
 function status(db, requestData, res){
     var currentDate = new Date();
     requestData.forEach(function (listSingle, index) {

@@ -50,8 +50,9 @@
             <div class="col-xs-11 col-sm-4 col-sm-offset-2">
             <div class="checkbox">
                 <label class="control-label">
-                    <input type="checkbox" ng-model="scenario.final" ng-true-value="'Yes'" ng-false-value="'No'"> Final scenario
+                    <input type="checkbox" ng-disabled="finalDisable" ng-model="scenario.final" ng-true-value="'Yes'" ng-false-value="'No'"> Final scenario
                 </label>
+                <br><span ng-show="finalDisable" style="color:red">{{message}}</span>
             </div>
                 </div>
             <div class="col-xs-1 elp-info">

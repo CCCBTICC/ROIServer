@@ -102,7 +102,9 @@
                                              ng-change="fix()" min="planForward.output.semBLB"
                                              max="planForward.output.semBMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMin |
+                                formatCurrency}}
+                            </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semBrand}">
                             <div ng-hide="selectPlan.checkBox.semBrand">
@@ -110,10 +112,12 @@
                                              ng-change="fix()" min="planForward.output.semBMin"
                                              max="planForward.output.semBUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMax | formatCurrency}} </div>
+                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMax |
+                                formatCurrency}}
+                            </div>
                         </td>
                         <td>{{planForward.output.semBUB | formatCurrency}}</td>
-                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.semBSF"
+                        <td class="check"><input type="number" string-to-number class="form-control" ng-model="planForward.output.semBSF"
                                                  min="0.5"
                                                  max="1.5" step="0.05" style="width:80px"></td>
                     </tr>
@@ -132,7 +136,8 @@
                                              min="planForward.output.semCLB"
                                              max="planForward.output.semCMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semCard">{{planForward.output.semCMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.semCard">{{planForward.output.semCMin | formatCurrency}}
+                            </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semCard}">
                             <div ng-hide="selectPlan.checkBox.semCard">
@@ -140,11 +145,12 @@
                                              min="planForward.output.semCMin"
                                              max="planForward.output.semCUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semCard">{{planForward.output.semCMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.semCard">{{planForward.output.semCMin | formatCurrency}}
+                            </div>
                         </td>
                         <td>{{planForward.output.semCUB | formatCurrency}}</td>
                         <td class="check"><input type="number" class="form-control" ng-model="planForward.output.semCSF"
-                                                 min=".5" max="1.5" step="0.05" style="width:80px">
+                                                 string-to-number min=".5" max="1.5" step="0.05" style="width:80px">
                         </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
@@ -161,9 +167,11 @@
                             <div ng-hide="selectPlan.checkBox.semPhotobook">
                                 <range-input ng-model="planForward.output.semPMin" ng-change="fix()"
                                              min="planForward.output.semPLB"
-                                             max="planForward.output.semPMax"> </range-input>
+                                             max="planForward.output.semPMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax |
+                                formatCurrency}}
+                            </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semPhotobook}">
                             <div ng-hide="selectPlan.checkBox.semPhotobook">
@@ -171,10 +179,12 @@
                                              min="planForward.output.semPMin"
                                              max="planForward.output.semPUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax | formatCurrency}} </div>
+                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax |
+                                formatCurrency}}
+                            </div>
                         </td>
                         <td>{{planForward.output.semPUB | formatCurrency}}</td>
-                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.semPSF"
+                        <td class="check"><input type="number" string-to-number class="form-control" ng-model="planForward.output.semPSF"
                                                  min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
@@ -194,7 +204,9 @@
                                              min="planForward.output.semOLB"
                                              max="planForward.output.semOMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semOthers">{{planForward.output.semOMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.semOthers">{{planForward.output.semOMin |
+                                formatCurrency}}
+                            </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semOthers}">
                             <div ng-hide="selectPlan.checkBox.semOthers">
@@ -202,10 +214,12 @@
                                              min="planForward.output.semOMin"
                                              max="planForward.output.semOUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semOthers">{{planForward.output.semOMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.semOthers">{{planForward.output.semOMin |
+                                formatCurrency}}
+                            </div>
                         </td>
                         <td>{{planForward.output.semOUB | formatCurrency}}</td>
-                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.semOSF"
+                        <td class="check"><input type="number" string-to-number class="form-control" ng-model="planForward.output.semOSF"
                                                  min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
@@ -224,7 +238,8 @@
                                              min="planForward.output.disLB"
                                              max="planForward.output.disMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.display">{{planForward.output.disMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.display">{{planForward.output.disMin | formatCurrency}}
+                            </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.display}">
                             <div ng-hide="selectPlan.checkBox.display">
@@ -232,10 +247,11 @@
                                              min="planForward.output.disMin"
                                              max="planForward.output.disUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.display">{{planForward.output.disMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.display">{{planForward.output.disMin | formatCurrency}}
+                            </div>
                         </td>
                         <td>{{planForward.output.disUB | formatCurrency}}</td>
-                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.disSF"
+                        <td class="check"><input type="number" string-to-number class="form-control" ng-model="planForward.output.disSF"
                                                  min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
@@ -254,7 +270,8 @@
                                              min="planForward.output.socLB"
                                              max="planForward.output.socMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.social">{{planForward.output.socMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.social">{{planForward.output.socMin | formatCurrency}}
+                            </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.social}">
                             <div ng-hide="selectPlan.checkBox.social">
@@ -262,10 +279,11 @@
                                              min="planForward.output.socMin"
                                              max="planForward.output.socUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.social">{{planForward.output.socMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.social">{{planForward.output.socMin | formatCurrency}}
+                            </div>
                         </td>
                         <td>{{planForward.output.socUB | formatCurrency}}</td>
-                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.socSF"
+                        <td class="check"><input type="number" string-to-number class="form-control" ng-model="planForward.output.socSF"
                                                  min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
@@ -284,7 +302,9 @@
                                              min="planForward.output.affLB"
                                              max="planForward.output.affMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.affiliates">{{planForward.output.affMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.affiliates">{{planForward.output.affMin |
+                                formatCurrency}}
+                            </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.affiliates}">
                             <div ng-hide="selectPlan.checkBox.affiliates">
@@ -292,10 +312,12 @@
                                              min="planForward.output.affMin"
                                              max="planForward.output.affUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.affiliates">{{planForward.output.affMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.affiliates">{{planForward.output.affMin |
+                                formatCurrency}}
+                            </div>
                         </td>
                         <td>{{planForward.output.affUB | formatCurrency}}</td>
-                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.affSF"
+                        <td class="check"><input type="number" string-to-number class="form-control" ng-model="planForward.output.affSF"
                                                  min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
@@ -314,7 +336,8 @@
                                              min="planForward.output.parLB"
                                              max="planForward.output.parMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.partners">{{planForward.output.parMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.partners">{{planForward.output.parMin | formatCurrency}}
+                            </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.partners}">
                             <div ng-hide="selectPlan.checkBox.partners">
@@ -322,10 +345,11 @@
                                              min="planForward.output.parMin"
                                              max="planForward.output.parUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.partners">{{planForward.output.parMin | formatCurrency}}</div>
+                            <div ng-show="selectPlan.checkBox.partners">{{planForward.output.parMin | formatCurrency}}
+                            </div>
                         </td>
                         <td>{{planForward.output.parUB | formatCurrency}}</td>
-                        <td class="check"><input type="number" class="form-control" ng-model="planForward.output.parSF"
+                        <td class="check"><input type="number" string-to-number class="form-control" ng-model="planForward.output.parSF"
                                                  min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
@@ -381,7 +405,8 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                        ng-model="planForward.output.tvBeginDate" is-open="calender.opened.beginPeriod"
-                                       ng-change="calender.modifyDate()" show-button-bar=false datepicker-append-to-body=true
+                                       ng-change="calender.modifyDate()" show-button-bar=false
+                                       datepicker-append-to-body=true
                                        min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
                                        datepicker-mode="'day'" disabled max-date="calender.eMaxDate"
                                        ng-required="true"
@@ -399,7 +424,8 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                        ng-model="planForward.output.tvEndDate" is-open="calender.opened.endPeriod"
-                                       ng-change="calender.modifyDate()" show-button-bar=false datepicker-append-to-body=true
+                                       ng-change="calender.modifyDate()" show-button-bar=false
+                                       datepicker-append-to-body=true
                                        min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
                                        datepicker-mode="'day'" disabled max-date="calender.eMaxDate"
                                        ng-required="true"
