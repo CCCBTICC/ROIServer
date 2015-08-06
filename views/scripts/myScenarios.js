@@ -17,12 +17,11 @@ scenariosApp.factory('scenarios', function ($http) {
     return {
         checkScenariosStatus: function (idArray, cb) {
             var actionData = [];
-            idArray.forEach(function (idArraySingle) {
+            idArray.forEach(function(idArraySingle){
                 var tempObj = {
                     "id": idArraySingle,
                     "final": "",
-                    "runningTime": ""
-                };
+                    "runningTime":""};
                 actionData.push(tempObj);
             });
             var data = {
@@ -71,7 +70,7 @@ scenariosApp.factory('scenarios', function ($http) {
     }
 
 });
-scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, analysis, scenarios, user) {
+scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, actionObjInfo, analysis, scenarios, user, $filter) {
     //vars
 
     //functions
@@ -105,13 +104,11 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         edit: {disable: true}
     };
     $scope.scenarios = [];
-    $scope.pagination = {
-        currentPage: 0,
-        maxSize: 5,
-        total: 0,
-        pageSize: 8
-    };
-
+    $scope.filteredScenarios = [];
+    $scope.currentPage = 1;
+    $scope.numPerPage = 6;
+    $scope.maxSize = 5;
+    $scope.itemsPerPage = 1;
     //scope functions
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
@@ -175,7 +172,9 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         }
     };
     $scope.delete = function () {
+        console.log("1");
         var objectId = getSelectedId($scope.scenarios);
+        console.log(objectId);
         user.getUser(function (user) {
             $scope.user = user;
         });
@@ -192,7 +191,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 if (deleteIndex !== -1) {
                     console.log(deleteIndex);
                     $scope.scenarios.splice(deleteIndex, 1);
-                    //$scope.pagination.total=$scope.scenarios.length;
                     switch (activeCount($scope.scenarios)) {
                         case 0:
                             Object.keys($scope.operations).forEach(function (key) {
@@ -219,6 +217,51 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 }
             } else {
                 alert("You are not the original owner, data can not be deleted!");
+            }
+        });
+    };
+    $scope.stop = function (obj) {
+        var objectId = obj._id;
+        console.log(objectId);
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
+        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
+            if(data){
+                var deleteIndex = -1;
+                $scope.scenarios.forEach(function (obj, index) {
+                    if (obj._id === objectId) {
+                        deleteIndex = index;
+                    }
+                });
+                if (deleteIndex !== -1) {
+                    console.log(deleteIndex);
+                    $scope.filteredScenarios.splice(deleteIndex, 1);
+                    switch (activeCount($scope.filteredScenarios)) {
+                        case 0:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = true;
+                            });
+                            break;
+                        case 1:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key === 'compare');
+                            });
+                            break;
+                        case 2:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key !== 'delete' && key !== 'compare');
+                            });
+                            break;
+                        default:
+                            Object.keys($scope.operations).forEach(function (key) {
+                                $scope.operations[key].disable = (key !== 'delete');
+                            });
+                            break;
+                    }
+
+                }
+            console.log("delete it");
             }
         });
     };
@@ -257,74 +300,71 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         scenarios.getScenarios($scope.user.name, function (data) {
             console.log(data);
             $scope.scenarios = data;
-            $scope.$watchCollection('scenarios', function (newValue, oldValue) {
-                $scope.pagination.total = $scope.scenarios.length;
-            });
-
-            data.forEach(function (singleScenario) {
+            data.forEach(function(singleScenario){
                 tempIdArray.push(singleScenario._id);
             });
         });
     });
     // check status
 
-    setTimeout(function () {
-        getStatus();
-    }, 500);
-    setTimeout(function () {
-        getStatus();
-    }, 1000);
-    var checkStatusLoop = setInterval(getStatus, 5 * 1000);
+    setTimeout(function(){getStatus();$scope.pageChanged($scope.currentPage, $scope.numPerPage);},500);
+    setTimeout(function(){getStatus();$scope.pageChanged($scope.currentPage, $scope.numPerPage);},1000);
+    var checkStatusLoop = setInterval(getStatus,5*1000);
 
     $scope.$on('$destroy', function () {
         clearInterval(checkStatusLoop);
     });
 
-    $scope.yesOrNo = function (s) {
-        if (s === "No") {
+    $scope.yesOrNo = function(s){
+        if(s === "No"){
             return false;
-        } else {
-            return true;
-        }
+        }else{return true;}
     };
 
-    $scope.runCheck = function (s) {
-        if (s === "0") {
+    $scope.runCheck = function(s){
+        if(s === "0"){
             return false;
-        } else {
-            return true;
-        }
+        }else{return true;}
     };
 
-    $scope.convertRunningTime = function (t) {
-        var s = Number(Math.floor(t / 1000));
-        return Number(Math.floor(s / 60) + 1000).toString().slice(-2) + ":" + Number(s % 60 + 1000).toString().slice(-2);
+    $scope.convertRunningTime = function(t){
+        var s = Number(Math.floor(t/1000));
+        return Number(Math.floor(s/60)+1000).toString().slice(-2) + ":"+Number(s%60+1000).toString().slice(-2);
     };
 
-    $scope.order = function (predicate) {
+    $scope.order = function(predicate) {
         $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
         $scope.predicate = predicate;
+        $scope.pageChanged($scope.currentPage,$scope.numPerPage);
     };
 
     $scope.predicate = 'createDate';
     $scope.reverse = true;
 
     function getStatus() {
-        scenarios.checkScenariosStatus(tempIdArray, function (data) {
+        scenarios.checkScenariosStatus(tempIdArray, function(data){
             console.log(tempIdArray);
             //$scope.tempIdArray = tempIdArray;
             //console.log(data);
-            $scope.scenarios.forEach(function (singleScenario) {
-                data.forEach(function (singleData) {
-                    if (singleScenario._id === singleData.id) {
-                        singleScenario.final = singleData.final;
-                        singleScenario.runningTime = singleData.runningTime;
+            $scope.scenarios.forEach(function(singleScenario){
+                data.forEach(function(singleData){
+                    if(singleScenario._id === singleData.id){
+                        singleScenario.final          =   singleData.final;
+                        singleScenario.runningTime    =   singleData.runningTime;
                     }
                 });
             });
             console.log($scope.scenarios);
         });
     }
+    $scope.pageChanged = function (current, numPerPage) {
+        console.log(current + "--" + numPerPage);
+        var begin = (current - 1) * numPerPage;
+        var end = begin + numPerPage;
+        $scope.orderedScenarios     = $filter('orderBy')($scope.scenarios,$scope.predicate,$scope.reverse);
+        $scope.filteredScenarios    = $filter('filter')($scope.orderedScenarios,$scope.searchText);
+        $scope.filteredScenarioss   = $scope.filteredScenarios.slice(begin,end);
+    };
 });
 scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scenarios, $location, actionObjInfo, history) {
     //vars
@@ -586,7 +626,7 @@ scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarios,
         })
     });
 });
-scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenarios, user, $location, $filter) {
+scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenarios, user, $location) {
     //vars
 
     //functions
@@ -743,8 +783,6 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
                     string: filter('number')(Math.abs($scope.compareObj.difference.totAS), 0)
                 }
             ];
-
-
         }
     }, actionObjInfo[0]);
 
