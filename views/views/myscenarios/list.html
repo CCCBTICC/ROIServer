@@ -63,7 +63,7 @@
                 </tr>
                 </thead>
                 <tbody class="row-2">
-                <tr ng-repeat="scenario in filteredScenarioss | filter:searchText | orderBy:predicate:reverse" ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
+                <tr ng-repeat="scenario in filteredScenarioss | filter:searchText " ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
                     <!--<td class="check non-number col-0">-->
                         <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
@@ -83,13 +83,12 @@
     <!--end table view-->
     <!--button bar-->
     <div class="row">
-        <div class="controls">
             <div class="col-sm-12">
-                <div class="col-sm-3">
+                <div class="col-sm-offset-2 col-sm-2">
             <button class="btn btn-default" ng-class="{'disabled':operations.compare.disable}"
                   ng-click="compare()">compare</button>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
             <div class="btn-group dropup" dropdown>
                 <button class="btn btn-default" ng-class="{'disabled':operations.retrieve.disable}"
                       ng-click="retrive()">retrieve</button>
@@ -103,7 +102,7 @@
                 </ul>
             </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
             <div class="btn-group dropup" dropdown>
                 <button class="btn btn-default" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</button>
                 <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
@@ -115,23 +114,24 @@
                 </ul>
             </div>
             </div>
-            </div>
-            <!-- todo: href="#myscenarios/export" deleted from tag a, move it to function. -->
-            <pagination
-                    boundary-links="true"
-                    total-items="filteredScenarios.length"
-                    ng-model="currentPage"
-                    ng-change="pageChanged(currentPage,numPerPage)"
-                    items-per-page="numPerPage"
-                    max-size="maxSize"
-                    class="pagination-sm"
-                    previous-text="&lsaquo;"
-                    next-text="&rsaquo;"
-                    first-text="&laquo;"
-                    last-text="&raquo;">
+            <div class="col-sm-4">
+                <pagination
+                        boundary-links="true"
+                        total-items="filteredScenarios.length"
+                        ng-model="currentPage"
+                        ng-change="pageChanged(currentPage,numPerPage)"
+                        items-per-page="numPerPage"
+                        max-size="maxSize"
+                        class="pagination-sm"
+                        previous-text="&lsaquo;"
+                        next-text="&rsaquo;"
+                        first-text="&laquo;"
+                        last-text="&raquo;">
 
-            </pagination>
-            <span>{{filteredScenarios.length}}</span>
+                </pagination>
+            </div>
+
+            <!-- todo: href="#myscenarios/export" deleted from tag a, move it to function. -->
 
 
         </div>

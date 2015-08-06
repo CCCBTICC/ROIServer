@@ -10,6 +10,7 @@
  *****      0.5 - a                          *****
  *****      0.6 - final font                 *****
  *****      0.7 - tooltip                    *****
+ *****      0.8 - text-info                  *****
  *****  1 - Login Page                       *****
  *****  2 - Shell Page                       *****
  *****      2.1 - Navigation bar             *****
@@ -208,6 +209,13 @@ form .tooltip-inner {
     padding-left:17px;
 }
 
+.text-info {
+    color: #3c3c3c;
+}
+
+.pagination {
+    margin:0;
+}
 /*************************************************
  ******                                     ******
  ******              Login Page             ******
@@ -468,6 +476,7 @@ form .tooltip-inner {
 /*  Tables setting  */
 .table-responsive {
     max-height: calc(88vh - 205px);
+    min-height: 400px;
     position: relative;
     width:99.9%;
 }

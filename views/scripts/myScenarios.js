@@ -101,7 +101,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.scenarios = [];
     $scope.filteredScenarios = [];
     $scope.currentPage = 1;
-    $scope.numPerPage = 4;
+    $scope.numPerPage = 6;
     $scope.maxSize = 5;
     $scope.itemsPerPage = 1;
     //scope functions
@@ -323,6 +323,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.order = function(predicate) {
         $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
         $scope.predicate = predicate;
+        $scope.pageChanged($scope.currentPage,$scope.numPerPage);
     };
 
     $scope.predicate = 'createDate';
@@ -348,7 +349,8 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         console.log(current + "--" + numPerPage);
         var begin = (current - 1) * numPerPage;
         var end = begin + numPerPage;
-        $scope.filteredScenarios    = $filter('filter')($scope.scenarios,$scope.searchText);
+        $scope.orderedScenarios     = $filter('orderBy')($scope.scenarios,$scope.predicate,$scope.reverse);
+        $scope.filteredScenarios    = $filter('filter')($scope.orderedScenarios,$scope.searchText);
         $scope.filteredScenarioss   = $scope.filteredScenarios.slice(begin,end);
     };
 });
