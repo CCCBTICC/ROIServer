@@ -624,13 +624,13 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenari
     //scope functions
     $scope.update = function () {
         console.log($scope.scenario.final);
-        $scope.update = {
+        $scope.updateData = {
             name: $scope.scenario.name,
             note: $scope.scenario.note,
             final: $scope.scenario.final
         };
         user.getUser(function (user) {
-            scenarios.editScenario(user.name, $scope.scenario._id, $scope.update, function (res) {
+            scenarios.editScenario(user.name, $scope.scenario._id, $scope.updateData, function (res) {
                 console.log(res);
                 if (res) {
                     alert("ScenarioInfo is  updated.")

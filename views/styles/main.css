@@ -476,7 +476,6 @@ form .tooltip-inner {
 /*  Tables setting  */
 .table-responsive {
     max-height: calc(88vh - 205px);
-    min-height: 400px;
     position: relative;
     width:99.9%;
 }
