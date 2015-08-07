@@ -135,7 +135,7 @@ function importCollection(collectionName){
         });
         last.on('exit', function (code) {
             //code 0 --> success    code >1  --> fail
-            console.log('import action finished. code�?' + code);
+            console.log('import action finished. code:' + code);
         return !code;
 
         });

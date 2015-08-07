@@ -11,6 +11,7 @@
  *****      0.6 - final font                 *****
  *****      0.7 - tooltip                    *****
  *****      0.8 - text-info                  *****
+ *****      0.9 - form control               *****
  *****  1 - Login Page                       *****
  *****  2 - Shell Page                       *****
  *****      2.1 - Navigation bar             *****
@@ -70,8 +71,12 @@ footer {
 }
 .btn-default{
     text-transform: capitalize;
+    font-size:15px;
 }
-
+.dropdown-menu{
+    border: none;
+    padding: 0;
+}
 
 /*  Input type='range'  */
 /*  General  */
@@ -79,8 +84,8 @@ input[type=range] {
     -webkit-appearance: none;
     border: 1px solid white;
     width: 100%;
-    height: 19px;
-    padding: 0;
+    height: 4px;
+    padding: -10px;
 }
 
 input[type=range]:focus {
@@ -158,6 +163,9 @@ input[type=range]::-ms-thumb {
 
 /*  Input type='text'  */
 /*  General  */
+input[type=text]{
+    padding:3px;
+}
 input[type=text]:enabled{
 
 }
@@ -181,7 +189,9 @@ a, a:visited, a:focus, a:active, a:hover{
     color:#7aa4bc;
     font-size:19px;
 }
-
+.fa-minus, .fa-plus{
+    font-size: 9px;
+}
 /*  final  */
 /*  General  */
 .final{
@@ -212,15 +222,26 @@ form .tooltip-inner {
 .text-info {
     color: #3c3c3c;
 }
-
+.form-control{
+    padding:0 3px 0 3px;
+}
 .pagination {
     margin:0;
 }
-/*************************************************
- ******                                     ******
- ******              Login Page             ******
- ******                                     ******
- *************************************************/
+.pagination-sm>li>a{
+    font-size:15px;
+    font-weight: bold;
+}
+
+.table{
+    margin: 3px 0 0 0;
+}
+
+    /*************************************************
+     ******                                     ******
+     ******              Login Page             ******
+     ******                                     ******
+     *************************************************/
 .login-title {
     height: 200px;
     margin-bottom: 100px;
@@ -438,7 +459,7 @@ form .tooltip-inner {
 }
 
 .path {
-    margin-bottom: 30px;
+    margin-bottom: 8px;
 }
 
 .path a {
@@ -569,15 +590,19 @@ table.roi-table tr > .col-0 {
     max-width: 60px;
     overflow: hidden;
 }
-
+table.roi-table tr > .col-0-7 {
+    min-width: 40px;
+    max-width: 60px;
+    overflow: hidden;
+}
 table.roi-table tr > .col-1 {
-    min-width: 150px;
+    min-width: 110px;
     max-width: 160px;
     overflow: hidden;
 }
 
 table.roi-table tr > .col-2 {
-    min-width: 200px;
+    min-width: 160px;
     max-width: 320px;
     overflow: hidden;
 }
@@ -651,7 +676,7 @@ table.roi-table tr > .list-col-6 {
 
 table.roi-table tr > td {
     vertical-align: middle;
-    padding: 5px 15px 5px 0;
+    padding: 0px 15px 0px 0;
     text-overflow: ellipsis;
 }
 
@@ -690,6 +715,9 @@ table.roi-table tr > td.disabled {
     padding-left: 15px;
     text-align: center;
     background-color: #e3e3e3;
+}
+table.roi-table tr > td.old ,table.roi-table tr > th.old {
+    background-color: #eeeeee;
 }
 
 table.roi-table tr.active-row > td {
@@ -746,6 +774,60 @@ div.controls > span:last-child {
     background: #CCEBFF;
     margin-bottom: 10px;
 }
+
+
+.fixed_headers {
+    width: 750px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+.fixed_headers th {
+    text-decoration: underline;
+}
+.fixed_headers th,
+.fixed_headers td {
+    padding: 5px;
+    text-align: left;
+}
+.fixed_headers td:nth-child(1),
+.fixed_headers th:nth-child(1) {
+    min-width: 200px;
+}
+.fixed_headers td:nth-child(2),
+.fixed_headers th:nth-child(2) {
+    min-width: 200px;
+}
+.fixed_headers td:nth-child(3),
+.fixed_headers th:nth-child(3) {
+    width: 350px;
+}
+.fixed_headers thead {
+    background-color: #333333;
+    color: #fdfdfd;
+}
+.fixed_headers thead tr {
+    display: block;
+    position: relative;
+}
+.fixed_headers tbody {
+    display: block;
+    overflow: auto;
+    width: 100%;
+    height: 300px;
+}
+.fixed_headers tbody tr:nth-child(even) {
+    background-color: #dddddd;
+}
+.old_ie_wrapper {
+    height: 300px;
+    width: 750px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.old_ie_wrapper tbody {
+    height: auto;
+}
+
 
 /*************************************************
  ******                                     ******

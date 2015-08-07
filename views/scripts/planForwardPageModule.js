@@ -202,7 +202,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
         maxDate: null,
         eMaxDate: null,
         opened: {beginPeriod: false, endPeriod: false},
-        format: 'MMMM-dd-yyyy',
+        format: 'MMM-dd-yyyy',
         dateOptions: {
             formatYear: 'yyyy',
             startingDay: 1,
@@ -498,6 +498,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                     console.log(data);
                     $scope.getJson = true;
                     $scope.planForward.output = data;
+                    $scope.calender.initDate();
                     history.getHistoryDate(function (res) {
                         var d = new Date(res[1]);
                         d = new Date(d.getFullYear(), d.getMonth() + 2 - $scope.planForward.output.PlanMonths, 1);

@@ -92,6 +92,7 @@ router.post('/', function (req, res) {
 
 function status(db, requestData, res){
     var currentDate = new Date();
+    if(requestData){
     requestData.forEach(function (listSingle, index) {
 
             db.collection('scenarios').findOne({_id:new ObjectId(listSingle.id)},{}, function (err,scenario) {
@@ -108,21 +109,26 @@ function status(db, requestData, res){
             });
     });
     setTimeout(function(){res.send(requestData);},500);
+    }
 }
 
 function share(db, requestData, res) {
+    if(requestData){
     var scenarioId = requestData.scenarioId;
     var targetUsername = requestData.targetUsername;
     db.collection('users').findOneAndUpdate({username: targetUsername}, {$push: {scenarios: new ObjectId(scenarioId)}}, function (err, result) {
         res.send(scenarioId);
     });
+    }
 }
 
 function list(db, requestData, res) {
     var currentDate = new Date();
+    if(requestData){
     var username = requestData.username;
     db.collection('users').findOne({username: username}, {fields: {scenarios: 1}}, function (err, user) {
         var scenariosList = [];
+        if(user){
         user.scenarios.forEach(function (id) {
             scenariosList.push(new ObjectId(id));
         });
@@ -134,10 +140,13 @@ function list(db, requestData, res) {
                 res.send({err: err});
             }
         });
+        }
     });
+    }
 }
 
 function edit(db, requestData, res) {
+    if(requestData){
     var username = requestData.username;
     var scenarioId = requestData.scenarioId;
     var update = requestData.update;
@@ -155,6 +164,7 @@ function edit(db, requestData, res) {
             }
         }
     });
+    }
 }
 //function edit(db, requestData, res) {
 //    var username = requestData.username;
@@ -180,6 +190,7 @@ function edit(db, requestData, res) {
 //}
 
 function remove(db, requestData, res) {
+    if(requestData){
     var scenarioId = requestData.scenarioId;
     db.collection('scenarios').findOne({_id: new ObjectId(scenarioId)}, {owner: 1, _id: 1}, function (err, scenario) {
         if (scenario) {
@@ -192,6 +203,7 @@ function remove(db, requestData, res) {
             }
         }
     });
+    }
 }
 
 module.exports = router;

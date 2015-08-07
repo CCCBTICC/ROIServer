@@ -52,7 +52,7 @@
                         <input id="planForwardBeginPeriod" type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                ng-model="dataInfo.beginDate" is-open="calender.opened.beginPeriod" ng-change="calender.modifyDate()"
                                min-date="calender.minDate" max-date="calender.maxDate" datepicker-options="calender.dateOptions"
-                               datepicker-mode="'month'" ng-required="true" close-text="Close" disabled>
+                               datepicker-mode="'month'" show-button-bar=false ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="calender.open($event, 'planForwardBeginPeriod')">
                                 <i class="glyphicon glyphicon-calendar"></i>
@@ -72,7 +72,7 @@
                         <input id="planForwardEndPeriod" type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                ng-model="dataInfo.endDate" is-open="calender.opened.endPeriod" ng-change="calender.modifyDate()"
                                min-date="dataInfo.beginDate" max-date="calender.eMaxDate" datepicker-options="calender.dateOptions" disabled
-                               datepicker-mode="'month'" ng-required="true" close-text="Close"/>
+                               datepicker-mode="'month'" show-button-bar=false ng-required="true" close-text="Close"/>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="calender.open($event, 'planForwardEndPeriod')">
                                 <i class="glyphicon glyphicon-calendar"></i>

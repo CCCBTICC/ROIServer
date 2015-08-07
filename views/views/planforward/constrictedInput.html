@@ -240,7 +240,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="td-title">Social(FB)</td>
+                        <td class="td-title">Social</td>
                         <td class="check">
                             <label>
                                 <input type="checkbox" ng-model="selectPlan.checkBox.social"
@@ -381,7 +381,7 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                        ng-model="planForward.output.tvBeginDate" is-open="calender.opened.beginPeriod"
-                                       ng-change="calender.modifyDate()"
+                                       ng-change="calender.modifyDate()" show-button-bar=false datepicker-append-to-body=true
                                        min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
                                        datepicker-mode="'day'" disabled max-date="calender.eMaxDate"
                                        ng-required="true"
@@ -399,7 +399,7 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                        ng-model="planForward.output.tvEndDate" is-open="calender.opened.endPeriod"
-                                       ng-change="calender.modifyDate()"
+                                       ng-change="calender.modifyDate()" show-button-bar=false datepicker-append-to-body=true
                                        min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
                                        datepicker-mode="'day'" disabled max-date="calender.eMaxDate"
                                        ng-required="true"

@@ -167,9 +167,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         }
     };
     $scope.delete = function () {
-        console.log("1");
         var objectId = getSelectedId($scope.scenarios);
-        console.log(objectId);
         user.getUser(function (user) {
             $scope.user = user;
         });
@@ -178,15 +176,15 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             console.log(data);
             if (data) {
                 var deleteIndex = -1;
-                $scope.scenarios.forEach(function (obj, index) {
+                $scope.filteredScenarioss.forEach(function (obj, index) {
                     if (obj._id === objectId) {
                         deleteIndex = index;
                     }
                 });
                 if (deleteIndex !== -1) {
                     console.log(deleteIndex);
-                    $scope.scenarios.splice(deleteIndex, 1);
-                    switch (activeCount($scope.scenarios)) {
+                    $scope.filteredScenarioss.splice(deleteIndex, 1);
+                    switch (activeCount($scope.filteredScenarioss)) {
                         case 0:
                             Object.keys($scope.operations).forEach(function (key) {
                                 $scope.operations[key].disable = true;
@@ -210,6 +208,13 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                     }
 
                 }
+                console.log("delete it");
+                tempIdArray.forEach(function(singleTempIdArray, index){
+                    if(singleTempIdArray === objectId) {
+                        tempIdArray.splice(index, 1);
+                    }
+
+                });
             } else {
                 alert("You are not the original owner, data can not be deleted!");
             }
@@ -224,15 +229,15 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
             if(data){
                 var deleteIndex = -1;
-                $scope.scenarios.forEach(function (obj, index) {
+                $scope.filteredScenarioss.forEach(function (obj, index) {
                     if (obj._id === objectId) {
                         deleteIndex = index;
                     }
                 });
                 if (deleteIndex !== -1) {
                     console.log(deleteIndex);
-                    $scope.filteredScenarios.splice(deleteIndex, 1);
-                    switch (activeCount($scope.filteredScenarios)) {
+                    $scope.filteredScenarioss.splice(deleteIndex, 1);
+                    switch (activeCount($scope.filteredScenarioss)) {
                         case 0:
                             Object.keys($scope.operations).forEach(function (key) {
                                 $scope.operations[key].disable = true;
@@ -257,6 +262,12 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
 
                 }
             console.log("delete it");
+                tempIdArray.forEach(function(singleTempIdArray, index){
+                   if(singleTempIdArray === objectId) {
+                       tempIdArray.splice(index, 1);
+                   }
+
+                });
             }
         });
     };
@@ -271,6 +282,13 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         analysis.objIds.current = getSelectedId($scope.scenarios);
         //analysis.setName(objectId);
         $location.path('myscenarios/edit');
+    };
+    $scope.myStyle=function(from){
+        if(from==='back'){
+            return {backgroundColor:'yellow'};
+        }else{
+            return {backgroundColor:'pink'};
+        }
     };
 
     //main
@@ -342,11 +360,9 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                     }
                 });
             });
-            console.log($scope.scenarios);
         });
     }
     $scope.pageChanged = function (current, numPerPage) {
-        console.log(current + "--" + numPerPage);
         var begin = (current - 1) * numPerPage;
         var end = begin + numPerPage;
         $scope.orderedScenarios     = $filter('orderBy')($scope.scenarios,$scope.predicate,$scope.reverse);

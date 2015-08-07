@@ -51,7 +51,7 @@
                     <div class="input-group">
                         <input id="lookBackBeginPeriod" type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                ng-model="dataInfo.beginDate" is-open="calender.opened.beginPeriod"
-                               ng-change="calender.modifyDate()"
+                               ng-change="calender.modifyDate()" show-button-bar=false
                                datepicker-options="calender.dateOptions" datepicker-mode="'month'" min-date="calender.minDate" max-date="calender.maxDate"
                                ng-required="true" close-text="Close" disabled>
                         <span class="input-group-btn">

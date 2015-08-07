@@ -8,7 +8,6 @@ var Rmodule = require('./modules/Rmodule');
 var ObjectId = require('mongodb').ObjectID;
 
 router.post('/R', function (req, res) {
-    console.log('in api');
     var reqData = req.body.data;
     var reqInfo=req.body.info;
     var reqUsername = req.body.username;
@@ -44,7 +43,7 @@ router.post('/R', function (req, res) {
         res.send(objectId);
     }
     //  use Rmodule.sendRcompute function to write file and use commend line to send file to R
-    console.log('after send');
+
     Rmodule.sendRcompute(objectId, req.body.data);
 });
 // using get method to  check the file change
