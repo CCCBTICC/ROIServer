@@ -9,6 +9,6 @@ node_modules
 views/bower_components
 out
 gen
-R/input/*.Rout
-R/output/*.Rout
+R/input/*.json
+R/output/*.json
 R/log/*.Rout
