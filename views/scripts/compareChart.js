@@ -12,17 +12,17 @@ angular.module('CompareChart', [])
                 bottom: '@'
             },
             link: function (scope) {
-                var data = scope.compareData;
+                //var data = scope.compareData;
                 var barHeight = scope.config["barHeight"] ? scope.config["barHeight"] : 30;
-                var height = barHeight * data.length + scope.config.margin.top + scope.config.margin.bottom;
+                var height = barHeight * scope.compareData.length + scope.config.margin.top + scope.config.margin.bottom;
                 var textHeight = 20;
                 var textMargin = 2;
                 var midX = (scope.config.width + scope.config.margin.left - scope.config.margin.right) / 2;
-                var oldScaleFactor;
+                var oldScaleFactor= (scope.config.width - scope.config.margin.left - scope.config.margin.right) / 2 ;
 
                 function renderChart(data, oldData) {
                     var scaleFactor;
-                    var maxValue = 0;
+                    var maxValue = 1;
                     data.forEach(function (item) {
                         maxValue = Math.max(maxValue, Math.abs(item.value));
                     });
@@ -122,7 +122,6 @@ angular.module('CompareChart', [])
 
                     oldScaleFactor = scaleFactor;
                 }
-
                 scope.$watch('compareData', function (newValue, oldValue) {
                     renderChart(newValue, oldValue)
                 }, true);

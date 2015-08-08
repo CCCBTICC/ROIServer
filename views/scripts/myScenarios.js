@@ -61,6 +61,11 @@ scenariosApp.factory('scenarios', function ($http) {
         getScenarioById: function (id, cb) {
             $http.get(scenariosUrl + "/" + id).success(cb);
         },
+        checkFinal: function (name, cb) {
+            var data = {action: 'checkFinal', data: name};
+            post(data, cb);
+
+        },
         dataInfo: dataInfo
     }
 
@@ -183,6 +188,8 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 });
                 if (deleteIndex !== -1) {
                     console.log(deleteIndex);
+                    $scope.scenarios.splice(deleteIndex, 1);
+                    switch (activeCount($scope.scenarios)) {
                     $scope.filteredScenarioss.splice(deleteIndex, 1);
                     switch (activeCount($scope.filteredScenarioss)) {
                         case 0:
@@ -283,11 +290,11 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         //analysis.setName(objectId);
         $location.path('myscenarios/edit');
     };
-    $scope.myStyle=function(from){
-        if(from==='back'){
-            return {backgroundColor:'yellow'};
-        }else{
-            return {backgroundColor:'pink'};
+    $scope.myStyle = function (from) {
+        if (from === 'back') {
+            return {backgroundColor: '#FFFFC0'};
+        } else {
+            return {backgroundColor: '#FFE1FF'};
         }
     };
 
@@ -660,7 +667,21 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenari
     if (analysis.objIds.current) {
         scenarios.getScenarioById(analysis.objIds.current, function (res) {
             if (res) {
+                console.log(res);
                 $scope.scenario = res;
+                var name = {
+                    beginDate: $scope.scenario.beginDate,
+                    endDate: $scope.scenario.endDate,
+                    included: $scope.scenario.included,
+                    lmTouch: $scope.scenario.lmTouch,
+                    final: "Yes"
+                };
+                console.log(name);
+                scenarios.checkFinal(name, function (res1) {
+                    console.log(res1);
+                    $scope.finalDisable = (res1[0] && res._id != res1[0]._id);
+                    $scope.message = $filter('name')(res1[0].owner) + " has the final scenario";
+                });
             }
         });
     }
@@ -668,7 +689,7 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenari
         $location.path("myscenarios");
     }
 });
-scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, analysis, $location, scenarios) {
+scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, analysis, $location, scenarios,$filter) {
     if (!actionObjInfo[1]) {
         $location.path('myscenarios');
     }
@@ -677,28 +698,30 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
     //functions
 
     //scope vars
-    $scope.compareChart = {};
+    $scope.compareChart = {
+        data: [
+            {title: "SEM", value: 0, string: ""},
+            {title: "SEM-Brand", value: 0, string: ""},
+            {title: "SEM-Card", value: 0, string: ""},
+            {title: "SEM-Photobook", value: 0, string: ""},
+            {title: "SEM-Others", value: 0, string: ""},
+            {title: "Display", value: 0, string: ""},
+            {title: "Social", value: 0, string: ""},
+            {title: "Affiliates", value: 0, string: ""},
+            {title: "Partners", value: 0, string: ""},
+            {title: "Portfolio Total", value: 0, string: ""}
+        ],
+        config: {
+            width: 800,
+            height: 313,
+            margin: {left: 130, top: 30, right: 100, bottom: 30}
+        }
+    };
     $scope.compareObj = {};
     $scope.compareObj.difference = {};
     $scope.firstGot = false;
     $scope.secondGot = false;
-    $scope.compareChart.data = [
-        {title: "SEM", value: -109009},
-        {title: "SEM-Brand", value: -8002},
-        {title: "SEM-Cards", value: -24321},
-        {title: "SEM-Photobook", value: -25422},
-        {title: "SEM-Others", value: -45621},
-        {title: "Display", value: -127765},
-        {title: "Social", value: 462326},
-        {title: "Affiliates", value: -26445},
-        {title: "Partners", value: -199106},
-        {title: "Portfolio Total", value: 0}
-    ];
-    $scope.compareChart.config = {
-        width: 800,
-        height: 313,
-        margin: {left: 130, top: 30, right: 100, bottom: 30}
-    };
+
     //scope functions
 
     //main
@@ -716,21 +739,60 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
         $scope.firstGot = true;
         if ($scope.firstGot && $scope.secondGot) {
             Object.keys($scope.compareObj.first).forEach(function (key) {
-                $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+                $scope.compareObj.difference[key] = $scope.compareObj.second[key] - $scope.compareObj.first[key];
             });
-            $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
-            console.log(Number($scope.compareObj.first.run2ProjROI.substr(0, 3)));
+            $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.second.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
             $scope.compareChart.data = [
-                {title: "SEM", value: -$scope.compareObj.difference.semAS},
-                {title: "SEM-Brand", value: -$scope.compareObj.difference.semBAS},
-                {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
-                {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
-                {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
-                {title: "Display", value: -$scope.compareObj.difference.disAS},
-                {title: "Social", value: -$scope.compareObj.difference.socAS},
-                {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
-                {title: "Partners", value: -$scope.compareObj.difference.parAS},
-                {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+                {
+                    title: "SEM",
+                    value: $scope.compareObj.difference.semAS / $scope.compareObj.first.semAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semAS), 0)
+                },
+                {
+                    title: "SEM-Brand",
+                    value: $scope.compareObj.difference.semBAS / $scope.compareObj.first.semBAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semBAS), 0)
+                },
+                {
+                    title: "SEM-Card",
+                    value: $scope.compareObj.difference.semCAS / $scope.compareObj.first.semCAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semCAS), 0)
+                },
+                {
+                    title: "SEM-Photobook",
+                    value: $scope.compareObj.difference.semPAS / $scope.compareObj.first.semPAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semPAS), 0)
+                },
+                {
+                    title: "SEM-Others",
+                    value: $scope.compareObj.difference.semOAS / $scope.compareObj.first.semOAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semOAS), 0)
+                },
+                {
+                    title: "Display",
+                    value: $scope.compareObj.difference.disAS / $scope.compareObj.first.disAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.disAS), 0)
+                },
+                {
+                    title: "Social",
+                    value: $scope.compareObj.difference.socAS / $scope.compareObj.first.socAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.socAS), 0)
+                },
+                {
+                    title: "Affiliates",
+                    value: $scope.compareObj.difference.affAS / $scope.compareObj.first.affAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.affAS), 0)
+                },
+                {
+                    title: "Partners",
+                    value: $scope.compareObj.difference.parAS / $scope.compareObj.first.parAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.parAS), 0)
+                },
+                {
+                    title: "Portfolio Total",
+                    value: $scope.compareObj.difference.totAS / $scope.compareObj.first.totAS,
+                    string: filter('number')(Math.abs($scope.compareObj.difference.totAS), 0)
+                }
             ];
         }
     }, actionObjInfo[0]);
@@ -741,20 +803,60 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
         $scope.secondGot = true;
         if ($scope.firstGot && $scope.secondGot) {
             Object.keys($scope.compareObj.first).forEach(function (key) {
-                $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
+                $scope.compareObj.difference[key] = $scope.compareObj.second[key] - $scope.compareObj.first[key];
             });
             $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
             $scope.compareChart.data = [
-                {title: "SEM", value: -$scope.compareObj.difference.semAS},
-                {title: "SEM-Brand", value: -$scope.compareObj.difference.semBAS},
-                {title: "SEM-Card", value: -$scope.compareObj.difference.semCAS},
-                {title: "SEM-Photobook", value: -$scope.compareObj.difference.semPAS},
-                {title: "SEM-Others", value: -$scope.compareObj.difference.semOAS},
-                {title: "Display", value: -$scope.compareObj.difference.disAS},
-                {title: "Social", value: -$scope.compareObj.difference.socAS},
-                {title: "Affiliates", value: -$scope.compareObj.difference.affAS},
-                {title: "Partners", value: -$scope.compareObj.difference.parAS},
-                {title: "Portfolio Total", value: -$scope.compareObj.difference.totAS}
+                {
+                    title: "SEM",
+                    value: $scope.compareObj.difference.semAS / $scope.compareObj.first.semAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semAS), 0)
+                },
+                {
+                    title: "SEM-Brand",
+                    value: $scope.compareObj.difference.semBAS / $scope.compareObj.first.semBAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semBAS), 0)
+                },
+                {
+                    title: "SEM-Card",
+                    value: $scope.compareObj.difference.semCAS / $scope.compareObj.first.semCAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semCAS), 0)
+                },
+                {
+                    title: "SEM-Photobook",
+                    value: $scope.compareObj.difference.semPAS / $scope.compareObj.first.semPAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semPAS), 0)
+                },
+                {
+                    title: "SEM-Others",
+                    value: $scope.compareObj.difference.semOAS / $scope.compareObj.first.semOAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.semOAS), 0)
+                },
+                {
+                    title: "Display",
+                    value: $scope.compareObj.difference.disAS / $scope.compareObj.first.disAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.disAS), 0)
+                },
+                {
+                    title: "Social",
+                    value: $scope.compareObj.difference.socAS / $scope.compareObj.first.socAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.socAS), 0)
+                },
+                {
+                    title: "Affiliates",
+                    value: $scope.compareObj.difference.affAS / $scope.compareObj.first.affAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.affAS), 0)
+                },
+                {
+                    title: "Partners",
+                    value: $scope.compareObj.difference.parAS / $scope.compareObj.first.parAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.parAS), 0)
+                },
+                {
+                    title: "Portfolio Total",
+                    value: $scope.compareObj.difference.totAS / $scope.compareObj.first.totAS,
+                    string: $filter('number')(Math.abs($scope.compareObj.difference.totAS), 0)
+                }
             ];
         }
     }, actionObjInfo[1]);

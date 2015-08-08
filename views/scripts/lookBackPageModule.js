@@ -260,7 +260,7 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
             console.log($scope.dataInfo);
             analysis.postData($scope.lookBack.output, $scope.dataInfo, function (res) {
                 console.log(res);
-                location.path('lookback/output');
+                location.path('myscenarios');
             });
         }
     };
@@ -435,6 +435,8 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             {title: "Partners", value: 0, string: ""},
             {title: "Portfolio Total", value: 0, string: ""}
         ],
+
+        //data:[{title:"",value:0,string:""}],
         config: {
             width: 800,
             barHeight: 28,
@@ -510,30 +512,30 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         $scope.scenario.scenarioId = $scope.scenario.scenarioId.slice(0, -1) + "X";
         analysis.postData($scope.lookBack.output, $scope.scenario, function (res) {
             console.log(res);
-            var count;
-            $scope.getJson = false;
-            doGet();
-            count = setInterval(doGet, 1000 * 0.3); //set frequency
-            function doGet() {
-                if ($scope.getJson === false) {
-                    analysis.getData(function (data) {
-                        if (data) {
-                            console.log("from doGet in back/output");
-                            console.log(data);
-                            $scope.getJson = true;
-                            $scope.lookBack.output = data;
-                            scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
-                                console.log(res);
-                            });
-                            calculateDifference();
-                        }
-                    });
-                }
-                else {
-                    clearInterval(count);
-                }
-            }
-
+            //var count;
+            //$scope.getJson = false;
+            //doGet();
+            //count = setInterval(doGet, 1000 * 0.3); //set frequency
+            //function doGet() {
+            //    if ($scope.getJson === false) {
+            //        analysis.getData(function (data) {
+            //            if (data) {
+            //                console.log("from doGet in back/output");
+            //                console.log(data);
+            //                $scope.getJson = true;
+            //                $scope.lookBack.output = data;
+            //                scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
+            //                    console.log(res);
+            //                });
+            //                calculateDifference();
+            //            }
+            //        });
+            //    }
+            //    else {
+            //        clearInterval(count);
+            //    }
+            //}
+            location.path('myscenarios');
         });
 
     };
