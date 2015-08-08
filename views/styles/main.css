@@ -234,7 +234,7 @@ form .tooltip-inner {
 }
 
 .table{
-    margin: 3px 0 0 0;
+    margin: 0;
 }
 
     /*************************************************
@@ -495,10 +495,31 @@ form .tooltip-inner {
 }
 
 /*  Tables setting  */
+
+.table-first-column {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    display: block;
+    width : 120px;
+    position: absolute;
+    float: left;
+}
+.table-first-column .first-header {
+    background-color: #fafafa;
+    border:none;
+}
+.table-first-column .first-cell {
+    border:none;
+    background-color: #fafafa;
+}
+.table-first-column .second-cell {
+    background-color: #fafafa;
+}
+
 .table-responsive {
     max-height: calc(88vh - 205px);
     position: relative;
-    width:99.9%;
+    width:100%;
 }
 .table-responsive .sortorder:after {
     content: '\25b2';
@@ -511,20 +532,20 @@ form .tooltip-inner {
 .table-responsive a{
     color:#333333;
 }
-.table-responsive .table-search{
+.table-search{
     float:right;
 }
 
-.table-responsive .table-search input.search-query {
+.table-search input.search-query {
     padding-left:26px;
     width: 180px;
     margin:0 20px 10px 0;
 }
-.table-responsive .table-search form.form-search {
+.table-search form.form-search {
     position: relative;
     float: right;
 }
-.table-responsive .table-search form.form-search:before {
+.table-search form.form-search:before {
     display: block;
     width: 14px;
     height: 14px;
@@ -537,13 +558,21 @@ form .tooltip-inner {
     opacity: .5;
     z-index: 1000;
 }
-.table-responsive .everyPageNumber{
+.everyPageNumber{
     width: 60px;
     float: right;
     text-align: center;
     padding-right: 5px;
     margin-right: 5px;
 }
+
+.fixed-table{
+    position: fixed;
+    top:-2px;
+}
+/*.fixed-table > tbody{*/
+    /*top:-2px;*/
+/*}*/
 
 table.roi-table {
     width: 100%;
@@ -568,7 +597,6 @@ table.thead-fixed-top > tbody {
     overflow-x: hidden;
     display: block;
 }
-
 table.roi-table tr, table.roi-table th, table.roi-table td {
     min-height: 36px;
     height: 36px;
@@ -581,7 +609,7 @@ table.roi-table tr > th {
 }
 
 table.roi-table tr:first-child > th:first-child {
-    padding: 5px 0 5px 15px;
+    padding: 5px 0 5px 5px;
     text-align: center;
 }
 
@@ -596,7 +624,7 @@ table.roi-table tr > .col-0-7 {
     overflow: hidden;
 }
 table.roi-table tr > .col-1 {
-    min-width: 110px;
+    min-width: 120px;
     max-width: 160px;
     overflow: hidden;
 }
@@ -681,21 +709,20 @@ table.roi-table tr > td {
 }
 
 table.roi-table tr > td.td-title {
-    padding: 5px 0 5px 15px;
-    min-width: 150px;
+    padding: 5px 0 5px 5px;
+    min-width: 80px;
     max-width:150px;
     position: relative;
     text-align: left;
 }
 
 table.roi-table tr > td.td-title button {
-    float: right;
-    margin-right: 10px;
+    margin-left: 5px;
 }
 
 table.roi-table tr > td.td-subtitle {
     text-align: left;
-    padding-left: 30px;
+    padding-left: 5px;
 }
 
 table.roi-table tr > td.range-input {
