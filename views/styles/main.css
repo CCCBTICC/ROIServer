@@ -212,6 +212,12 @@ a .running{
 /*  General  */
 .grey-tooltip + .tooltip > .tooltip-inner {background-color: #85abc1; color:#333333;}
 .grey-tooltip + .tooltip > .tooltip-arrow { border-bottom-color:#85abc1; color:#333333;}
+
+
+.breadcrumb>li+li:before{
+    content: "\203A";
+    font-size: 16px;
+}
 form .tooltip-inner {
     /* If max-width does not work, try using width instead */
     width:180px;
