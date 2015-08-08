@@ -189,7 +189,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 if (deleteIndex !== -1) {
                     console.log(deleteIndex);
                     $scope.scenarios.splice(deleteIndex, 1);
-                    switch (activeCount($scope.scenarios)) {
                     $scope.filteredScenarioss.splice(deleteIndex, 1);
                     switch (activeCount($scope.filteredScenarioss)) {
                         case 0:

@@ -17,7 +17,7 @@
             <label>Data through</label>: {{dataInfo.dataThrough | date:'MMM-yyyy'}}
         </div>
     </div>
-    <div class="row" id="spend">
+    <div class="row" id="spend" ng-show="getJson">
         <br>
 
         <form class="form-horizontal">
@@ -163,7 +163,7 @@
         </div>
     </div>
 
-    <div class="row controls" id="button">
+    <div class="row controls" id="button" ng-show="getJson">
         <div class="form-group">
             <div class="col-sm-2 col-sm-offset-3">
                 <a type="button" class="btn btn-default" href="#/lookback/init">Prev</a>
