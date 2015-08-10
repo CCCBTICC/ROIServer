@@ -10,7 +10,7 @@
     </div>
     <div class="row" ng-show="getJson" id="info">
         <div class="well well-sm">
-            <label>Scenario ID:</label>{{scenario.scenarioId}} <br>
+            <label>Scenario ID:&nbsp</label>{{scenario.scenarioId}} <br>
             <label>Brand</label>: {{scenario.brand}}
             <label>Attribution</label>: {{scenario.lmTouch}}
             <label>Begin Period</label>: {{scenario.beginDate | date:'MMM-yyyy'}}
@@ -40,7 +40,7 @@
                     <tr>
                         <th class="col-1" rowspan="2">Portfolio <br/>Channels</th>
                         <th class="col-2 old" colspan="2">Actuals</th>
-                        <th class="col-2" colspan="2">{{lookBack.output.StartingTime | date: 'MMM-dd-yyyy'}} Optimized</th>
+                        <th class="col-2" colspan="2"> Optimized</th>
                         <th class="col-2" colspan="2">Difference</th>
                     </tr>
                     <tr>
@@ -134,7 +134,7 @@
                         <td class="col-1">{{lookBack.difference.disRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="col-1 td-title">Social(FB)</td>
+                        <td class="col-1 td-title">Social</td>
                         <td class="col-1 old">{{lookBack.history.socSR | formatCurrency}}</td>
                         <td class="col-1 old">{{lookBack.history.socPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.socLB | formatCurrency}}</td>-->

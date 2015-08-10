@@ -127,7 +127,7 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
     }
 
     function completeDataInfo() {
-        $scope.dataInfo.scenarioId = "SLFY-" +
+        $scope.dataInfo.scenarioId = "SFLY-" +
             filter('date')($scope.dataInfo.beginDate, 'MMMyyyy') + "-" +
             filter('date')($scope.dataInfo.endDate, 'MMMyyyy') + "-" +
             $scope.dataInfo.lmTouch.charAt(0) + "-000";

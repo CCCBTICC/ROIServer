@@ -17,7 +17,7 @@
     </div>
     <div class="row" ng-show="getJson">
         <div class="well well-sm">
-            <label>Scenario ID:</label>{{scenario.scenarioId}}<br>
+            <label>Scenario ID:&nbsp</label>{{scenario.scenarioId}}<br>
             <label>Brand</label>: {{scenario.brand}}
             <label>Attribution</label>: {{scenario.lmTouch}}
             <label>Begin Period</label>: {{scenario.beginDate | date: 'MMM-dd-yyyy'}}
@@ -189,7 +189,7 @@
                         <td class="disabled col-1">-</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="td-subtitle col-1">SEM - Photobook</td>
+                        <td class="td-subtitle col-1">SEM-Photobook</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semPLB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semPMin | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semPMax | formatCurrency}}</td>

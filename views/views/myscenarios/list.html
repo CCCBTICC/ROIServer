@@ -17,7 +17,7 @@
     </script>
     <div class="row">
 
-        <div class="table-responsive">
+        <div class="table-responsive scenario-list-table">
             <div class="table-search">
 
                 <form class="form-search form-inline">
@@ -27,7 +27,7 @@
 
 
 
-                <input type="number" min="1" max="100" class="form-control everyPageNumber" ng-model="numPerPage" ng-change="pageChanged(currentPage,numPerPage)">
+
                 <!--<div class="btn-group search-filter" dropdown>-->
                     <!--<button class="btn btn-default" ng-class="{'disabled':true}"-->
                             <!--ng-click="">Filter</button>-->
@@ -48,7 +48,7 @@
 
 
             </div>
-            <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
+            <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top ">
                 <thead>
                 <tr>
                     <!--<th class="col-0" rowspan="1"><div></div></th>-->
@@ -83,10 +83,10 @@
     <!--end table view-->
     <!--button bar-->
     <div class="row">
-            <div class="col-sm-12">
-                <div class="col-sm-offset-2 col-sm-2">
+            <div class="col-sm-12 button-bar">
+                <div class="col-sm-2" >
             <button class="btn btn-default" ng-class="{'disabled':operations.compare.disable}"
-                  ng-click="compare()">compare</button>
+                  ng-click="compare() ">compare</button>
                 </div>
                 <div class="col-sm-2">
             <div class="btn-group dropup" dropdown>
@@ -114,7 +114,15 @@
                 </ul>
             </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-sm-1">
+               <i style="padding: 20px 0 0 0; text-align: right"> Scenario(s)
+                <br/> Pre Page
+               </i>
+            </div>
+                <div class="col-sm-1">
+                    <input style="width: 40px; padding:0;"  type="number" min="1" max="100" class="form-control everyPageNumber" ng-model="numPerPage" ng-change="pageChanged(currentPage,numPerPage)">
+                    </div>
+                <div class="col-sm-4">
                 <pagination
                         boundary-links="true"
                         total-items="filteredScenarios.length"
@@ -129,6 +137,7 @@
                         last-text="&raquo;">
 
                 </pagination>
+
             </div>
 
             <!-- todo: href="#myscenarios/export" deleted from tag a, move it to function. -->

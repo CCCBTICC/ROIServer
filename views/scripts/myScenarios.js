@@ -128,6 +128,21 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         }
         console.log(actionObjInfo);
 
+$scope.listBtnTooltip = {
+    comparePlacement:"top",
+    retrievePlacement:"top",
+    editPlacement:"top",
+    deletePlacement :"top",
+    exportPlacement:"top",
+    sharePlacement:"top",
+    compareText:"'Compare' should be 2 items",
+    retrieveText:"'Retrieve' should be more than 1 items",
+    editText: "'Edit' should be 1 item",
+    deleteText : "'Delete' should be more than 1 items",
+    exportText:"'Export' should be 1 item",
+    shareText:"'Share' should be 1 item"
+};
+
         switch (activeCount($scope.scenarios)) {
             case 0:
                 Object.keys($scope.operations).forEach(function (key) {
