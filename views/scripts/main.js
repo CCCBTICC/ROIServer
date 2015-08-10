@@ -107,10 +107,12 @@ app.controller("indexCtrl", function ($scope, user) {
         link.click();
     };
     //main
-    console.log(username);
     if (!username) {
+        //console.log(username);
         $scope.logout();
     } else {
+        //console.log("in else");
+        //console.log(username);
         user.setUser(username);
         user.getUser(function (user) {
             $scope.user = user;
@@ -186,9 +188,9 @@ app.factory('history', function ($http) {
 ;
 app.filter('name', function () {
     return function (input, scope) {
-        if (input != null)
+        if (input != null){
             input = input.toLowerCase();
-        return input.substring(0, 1).toUpperCase() + input.substring(1);
+        return input.substring(0, 1).toUpperCase() + input.substring(1);}
     }
 });
 app.filter('startFrom', function() {

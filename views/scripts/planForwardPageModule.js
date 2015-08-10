@@ -317,11 +317,11 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
     user.getUser(function (user) {
         $scope.user = user;
         if (!user.name) {
-            $scope.logout()
+            //$scope.logout()
         }
     });
     //init actionObjInfo
-    while (actionObjInfo[0]) {
+    while (actionObjInfo.length) {
         actionObjInfo.shift();
     }
     //init analysis.tempData
@@ -690,13 +690,13 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     //scope functions
     $scope.edit = function () {
         location.path('planforward/edit');
-    }; //finished
+    };
     $scope.export = function () {
         location.path('myscenarios/export');
-    }; //pause
+    };
     $scope.share = function () {
         location.path('myscenarios/share');
-    };  // pause
+    };
     $scope.toggle = function () {
 
         if ($scope.showme == false) {
@@ -709,7 +709,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             $scope.showme = false;
             $scope.showGraph = 'Show Graph';
         }
-    }; // show&hide graph
+    };
 
     $scope.reSet = function () {
         //Slide=AS;
@@ -923,7 +923,6 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
                 string: filter('number')(Math.abs($scope.planForward.output.totSD), 0)
             }
         ];
-
     }
 
     function passInfoToData() {
@@ -972,19 +971,21 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     //check objId
     if (!analysis.objIds.current) {
         location.path("/planforward/init");
+    }else{
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
+        scenarios.getScenarioById(analysis.objIds.current, function (scenario) {
+            console.log(scenario);
+            $scope.scenario = scenario;
+        });
+        doGet();
+        count = setInterval(doGet, 1000 * 0.3); //set frequency
+        $scope.$on('$destroy', function () {
+            clearInterval(count);
+        });
     }
-    user.getUser(function (user) {
-        $scope.user = user;
-    });
-    scenarios.getScenarioById(analysis.objIds.current, function (scenario) {
-        console.log(scenario);
-        $scope.scenario = scenario;
-    });
-    doGet();
-    count = setInterval(doGet, 1000 * 0.3); //set frequency
-    $scope.$on('$destroy', function () {
-        clearInterval(count);
-    });
+
 }]);
 
 forward.directive('formatInput', ['$filter', function ($filter) {
