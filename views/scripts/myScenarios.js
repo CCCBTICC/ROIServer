@@ -17,11 +17,11 @@ scenariosApp.factory('scenarios', function ($http) {
     return {
         checkScenariosStatus: function (idArray, cb) {
             var actionData = [];
-            idArray.forEach(function(idArraySingle){
+            idArray.forEach(function (idArraySingle) {
                 var tempObj = {
                     "id": idArraySingle,
-                    "final": "",
-                    "runningTime":""};
+                    "runningTime": ""
+                };
                 actionData.push(tempObj);
             });
             var data = {
@@ -109,6 +109,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.numPerPage = 6;
     $scope.maxSize = 5;
     $scope.itemsPerPage = 1;
+    $scope.searchText="";
     //scope functions
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
@@ -177,8 +178,43 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             $scope.user = user;
         });
         scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
-            console.log('from delete in scenarios');
-            console.log(data);
+            //console.log('from delete in scenarios');
+            //console.log(data);
+            if (data) {
+                var deleteIndex = -1;
+                $scope.scenarios.forEach(function (obj, index) {
+                    if (obj._id === objectId) {
+                        deleteIndex = index;
+                    }
+                });
+                if (deleteIndex !== -1) {
+                    $scope.scenarios.splice(deleteIndex, 1);
+                    $scope.pageChanged($scope.currentPage, $scope.numPerPage);
+                    Object.keys($scope.operations).forEach(function (key) {
+                        $scope.operations[key].disable = true;
+                    });
+                }
+                while (actionObjInfo.length) {
+                    actionObjInfo.shift();
+                }
+                //console.log("delete it");
+                tempIdArray.forEach(function (singleTempIdArray, index) {
+                    if (singleTempIdArray === objectId) {
+                        tempIdArray.splice(index, 1);
+                    }
+                });
+            } else {
+                alert("You are not the original owner, data can not be deleted!");
+            }
+        });
+    };
+    $scope.stop = function (obj) {
+        var objectId = obj._id;
+        console.log(objectId);
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
+        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
             if (data) {
                 var deleteIndex = -1;
                 $scope.filteredScenarioss.forEach(function (obj, index) {
@@ -188,7 +224,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 });
                 if (deleteIndex !== -1) {
                     console.log(deleteIndex);
-                    $scope.scenarios.splice(deleteIndex, 1);
                     $scope.filteredScenarioss.splice(deleteIndex, 1);
                     switch (activeCount($scope.filteredScenarioss)) {
                         case 0:
@@ -215,63 +250,10 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
 
                 }
                 console.log("delete it");
-                tempIdArray.forEach(function(singleTempIdArray, index){
-                    if(singleTempIdArray === objectId) {
+                tempIdArray.forEach(function (singleTempIdArray, index) {
+                    if (singleTempIdArray === objectId) {
                         tempIdArray.splice(index, 1);
                     }
-
-                });
-            } else {
-                alert("You are not the original owner, data can not be deleted!");
-            }
-        });
-    };
-    $scope.stop = function (obj) {
-        var objectId = obj._id;
-        console.log(objectId);
-        user.getUser(function (user) {
-            $scope.user = user;
-        });
-        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
-            if(data){
-                var deleteIndex = -1;
-                $scope.filteredScenarioss.forEach(function (obj, index) {
-                    if (obj._id === objectId) {
-                        deleteIndex = index;
-                    }
-                });
-                if (deleteIndex !== -1) {
-                    console.log(deleteIndex);
-                    $scope.filteredScenarioss.splice(deleteIndex, 1);
-                    switch (activeCount($scope.filteredScenarioss)) {
-                        case 0:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = true;
-                            });
-                            break;
-                        case 1:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key === 'compare');
-                            });
-                            break;
-                        case 2:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key !== 'delete' && key !== 'compare');
-                            });
-                            break;
-                        default:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key !== 'delete');
-                            });
-                            break;
-                    }
-
-                }
-            console.log("delete it");
-                tempIdArray.forEach(function(singleTempIdArray, index){
-                   if(singleTempIdArray === objectId) {
-                       tempIdArray.splice(index, 1);
-                   }
 
                 });
             }
@@ -286,7 +268,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     };
     $scope.edit = function () {
         analysis.objIds.current = getSelectedId($scope.scenarios);
-        //analysis.setName(objectId);
         $location.path('myscenarios/edit');
     };
     $scope.myStyle = function (from) {
@@ -299,7 +280,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
 
     //main
     // get users scenarioList
-    while (actionObjInfo[0]) {
+    while (actionObjInfo.length) {
         actionObjInfo.shift();
     }
 
@@ -307,73 +288,81 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     user.getUser(function (user) {
         if (!user.name) {
             $scope.logout();
-        }
-        $scope.user = user;
-        scenarios.getScenarios($scope.user.name, function (data) {
-            console.log(data);
-            $scope.scenarios = data;
-            data.forEach(function(singleScenario){
-                tempIdArray.push(singleScenario._id);
+        } else {
+            $scope.user = user;
+            scenarios.getScenarios($scope.user.name, function (data) {
+                //console.log(data);
+                $scope.scenarios = data;
+                $scope.pageChanged($scope.currentPage, $scope.numPerPage);
+                $scope.scenarios.forEach(function (scenario) {
+                    if (!scenario.exist) {
+                        tempIdArray.push(scenario._id);
+                    }else{
+                        scenario.runningTime="0";
+                    }
+                });
+                getStatus();
             });
-        });
+        }
     });
     // check status
-
-    setTimeout(function(){getStatus();$scope.pageChanged($scope.currentPage, $scope.numPerPage);},500);
-    setTimeout(function(){getStatus();$scope.pageChanged($scope.currentPage, $scope.numPerPage);},1000);
-    var checkStatusLoop = setInterval(getStatus,5*1000);
+    var checkStatusLoop = setInterval(getStatus, 5 * 1000);
 
     $scope.$on('$destroy', function () {
         clearInterval(checkStatusLoop);
     });
 
-    $scope.yesOrNo = function(s){
-        if(s === "No"){
+    $scope.yesOrNo = function (s) {
+        if (s === "No") {
             return false;
-        }else{return true;}
+        } else {
+            return true;
+        }
     };
 
-    $scope.runCheck = function(s){
-        if(s === "0"){
+    $scope.runCheck = function (s) {
+        if (s === "0") {
             return false;
-        }else{return true;}
+        } else {
+            return true;
+        }
     };
 
-    $scope.convertRunningTime = function(t){
-        var s = Number(Math.floor(t/1000));
-        return Number(Math.floor(s/60)+1000).toString().slice(-2) + ":"+Number(s%60+1000).toString().slice(-2);
+    $scope.convertRunningTime = function (t) {
+        var s = Number(Math.floor(t / 1000));
+        return Number(Math.floor(s / 60) + 1000).toString().slice(-2) + ":" + Number(s % 60 + 1000).toString().slice(-2);
     };
 
-    $scope.order = function(predicate) {
+    $scope.order = function (predicate) {
         $scope.reverse = ($scope.predicate === predicate) ? !$scope.reverse : false;
         $scope.predicate = predicate;
-        $scope.pageChanged($scope.currentPage,$scope.numPerPage);
+        $scope.pageChanged($scope.currentPage, $scope.numPerPage);
     };
 
     $scope.predicate = 'createDate';
     $scope.reverse = true;
 
     function getStatus() {
-        scenarios.checkScenariosStatus(tempIdArray, function(data){
+        scenarios.checkScenariosStatus(tempIdArray, function (data) {
             console.log(tempIdArray);
             //$scope.tempIdArray = tempIdArray;
             //console.log(data);
-            $scope.scenarios.forEach(function(singleScenario){
-                data.forEach(function(singleData){
-                    if(singleScenario._id === singleData.id){
-                        singleScenario.final          =   singleData.final;
-                        singleScenario.runningTime    =   singleData.runningTime;
+            $scope.scenarios.forEach(function (singleScenario) {
+                data.forEach(function (singleData) {
+                    if (singleScenario._id === singleData.id) {
+                        singleScenario.runningTime = singleData.runningTime;
                     }
                 });
             });
         });
     }
+
     $scope.pageChanged = function (current, numPerPage) {
         var begin = (current - 1) * numPerPage;
         var end = begin + numPerPage;
-        $scope.orderedScenarios     = $filter('orderBy')($scope.scenarios,$scope.predicate,$scope.reverse);
-        $scope.filteredScenarios    = $filter('filter')($scope.orderedScenarios,$scope.searchText);
-        $scope.filteredScenarioss   = $scope.filteredScenarios.slice(begin,end);
+        $scope.orderedScenarios = $filter('orderBy')($scope.scenarios, $scope.predicate, $scope.reverse);
+        $scope.filteredScenarios = $filter('filter')($scope.orderedScenarios, $scope.searchText);
+        $scope.filteredScenarioss = $scope.filteredScenarios.slice(begin, end);
     };
 });
 scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scenarios, $location, actionObjInfo, history) {
@@ -636,7 +625,7 @@ scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarios,
         })
     });
 });
-scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenarios, user, $location) {
+scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenarios, user, $location, $filter) {
     //vars
 
     //functions
@@ -688,7 +677,7 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenari
         $location.path("myscenarios");
     }
 });
-scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, analysis, $location, scenarios,$filter) {
+scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionObjInfo, analysis, $location, scenarios, $filter) {
     if (!actionObjInfo[1]) {
         $location.path('myscenarios');
     }

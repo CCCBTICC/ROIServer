@@ -146,7 +146,7 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
         }
     });
     //init actionObjInfo
-    while (actionObjInfo[0]) {
+    while (actionObjInfo.length) {
         actionObjInfo.shift();
     }
     //init analysis.tempData

@@ -9,7 +9,6 @@ var Rmodule = require('./modules/Rmodule');
 var ObjectId = require('mongodb').ObjectID;
 
 
-
 //router.post('/status',function(req, res) {
 //    var list = req.body;
 //    var currentDate = new Date();
@@ -56,10 +55,10 @@ var ObjectId = require('mongodb').ObjectID;
 //  the list json data
 router.get('/:objectId', function (req, res) {
     var objectId = req.params.objectId;
-    req.db.collection('scenarios').findOne({_id:new ObjectId(objectId)},{}, function (err,scenario) {
-        if(scenario){
+    req.db.collection('scenarios').findOne({_id: new ObjectId(objectId)}, {}, function (err, scenario) {
+        if (scenario) {
             res.send(scenario);
-        }else{
+        } else {
             res.send(false);
         }
     });
@@ -86,15 +85,15 @@ router.post('/', function (req, res) {
             break;
         case "checkFinal":
             checkFinal(req.db, requestData, res);
-        break;
+            break;
         default:
             res.send('invalid actions');
             break;
     }
 });
 
-function checkFinal(db,requestData,res){
-    db.collection('scenarios').find(requestData).toArray(function(err,result){
+function checkFinal(db, requestData, res) {
+    db.collection('scenarios').find(requestData).toArray(function (err, result) {
         console.log(result);
         if (!err) {
             res.send(result);
@@ -103,80 +102,90 @@ function checkFinal(db,requestData,res){
         }
     })
 }
-function status(db, requestData, res){
+function status(db, requestData, res) {
     var currentDate = new Date();
-    if(requestData){
-    requestData.forEach(function (listSingle, index) {
-
-            db.collection('scenarios').findOne({_id:new ObjectId(listSingle.id)},{}, function (err,scenario) {
-                if(scenario){
-                    listSingle.final = scenario.final;
-                    if((!Rmodule.getRoutput(listSingle.id))) {
+    var counter = requestData.length;
+    if (requestData) {
+        requestData.forEach(function (listSingle, index) {
+            db.collection('scenarios').findOne({_id: new ObjectId(listSingle.id)}, {}, function (err, scenario) {
+                if (scenario) {
+                    if ((!Rmodule.getRoutput(listSingle.id))) {
                         listSingle.runningTime = currentDate.getTime() - scenario.createDate.getTime();
-                    }else{
+                        counter--;
+                        if (counter === 0) {
+                            res.send(requestData);
+                        }
+                    } else {
                         listSingle.runningTime = "0";
+                        counter--;
+                        if (counter === 0) {
+                            res.send(requestData);
+                        }
                     }
-                }else{
-                    console.log("can't find:"+listSingle.id);
+                } else {
+                    console.log("can't find:" + listSingle.id);
+                    counter--;
+                    if (counter === 0) {
+                        res.send(requestData);
+                    }
                 }
             });
-    });
-    setTimeout(function(){res.send(requestData);},500);
+        });
     }
 }
 
 function share(db, requestData, res) {
-    if(requestData){
-    var scenarioId = requestData.scenarioId;
-    var targetUsername = requestData.targetUsername;
-    db.collection('users').findOneAndUpdate({username: targetUsername}, {$push: {scenarios: new ObjectId(scenarioId)}}, function (err, result) {
-        res.send(scenarioId);
-    });
+    if (requestData) {
+        var scenarioId = requestData.scenarioId;
+        var targetUsername = requestData.targetUsername;
+        db.collection('users').findOneAndUpdate({username: targetUsername}, {$push: {scenarios: new ObjectId(scenarioId)}}, function (err, result) {
+            res.send(scenarioId);
+        });
     }
 }
 
 function list(db, requestData, res) {
     var currentDate = new Date();
-    if(requestData){
-    var username = requestData.username;
-    db.collection('users').findOne({username: username}, {fields: {scenarios: 1}}, function (err, user) {
-        var scenariosList = [];
-        if(user){
-        user.scenarios.forEach(function (id) {
-            scenariosList.push(new ObjectId(id));
-        });
-        db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
-            console.log(result);
-            if (!err) {
-                res.send(result);
-            } else {
-                res.send({err: err});
+    if (requestData) {
+        var username = requestData.username;
+        db.collection('users').findOne({username: username}, {fields: {scenarios: 1}}, function (err, user) {
+            var scenariosList = [];
+            if (user) {
+                user.scenarios.forEach(function (id) {
+                    scenariosList.push(new ObjectId(id));
+                });
+                db.collection('scenarios').find({_id: {$in: scenariosList}}).toArray(function (err, result) {
+                    console.log(result);
+                    if (!err) {
+                        res.send(result);
+                    } else {
+                        res.send({err: err});
+                    }
+                });
             }
         });
-        }
-    });
     }
 }
 
 function edit(db, requestData, res) {
-    if(requestData){
-    var username = requestData.username;
-    var scenarioId = requestData.scenarioId;
-    var update = requestData.update;
-    db.collection('scenarios').findOne({_id: new ObjectId(scenarioId)}, {}, function (err, scenario) {
-        if (scenario) {
-            if (scenario.owner === username) {
-               Object.keys(update).forEach(function(key){
-                   scenario[key]=update[key];
-               });
-                db.collection('scenarios').findOneAndUpdate({_id:scenario._id}, scenario, function (err, result) {
-                    res.send(true);
-                });
-            } else {
-                res.send(false);
+    if (requestData) {
+        var username = requestData.username;
+        var scenarioId = requestData.scenarioId;
+        var update = requestData.update;
+        db.collection('scenarios').findOne({_id: new ObjectId(scenarioId)}, {}, function (err, scenario) {
+            if (scenario) {
+                if (scenario.owner === username) {
+                    Object.keys(update).forEach(function (key) {
+                        scenario[key] = update[key];
+                    });
+                    db.collection('scenarios').findOneAndUpdate({_id: scenario._id}, scenario, function (err, result) {
+                        res.send(true);
+                    });
+                } else {
+                    res.send(false);
+                }
             }
-        }
-    });
+        });
     }
 }
 //function edit(db, requestData, res) {
@@ -203,19 +212,22 @@ function edit(db, requestData, res) {
 //}
 
 function remove(db, requestData, res) {
-    if(requestData){
-    var scenarioId = requestData.scenarioId;
-    db.collection('scenarios').findOne({_id: new ObjectId(scenarioId)}, {owner: 1, _id: 1}, function (err, scenario) {
-        if (scenario) {
-            if (scenario.owner === requestData.username) {
-                db.collection('scenarios').removeOne({_id: new ObjectId(scenarioId)}, {w: 1}, function () {
-                    res.send(true);
-                });
-            } else {
-                res.send(false);
+    if (requestData) {
+        var scenarioId = requestData.scenarioId;
+        db.collection('scenarios').findOne({_id: new ObjectId(scenarioId)}, {
+            owner: 1,
+            _id: 1
+        }, function (err, scenario) {
+            if (scenario) {
+                if (scenario.owner === requestData.username) {
+                    db.collection('scenarios').removeOne({_id: new ObjectId(scenarioId)}, {w: 1}, function () {
+                        res.send(true);
+                    });
+                } else {
+                    res.send(false);
+                }
             }
-        }
-    });
+        });
     }
 }
 
