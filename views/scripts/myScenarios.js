@@ -727,6 +727,7 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
                     $scope.compareObj.difference[key] = $scope.compareObj.second[key] - $scope.compareObj.first[key];
                 });
                 $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.second.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
+                $scope.compareObj.difference.changeR=$scope.compareObj.difference.run2ProjROI/ Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
                 $scope.compareChart.data = [
                     {
                         title: "SEM",
@@ -791,6 +792,7 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
                     $scope.compareObj.difference[key] = $scope.compareObj.second[key] - $scope.compareObj.first[key];
                 });
                 $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
+                $scope.compareObj.difference.changeR=$scope.compareObj.difference.run2ProjROI/ Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
                 $scope.compareChart.data = [
                     {
                         title: "SEM",
@@ -848,8 +850,6 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
     } else {
         $location.path('myscenarios');
     }
-
-
 });
 
 scenariosApp.factory('actionObjInfo', function () {
