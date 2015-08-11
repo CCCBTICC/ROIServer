@@ -354,6 +354,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         ControlChannels: []
     };
     $scope.getJson = false;
+    $scope.channelShow=false;
     $scope.error = false;
     $scope.selectPlan = {
         disable: {
