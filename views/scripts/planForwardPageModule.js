@@ -368,14 +368,14 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             partners: false
         },
         checkBox: {
-            semBrand: false,
+            semBrand: true,
             semCard: false,
             semPhotobook: false,
             semOthers: false,
             display: false,
             social: false,
             affiliates: false,
-            partners: false
+            partners: true
         },
         semTotalCheckBox: false,
         count: function () {

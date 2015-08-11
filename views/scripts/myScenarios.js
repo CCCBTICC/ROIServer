@@ -109,7 +109,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.numPerPage = 10;
     $scope.maxSize = 5;
     $scope.itemsPerPage = 1;
-    $scope.searchText="";
+    $scope.searchText = "";
     //scope functions
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
@@ -129,20 +129,20 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         }
         console.log(actionObjInfo);
 
-$scope.listBtnTooltip = {
-    comparePlacement:"top",
-    retrievePlacement:"top",
-    editPlacement:"top",
-    deletePlacement :"top",
-    exportPlacement:"top",
-    sharePlacement:"top",
-    compareText:"'Compare' should be 2 items",
-    retrieveText:"'Retrieve' should be more than 1 items",
-    editText: "'Edit' should be 1 item",
-    deleteText : "'Delete' should be more than 1 items",
-    exportText:"'Export' should be 1 item",
-    shareText:"'Share' should be 1 item"
-};
+        $scope.listBtnTooltip = {
+            comparePlacement: "top",
+            retrievePlacement: "top",
+            editPlacement: "top",
+            deletePlacement: "top",
+            exportPlacement: "top",
+            sharePlacement: "top",
+            compareText: "'Compare' should be 2 items",
+            retrieveText: "'Retrieve' should be more than 1 items",
+            editText: "'Edit' should be 1 item",
+            deleteText: "'Delete' should be more than 1 items",
+            exportText: "'Export' should be 1 item",
+            shareText: "'Share' should be 1 item"
+        };
 
         switch (activeCount($scope.scenarios)) {
             case 0:
@@ -157,12 +157,12 @@ $scope.listBtnTooltip = {
                 break;
             case 2:
                 Object.keys($scope.operations).forEach(function (key) {
-                    $scope.operations[key].disable = (key !== 'compare');
+                    $scope.operations[key].disable = (key !== 'compare'&& key!=='delete');
                 });
                 break;
             default:
                 Object.keys($scope.operations).forEach(function (key) {
-                    $scope.operations[key].disable = true;
+                    $scope.operations[key].disable = (key !=='delete');
                 });
                 break;
         }
@@ -187,18 +187,20 @@ $scope.listBtnTooltip = {
             $location.path('lookback/output')
         }
     };
-    $scope.delete = function () {
-        var objectId = getSelectedId($scope.scenarios);
+    $scope.deleteList=function(){
+        actionObjInfo.forEach(function(scenarioId){
+            $scope.delete(scenarioId);
+        });
+    };
+    $scope.delete = function (id) {
         user.getUser(function (user) {
             $scope.user = user;
         });
-        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
-            //console.log('from delete in scenarios');
-            //console.log(data);
+        scenarios.deleteScenario(id, $scope.user.name, function (data) {
             if (data) {
                 var deleteIndex = -1;
                 $scope.scenarios.forEach(function (obj, index) {
-                    if (obj._id === objectId) {
+                    if (obj._id === id) {
                         deleteIndex = index;
                     }
                 });
@@ -212,65 +214,13 @@ $scope.listBtnTooltip = {
                 while (actionObjInfo.length) {
                     actionObjInfo.shift();
                 }
-                //console.log("delete it");
                 tempIdArray.forEach(function (singleTempIdArray, index) {
-                    if (singleTempIdArray === objectId) {
+                    if (singleTempIdArray === id) {
                         tempIdArray.splice(index, 1);
                     }
                 });
             } else {
                 alert("You are not the original owner, data can not be deleted!");
-            }
-        });
-    };
-    $scope.stop = function (obj) {
-        var objectId = obj._id;
-        console.log(objectId);
-        user.getUser(function (user) {
-            $scope.user = user;
-        });
-        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
-            if (data) {
-                var deleteIndex = -1;
-                $scope.filteredScenarioss.forEach(function (obj, index) {
-                    if (obj._id === objectId) {
-                        deleteIndex = index;
-                    }
-                });
-                if (deleteIndex !== -1) {
-                    console.log(deleteIndex);
-                    $scope.filteredScenarioss.splice(deleteIndex, 1);
-                    switch (activeCount($scope.filteredScenarioss)) {
-                        case 0:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = true;
-                            });
-                            break;
-                        case 1:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key === 'compare');
-                            });
-                            break;
-                        case 2:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key !== 'delete' && key !== 'compare');
-                            });
-                            break;
-                        default:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key !== 'delete');
-                            });
-                            break;
-                    }
-
-                }
-                console.log("delete it");
-                tempIdArray.forEach(function (singleTempIdArray, index) {
-                    if (singleTempIdArray === objectId) {
-                        tempIdArray.splice(index, 1);
-                    }
-
-                });
             }
         });
     };
@@ -309,13 +259,6 @@ $scope.listBtnTooltip = {
                 //console.log(data);
                 $scope.scenarios = data;
                 $scope.pageChanged($scope.currentPage, $scope.numPerPage);
-                $scope.scenarios.forEach(function (scenario) {
-                    if (!scenario.exist) {
-                        tempIdArray.push(scenario._id);
-                    }else{
-                        scenario.runningTime="0";
-                    }
-                });
                 getStatus();
             });
         }
@@ -358,18 +301,42 @@ $scope.listBtnTooltip = {
     $scope.reverse = true;
 
     function getStatus() {
-        scenarios.checkScenariosStatus(tempIdArray, function (data) {
-            console.log(tempIdArray);
-            //$scope.tempIdArray = tempIdArray;
-            //console.log(data);
-            $scope.scenarios.forEach(function (singleScenario) {
-                data.forEach(function (singleData) {
-                    if (singleScenario._id === singleData.id) {
-                        singleScenario.runningTime = singleData.runningTime;
-                    }
+        console.log($scope.scenarios);
+        tempIdArray=[];
+        $scope.scenarios.forEach(function (scenario) {
+            if (!scenario.exist) {
+                tempIdArray.push(scenario._id);
+            } else {
+                scenario.runningTime = "0";
+            }
+        });
+        console.log("in doget");
+        console.log(tempIdArray);
+        if (tempIdArray.length) {
+            scenarios.checkScenariosStatus(tempIdArray, function (data) {
+                $scope.scenarios.forEach(function (singleScenario) {
+                    data.forEach(function (singleData) {
+                        if (singleScenario._id === singleData.id) {
+                            console.log(singleData.runningTime);
+                            switch (singleData.runningTime) {
+                                case "0":
+                                    singleScenario.runningTime = singleData.runningTime;
+                                    singleScenario.exist = true;
+                                    break;
+                                case "-1":
+                                    $scope.scenarios.splice($scope.scenarios.indexOf(singleScenario), 1);
+                                    break;
+                                default :
+                                    singleScenario.runningTime = singleData.runningTime;
+                                    break;
+                            }
+                        }
+                    });
                 });
             });
-        });
+        } else {
+            clearInterval(checkStatusLoop);
+        }
     }
 
     $scope.pageChanged = function (current, numPerPage) {

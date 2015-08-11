@@ -105,32 +105,35 @@ function checkFinal(db, requestData, res) {
 function status(db, requestData, res) {
     var currentDate = new Date();
     var counter = requestData.length;
-    if (requestData) {
+    if (requestData.length) {
         requestData.forEach(function (listSingle, index) {
-            db.collection('scenarios').findOne({_id: new ObjectId(listSingle.id)}, {}, function (err, scenario) {
-                if (scenario) {
-                    if ((!Rmodule.getRoutput(listSingle.id))) {
+            if (!Rmodule.getRoutput(listSingle.id)) {
+                console.log(listSingle.id);
+                db.collection('scenarios').findOne({_id: new ObjectId(listSingle.id)}, {createDate: 1}, function (err, scenario) {
+                    if (scenario) {
                         listSingle.runningTime = currentDate.getTime() - scenario.createDate.getTime();
-                        counter--;
-                        if (counter === 0) {
-                            res.send(requestData);
-                        }
-                    } else {
-                        listSingle.runningTime = "0";
-                        counter--;
-                        if (counter === 0) {
-                            res.send(requestData);
-                        }
+                        console.log(scenario);
+                    }else{
+                        listSingle.runningTime="-1";
                     }
-                } else {
-                    console.log("can't find:" + listSingle.id);
+                    counter--;
+                    console.log(counter);
+                    if (counter === 0) {
+                        res.send(requestData);
+                    }
+                });
+            } else {
+                db.collection('scenarios').findOneAndUpdate({_id: new ObjectId(listSingle.id)}, {$set: {exist: true}}, function (err, result) {
+                    listSingle.runningTime = "0";
                     counter--;
                     if (counter === 0) {
                         res.send(requestData);
                     }
-                }
-            });
-        });
+                });
+            }
+        })
+    } else {
+        res.send(requestData);
     }
 }
 

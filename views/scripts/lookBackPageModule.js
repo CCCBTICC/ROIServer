@@ -187,14 +187,14 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
             partners: false
         },
         checkBox: {
-            semBrand: false,
+            semBrand: true,
             semCard: false,
             semPhotobook: false,
             semOthers: false,
             display: false,
             social: false,
             affiliates: false,
-            partners: false
+            partners: true
         },
         semTotalCheckBox: false,
         count: function () {
@@ -250,6 +250,7 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         }
     };
     $scope.getJson = false;
+    $scope.channelShow=false;
 
     //scope functions
     $scope.nextPage = function () {

@@ -67,7 +67,7 @@
                     <!--<td class="check non-number col-0">-->
                         <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
-                    <td class="scenario-id list-col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-show="runCheck(scenario.runningTime)" tooltip-placement="right" tooltip="Cancel" ng-click="stop(scenario)"></i> </td>
+                    <td class="scenario-id list-col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-show="runCheck(scenario.runningTime)" tooltip-placement="right" tooltip="Cancel" ng-click="delete(scenario._id)"></i> </td>
                     <td class="non-number list-col-2">{{scenario.name}}</td>
                     <td class="non-number list-col-1">{{scenario.owner}}</td>
                     <td class="non-number list-col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>
@@ -98,7 +98,7 @@
                 </button>
                 <ul class="dropdown-menu" role="menu">
                     <li><a class="btn btn-default" ng-class="{'disabled':operations.edit.disable}" ng-click="edit()">edit</a></li>
-                    <li><a class="btn btn-default" ng-class="{'disabled':operations.delete.disable}" ng-click="delete()">delete</a></li>
+                    <li><a class="btn btn-default" ng-class="{'disabled':operations.delete.disable}" ng-click="deleteList()">delete</a></li>
                 </ul>
             </div>
                 </div>
