@@ -317,22 +317,23 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
     user.getUser(function (user) {
         $scope.user = user;
         if (!user.name) {
-            //$scope.logout()
+            $scope.logout()
+        }else{
+            //init actionObjInfo
+            while (actionObjInfo.length) {
+                actionObjInfo.shift();
+            }
+            //init analysis.tempData
+            Object.keys(analysis.tempData).forEach(function (key) {
+                analysis.tempData[key] = "";
+            });
+            // get data template and dataInfo
+            $scope.planForward.init = analysis.tempData;
+            scenarios.dataInfo = $scope.dataInfo;
+            //init calender
+            $scope.calender.initDate();
         }
     });
-    //init actionObjInfo
-    while (actionObjInfo.length) {
-        actionObjInfo.shift();
-    }
-    //init analysis.tempData
-    Object.keys(analysis.tempData).forEach(function (key) {
-        analysis.tempData[key] = "";
-    });
-    // get data template and dataInfo
-    $scope.planForward.init = analysis.tempData;
-    scenarios.dataInfo = $scope.dataInfo;
-    //init calender
-    $scope.calender.initDate();
 
 }]);
 
