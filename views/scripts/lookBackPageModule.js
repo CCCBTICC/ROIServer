@@ -161,7 +161,7 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
 
 }]);
 
-back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 'history', '$filter', function ($scope, analysis, scenarios, location, history, filter) {
+back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 'history',  function ($scope, analysis, scenarios, location, history) {
     //scope vars
     $scope.tooltips = {
         brand: "Please choose one of the brands from the list.",
@@ -266,7 +266,6 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         }
     };
 
-
     var count;
 
     function doGet() {
@@ -294,8 +293,12 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                             affPR: history.Affiliates_MTA,
                             socPR: history.FB_MTA,
                             parPR: history.Partners_MTA,
-                            totPR: history.SEM_MTA + history.Display_MTA + history.Affiliates_MTA + history.FB_MTA + history.Partners_MTA
+                            totPR: history.SEM_MTA + history.Display_MTA + history.Affiliates_MTA + history.FB_MTA + history.Partners_MTA,
+                            DMS:history.DMS,
+                            TV:history.TV,
+                            TVImpression:history.TVImpression
                         };
+                        console.log($scope.lookBack.history.DMS);
                         if ($scope.lookBack.output.lmTouch === "Last Touch") {
                             $scope.lookBack.history.semPR = history.SEM_LTA;
                             $scope.lookBack.history.disPR = history.Display_LTA;
@@ -308,7 +311,6 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                         $scope.dataInfo.spend = $scope.lookBack.history.totSR;
                         fix();
                     });
-
                 }
             });
         }
@@ -403,21 +405,20 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         console.log($scope.error);
     }
 
-
     //main
     //check objId
     if (!analysis.objIds.current) {
         location.path('lookback/init')
+    }else{
+        //get output Data
+        doGet();
+        count = setInterval(doGet, 1000 * 0.3);
+        $scope.dataInfo = scenarios.dataInfo;
+        //stop get request
+        $scope.$on('$destroy', function () {
+            clearInterval(count);
+        });
     }
-    //get output Data
-    doGet();
-    count = setInterval(doGet, 1000 * 0.3);
-    $scope.dataInfo = scenarios.dataInfo;
-    console.log($scope.dataInfo);
-    $scope.$on('$destroy', function () {
-        clearInterval(count);
-    });//stop get request
-
 }]);
 
 back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history', 'scenarios', 'user', '$filter', function ($scope, analysis, location, history, scenarios, user, filter) {
@@ -436,8 +437,6 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             {title: "Partners", value: 0, string: ""},
             {title: "Portfolio Total", value: 0, string: ""}
         ],
-
-        //data:[{title:"",value:0,string:""}],
         config: {
             width: 800,
             barHeight: 28,
@@ -505,9 +504,8 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             $scope.slideError = true;
             $scope.slideErrorValue = "Your 'max' is lower by " + filter('formatCurrency')($scope.lookBack.output.totSR - sumMax);
         }
-        console.log($scope.slideError);
+        //console.log($scope.slideError);
     };
-
     $scope.reRun = function () {
         passInfoToData();
         $scope.scenario.scenarioId = $scope.scenario.scenarioId.slice(0, -1) + "X";
@@ -538,7 +536,6 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             //}
             location.path('myscenarios');
         });
-
     };
     $scope.reset = function () {
         $scope.slideError = false;
@@ -551,7 +548,6 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         $scope.lookBack.output.socSlide = $scope.lookBack.output.socAS;
         $scope.lookBack.output.affSlide = $scope.lookBack.output.affAS;
         $scope.lookBack.output.parSlide = $scope.lookBack.output.parAS;
-
     };
     $scope.edit = function () {
         location.path('lookback/edit');
@@ -599,7 +595,6 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             ROID: $scope.lookBack.output.run1ProjROI.slice(0, -1) - $scope.lookBack.history.ROI,
             changeR: ( $scope.lookBack.output.run1ProjROI.slice(0, -1) / $scope.lookBack.history.ROI - 1) * 100
         };
-
         $scope.compareChart.data = [
             {
                 title: "SEM",
@@ -652,7 +647,6 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
                 string: filter('number')(Math.abs($scope.lookBack.difference.totSD), 0)
             }
         ];
-
     }
 
     function passInfoToData() {
@@ -667,8 +661,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         if ($scope.getJson === false) {
             analysis.getData(function (data) {
                 if (data) {
-                    console.log("from doGet in back/output");
-                    console.log(data);
+                    console.log("from doGet in back/output",data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
                     scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
@@ -702,9 +695,8 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
                             $scope.lookBack.history.totPR = history.SEM_LTA + history.Display_LTA + history.Affiliates_LTA + history.FB_LTA + history.Partners_LTA;
                         }
                         $scope.lookBack.history.ROI = ($scope.lookBack.history.totPR / $scope.lookBack.history.totSR - 1) * 100;
-                        console.log($scope.lookBack.history);
-                        console.log($scope.lookBack.difference);
-
+                        //console.log($scope.lookBack.history);
+                        //console.log($scope.lookBack.difference);
                         calculateDifference();
                     });
                 }
@@ -715,27 +707,25 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         }
     }
 
-
     //main
     //check objId
     if (!analysis.objIds.current) {
         location.path("/lookback/init");
+    }else{
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
+        scenarios.getScenarioById(analysis.objIds.current, function (scenario) {
+            console.log(scenario);
+            scenarios.dataInfo = scenario;
+            $scope.scenario = scenario;
+        });
+        $scope.getJson = false;
+        doGet();
+        count = setInterval(doGet, 1000 * 0.3); //set frequency
     }
-    user.getUser(function (user) {
-        $scope.user = user;
-    });
-    scenarios.getScenarioById(analysis.objIds.current, function (scenario) {
-        console.log(scenario);
-        scenarios.dataInfo = scenario;
-        $scope.scenario = scenario;
-    });
-    $scope.getJson = false;
-    doGet();
-    count = setInterval(doGet, 1000 * 0.3); //set frequency
     $scope.$on('$destroy', function () {
         clearInterval(count);
-    });
-//stop get request
-
+    });//stop get request
 }])
 ;

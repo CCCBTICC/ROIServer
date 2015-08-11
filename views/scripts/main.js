@@ -160,7 +160,7 @@ app.factory('history', function ($http) {
     };
     return {
         getHistoryDate: function (cb) {
-            if (historyDate[0]) {
+            if (historyDate.length) {
                 cb(historyDate);
             }
             else {
@@ -173,13 +173,17 @@ app.factory('history', function ($http) {
         getHistoryData: function (begin, end, cb) {
             var data = {begin: begin, end: end};
             post(data, function (res) {
-                var sum = {};
+                var sum = {DMS:{}};
                 Object.keys(res[0]).forEach(function (key) {
                     sum[key] = 0;
                     res.forEach(function (month) {
                         sum[key] += Number(month[key]);
                     });
                 });
+                res.forEach(function (month) {
+                    sum.DMS[month.Month] = month.DM;
+                });
+                console.log(sum);
                 cb(sum);
             });
         }

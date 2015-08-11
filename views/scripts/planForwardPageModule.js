@@ -311,30 +311,30 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
             $scope.dataInfo.lmTouch.charAt(0) + "-000";
         //$scope.dataInfo.dataThrough = filter('date')(new Date($scope.calender.minDate.getFullYear(),$scope.calender.minDate.getMonth(),0), 'yyyy-MM');
         $scope.dataInfo.from = "forward";
-        $scope.dataInfo.included='No';
+        $scope.dataInfo.included = 'No';
     }
 
     // main
     user.getUser(function (user) {
         $scope.user = user;
         if (!user.name) {
-            //$scope.logout()
+            $scope.logout()
+        } else {
+            //init actionObjInfo
+            while (actionObjInfo.length) {
+                actionObjInfo.shift();
+            }
+            //init analysis.tempData
+            Object.keys(analysis.tempData).forEach(function (key) {
+                analysis.tempData[key] = "";
+            });
+            // get data template and dataInfo
+            $scope.planForward.init = analysis.tempData;
+            scenarios.dataInfo = $scope.dataInfo;
+            //init calender
+            $scope.calender.initDate();
         }
     });
-    //init actionObjInfo
-    while (actionObjInfo.length) {
-        actionObjInfo.shift();
-    }
-    //init analysis.tempData
-    Object.keys(analysis.tempData).forEach(function (key) {
-        analysis.tempData[key] = "";
-    });
-    // get data template and dataInfo
-    $scope.planForward.init = analysis.tempData;
-    scenarios.dataInfo = $scope.dataInfo;
-    //init calender
-    $scope.calender.initDate();
-
 }]);
 
 forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '$location', '$filter', 'history', function ($scope, analysis, scenarios, location, filter, history) {
@@ -437,7 +437,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         minDate: null,
         maxDate: null,
         eMaxDate: null,
-        opened: {beginPeriod:false,endPeriod:false},
+        opened: {beginPeriod: false, endPeriod: false},
         format: 'MMM-dd-yyyy',
         dateOptions: {
             formatYear: 'yyyy',
@@ -470,7 +470,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             }
         }
     };
-
+    //scope functions
     $scope.nextPage = function () {
         if($scope.planForward.ControlChannelsShow === "No"){
         spendValidate();
@@ -498,8 +498,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         if ($scope.getJson === false) {
             analysis.getData(function (data) {
                 if (data) {
-                    console.log("from doGet in forward/constrict after got Data");
-                    console.log(data);
+                    console.log("from doGet in forward/constrict after got Data", data);
                     $scope.getJson = true;
                     $scope.planForward.output = data;
                     $scope.calender.initDate();
@@ -670,15 +669,16 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     //check objId
     if (!analysis.objIds.current) {
         location.path('planforward/init')
+    } else {
+        //get output Data
+        doGet();
+        count = setInterval(doGet, 1000 * 0.3);
+        $scope.dataInfo = scenarios.dataInfo;
+        console.log($scope.dataInfo);
+        $scope.$on('$destroy', function () {
+            clearInterval(count);
+        });//stop get request
     }
-    //get output Data
-    doGet();
-    count = setInterval(doGet, 1000 * 0.3);
-    $scope.dataInfo = scenarios.dataInfo;
-    console.log($scope.dataInfo);
-    $scope.$on('$destroy', function () {
-        clearInterval(count);
-    });//stop get request
 }]);
 
 forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$location', '$filter', 'user', function ($scope, analysis, scenarios, location, filter, user) {
@@ -760,7 +760,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
         passInfoToData();
         $scope.scenario.scenarioId = $scope.scenario.scenarioId.slice(0, -1) + "X";
         //post data to R
-        analysis.postData($scope.planForward.output,$scope.scenario, function (res) {
+        analysis.postData($scope.planForward.output, $scope.scenario, function (res) {
             console.log(res);
             //var count;
             //$scope.getJson = false;
@@ -852,12 +852,12 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             if (Number($scope.planForward.output.totSR) < sum) {
                 console.log(sum);
                 $scope.slideError = true;
-                $scope.slideErrorValue ="Your 'min' is over than " + filter('formatCurrency')(sum - $scope.planForward.output.totSR);
+                $scope.slideErrorValue = "Your 'min' is over than " + filter('formatCurrency')(sum - $scope.planForward.output.totSR);
                 return;
             }
             if (Number($scope.planForward.output.totSR) > sumMax) {
                 $scope.slideError = true;
-                $scope.slideErrorValue ="Your 'max' is lower by " + filter('formatCurrency')($scope.planForward.output.totSR - sumMax);
+                $scope.slideErrorValue = "Your 'max' is lower by " + filter('formatCurrency')($scope.planForward.output.totSR - sumMax);
                 return;
             }
             $scope.slideError = false;
@@ -980,7 +980,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
 
                     $scope.planForward.output.totSlide = Number($scope.planForward.output.totAS);
 
-                   calculateDifference();
+                    calculateDifference();
                 }
             });
         }
@@ -993,7 +993,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     //check objId
     if (!analysis.objIds.current) {
         location.path("/planforward/init");
-    }else{
+    } else {
         user.getUser(function (user) {
             $scope.user = user;
         });
