@@ -577,9 +577,9 @@ form .tooltip-inner {
     position: fixed;
     top:-2px;
 }
-.scenario-list-table{
-    min-height: 400px;
-}
+/*.scenario-list-table{*/
+    /*min-height: 400px;*/
+/*}*/
 
 table.roi-table {
     width: 100%;
@@ -717,7 +717,7 @@ table.roi-table tr > td {
 
 table.roi-table tr > td.td-title {
     padding: 5px 0 5px 5px;
-    min-width: 80px;
+    min-width: 120px;
     max-width:150px;
     position: relative;
     text-align: left;

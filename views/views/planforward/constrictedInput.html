@@ -18,7 +18,7 @@
     <!--</div>-->
     <div class="row" id="info">
         <div class="col-sm-12 well well-sm" ng-show="getJson">
-            <label>Scenario ID:</label>{{dataInfo.scenarioId}} <br>
+            <label>Scenario ID:</label>&nbsp;{{dataInfo.scenarioId}} <br>
             <label>Brand</label>: {{dataInfo.brand}}
             <label>Attribution</label>: {{dataInfo.lmTouch}}
             <label>Begin Period</label>: {{dataInfo.beginDate | date: 'MMM-yyyy'}}
@@ -31,9 +31,9 @@
 
         <form class="form-horizontal">
             <div class="form-group">
-                <label for="lookBackSpend" class="col-sm-3 control-label">Portfolio Spend :</label>
+                <label for="lookBackSpend" class="col-sm-2 control-label">Portfolio Spend :</label>
 
-                <div class="col-sm-4">
+                <div class="col-sm-3">
                     <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend"
                            ng-change="error=false" format-input>
                     <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
@@ -41,7 +41,10 @@
                 <div class="col-sm-1 help-info">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
                 </div>
-
+                <div class="col-sm-4">
+                    <label> Adjust Spend Constraints?</label>&nbsp;&nbsp;
+                    <button class="btn btn-default">Adjust</button>
+                </div>
             </div>
         </form>
     </div>

@@ -106,7 +106,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.scenarios = [];
     $scope.filteredScenarios = [];
     $scope.currentPage = 1;
-    $scope.numPerPage = 6;
+    $scope.numPerPage = 10;
     $scope.maxSize = 5;
     $scope.itemsPerPage = 1;
     $scope.searchText="";
