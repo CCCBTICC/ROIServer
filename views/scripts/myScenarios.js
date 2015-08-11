@@ -368,7 +368,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         clearInterval(checkStatusLoop);
     });
 });
-scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scenarios, $location, actionObjInfo, history) {
+scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scenarios, $location, actionObjInfo, history,$filter) {
     //vars
     var format = {
         Excel: 'csv'
@@ -377,13 +377,13 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
     //functions
     function convertPlan(info, data) {
         return "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
-            "Owner," + info.owner + ",,,,,,,,,,\n" +
+            "Owner," + $filter('name')(info.owner) + ",,,,,,,,,,\n" +
             "Create Date," + info.createDate + ",,,,,,,,,,\n" +
             "Brand," + info.brand + ",,,,,,,,,,\n" +
             "Planned Spend," + info.spend + ",,,,,,,,,,,\n" +
-            "Begin Period," + info.begin + ",,,,,,,,,,\n" +
-            "End Period," + info.end + ",,,,,,,,,,\n" +
-            "Data Through Month," + info.dataThrough + ",,,,,,,,,,\n" +
+            "Begin Period," + $filter('date')(info.beginDate,"MMM-yyyy") + ",,,,,,,,,,\n" +
+            "End Period," + $filter('date')(info.endDate,"MMM-yyyy") + ",,,,,,,,,,\n" +
+            "Data Through Month," + $filter('date')(info.dataThrough,"MMM-yyyy") + ",,,,,,,,,,\n" +
             "History Included?," + info.included + ",,,,,,,,,,\n" +
             ",,,,,,,,,,,\n" +
             "Channels in Portfolio,input,,,,,Optimized,,What-if,,Difference,\n" +
@@ -398,7 +398,8 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
             "Affiliates," + data.affLB + "," + data.affMin + "," + data.affMax + "," + data.affUB + "," + data.affSF + "," + data.affSR + "," + data.affPR + "," + data.affAS + "," + data.affAR + "," + data.affSD + "," + data.affRD + "\n" +
             "Partners," + data.parLB + "," + data.parMin + "," + data.parMax + "," + data.parUB + "," + data.parSF + "," + data.parSR + "," + data.parPR + "," + data.parAS + "," + data.parAR + "," + data.parSD + "," + data.parRD + "\n" +
             "Portfolio Total," + data.totLB + "," + data.totMin + "," + data.totMax + "," + data.totUB + "," + "" + "," + data.totSR + "," + data.totPR + "," + data.totAS + "," + data.totAR + "," + data.totSD + "," + data.totRD + "\n" +
-            "Portfolio ROI,,,,,,," + data.run1ProjROI + ",," + data.run2ProjROI + "\n" +
+            "Portfolio ROI,,,,,,," + data.run1ProjROI + ",," + data.run2ProjROI +",,"+data.ROID +"%\n" +
+            "Change in Brand Total Revenue,,,,,,,,,,,"+$filter('number')(data.changeR,0)+"%\n"+
             "Note:," + info.note + ",,,,,,,,,,\n";
 
     }
@@ -416,17 +417,18 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
             ",,,,,,,,,,,\n" +
             "Portfolio Channels,Actuals,,Optimized,,,,Difference,\n" +
             ",Spend,Revenue,Lower,Spend,Upper,Revenue,Spend,Revenue\n" +
-            "SEM Total," + data.semSR + "," + data.semPR + "," + data.semTLB + "," + data.semTSB + "," + data.semTUB + "," + data.semAR + "," + data.semTSD + "," + data.semAR + "\n" +
-            "SEM-Brand," + data.semBSR + ",," + data.semBLB + ",," + data.semBUB + ",," + data.semBSD + ",\n" +
-            "SEM-Cards," + data.semCSR + ",," + data.semCLB + ",," + data.semCUB + ",," + data.semCSD + ",\n" +
-            "SEM-Pbook," + data.semPSR + ",," + data.semPLB + ",," + data.semPUB + ",," + data.semPSD + ",\n" +
-            "SEM-Others," + data.semOSR + ",," + data.semOLB + ",," + data.semOUB + ",," + data.semOSD + ",\n" +
-            "Display," + data.disSR + "," + data.disPR + "," + data.disTLB + "," + data.disSB + "," + data.disUB + "," + data.disAR + "," + data.disTSD + "," + data.disAR + "\n" +
-            "Social (FB)," + data.socSR + "," + data.socPR + "," + data.socLB + "," + data.socSB + "," + data.socUB + "," + data.socAR + "," + data.socSD + "," + data.socAR + "\n" +
-            "Affiliates," + data.affSR + "," + data.affPR + "," + data.affLB + "," + data.affSB + "," + data.affUB + "," + data.affAR + "," + data.affSD + "," + data.affAR + "\n" +
-            "Partners," + data.parSR + "," + data.parPR + "," + data.parLB + "," + data.parSB + "," + data.parUB + "," + data.parAR + "," + data.parSD + "," + data.parAR + "\n" +
-            "Total Portfolio," + data.totSR + "," + data.totPR + "," + data.totLB + "," + data.totSB + "," + data.totUB + "," + data.totAR + "," + data.totSD + "," + Number(data.totAR - data.totPR) + "\n" +
-            "Portfolio ROI,,,,,,,,,,,\n" +
+            "SEM Total," + data.history.semSR + "," + data.semPR + ","  + data.output.semTSR + "," + data.semAR + "," + data.semTSD + "," + data.semAR + "\n" +
+            "SEM-Brand," + data.history.semBSR +      ",," +              data.output.semBSR +        ",,"+ ",\n" +
+            "SEM-Cards," + data.history.semCSR +      ",," +              data.output.semCSR +         ",,"+ ",\n" +
+            "SEM-Pbook," + data.history.semPSR +      ",," +              data.output.semPSR +         ",,"    + ",\n" +
+            "SEM-Others," +data.history.semOSR +     ",," +               data.output.semOSR +          ",,"+ ",\n" +
+            "Display," +   data.history.disSR + "," + data.disPR + "," +  data.output.disSR + "," + data.disAR + "," + data.disTSD + "," + data.disAR + "\n" +
+            "Social (FB),"+data.history.socSR + "," + data.socPR + "," +  data.output.socSR + "," + data.socAR + "," + data.socSD + "," + data.socAR + "\n" +
+            "Affiliates," +data.history.affSR + "," + data.affPR + "," +  data.output.affSR + "," + data.affAR + "," + data.affSD + "," + data.affAR + "\n" +
+            "Partners," +  data.history.parSR + "," + data.parPR + "," +  data.output.parSR + "," + data.parAR + "," + data.parSD + "," + data.parAR + "\n" +
+            "Total Portfolio," + data.history.totSR + "," + data.totPR + "," +  data.output.totSR + "," + data.totAR + "," + data.totSD + "," + Number(data.totAR - data.totPR) + "\n" +
+            "Portfolio ROI,,,,,,," + data.history.run1ProjROI + ",," + data.run2ProjROI +",,"+data.ROID +"%\n" +
+            "Change in Brand Total Revenue,,,,,,,,,,,"+$filter('number')(data.changeR,0)+"%\n"+
             "Note:," + info.note + ",,,,,,,,,,";
     }
 
@@ -497,6 +499,8 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
                             $scope.data.affRD = Number($scope.data.affAR) - Number($scope.data.affPR);
                             $scope.data.parRD = Number($scope.data.parAR) - Number($scope.data.parPR);
                             $scope.data.totRD = Number($scope.data.totAR) - Number($scope.data.totPR);
+                            $scope.data.ROID = Number($scope.data.run2ProjROI.substr(0, 3)) - Number($scope.data.run1ProjROI.substr(0, 3));
+                            $scope.data.changeR = $scope.data.ROID / Number($scope.data.run1ProjROI.substr(0, 3)) * 100;
                         };
                         modify();
                         $scope.output = convertPlan($scope.scenario, $scope.data);
@@ -561,7 +565,8 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
         } else {
             $location.path('myscenarios');
         }
-    } else {
+    }
+    else {
         $scope.compareObj = {};
         $scope.compareObj.difference = {};
         $scope.firstGot = false;
