@@ -109,7 +109,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.numPerPage = 6;
     $scope.maxSize = 5;
     $scope.itemsPerPage = 1;
-    $scope.searchText="";
+    $scope.searchText = "";
     //scope functions
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
@@ -129,20 +129,20 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         }
         console.log(actionObjInfo);
 
-$scope.listBtnTooltip = {
-    comparePlacement:"top",
-    retrievePlacement:"top",
-    editPlacement:"top",
-    deletePlacement :"top",
-    exportPlacement:"top",
-    sharePlacement:"top",
-    compareText:"'Compare' should be 2 items",
-    retrieveText:"'Retrieve' should be more than 1 items",
-    editText: "'Edit' should be 1 item",
-    deleteText : "'Delete' should be more than 1 items",
-    exportText:"'Export' should be 1 item",
-    shareText:"'Share' should be 1 item"
-};
+        $scope.listBtnTooltip = {
+            comparePlacement: "top",
+            retrievePlacement: "top",
+            editPlacement: "top",
+            deletePlacement: "top",
+            exportPlacement: "top",
+            sharePlacement: "top",
+            compareText: "'Compare' should be 2 items",
+            retrieveText: "'Retrieve' should be more than 1 items",
+            editText: "'Edit' should be 1 item",
+            deleteText: "'Delete' should be more than 1 items",
+            exportText: "'Export' should be 1 item",
+            shareText: "'Share' should be 1 item"
+        };
 
         switch (activeCount($scope.scenarios)) {
             case 0:
@@ -309,13 +309,6 @@ $scope.listBtnTooltip = {
                 //console.log(data);
                 $scope.scenarios = data;
                 $scope.pageChanged($scope.currentPage, $scope.numPerPage);
-                $scope.scenarios.forEach(function (scenario) {
-                    if (!scenario.exist) {
-                        tempIdArray.push(scenario._id);
-                    }else{
-                        scenario.runningTime="0";
-                    }
-                });
                 getStatus();
             });
         }
@@ -358,18 +351,42 @@ $scope.listBtnTooltip = {
     $scope.reverse = true;
 
     function getStatus() {
-        scenarios.checkScenariosStatus(tempIdArray, function (data) {
-            console.log(tempIdArray);
-            //$scope.tempIdArray = tempIdArray;
-            //console.log(data);
-            $scope.scenarios.forEach(function (singleScenario) {
-                data.forEach(function (singleData) {
-                    if (singleScenario._id === singleData.id) {
-                        singleScenario.runningTime = singleData.runningTime;
-                    }
+        console.log($scope.scenarios);
+        tempIdArray=[];
+        $scope.scenarios.forEach(function (scenario) {
+            if (!scenario.exist) {
+                tempIdArray.push(scenario._id);
+            } else {
+                scenario.runningTime = "0";
+            }
+        });
+        console.log("in doget");
+        console.log(tempIdArray);
+        if (tempIdArray.length) {
+            scenarios.checkScenariosStatus(tempIdArray, function (data) {
+                $scope.scenarios.forEach(function (singleScenario) {
+                    data.forEach(function (singleData) {
+                        if (singleScenario._id === singleData.id) {
+                            console.log(singleData.runningTime);
+                            switch (singleData.runningTime) {
+                                case "0":
+                                    singleScenario.runningTime = singleData.runningTime;
+                                    singleScenario.exist = true;
+                                    break;
+                                case "-1":
+                                    $scope.scenarios.splice($scope.scenarios.indexOf(singleScenario), 1);
+                                    break;
+                                default :
+                                    singleScenario.runningTime = singleData.runningTime;
+                                    break;
+                            }
+                        }
+                    });
                 });
             });
-        });
+        } else {
+            clearInterval(checkStatusLoop);
+        }
     }
 
     $scope.pageChanged = function (current, numPerPage) {
