@@ -613,6 +613,7 @@ table.roi-table tr > th {
     vertical-align: middle;
     text-align: center;
     text-overflow: ellipsis;
+
 }
 
 table.roi-table tr:first-child > th:first-child {

@@ -286,6 +286,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
             location.path('planforward/constrict');
         });
     };
+
     //functions
     function passInfoToData() {
         var length = $scope.dataInfo.endDate.getMonth() - $scope.dataInfo.beginDate.getMonth() + 1;
@@ -351,7 +352,9 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         output: {},
         history: {},
         ControlChannelsDM: [],
-        ControlChannels: []
+        ControlChannels: [],
+        ChontrolChannelsData:[],
+        ControlChannelsShow:"No"
     };
     $scope.getJson = false;
     $scope.channelShow=false;
@@ -469,6 +472,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     };
 
     $scope.nextPage = function () {
+        if($scope.planForward.ControlChannelsShow === "No"){
         spendValidate();
         if (!$scope.error) {
             passInfoToData();
@@ -478,6 +482,13 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                 //location.path('planforward/output');
                 location.path('myscenarios');
             });
+        }
+        }else{
+            passInfoToData();
+
+            $scope.channelShow=!$scope.channelShow;
+            $scope.planForward.ControlChannelsShow = "No";
+
         }
     };
 
@@ -549,6 +560,16 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                             $scope.planForward.ControlChannelsDM.push($scope.planForward.output[key]);
                         }
                     });
+                    //
+                    console.log($scope.planForward);
+                    $scope.planForward.ControlChannelsDM.forEach(function(key, index){
+                        $scope.planForward.ChontrolChannelsData[index] = {
+                            "month":$scope.planForward.ControlChannels[index],
+                            "spend":key
+                        }
+                    });
+
+
                 }
             });
         }
