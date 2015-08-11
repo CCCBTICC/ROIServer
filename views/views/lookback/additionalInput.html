@@ -17,7 +17,7 @@
             <label>Data through</label>: {{dataInfo.dataThrough | date:'MMM-yyyy'}}
         </div>
     </div>
-    <div class="row" id="spend" ng-show="getJson">
+    <div class="row" id="spend" ng-show="getJson && !channelShow">
         <br>
 
         <form class="form-horizontal">
@@ -36,7 +36,14 @@
             </div>
         </form>
     </div>
-    <div class="row" ng-show="getJson" id="select">
+    <div class="row controls" ng-show="getJson && !channelShow">
+        <div class="form-group">
+            <div class="col-sm-2 col-sm-offset-3">
+                <a type="button" class="btn btn-default" ng-click="channelShow=!channelShow">Portfolio Channels</a>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-show="getJson && channelShow" id="select">
         <div class="col-sm-11 col-sm-offset-1  col-md-8 col-md-offset-2 col-lg-7  col-lg-offset-2 container">
         <!--<div class="container-fluid">-->
             <div class="table-responsive" style="max-height: 350px">
@@ -160,10 +167,15 @@
                     </tbody>
                 </table>
             </div>
+            <div class="form-group">
+                <div class="col-sm-2 col-sm-offset-3">
+                    <button class="btn btn-default" ng-click="channelShow=!channelShow">Save</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="row controls" id="button" ng-show="getJson">
+    <div class="row controls" id="button" ng-show="getJson && !channelShow">
         <div class="form-group">
             <div class="col-sm-2 col-sm-offset-3">
                 <a type="button" class="btn btn-default" href="#/lookback/init">Prev</a>

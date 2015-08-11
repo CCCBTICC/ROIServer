@@ -157,12 +157,12 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 break;
             case 2:
                 Object.keys($scope.operations).forEach(function (key) {
-                    $scope.operations[key].disable = (key !== 'compare');
+                    $scope.operations[key].disable = (key !== 'compare'&& key!=='delete');
                 });
                 break;
             default:
                 Object.keys($scope.operations).forEach(function (key) {
-                    $scope.operations[key].disable = true;
+                    $scope.operations[key].disable = (key !=='delete');
                 });
                 break;
         }
@@ -187,18 +187,20 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             $location.path('lookback/output')
         }
     };
-    $scope.delete = function () {
-        var objectId = getSelectedId($scope.scenarios);
+    $scope.deleteList=function(){
+        actionObjInfo.forEach(function(scenarioId){
+            $scope.delete(scenarioId);
+        });
+    };
+    $scope.delete = function (id) {
         user.getUser(function (user) {
             $scope.user = user;
         });
-        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
-            //console.log('from delete in scenarios');
-            //console.log(data);
+        scenarios.deleteScenario(id, $scope.user.name, function (data) {
             if (data) {
                 var deleteIndex = -1;
                 $scope.scenarios.forEach(function (obj, index) {
-                    if (obj._id === objectId) {
+                    if (obj._id === id) {
                         deleteIndex = index;
                     }
                 });
@@ -212,65 +214,13 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 while (actionObjInfo.length) {
                     actionObjInfo.shift();
                 }
-                //console.log("delete it");
                 tempIdArray.forEach(function (singleTempIdArray, index) {
-                    if (singleTempIdArray === objectId) {
+                    if (singleTempIdArray === id) {
                         tempIdArray.splice(index, 1);
                     }
                 });
             } else {
                 alert("You are not the original owner, data can not be deleted!");
-            }
-        });
-    };
-    $scope.stop = function (obj) {
-        var objectId = obj._id;
-        console.log(objectId);
-        user.getUser(function (user) {
-            $scope.user = user;
-        });
-        scenarios.deleteScenario(objectId, $scope.user.name, function (data) {
-            if (data) {
-                var deleteIndex = -1;
-                $scope.filteredScenarioss.forEach(function (obj, index) {
-                    if (obj._id === objectId) {
-                        deleteIndex = index;
-                    }
-                });
-                if (deleteIndex !== -1) {
-                    console.log(deleteIndex);
-                    $scope.filteredScenarioss.splice(deleteIndex, 1);
-                    switch (activeCount($scope.filteredScenarioss)) {
-                        case 0:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = true;
-                            });
-                            break;
-                        case 1:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key === 'compare');
-                            });
-                            break;
-                        case 2:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key !== 'delete' && key !== 'compare');
-                            });
-                            break;
-                        default:
-                            Object.keys($scope.operations).forEach(function (key) {
-                                $scope.operations[key].disable = (key !== 'delete');
-                            });
-                            break;
-                    }
-
-                }
-                console.log("delete it");
-                tempIdArray.forEach(function (singleTempIdArray, index) {
-                    if (singleTempIdArray === objectId) {
-                        tempIdArray.splice(index, 1);
-                    }
-
-                });
             }
         });
     };
