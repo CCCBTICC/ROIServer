@@ -55,7 +55,7 @@
                 <table class="table table-striped table-bordered table-condensed roi-table">
                     <thead>
                     <tr>
-                        <th class="col-2" colspan="7">Control Channels - DM </th>
+                        <th class="col-1" colspan="7">Control Channels - DM </th>
                         <!--<th ng-repeat="month in planForward.ControlChannels" class="col-1">{{month | date:-->
                         <!--'MMM-dd-yyyy'}}-->
                         </th>
@@ -76,7 +76,7 @@
                 </table>
             </div>
         </div>
-        <div class=" col-sm-4" >
+        <div class=" col-sm-3" >
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-condensed roi-table">
                     <thead>
@@ -87,13 +87,13 @@
                     <tr>
                         <th class="col-0-1">Begin Date:</th>
                                 <th class="col-1">
-                                    {{lookBack.output.tvBeginDate | date:'MMM-dd-yyyy'}}
+                                    {{dataInfo.beginDate | date:'MMM-dd-yyyy'}}
                                 </th>
                     </tr>
                     <tr>
                         <th class="col-0-1">End Date:</th>
                         <th class="col-1">
-                            {{lookBack.output.tvEndDate | date:'MMM-dd-yyyy'}}
+                            {{dataInfo.beginDate | date:'MMM-dd-yyyy'}}
                         </th>
                     </tr>
                     <tr>

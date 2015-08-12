@@ -643,21 +643,23 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         location.path('myscenarios/share');
     };  // pause
     $scope.toggle = function () {
+
         if ($scope.showme == false) {
             $scope.lookbackContentSize = 'col-sm-5';
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
+            adjustScroll();
         }
         else {
-            $scope.lookbackContentSize = 'col-sm-10';
+            $scope.lookbackContentSize = 'col-sm-12';
             $scope.showme = false;
             $scope.showGraph = 'Show Graph';
+            adjustScroll();
         }
     };  // show&hide graph
 
     //functions
     var count;
-
     function calculateDifference() {
         $scope.lookBack.difference = {
             semSD: $scope.lookBack.output.semAS - $scope.lookBack.history.semSR,
@@ -813,3 +815,10 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     });//stop get request
 }])
 ;
+
+
+
+function adjustScroll (){
+
+        $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
+}
