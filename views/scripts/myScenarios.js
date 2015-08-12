@@ -858,7 +858,6 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
         $location.path('myscenarios');
     }
 });
-
 scenariosApp.factory('actionObjInfo', function () {
     var actionObjInfo = [];
     return actionObjInfo;
