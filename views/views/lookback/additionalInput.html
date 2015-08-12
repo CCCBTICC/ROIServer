@@ -65,14 +65,14 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="(month,spend) in lookBack.history.DMS">
-                        <th class="col-1">{{month+"-01" | date:
+                        <td class="col-1">{{month+"-01" | date:
                             'MMM-yyyy'}}
-                        </th>
-                        <th class="col-1">{{spend | formatCurrency}}
-                        </th>
+                        </td>
+                        <td class="col-1">{{spend | formatCurrency}}
+                        </td>
                     </tr>
                     <tr ng-repeat="x in size track by $index">
-                        <th>-</th> <th>-</th>
+                        <td class="disabled">-</td> <td class="disabled">-</td>
                     </tr>
                     </tbody>
                 </table>
@@ -88,27 +88,27 @@
                     </thead>
                     <tr>
                         <th class="col-0-1">Begin Date:</th>
-                                <th class="col-1">
+                                <td class="col-1">
                                     {{dataInfo.beginDate | date:'MMM-dd-yyyy'}}
-                                </th>
+                                </td>
                     </tr>
                     <tr>
                         <th class="col-0-1">End Date:</th>
-                        <th class="col-1">
+                        <td class="col-1">
                             {{dataInfo.beginDate | date:'MMM-dd-yyyy'}}
-                        </th>
+                        </td>
                     </tr>
                     <tr>
                         <th class="col-0-1">Spend ($):</th>
-                        <th class="col-1">
+                        <td class="col-1">
                             {{lookBack.history.TV | formatCurrency}}
-                        </th>
+                        </td>
                     </tr>
                     <tr>
                         <th class="col-0-1">Impressions:</th>
-                        <th class="col-1">
+                        <td class="col-1">
                             {{lookBack.history.TVImpression}}
-                        </th>
+                        </td>
                     </tr>
                 </table>
             </div>
