@@ -353,12 +353,14 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         history: {},
         ControlChannelsDM: [],
         ControlChannels: [],
-        ChontrolChannelsData:[],
-        ControlChannelsShow:"No"
+        ChontrolChannelsData: [],
+        ControlChannelsShow: "No"
     };
     $scope.getJson = false;
-    $scope.channelShow=false;
+    $scope.channelShow = false;
     $scope.error = false;
+    $scope.errormin = false;
+    $scope.errormax = false;
     $scope.selectPlan = {
         disable: {
             semTotal: false,
@@ -412,7 +414,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                     }
                 });
             }
-            console.log($scope.selectPlan.disable.semTotal);
+            fix();
         },
         totCheck: function () {
             if (!$scope.selectPlan.semTotalCheckBox) {
@@ -472,23 +474,77 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     };
     //scope functions
     $scope.nextPage = function () {
-        if($scope.planForward.ControlChannelsShow === "No"){
-        spendValidate();
+        //console.log('in nextPage');
+        $scope.spendValidate();
         if (!$scope.error) {
-            passInfoToData();
-            //post data to R
-            analysis.postData($scope.planForward.output, $scope.dataInfo, function (res) {
-                console.log(res);
-                //location.path('planforward/output');
-                location.path('myscenarios');
-            });
+            //console.log('no error');
+            if ($scope.planForward.ControlChannelsShow === "No") {
+                //console.log('show=No');
+                passInfoToData();
+                //post data to R
+                analysis.postData($scope.planForward.output, $scope.dataInfo, function (res) {
+                    console.log(res);
+                    //location.path('planforward/output');
+                    location.path('myscenarios');
+                });
+            } else {
+                $scope.channelShow = !$scope.channelShow;
+                $scope.planForward.ControlChannelsShow = "No";
+
+            }
         }
-        }else{
-            passInfoToData();
+    };
+    $scope.reset = function () {
+        $scope.selectPlan.checkBox = {
+            semBrand: true,
+            semCard: false,
+            semPhotobook: false,
+            semOthers: false,
+            display: false,
+            social: false,
+            affiliates: false,
+            partners: true
+        };
+        $scope.selectPlan.semTotalCheckBox = false,
+            fix();
+        $scope.errormin = false;
+        $scope.errormax = false;
+        $scope.error=false;
+    };
+    $scope.spendValidate = function () {
+        $scope.error=false;
+        $scope.errormin = false;
+        $scope.errormax = false;
+        $scope.planForward.output.semMin =
+            Number($scope.planForward.output.semBMin) +
+            Number($scope.planForward.output.semCMin) +
+            Number($scope.planForward.output.semPMin) +
+            Number($scope.planForward.output.semOMin);
+        $scope.min =
+            Number($scope.planForward.output.semMin) +
+            Number($scope.planForward.output.disMin) +
+            Number($scope.planForward.output.socMin) +
+            Number($scope.planForward.output.affMin) +
+            Number($scope.planForward.output.parMin);
 
-            $scope.channelShow=!$scope.channelShow;
-            $scope.planForward.ControlChannelsShow = "No";
-
+        $scope.planForward.output.semMax =
+            Number($scope.planForward.output.semBMax) +
+            Number($scope.planForward.output.semCMax) +
+            Number($scope.planForward.output.semPMax) +
+            Number($scope.planForward.output.semOMax);
+        $scope.max =
+            Number($scope.planForward.output.semMax) +
+            Number($scope.planForward.output.disMax) +
+            Number($scope.planForward.output.socMax) +
+            Number($scope.planForward.output.affMax) +
+            Number($scope.planForward.output.parMax);
+        if (Number($scope.dataInfo.spend) < $scope.min) {
+            $scope.error=true;
+            $scope.errormin = true;
+        }
+        if (Number($scope.dataInfo.spend) > $scope.max) {
+            $scope.error=true;
+            $scope.errormax = true;
         }
     };
 
@@ -559,12 +615,10 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                             $scope.planForward.ControlChannelsDM.push($scope.planForward.output[key]);
                         }
                     });
-                    //
-                    console.log($scope.planForward);
-                    $scope.planForward.ControlChannelsDM.forEach(function(key, index){
+                    $scope.planForward.ControlChannelsDM.forEach(function (key, index) {
                         $scope.planForward.ChontrolChannelsData[index] = {
-                            "month":$scope.planForward.ControlChannels[index],
-                            "spend":key
+                            "month": $scope.planForward.ControlChannels[index],
+                            "spend": key
                         }
                     });
 
@@ -629,41 +683,9 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         if ($scope.selectPlan.checkBox.partners) {
             $scope.planForward.output.parMin = $scope.planForward.output.parMax = $scope.planForward.history.parSR;
         }
-        spendValidate();
+        $scope.spendValidate();
     }
 
-    function spendValidate() {
-        console.log($scope.error);
-        $scope.planForward.output.semMin =
-            Number($scope.planForward.output.semBMin) +
-            Number($scope.planForward.output.semCMin) +
-            Number($scope.planForward.output.semPMin) +
-            Number($scope.planForward.output.semOMin);
-        $scope.min =
-            Number($scope.planForward.output.semMin) +
-            Number($scope.planForward.output.disMin) +
-            Number($scope.planForward.output.socMin) +
-            Number($scope.planForward.output.affMin) +
-            Number($scope.planForward.output.parMin);
-
-        $scope.planForward.output.semMax =
-            Number($scope.planForward.output.semBMax) +
-            Number($scope.planForward.output.semCMax) +
-            Number($scope.planForward.output.semPMax) +
-            Number($scope.planForward.output.semOMax);
-        $scope.max =
-            Number($scope.planForward.output.semMax) +
-            Number($scope.planForward.output.disMax) +
-            Number($scope.planForward.output.socMax) +
-            Number($scope.planForward.output.affMax) +
-            Number($scope.planForward.output.parMax);
-
-        if (Number($scope.dataInfo.spend) < $scope.min || Number($scope.dataInfo.spend) > $scope.max) {
-            console.log((Number($scope.dataInfo.spend) < $scope.min || Number($scope.dataInfo.spend) > $scope.max));
-            $scope.error = true;
-        }
-        console.log($scope.error);
-    }
 
     //main
     //check objId
