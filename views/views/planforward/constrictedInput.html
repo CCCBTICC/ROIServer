@@ -24,6 +24,7 @@
             <label>Begin Period</label>: {{dataInfo.beginDate | date: 'MMM-yyyy'}}
             <label>End Period</label>: {{dataInfo.endDate | date: 'MMM-dd-yyyy'}}
             <label>Data through</label>: {{dataInfo.dataThrough | date: 'MMM-dd-yyyy'}}
+            <span ng-show="getJson && channelShow"><label>Portfolio Spend</label>: {{dataInfo.spend | formatCurrency}}</span>
         </div>
     </div>
     <div class="row" id="spend" ng-show="getJson&& !channelShow">
@@ -32,27 +33,28 @@
         <form class="form-horizontal">
             <div class="form-group">
                 <div class="row">
-                <label for="lookBackSpend" class="col-sm-offset-1 col-sm-2 control-label" style="text-align: left">Portfolio Spend :</label>
+                <label for="lookBackSpend" class="col-sm-offset-3 col-sm-2 control-label" style="text-align: left; padding-left:0">Portfolio Spend :</label>
 
-                <div class="col-sm-2">
+                <div class="col-sm-3">
                     <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend"
                            ng-change="error=false" format-input>
                 </div>
-                <div class="col-sm-4 help-info">
+                <div class="col-sm-4 help-info" style="padding-left: 0">
                     <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
                     <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
                 </div>
                 </div>
-                <div class=" col-sm-offset-1 col-sm-4">
-                    <br/>
-                    <label> Adjust Spend Constraints?</label>&nbsp;&nbsp;
+                <div class="row">
+                    <span class="radio-inline col-sm-offset-3    col-sm-2 " style="font-weight: bolder; padding:7px 0;cursor:default;">Adjust Spend Constraints?</span>
                     <!--<a type="button" class="btn btn-default" ng-click="channelShow=!channelShow">Portfolio Channels</a></a>-->
-                    <label class="radio-inline">
+                    <span class="col-sm-4">
+                    <label class="radio-inline ">
                         <input type="radio" ng-model="planForward.ControlChannelsShow" value="Yes"> Yes
                     </label>
-                    <label class="radio-inline">
+                    <label class="radio-inline ">
                         <input type="radio" ng-model="planForward.ControlChannelsShow" value="No"> No
                     </label>
+                    </span>
                 </div>
             </div>
         </form>
@@ -369,29 +371,56 @@
                 </table>
             </div>
         </div>
-        <div class="form-group">
+        <div class="row form-group">
             <br/><br/>
             <div class="col-sm-2 col-sm-offset-3">
-                <a class="btn btn-default" ng-click="channelShow=!channelShow">Prev</a>
+                <a class="btn btn-default" ng-click="channelShow=!channelShow" style="margin-top: 20px">Prev</a>
             </div>
             <div class="col-sm-2">
                 <button class="btn btn-default" ng-class="{disabled:slideError}"
-                        ng-click="nextPage()">Next
+                        ng-click="nextPage()" style="margin-top: 20px">Next
                 </button>
             </div>
         </div>
     </div>
     <div class="row" ng-show="getJson&& !channelShow" >
-        <div class="col-sm-offset-1 col-sm-4" >
+        <div class="col-sm-offset-2 col-sm-3">
             <div class="table-responsive">
                 <table class="table table-striped table-bordered table-condensed roi-table">
                     <thead>
                     <tr>
-                        <th colspan="3">Control Channels - TV </th>
+                        <th class="col-2" colspan="7">Control Channels - DM </th>
+                        <!--<th ng-repeat="month in planForward.ControlChannels" class="col-1">{{month | date:-->
+                        <!--'MMM-dd-yyyy'}}-->
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="data in planForward.ChontrolChannelsData">
+                        <td class="col-1">{{data.month | date:
+                            'MMM-yyyy'}}
+                        </td>
+                        <td class="check">
+                            <input type="text" ng-model="data.spend" class="form-control" format-input/>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="x in size track by $index">
+                        <td>-</td> <td>-</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class=" col-sm-4" >
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed roi-table">
+                    <thead>
+                    <tr>
+                        <th colspan="2">Control Channels - TV </th>
                     </tr>
                     </thead>
                     <tr>
-                        <th class="col-0">Begin Date</th>
+                        <th class="col-0-1">Begin Date:</th>
                         <td  class="col-0 range-input" style="overflow: visible">
                             <div class="input-group">
 
@@ -416,7 +445,7 @@
                         <!--<td colspan="2" class="col-0"><input type="text" ng-model="planForward.output.tvBeginDate"/></td>-->
 
                         <!--<td colspan="2" class="col-0"><input type="text" ng-model="planForward.output.tvEndDate"/></td>-->
-                        <th class="col-0">End Date</th>
+                        <th class="col-0-1">End Date:</th>
                         <td class="col-0 range-input" style="overflow: visible">
                             <div class="input-group">
 
@@ -440,52 +469,27 @@
 
                     </tr>
                     <tr>
-                        <th class="col-0">Spend ($)</th>
+                        <th class="col-0-1">Spend ($):</th>
                         <td class="col-0 range-input">
                             <div>
                                 <input type="text" class="form-control" ng-model="planForward.output.tvSpend"
-                                       format-input>
+                                       format-input/>
                             </div>
                         </td>
                     </tr>
                     <tr>
-                        <th class="col-0">Impressions</th>
+                        <th class="col-0-1">Impressions:</th>
                         <td class="col-0 range-input">
                             <div>
                                 <input type="text" class="form-control" ng-model="planForward.output.tvImpressions"
-                                       format-input2/></div>
+                                       format-input2/>
+                            </div>
                         </td>
                     </tr>
                 </table>
             </div>
         </div>
-        <div class="col-sm-5">
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered table-condensed roi-table">
-                    <thead>
-                    <tr>
-                        <th class="col-1" colspan="7">Control Channels - DM </th>
-                        <!--<th ng-repeat="month in planForward.ControlChannels" class="col-1">{{month | date:-->
-                        <!--'MMM-dd-yyyy'}}-->
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="data in planForward.ChontrolChannelsData">
-                        <td class="col-1">{{data.month | date:
-                            'MMM-yyyy'}}
-                        </td>
-                        <td class="check">
-                            <input type="text" ng-model="data.spend" class="form-control" format-input/>
-                        </td>
-                        </tr>
-                        <tr ng-repeat="x in size track by $index">
-                            <td>-</td> <td>-</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+
 
 
 </div>

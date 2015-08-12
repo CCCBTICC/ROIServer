@@ -621,6 +621,10 @@ table.roi-table tr:first-child > th:first-child {
     text-align: center;
 }
 
+table.roi-table tr > .col-0-1 {
+    width:80px;
+    overflow: hidden;
+}
 table.roi-table tr > .col-0 {
     min-width: 40px;
     max-width: 60px;
