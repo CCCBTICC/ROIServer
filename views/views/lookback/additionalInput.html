@@ -15,6 +15,8 @@
             <label>Begin Period</label>: {{dataInfo.beginDate | date: 'MMM-dd-yyyy'}}
             <label>End Period</label>: {{dataInfo.endDate | date: 'MMM-dd-yyyy'}}
             <label>Data through</label>: {{dataInfo.dataThrough | date:'MMM-yyyy'}}
+            <span ng-show="getJson && channelShow"><label>Portfolio
+                Spend</label>: {{dataInfo.spend | formatCurrency}}</span>
         </div>
     </div>
     <div class="row" id="spend" ng-show="getJson&& !channelShow">

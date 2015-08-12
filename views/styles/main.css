@@ -578,7 +578,7 @@ form .tooltip-inner {
     top:-2px;
 }
 /*.scenario-list-table{*/
-    /*min-height: 400px;*/
+    /*height: 420px;*/
 /*}*/
 
 table.roi-table {
@@ -604,10 +604,10 @@ table.thead-fixed-top > tbody {
     overflow-x: hidden;
     display: block;
 }
-table.roi-table tr, table.roi-table th, table.roi-table td {
-    min-height: 20px;
+/*table.roi-table tr, table.roi-table th, table.roi-table td {*/
+    /*min-height: 15px;*/
 
-}
+/*}*/
 
 table.roi-table tr > th {
     vertical-align: middle;

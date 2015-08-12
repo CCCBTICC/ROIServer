@@ -648,13 +648,13 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             $scope.lookbackContentSize = 'col-sm-5';
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
-            adjustScroll();
+            //adjustScroll();
         }
         else {
             $scope.lookbackContentSize = 'col-sm-12';
             $scope.showme = false;
             $scope.showGraph = 'Show Graph';
-            adjustScroll();
+            //adjustScroll();
         }
     };  // show&hide graph
 
