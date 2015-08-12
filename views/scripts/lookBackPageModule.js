@@ -576,24 +576,24 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
 
     function calculateDifference() {
         $scope.lookBack.difference = {
-            semSD: $scope.lookBack.output.semSR - $scope.lookBack.history.semSR,
-            semBSD: $scope.lookBack.output.semBSR - $scope.lookBack.history.semBSR,
-            semCSD: $scope.lookBack.output.semCSR - $scope.lookBack.history.semCSR,
-            semOSD: $scope.lookBack.output.semOSR - $scope.lookBack.history.semOSR,
-            semPSD: $scope.lookBack.output.semPSR - $scope.lookBack.history.semPSR,
-            disSD: $scope.lookBack.output.disSR - $scope.lookBack.history.disSR,
-            affSD: $scope.lookBack.output.affSR - $scope.lookBack.history.affSR,
-            socSD: $scope.lookBack.output.socSR - $scope.lookBack.history.socSR,
-            parSD: $scope.lookBack.output.parSR - $scope.lookBack.history.parSR,
-            totSD: $scope.lookBack.output.totSR - $scope.lookBack.history.totSR,
-            semRD: $scope.lookBack.output.semPR - $scope.lookBack.history.semPR,
-            disRD: $scope.lookBack.output.disPR - $scope.lookBack.history.disPR,
-            affRD: $scope.lookBack.output.affPR - $scope.lookBack.history.affPR,
-            socRD: $scope.lookBack.output.socPR - $scope.lookBack.history.socPR,
-            parRD: $scope.lookBack.output.parPR - $scope.lookBack.history.parPR,
-            totRD: $scope.lookBack.output.totPR - $scope.lookBack.history.totPR,
-            ROID: $scope.lookBack.output.run1ProjROI.slice(0, -1) - $scope.lookBack.history.ROI,
-            changeR: ( $scope.lookBack.output.run1ProjROI.slice(0, -1) / $scope.lookBack.history.ROI - 1) * 100
+            semSD: $scope.lookBack.output.semAS - $scope.lookBack.history.semSR,
+            semBSD: $scope.lookBack.output.semBAS - $scope.lookBack.history.semBSR,
+            semCSD: $scope.lookBack.output.semCAS - $scope.lookBack.history.semCSR,
+            semOSD: $scope.lookBack.output.semOAS - $scope.lookBack.history.semOSR,
+            semPSD: $scope.lookBack.output.semPAS - $scope.lookBack.history.semPSR,
+            disSD: $scope.lookBack.output.disAS - $scope.lookBack.history.disSR,
+            affSD: $scope.lookBack.output.affAS - $scope.lookBack.history.affSR,
+            socSD: $scope.lookBack.output.socAS - $scope.lookBack.history.socSR,
+            parSD: $scope.lookBack.output.parAS - $scope.lookBack.history.parSR,
+            totSD: $scope.lookBack.output.totAS - $scope.lookBack.history.totSR,
+            semRD: $scope.lookBack.output.semAR - $scope.lookBack.history.semPR,
+            disRD: $scope.lookBack.output.disAR - $scope.lookBack.history.disPR,
+            affRD: $scope.lookBack.output.affAR - $scope.lookBack.history.affPR,
+            socRD: $scope.lookBack.output.socAR - $scope.lookBack.history.socPR,
+            parRD: $scope.lookBack.output.parAR - $scope.lookBack.history.parPR,
+            totRD: $scope.lookBack.output.totAR - $scope.lookBack.history.totPR,
+            ROID: $scope.lookBack.output.run2ProjROI.slice(0, -1) - $scope.lookBack.history.ROI,
+            changeR: ( $scope.lookBack.output.run2ProjROI.slice(0, -1) / $scope.lookBack.history.ROI - 1) * 100
         };
         $scope.compareChart.data = [
             {

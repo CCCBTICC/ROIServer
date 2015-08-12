@@ -368,7 +368,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         clearInterval(checkStatusLoop);
     });
 });
-scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scenarios, $location, actionObjInfo, history,$filter) {
+scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scenarios, $location, actionObjInfo, history, $filter) {
     //vars
     var format = {
         Excel: 'csv'
@@ -381,9 +381,9 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
             "Create Date," + info.createDate + ",,,,,,,,,,\n" +
             "Brand," + info.brand + ",,,,,,,,,,\n" +
             "Planned Spend," + info.spend + ",,,,,,,,,,,\n" +
-            "Begin Period," + $filter('date')(info.beginDate,"MMM-yyyy") + ",,,,,,,,,,\n" +
-            "End Period," + $filter('date')(info.endDate,"MMM-yyyy") + ",,,,,,,,,,\n" +
-            "Data Through Month," + $filter('date')(info.dataThrough,"MMM-yyyy") + ",,,,,,,,,,\n" +
+            "Begin Period," + $filter('date')(info.beginDate, "MMM-yyyy") + ",,,,,,,,,,\n" +
+            "End Period," + $filter('date')(info.endDate, "MMM-yyyy") + ",,,,,,,,,,\n" +
+            "Data Through Month," + $filter('date')(info.dataThrough, "MMM-yyyy") + ",,,,,,,,,,\n" +
             "History Included?," + info.included + ",,,,,,,,,,\n" +
             ",,,,,,,,,,,\n" +
             "Channels in Portfolio,input,,,,,Optimized,,What-if,,Difference,\n" +
@@ -398,8 +398,8 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
             "Affiliates," + data.affLB + "," + data.affMin + "," + data.affMax + "," + data.affUB + "," + data.affSF + "," + data.affSR + "," + data.affPR + "," + data.affAS + "," + data.affAR + "," + data.affSD + "," + data.affRD + "\n" +
             "Partners," + data.parLB + "," + data.parMin + "," + data.parMax + "," + data.parUB + "," + data.parSF + "," + data.parSR + "," + data.parPR + "," + data.parAS + "," + data.parAR + "," + data.parSD + "," + data.parRD + "\n" +
             "Portfolio Total," + data.totLB + "," + data.totMin + "," + data.totMax + "," + data.totUB + "," + "" + "," + data.totSR + "," + data.totPR + "," + data.totAS + "," + data.totAR + "," + data.totSD + "," + data.totRD + "\n" +
-            "Portfolio ROI,,,,,,," + data.run1ProjROI + ",," + data.run2ProjROI +",,"+data.ROID +"%\n" +
-            "Change in Brand Total Revenue,,,,,,,,,,,"+$filter('number')(data.changeR,0)+"%\n"+
+            "Portfolio ROI,,,,,,," + data.run1ProjROI + ",," + data.run2ProjROI + ",," + data.ROID + "%\n" +
+            "Change in Brand Total Revenue,,,,,,,,,,," + data.changeR + "%\n" +
             "Note:," + info.note + ",,,,,,,,,,\n";
 
     }
@@ -410,25 +410,25 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
             "Create Date," + info.createDate + ",,,,,,,,,,\n" +
             "Brand," + info.brand + ",,,,,,,,,,\n" +
             "Planned Spend," + info.spend + ",,,,,,,,,,,\n" +
-            "Begin Period," + info.begin + ",,,,,,,,,,\n" +
-            "End Period," + info.end + ",,,,,,,,,,\n" +
-            "Data Through Month," + info.dataThrough + ",,,,,,,,,,\n" +
+            "Begin Period," + $filter('date')(info.beginDate,'MMM-yyyy') + ",,,,,,,,,,\n" +
+            "End Period," + $filter('date')(info.endDate,'MMM-yyyy') + ",,,,,,,,,,\n" +
+            "Data Through Month," + $filter('date')(info.dataThrough,'MMM-yyyy') + ",,,,,,,,,,\n" +
             "History Included?," + info.included + ",,,,,,,,,,\n" +
             ",,,,,,,,,,,\n" +
-            "Portfolio Channels,Actuals,,Optimized,,,,Difference,\n" +
-            ",Spend,Revenue,Lower,Spend,Upper,Revenue,Spend,Revenue\n" +
-            "SEM Total," + data.history.semSR + "," + data.semPR + ","  + data.output.semTSR + "," + data.semAR + "," + data.semTSD + "," + data.semAR + "\n" +
-            "SEM-Brand," + data.history.semBSR +      ",," +              data.output.semBSR +        ",,"+ ",\n" +
-            "SEM-Cards," + data.history.semCSR +      ",," +              data.output.semCSR +         ",,"+ ",\n" +
-            "SEM-Pbook," + data.history.semPSR +      ",," +              data.output.semPSR +         ",,"    + ",\n" +
-            "SEM-Others," +data.history.semOSR +     ",," +               data.output.semOSR +          ",,"+ ",\n" +
-            "Display," +   data.history.disSR + "," + data.disPR + "," +  data.output.disSR + "," + data.disAR + "," + data.disTSD + "," + data.disAR + "\n" +
-            "Social (FB),"+data.history.socSR + "," + data.socPR + "," +  data.output.socSR + "," + data.socAR + "," + data.socSD + "," + data.socAR + "\n" +
-            "Affiliates," +data.history.affSR + "," + data.affPR + "," +  data.output.affSR + "," + data.affAR + "," + data.affSD + "," + data.affAR + "\n" +
-            "Partners," +  data.history.parSR + "," + data.parPR + "," +  data.output.parSR + "," + data.parAR + "," + data.parSD + "," + data.parAR + "\n" +
-            "Total Portfolio," + data.history.totSR + "," + data.totPR + "," +  data.output.totSR + "," + data.totAR + "," + data.totSD + "," + Number(data.totAR - data.totPR) + "\n" +
-            "Portfolio ROI,,,,,,," + data.history.run1ProjROI + ",," + data.run2ProjROI +",,"+data.ROID +"%\n" +
-            "Change in Brand Total Revenue,,,,,,,,,,,"+$filter('number')(data.changeR,0)+"%\n"+
+            "Portfolio Channels,Actuals,,Optimized,,Difference,\n" +
+            ",Spend,Revenue,Spend,Revenue,Spend,Revenue\n" +
+            "SEM Total," + data.history.semSR + ",," + data.history.semPR + "," + data.output.semAS + "," + data.output.semAR + "," + data.output.semSD + "," + data.output.semRD + "\n" +
+            "SEM-Brand," + data.history.semBSR + ",," + data.output.semBAS + ",," + data.output.semBSD + ",\n" +
+            "SEM-Cards," + data.history.semCSR + ",," + data.output.semCAS + ",," + data.output.semCSD + ",\n" +
+            "SEM-Pbook," + data.history.semPSR + ",," + data.output.semPAS + ",," + data.output.semPSD + ",\n" +
+            "SEM-Others," + data.history.semOSR + ",," + data.output.semOAS + ",," + data.output.semOSD + ",\n" +
+            "Display," + data.history.disSR + "," + data.history.disPR + "," + data.output.disAS + "," + data.output.disAR + "," + data.output.disSD + "," + data.output.disRD + "\n" +
+            "Social (FB)," + data.history.socSR + "," + data.history.socPR + "," + data.output.socAS + "," + data.output.socAR + "," + data.output.socSD + "," + data.output.socRD + "\n" +
+            "Affiliates," + data.history.affSR + "," + data.history.affPR + "," + data.output.affAS + "," + data.output.affAR + "," + data.output.affSD + "," + data.output.affRD + "\n" +
+            "Partners," + data.history.parSR + "," + data.history.parPR + "," + data.output.parAS + "," + data.output.parAR + "," + data.output.parSD + "," + data.output.parRD + "\n" +
+            "Total Portfolio," + data.history.totSR + "," + data.history.totPR + "," + data.output.totAS + "," + data.output.totAR + "," + data.output.totSD + "," + data.output.totRD + "\n" +
+            "Portfolio ROI,," + data.history.ROI + "%,," + data.output.run2ProjROI + ",," + data.output.ROID + "%\n" +
+            "Change in Brand Total Revenue,,,,,," + data.output.changeR + "%\n" +
             "Note:," + info.note + ",,,,,,,,,,";
     }
 
@@ -500,7 +500,7 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
                             $scope.data.parRD = Number($scope.data.parAR) - Number($scope.data.parPR);
                             $scope.data.totRD = Number($scope.data.totAR) - Number($scope.data.totPR);
                             $scope.data.ROID = Number($scope.data.run2ProjROI.substr(0, 3)) - Number($scope.data.run1ProjROI.substr(0, 3));
-                            $scope.data.changeR = $scope.data.ROID / Number($scope.data.run1ProjROI.substr(0, 3)) * 100;
+                            $scope.data.changeR = Math.round($scope.data.ROID / Number($scope.data.run1ProjROI.substr(0, 3)) * 100);
                         };
                         modify();
                         $scope.output = convertPlan($scope.scenario, $scope.data);
@@ -511,55 +511,57 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
                     var back = {history: {}};
                     analysis.getData(function (data) {
                         back.output = data;
+                        console.log(back.output);
                         history.getHistoryData(back.output.StartingTime, back.output.EndingTime, function (history) {
-                            back.history.semSR = history.SEM;
-                            back.history.semBSR = history.SEMBrand;
-                            back.history.semCSR = history.SEMCard;
-                            back.history.semOSR = history.SEMOther;
-                            back.history.semPSR = history.SEMPBook;
-                            back.history.disSR = history.Display;
-                            back.history.affSR = history.Affiliate;
-                            back.history.socSR = history.FB;
-                            back.history.parSR = history.Partners;
-                            back.history.totSR = history.Partners + history.FB + history.Affiliate + history.Display + history.SEM;
-                            back.history.totPR = history.Revenue;
-                            back.history.ROI = (back.history.totPR / back.history.totSR - 1) * 100;
+                            back.history.semSR = Math.round(history.SEM);
+                            back.history.semBSR = Math.round(history.SEMBrand);
+                            back.history.semCSR = Math.round(history.SEMCard);
+                            back.history.semOSR = Math.round(history.SEMOther);
+                            back.history.semPSR = Math.round(history.SEMPBook);
+                            back.history.disSR = Math.round(history.Display);
+                            back.history.affSR = Math.round(history.Affiliate);
+                            back.history.socSR = Math.round(history.FB);
+                            back.history.parSR = Math.round(history.Partners);
+                            back.history.totSR = back.history.semSR + back.history.disSR +back.history.affSR + back.history.socSR + back.history.parSR;
                             if (back.output.lmTouch === "Multi-Touch") {
-                                back.history.semPR = history.SEM_MTA;
-                                back.history.disPR = history.Display_MTA;
-                                back.history.affPR = history.Affiliates_MTA;
-                                back.history.socPR = history.FB_MTA;
-                                back.history.parPR = history.Partners_MTA;
+                                back.history.semPR = Math.round(history.SEM_MTA);
+                                back.history.disPR = Math.round(history.Display_MTA);
+                                back.history.affPR = Math.round(history.Affiliates_MTA);
+                                back.history.socPR = Math.round(history.FB_MTA);
+                                back.history.parPR = Math.round(history.Partners_MTA);
+                                back.history.totPR = back.history.semPR + back.history.disPR +back.history.affPR + back.history.socPR + back.history.parPR;
                             } else {
-                                back.history.semPR = history.SEM_LTA;
-                                back.history.disPR = history.Display_LTA;
-                                back.history.affPR = history.Affiliates_LTA;
-                                back.history.socPR = history.FB_LTA;
-                                back.history.parPR = history.Partners_LTA;
+                                back.history.semPR = Math.round(history.SEM_LTA);
+                                back.history.disPR = Math.round(history.Display_LTA);
+                                back.history.affPR = Math.round(history.Affiliates_LTA);
+                                back.history.socPR = Math.round(history.FB_LTA);
+                                back.history.parPR = Math.round(history.Partners_LTA);
+                                back.history.totPR =  back.history.semPR + back.history.disPR +back.history.affPR + back.history.socPR + back.history.parPR;
                             }
-                            back.output.semSD = back.output.semSR - back.history.semSR;
-                            back.output.semBSD = back.output.semBSR - back.history.semBSR;
-                            back.output.semCSD = back.output.semCSR - back.history.semCSR;
-                            back.output.semOSD = back.output.semOSR - back.history.semOSR;
-                            back.output.semPSD = back.output.semPSR - back.history.semPSR;
-                            back.output.disSD = back.output.disSR - back.history.disSR;
-                            back.output.affSD = back.output.affSR - back.history.affSR;
-                            back.output.socSD = back.output.socSR - back.history.socSR;
-                            back.output.parSD = back.output.parSR - back.history.parSR;
-                            back.output.totSD = back.output.totSR - back.history.totSR;
-                            back.output.semRD = back.output.semPR - back.history.semPR;
-                            back.output.disRD = back.output.disPR - back.history.disPR;
-                            back.output.affRD = back.output.affPR - back.history.affPR;
-                            back.output.socRD = back.output.socPR - back.history.socPR;
-                            back.output.parRD = back.output.parPR - back.history.parPR;
-                            back.output.totRD = back.output.totPR - back.history.totPR;
-                            back.output.ROID = back.output.run1ProjROI.slice(0, -1) - back.history.ROI;
-                            back.output.changeR = back.output.ROID / back.history.ROI * 100;
-                        });
+                            back.history.ROI = Math.round((back.history.totPR / back.history.totSR - 1) * 100);
 
+                            back.output.semSD = back.output.semAS - back.history.semSR;
+                            back.output.semBSD = back.output.semBAS - back.history.semBSR;
+                            back.output.semCSD = back.output.semCAS - back.history.semCSR;
+                            back.output.semOSD = back.output.semOAS - back.history.semOSR;
+                            back.output.semPSD = back.output.semPAS - back.history.semPSR;
+                            back.output.disSD = back.output.disAS - back.history.disSR;
+                            back.output.affSD = back.output.affAS - back.history.affSR;
+                            back.output.socSD = back.output.socAS - back.history.socSR;
+                            back.output.parSD = back.output.parAS - back.history.parSR;
+                            back.output.totSD = back.output.totAS - back.history.totSR;
+                            back.output.semRD = back.output.semAR - back.history.semPR;
+                            back.output.disRD = back.output.disAR - back.history.disPR;
+                            back.output.affRD = back.output.affAR - back.history.affPR;
+                            back.output.socRD = back.output.socAR - back.history.socPR;
+                            back.output.parRD = back.output.parAR - back.history.parPR;
+                            back.output.totRD = back.output.totAR - back.history.totPR;
+                            back.output.ROID = back.output.run2ProjROI.slice(0, -1) - back.history.ROI;
+                            back.output.changeR = Math.round(back.output.ROID / back.history.ROI * 100);
+                            $scope.output = convertLook($scope.scenario, back);
+                            $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
+                        });
                     });
-                    $scope.output = convertLook($scope.scenario, back);
-                    $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
                 }
             })
         } else {
@@ -732,7 +734,7 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
                     $scope.compareObj.difference[key] = $scope.compareObj.second[key] - $scope.compareObj.first[key];
                 });
                 $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.second.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
-                $scope.compareObj.difference.changeR=$scope.compareObj.difference.run2ProjROI/ Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
+                $scope.compareObj.difference.changeR = $scope.compareObj.difference.run2ProjROI / Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
                 $scope.compareChart.data = [
                     {
                         title: "SEM",
@@ -797,7 +799,7 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
                     $scope.compareObj.difference[key] = $scope.compareObj.second[key] - $scope.compareObj.first[key];
                 });
                 $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
-                $scope.compareObj.difference.changeR=$scope.compareObj.difference.run2ProjROI/ Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
+                $scope.compareObj.difference.changeR = $scope.compareObj.difference.run2ProjROI / Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
                 $scope.compareChart.data = [
                     {
                         title: "SEM",

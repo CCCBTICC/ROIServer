@@ -59,8 +59,8 @@
                         <td class="col-1 td-title" ng-click="hideSemItems = !hideSemItems">SEM Total<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
                         <td class="col-1 old">{{lookBack.history.semSR | formatCurrency}}</td>
                         <td class="col-1 old">{{lookBack.history.semPR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.output.semSR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.output.semPR | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.output.semAS | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.output.semAR | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.semSD | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.semRD | formatCurrency}}</td>
                     </tr>
@@ -129,7 +129,7 @@
                         <!--<td>{{lookBack.output.disUB | formatCurrency}}</td>-->
 
                         <!--<td>{{lookBack.output.disSR | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.disPR | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.output.disAR | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.disSD | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.disRD | formatCurrency}}</td>
                     </tr>
@@ -143,7 +143,7 @@
                         </td>
                         <!--<td>{{lookBack.output.socUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.socSR | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.socPR | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.output.socAR | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.socSD | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.socRD | formatCurrency}}</td>
                     </tr>
@@ -157,7 +157,7 @@
                         </td>
                         <!--<td>{{lookBack.output.affUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.affSR | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.affPR | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.output.affAR | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.affSD | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.affRD | formatCurrency}}</td>
                     </tr>
@@ -171,7 +171,7 @@
                         </td>
                         <!--<td>{{lookBack.output.parUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.parSR | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.parPR | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.output.parAR | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.parSD | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.parRD | formatCurrency}}</td>
                     </tr>
@@ -182,8 +182,8 @@
                         <!--<td>{{lookBack.output.totLB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.input.totSB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.totUB | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.totSR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.output.totPR | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.output.totAS | formatCurrency}}</td>
+                        <td class="col-1">{{lookBack.output.totAR | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.totSD | formatCurrency}}</td>
                         <td class="col-1">{{lookBack.difference.totRD | formatCurrency}}</td>
                     </tr>
