@@ -172,7 +172,14 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         included: "Do you need to include the data through the end time?"
     };
     $scope.dataInfo = {};
-    $scope.lookBack = {output: {}, history: {}};
+    $scope.lookBack = {
+        output: {},
+        history: {},
+        ControlChannelsDM: [],
+        ControlChannels: [],
+        ChontrolChannelsData:[],
+        ControlChannelsShow:"No"
+    };
     $scope.error = false;
     $scope.selectPlan = {
         disable: {
@@ -252,17 +259,62 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
     $scope.getJson = false;
     $scope.channelShow=false;
 
+    //calender
+    $scope.calender = {
+        minDate: null,
+        maxDate: null,
+        eMaxDate: null,
+        opened: {beginPeriod: false, endPeriod: false},
+        format: 'MMM-dd-yyyy',
+        dateOptions: {
+            formatYear: 'yyyy',
+            startingDay: 1
+        },
+        initDate: function () {
+            $scope.calender.minDate = $scope.dataInfo.beginDate;
+            $scope.calender.maxDate = $scope.dataInfo.endDate;
+            $scope.calender.modifyDate();
+        },
+        open: function (event, model) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (model === 'tvBeginPeriod') {
+                $scope.calender.opened.beginPeriod = !$scope.calender.opened.beginPeriod;
+                $scope.calender.opened.endPeriod = false;
+            } else {
+                $scope.calender.opened.endPeriod = !$scope.calender.opened.endPeriod;
+                $scope.calender.opened.beginPeriod = false;
+            }
+        },
+        modifyDate: function () {
+            if (!$scope.lookBack.output.tvBeginDate || $scope.lookBack.output.tvBeginDate < $scope.calender.minDate || $scope.lookBack.output.tvBeginDate > $scope.calender.maxDate) {
+                $scope.lookBack.output.tvBeginDate = $scope.calender.minDate;
+            }
+
+            if (!$scope.lookBack.output.tvEndDate || $scope.lookBack.output.tvEndDate < $scope.dataInfo.beginDate || $scope.lookBack.output.tvEndDate > $scope.calender.maxDate) {
+                $scope.lookBack.output.tvEndDate = $scope.lookBack.output.tvBeginDate;
+            }
+        }
+    };
+
     //scope functions
     $scope.nextPage = function () {
-        spendValidate();
-        if (!$scope.error) {
+        if($scope.lookBack.ControlChannelsShow === "No") {
+            spendValidate();
+            if (!$scope.error) {
+                passInfoToData();
+                //post data to R
+                console.log($scope.dataInfo);
+                analysis.postData($scope.lookBack.output, $scope.dataInfo, function (res) {
+                    console.log(res);
+                    location.path('myscenarios');
+                });
+            }
+        }else{
             passInfoToData();
-            //post data to R
-            console.log($scope.dataInfo);
-            analysis.postData($scope.lookBack.output, $scope.dataInfo, function (res) {
-                console.log(res);
-                location.path('myscenarios');
-            });
+            $scope.channelShow=!$scope.channelShow;
+            $scope.lookBack.ControlChannelsShow = "No";
         }
     };
 
@@ -276,6 +328,7 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                     console.log(data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
+                    $scope.calender.initDate();
                     history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (history) {
                         $scope.lookBack.history = {
                             semSR: history.SEM,
@@ -311,6 +364,37 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                         $scope.dataInfo.spend = $scope.lookBack.history.totSR;
                         fix();
                     });
+
+                    $scope.lookBack.output.semLB = Number($scope.lookBack.output.semBLB) + Number($scope.lookBack.output.semCLB) + Number($scope.lookBack.output.semPLB) + Number($scope.lookBack.output.semOLB);
+                    $scope.lookBack.output.semUB = Number($scope.lookBack.output.semBUB) + Number($scope.lookBack.output.semCUB) + Number($scope.lookBack.output.semPUB) + Number($scope.lookBack.output.semOUB);
+
+                    var b = new Date($scope.lookBack.output.StartingTime);
+                    b = new Date(b.getFullYear(), b.getMonth() + 1);
+                    console.log(b);
+                    var e = new Date($scope.lookBack.output.EndingTime);
+                    e = new Date(e.getFullYear(), e.getMonth() + 1);
+                    console.log(e);
+                    $scope.size = [1, 2, 3, 4, 5, 6];
+                    while (b <= e) {
+                        $scope.lookBack.ControlChannels.push(b);
+                        b = new Date(b.getFullYear(), b.getMonth() + 1, 1);
+                        $scope.size.shift();
+                    }
+                    var month = ['dirSpendM1', 'dirSpendM2', 'dirSpendM3', 'dirSpendM4', 'dirSpendM5', 'dirSpendM6'];
+                    month.forEach(function (key) {
+                        if ($scope.lookBack.output[key]) {
+                            $scope.lookBack.ControlChannelsDM.push($scope.lookBack.output[key]);
+                        }
+                    });
+                    //
+                    console.log($scope.lookBack.history.DMS);
+                    //$scope.lookBack.history.DMS.forEach(function(key, index){
+                    //    $scope.lookBack.ChontrolChannelsData[index] = {
+                    //        "month":$scope.lookBack.ControlChannels[index],
+                    //        "spend":key
+                    //    }
+                    //});
+
                 }
             });
         }

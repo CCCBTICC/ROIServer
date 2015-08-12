@@ -17,32 +17,105 @@
             <label>Data through</label>: {{dataInfo.dataThrough | date:'MMM-yyyy'}}
         </div>
     </div>
-    <div class="row" id="spend" ng-show="getJson && !channelShow">
+    <div class="row" id="spend" ng-show="getJson&& !channelShow">
         <br>
 
         <form class="form-horizontal">
             <div class="form-group">
-                <label for="lookBackSpend" class="col-sm-3 control-label">Portfolio Spend :</label>
+                <div class="row">
+                    <label for="lookBackSpend" class="col-sm-offset-3 col-sm-2 control-label" style="text-align: left; padding-left:0">Portfolio Spend :</label>
 
-                <div class="col-sm-4">
-                    <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend"
-                           ng-change="error=false" format-input>
-                    <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
+                    <div class="col-sm-3">
+                        <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend"
+                               ng-change="error=false" format-input>
+                    </div>
+                    <div class="col-sm-4 help-info" style="padding-left: 0">
+                        <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
+                        <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
+                    </div>
                 </div>
-                <div class="col-sm-1 help-info">
-                    <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
+                <div class="row">
+                    <span class="radio-inline col-sm-offset-3    col-sm-2 " style="font-weight: bolder; padding:7px 0;cursor:default;">Adjust Spend Constraints?</span>
+                    <!--<a type="button" class="btn btn-default" ng-click="channelShow=!channelShow">Portfolio Channels</a></a>-->
+                    <span class="col-sm-4">
+                    <label class="radio-inline ">
+                        <input type="radio" ng-model="lookBack.ControlChannelsShow" value="Yes"> Yes
+                    </label>
+                    <label class="radio-inline ">
+                        <input type="radio" ng-model="lookBack.ControlChannelsShow" value="No"> No
+                    </label>
+                    </span>
                 </div>
-
             </div>
         </form>
     </div>
-    <div class="row controls" ng-show="getJson && !channelShow">
-        <div class="form-group">
-            <div class="col-sm-2 col-sm-offset-3">
-                <a type="button" class="btn btn-default" ng-click="channelShow=!channelShow">Portfolio Channels</a></a>
+    <div class="row" ng-show="getJson&& !channelShow" >
+        <div class="col-sm-offset-2 col-sm-3">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed roi-table">
+                    <thead>
+                    <tr>
+                        <th class="col-2" colspan="7">Control Channels - DM </th>
+                        <!--<th ng-repeat="month in planForward.ControlChannels" class="col-1">{{month | date:-->
+                        <!--'MMM-dd-yyyy'}}-->
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="(month,spend) in lookBack.history.DMS">
+                        <th class="col-1">{{month+"-01" | date:
+                            'MMM-yyyy'}}
+                        </th>
+                        <th class="col-1">{{spend | formatCurrency}}
+                        </th>
+                    </tr>
+                    <tr ng-repeat="x in size track by $index">
+                        <th>-</th> <th>-</th>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+        <div class=" col-sm-4" >
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-condensed roi-table">
+                    <thead>
+                    <tr>
+                        <th colspan="2">Control Channels - TV </th>
+                    </tr>
+                    </thead>
+                    <tr>
+                        <th class="col-0-1">Begin Date:</th>
+                                <th class="col-1">
+                                    {{lookBack.output.tvBeginDate | date:'MMM-dd-yyyy'}}
+                                </th>
+                    </tr>
+                    <tr>
+                        <th class="col-0-1">End Date:</th>
+                        <th class="col-1">
+                            {{lookBack.output.tvEndDate | date:'MMM-dd-yyyy'}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="col-0-1">Spend ($):</th>
+                        <th class="col-1">
+                            {{lookBack.history.TV | formatCurrency}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th class="col-0-1">Impressions:</th>
+                        <th class="col-1">
+                            {{lookBack.history.TVImpression}}
+                        </th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+
     </div>
+
     <div class="row" ng-show="getJson && channelShow" id="select">
         <div class="col-sm-11 col-sm-offset-1  col-md-8 col-md-offset-2 col-lg-7  col-lg-offset-2 container">
         <!--<div class="container-fluid">-->
@@ -167,9 +240,15 @@
                     </tbody>
                 </table>
             </div>
-            <div class="form-group">
+            <div class="row form-group">
+                <br/><br/>
                 <div class="col-sm-2 col-sm-offset-3">
-                    <button class="btn btn-default" ng-click="channelShow=!channelShow">Save</button>
+                    <a class="btn btn-default" ng-click="channelShow=!channelShow" style="margin-top: 20px">Prev</a>
+                </div>
+                <div class="col-sm-2">
+                    <button class="btn btn-default" ng-class="{disabled:slideError}"
+                            ng-click="nextPage()" style="margin-top: 20px">Next
+                    </button>
                 </div>
             </div>
         </div>

@@ -485,10 +485,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         }
         }else{
             passInfoToData();
-
             $scope.channelShow=!$scope.channelShow;
             $scope.planForward.ControlChannelsShow = "No";
-
         }
     };
 
@@ -537,6 +535,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                             fix();
                         });
                     });
+
                     //prepare for show
                     $scope.planForward.output.semLB = Number($scope.planForward.output.semBLB) + Number($scope.planForward.output.semCLB) + Number($scope.planForward.output.semPLB) + Number($scope.planForward.output.semOLB);
                     $scope.planForward.output.semUB = Number($scope.planForward.output.semBUB) + Number($scope.planForward.output.semCUB) + Number($scope.planForward.output.semPUB) + Number($scope.planForward.output.semOUB);

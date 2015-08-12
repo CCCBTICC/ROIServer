@@ -397,9 +397,9 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="data in planForward.ChontrolChannelsData">
-                        <td class="col-1">{{data.month | date:
+                        <th class="col-1">{{data.month | date:
                             'MMM-yyyy'}}
-                        </td>
+                        </th>
                         <td class="check">
                             <input type="text" ng-model="data.spend" class="form-control" format-input/>
                         </td>
@@ -492,7 +492,7 @@
 
 
 
-</div>
+    </div>
     <br/>
     <br/>
     <div class="row" ng-show="getJson&& !channelShow" id="Button">
