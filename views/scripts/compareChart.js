@@ -27,6 +27,7 @@ angular.module('CompareChart', [])
                         maxValue = Math.max(maxValue, Math.abs(item.value));
                     });
                     scaleFactor = (scope.config.width - scope.config.margin.left - scope.config.margin.right) / 2 / maxValue;
+
                     d3.select('#chart').select('svg').remove();
                     var chartSvg = d3.select('#chart')
                         .append("svg");
@@ -53,7 +54,6 @@ angular.module('CompareChart', [])
                             .attr("stroke-width", 1)
                             .attr("stroke", "black");
                         //end scale
-
 
                         //.attr('text-anchor',"end");
                         //draw background rectangle

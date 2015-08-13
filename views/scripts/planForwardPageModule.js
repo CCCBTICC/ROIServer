@@ -427,12 +427,10 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                 });
             }
             $scope.selectPlan.count();
-            fix();
         },
         subCheck: function () {
             $scope.selectPlan.semTotalCheckBox = !!($scope.selectPlan.checkBox.semBrand && $scope.selectPlan.checkBox.semCard && $scope.selectPlan.checkBox.semPhotobook && $scope.selectPlan.checkBox.semOthers);
             $scope.selectPlan.count();
-            fix();
         }
     };
     $scope.calender = {
@@ -474,12 +472,10 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     };
     //scope functions
     $scope.nextPage = function () {
-        //console.log('in nextPage');
+
         $scope.spendValidate();
         if (!$scope.error) {
-            //console.log('no error');
             if ($scope.planForward.ControlChannelsShow === "No") {
-                //console.log('show=No');
                 passInfoToData();
                 //post data to R
                 analysis.postData($scope.planForward.output, $scope.dataInfo, function (res) {
@@ -509,12 +505,11 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             fix();
         $scope.errormin = false;
         $scope.errormax = false;
-        $scope.error=false;
+        $scope.error = false;
     };
     $scope.spendValidate = function () {
-        $scope.error=false;
-        $scope.errormin = false;
-        $scope.errormax = false;
+        console.log('validating');
+        $scope.error = false;
         $scope.planForward.output.semMin =
             Number($scope.planForward.output.semBMin) +
             Number($scope.planForward.output.semCMin) +
@@ -539,12 +534,16 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             Number($scope.planForward.output.affMax) +
             Number($scope.planForward.output.parMax);
         if (Number($scope.dataInfo.spend) < $scope.min) {
-            $scope.error=true;
-            $scope.errormin = true;
+            $scope.error = true;
+            $scope.errorMessage = "Your Minimum constraint is over your Portfolio Spend by " +
+                filter('formatCurrency')($scope.min - $scope.dataInfo.spend) +
+                ". Please reduce to continue.";
         }
         if (Number($scope.dataInfo.spend) > $scope.max) {
-            $scope.error=true;
-            $scope.errormax = true;
+            $scope.error = true;
+            $scope.errorMessage = "Your Maximum constraint is under your Portfolio Spend by " +
+                filter('formatCurrency')($scope.dataInfo.spend-$scope.max) +
+                ". Please increase to continue.";
         }
     };
 

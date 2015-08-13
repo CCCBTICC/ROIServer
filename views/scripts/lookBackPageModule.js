@@ -131,9 +131,9 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
             filter('date')($scope.dataInfo.beginDate, 'MMMyyyy') + "-" +
             filter('date')($scope.dataInfo.endDate, 'MMMyyyy') + "-" +
             $scope.dataInfo.lmTouch.charAt(0) + "-000";
-        $scope.dataInfo.dataThrough = $scope.dataInfo.included ==='Yes' ?
-            $scope.dataInfo.endDate:
-            new Date($scope.dataInfo.beginDate.getFullYear(),$scope.dataInfo.beginDate.getMonth(),0);
+        $scope.dataInfo.dataThrough = $scope.dataInfo.included === 'Yes' ?
+            $scope.dataInfo.endDate :
+            new Date($scope.dataInfo.beginDate.getFullYear(), $scope.dataInfo.beginDate.getMonth(), 0);
         $scope.dataInfo.from = "back";
     }
 
@@ -161,7 +161,7 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
 
 }]);
 
-back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 'history',  function ($scope, analysis, scenarios, location, history) {
+back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 'history', '$filter',function ($scope, analysis, scenarios, location, history,filter) {
     //scope vars
     $scope.tooltips = {
         brand: "Please choose one of the brands from the list.",
@@ -177,8 +177,8 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         history: {},
         ControlChannelsDM: [],
         ControlChannels: [],
-        ChontrolChannelsData:[],
-        ControlChannelsShow:"No"
+        ChontrolChannelsData: [],
+        ControlChannelsShow: "No"
     };
     $scope.error = false;
     $scope.selectPlan = {
@@ -235,7 +235,7 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                     }
                 });
             }
-            console.log($scope.selectPlan.disable.semTotal);
+            fix();
         },
         totCheck: function () {
             if (!$scope.selectPlan.semTotalCheckBox) {
@@ -248,16 +248,14 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                 });
             }
             $scope.selectPlan.count();
-            fix();
         },
         subCheck: function () {
             $scope.selectPlan.semTotalCheckBox = !!($scope.selectPlan.checkBox.semBrand && $scope.selectPlan.checkBox.semCard && $scope.selectPlan.checkBox.semPhotobook && $scope.selectPlan.checkBox.semOthers);
             $scope.selectPlan.count();
-            fix();
         }
     };
     $scope.getJson = false;
-    $scope.channelShow=false;
+    $scope.channelShow = false;
 
     //calender
     $scope.calender = {
@@ -300,9 +298,9 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
 
     //scope functions
     $scope.nextPage = function () {
-        if($scope.lookBack.ControlChannelsShow === "No") {
-            spendValidate();
-            if (!$scope.error) {
+        $scope.spendValidate();
+        if (!$scope.error) {
+            if ($scope.lookBack.ControlChannelsShow === "No") {
                 passInfoToData();
                 //post data to R
                 console.log($scope.dataInfo);
@@ -311,11 +309,28 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                     location.path('myscenarios');
                 });
             }
-        }else{
-            passInfoToData();
-            $scope.channelShow=!$scope.channelShow;
-            $scope.lookBack.ControlChannelsShow = "No";
+            else {
+                $scope.channelShow = !$scope.channelShow;
+                $scope.lookBack.ControlChannelsShow = "No";
+            }
         }
+    };
+    $scope.reset = function () {
+        $scope.selectPlan.checkBox = {
+            semBrand: true,
+            semCard: false,
+            semPhotobook: false,
+            semOthers: false,
+            display: false,
+            social: false,
+            affiliates: false,
+            partners: true
+        };
+        $scope.selectPlan.semTotalCheckBox = false,
+            fix();
+        $scope.errormin = false;
+        $scope.errormax = false;
+        $scope.error = false;
     };
 
     var count;
@@ -347,9 +362,9 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                             socPR: history.FB_MTA,
                             parPR: history.Partners_MTA,
                             totPR: history.SEM_MTA + history.Display_MTA + history.Affiliates_MTA + history.FB_MTA + history.Partners_MTA,
-                            DMS:history.DMS,
-                            TV:history.TV,
-                            TVImpression:history.TVImpression
+                            DMS: history.DMS,
+                            TV: history.TV,
+                            TVImpression: history.TVImpression
                         };
                         console.log($scope.lookBack.history.DMS);
                         if ($scope.lookBack.output.lmTouch === "Last Touch") {
@@ -455,10 +470,12 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         if ($scope.selectPlan.checkBox.partners) {
             $scope.lookBack.output.parMin = $scope.lookBack.output.parMax = $scope.lookBack.history.parSR;
         }
-        spendValidate();
+        $scope.spendValidate();
     }
 
-    function spendValidate() {
+    $scope.spendValidate=function () {
+        console.log('validating');
+        $scope.error = false;
         $scope.lookBack.output.semMin =
             Number($scope.lookBack.output.semBMin) +
             Number($scope.lookBack.output.semCMin) +
@@ -483,17 +500,25 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
             Number($scope.lookBack.output.affMax) +
             Number($scope.lookBack.output.parMax);
 
-        if (Number($scope.dataInfo.spend) < $scope.min || Number($scope.dataInfo.spend) > $scope.max) {
+        if (Number($scope.dataInfo.spend) < $scope.min) {
             $scope.error = true;
+            $scope.errorMessage = "Your Minimum constraint is over your Portfolio Spend by " +
+                filter('formatCurrency')($scope.min - $scope.dataInfo.spend) +
+                ". Please reduce to continue.";
         }
-        console.log($scope.error);
-    }
+        if (Number($scope.dataInfo.spend) > $scope.max) {
+            $scope.error = true;
+            $scope.errorMessage = "Your Maximum constraint is under your Portfolio Spend by " +
+                filter('formatCurrency')($scope.dataInfo.spend-$scope.max) +
+                ". Please increase to continue.";
+        }
+    };
 
-    //main
-    //check objId
+//main
+//check objId
     if (!analysis.objIds.current) {
         location.path('lookback/init')
-    }else{
+    } else {
         //get output Data
         doGet();
         count = setInterval(doGet, 1000 * 0.3);
@@ -503,7 +528,8 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
             clearInterval(count);
         });
     }
-}]);
+}])
+;
 
 back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history', 'scenarios', 'user', '$filter', function ($scope, analysis, location, history, scenarios, user, filter) {
     //scope vars
@@ -660,6 +686,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
 
     //functions
     var count;
+
     function calculateDifference() {
         $scope.lookBack.difference = {
             semSD: $scope.lookBack.output.semAS - $scope.lookBack.history.semSR,
@@ -747,7 +774,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         if ($scope.getJson === false) {
             analysis.getData(function (data) {
                 if (data) {
-                    console.log("from doGet in back/output",data);
+                    console.log("from doGet in back/output", data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
                     scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
@@ -797,7 +824,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     //check objId
     if (!analysis.objIds.current) {
         location.path("/lookback/init");
-    }else{
+    } else {
         user.getUser(function (user) {
             $scope.user = user;
         });
@@ -817,8 +844,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
 ;
 
 
+function adjustScroll() {
 
-function adjustScroll (){
-
-        $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
+    $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
 }
