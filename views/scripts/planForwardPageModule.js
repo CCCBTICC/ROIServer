@@ -472,6 +472,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     };
     //scope functions
     $scope.nextPage = function () {
+        console.log('in next');
         $scope.spendValidate();
         if (!$scope.error) {
             if ($scope.planForward.ControlChannelsShow === "No") {
@@ -507,7 +508,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         $scope.error = false;
     };
     $scope.spendValidate = function () {
-        console.log('validating');
+        console.log('validating',$scope.planForward.output.semCMin);
         $scope.error = false;
         $scope.planForward.output.semMin =
             Number($scope.planForward.output.semBMin) +
@@ -555,6 +556,11 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                     console.log("from doGet in forward/constrict after got Data", data);
                     $scope.getJson = true;
                     $scope.planForward.output = data;
+                    $scope.$watchCollection('planForward.output',function(){
+                        console.log('from watch');
+                        $scope.spendValidate();
+                    });
+
                     $scope.calender.initDate();
                     history.getHistoryDate(function (res) {
                         var d = new Date(res[1]);

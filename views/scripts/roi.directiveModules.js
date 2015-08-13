@@ -59,15 +59,12 @@ angular.module("ROIClientApp")
             },
             link: function (scope, element, attrs) {
                 scope.checkRange = function () {
-                    console.log("after blur",scope.ngModel);
                     if (Number(scope.ngModel) < Number(scope.min)) {
                         scope.ngModel = scope.min;
-                        console.log("after blur",scope.ngModel);
                     }
                     else if (Number(scope.ngModel) > Number(scope.max)) {
                         scope.ngModel = scope.max;
                     }
-                    scope.ngChange();
                 };
             }
         }

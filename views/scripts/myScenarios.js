@@ -223,7 +223,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             }
         });
         if (exist) {
-            analysis.objIds.current = getSelectedId($scope.scenarios);
+            analysis.objIds.current = actionObjInfo[0];
             $location.path("myscenarios/export");
         } else {
            resetButton();
