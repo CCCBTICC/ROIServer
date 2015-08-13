@@ -472,7 +472,6 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     };
     //scope functions
     $scope.nextPage = function () {
-
         $scope.spendValidate();
         if (!$scope.error) {
             if ($scope.planForward.ControlChannelsShow === "No") {
@@ -501,7 +500,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             affiliates: false,
             partners: true
         };
-        $scope.selectPlan.semTotalCheckBox = false,
+        $scope.selectPlan.semTotalCheckBox = false;
             fix();
         $scope.errormin = false;
         $scope.errormax = false;
@@ -1042,7 +1041,7 @@ forward.directive('formatInput', ['$filter', function ($filter) {
             });
 
             ngModel.$parsers.unshift(function (viewValue) {
-                var plainNumber = viewValue.replace(/[^\d|\-+|\.+]/g, '');
+                var plainNumber = viewValue.replace(/[^\d]/g, '');
                 elem.val($filter('formatCurrency')(plainNumber));
                 return plainNumber;
             });
@@ -1060,32 +1059,6 @@ forward.directive('formatInput', ['$filter', function ($filter) {
                     return parseFloat(value, 10);
                 });
             }
-        };
-    })
-    .filter('formatDate', function () {
-        function format(element, input) {
-            switch (element) {
-                case 'Month':
-                    return input.toDateString().split(' ')[1];
-                case 'MM':
-                    return input.getMonth() + 1;
-                case 'yyyy':
-                    return input.getFullYear();
-                case 'yy':
-                    return input.getYear();
-                default :
-                    return input.toDateString().split(' ')[1] + "-" + input.getFullYear();
-            }
-        }
-
-        return function (input, formatStr) {
-            input = input || new Date();
-            var formatDetail = formatStr ? formatStr.split('-') : ['default'];
-            var output = "";
-            formatDetail.forEach(function (element) {
-                output = output + " " + format(element, input);
-            });
-            return output;
         };
     })
     .filter('formatCurrency', function () {
@@ -1114,7 +1087,7 @@ forward.directive('formatInput2', ['$filter', function ($filter) {
             });
 
             ngModel.$parsers.unshift(function (viewValue) {
-                var plainNumber = viewValue.replace(/[^\d|\-+|\.+]/g, '');
+                var plainNumber = viewValue.replace(/[^\d]/g, '');
                 elem.val($filter('number')(plainNumber, 0));
                 return plainNumber;
             });

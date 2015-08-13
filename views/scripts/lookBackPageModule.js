@@ -161,7 +161,7 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
 
 }]);
 
-back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 'history', '$filter',function ($scope, analysis, scenarios, location, history,filter) {
+back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 'history', '$filter', function ($scope, analysis, scenarios, location, history, filter) {
     //scope vars
     $scope.tooltips = {
         brand: "Please choose one of the brands from the list.",
@@ -332,6 +332,47 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         $scope.errormax = false;
         $scope.error = false;
     };
+    $scope.spendValidate = function () {
+        console.log('validating');
+        $scope.error = false;
+        $scope.lookBack.output.semMin =
+            Number($scope.lookBack.output.semBMin) +
+            Number($scope.lookBack.output.semCMin) +
+            Number($scope.lookBack.output.semPMin) +
+            Number($scope.lookBack.output.semOMin);
+        $scope.min =
+            Number($scope.lookBack.output.semMin) +
+            Number($scope.lookBack.output.disMin) +
+            Number($scope.lookBack.output.socMin) +
+            Number($scope.lookBack.output.affMin) +
+            Number($scope.lookBack.output.parMin);
+
+        $scope.lookBack.output.semMax =
+            Number($scope.lookBack.output.semBMax) +
+            Number($scope.lookBack.output.semCMax) +
+            Number($scope.lookBack.output.semPMax) +
+            Number($scope.lookBack.output.semOMax);
+        $scope.max =
+            Number($scope.lookBack.output.semMax) +
+            Number($scope.lookBack.output.disMax) +
+            Number($scope.lookBack.output.socMax) +
+            Number($scope.lookBack.output.affMax) +
+            Number($scope.lookBack.output.parMax);
+
+        if (Number($scope.dataInfo.spend) < $scope.min) {
+            $scope.error = true;
+            $scope.errorMessage = "Your Minimum constraint is over your Portfolio Spend by " +
+                filter('formatCurrency')($scope.min - $scope.dataInfo.spend) +
+                ". Please reduce to continue.";
+        }
+        if (Number($scope.dataInfo.spend) > $scope.max) {
+            $scope.error = true;
+            $scope.errorMessage = "Your Maximum constraint is under your Portfolio Spend by " +
+                filter('formatCurrency')($scope.dataInfo.spend - $scope.max) +
+                ". Please increase to continue.";
+        }
+    };
+
 
     var count;
 
@@ -385,10 +426,10 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
 
                     var b = new Date($scope.lookBack.output.StartingTime);
                     b = new Date(b.getFullYear(), b.getMonth() + 1);
-                    console.log(b);
+                    //console.log(b);
                     var e = new Date($scope.lookBack.output.EndingTime);
                     e = new Date(e.getFullYear(), e.getMonth() + 1);
-                    console.log(e);
+                    //console.log(e);
                     $scope.size = [1, 2, 3, 4, 5, 6];
                     while (b <= e) {
                         $scope.lookBack.ControlChannels.push(b);
@@ -402,7 +443,7 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                         }
                     });
                     //
-                    console.log($scope.lookBack.history.DMS);
+                    //console.log($scope.lookBack.history.DMS);
                     //$scope.lookBack.history.DMS.forEach(function(key, index){
                     //    $scope.lookBack.ChontrolChannelsData[index] = {
                     //        "month":$scope.lookBack.ControlChannels[index],
@@ -473,49 +514,10 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         $scope.spendValidate();
     }
 
-    $scope.spendValidate=function () {
-        console.log('validating');
-        $scope.error = false;
-        $scope.lookBack.output.semMin =
-            Number($scope.lookBack.output.semBMin) +
-            Number($scope.lookBack.output.semCMin) +
-            Number($scope.lookBack.output.semPMin) +
-            Number($scope.lookBack.output.semOMin);
-        $scope.min =
-            Number($scope.lookBack.output.semMin) +
-            Number($scope.lookBack.output.disMin) +
-            Number($scope.lookBack.output.socMin) +
-            Number($scope.lookBack.output.affMin) +
-            Number($scope.lookBack.output.parMin);
 
-        $scope.lookBack.output.semMax =
-            Number($scope.lookBack.output.semBMax) +
-            Number($scope.lookBack.output.semCMax) +
-            Number($scope.lookBack.output.semPMax) +
-            Number($scope.lookBack.output.semOMax);
-        $scope.max =
-            Number($scope.lookBack.output.semMax) +
-            Number($scope.lookBack.output.disMax) +
-            Number($scope.lookBack.output.socMax) +
-            Number($scope.lookBack.output.affMax) +
-            Number($scope.lookBack.output.parMax);
+    //---------------main------------------------
 
-        if (Number($scope.dataInfo.spend) < $scope.min) {
-            $scope.error = true;
-            $scope.errorMessage = "Your Minimum constraint is over your Portfolio Spend by " +
-                filter('formatCurrency')($scope.min - $scope.dataInfo.spend) +
-                ". Please reduce to continue.";
-        }
-        if (Number($scope.dataInfo.spend) > $scope.max) {
-            $scope.error = true;
-            $scope.errorMessage = "Your Maximum constraint is under your Portfolio Spend by " +
-                filter('formatCurrency')($scope.dataInfo.spend-$scope.max) +
-                ". Please increase to continue.";
-        }
-    };
-
-//main
-//check objId
+    //check objId
     if (!analysis.objIds.current) {
         location.path('lookback/init')
     } else {
