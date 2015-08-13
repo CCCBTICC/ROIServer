@@ -31,7 +31,7 @@ router.post('/R', function (req, res) {
             final: "No",
             dataThrough: reqInfo.dataThrough,
             included: reqInfo.included,
-            share: "No",
+            share: false,
             exist:false,
             from:reqInfo.from
         };

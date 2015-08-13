@@ -86,16 +86,6 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         return result;
     }
 
-    function getSelectedId(arr) {
-        var id = 0;
-        arr.forEach(function (obj) {
-            if (obj.isActive) {
-                id = obj._id
-            }
-        });
-        return id;
-    }
-
     function getStatus() {
         //console.log($scope.scenarios);
         tempIdArray = [];
@@ -133,6 +123,20 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         } else {
             clearInterval(checkStatusLoop);
         }
+    }
+
+    function resetButton() {
+        $scope.scenarios.forEach(function (obj) {
+            if (obj.isActive) {
+                obj.isActive = false;
+            }
+        });
+        while (actionObjInfo.length) {
+            actionObjInfo.pop();
+        }
+        Object.keys($scope.operations).forEach(function (key) {
+            $scope.operations[key].disable = true;
+        });
     }
 
     //scope vars
@@ -210,13 +214,24 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 break;
         }
     };
+
     $scope.export = function () {
-        analysis.objIds.current = getSelectedId($scope.scenarios);
-        $location.path("myscenarios/export");
+        var exist = 0;
+        $scope.scenarios.forEach(function (obj) {
+            if (obj._id === actionObjInfo[0] && obj.exist) {
+                exist++;
+            }
+        });
+        if (exist) {
+            analysis.objIds.current = getSelectedId($scope.scenarios);
+            $location.path("myscenarios/export");
+        } else {
+           resetButton();
+        }
 
     };
     $scope.retrive = function () {
-        analysis.objIds.current = getSelectedId($scope.scenarios);
+        analysis.objIds.current = actionObjInfo[0];
         var retriveIndex = -1;
         $scope.scenarios.forEach(function (obj, index) {
             if (obj._id === analysis.objIds.current) {
@@ -243,44 +258,57 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         actionObjInfo.forEach(function (scenarioId) {
             $scope.delete(scenarioId);
         });
-        while (actionObjInfo.length) {
-            actionObjInfo.pop();
-        }
+        resetButton();
     };
     $scope.delete = function (id) {
         user.getUser(function (user) {
             $scope.user = user;
         });
-        scenarios.deleteScenario(id, $scope.user.name, function (data) {
-            if (data) {
-                var deleteIndex = -1;
-                $scope.scenarios.forEach(function (obj, index) {
-                    if (obj._id === id) {
-                        deleteIndex = index;
-                    }
-                });
-                if (deleteIndex !== -1) {
-                    $scope.scenarios.splice(deleteIndex, 1);
-                    $scope.pageChanged($scope.currentPage, $scope.numPerPage);
-                    Object.keys($scope.operations).forEach(function (key) {
-                        $scope.operations[key].disable = true;
-                    });
-                }
-                while (actionObjInfo.length) {
-                    actionObjInfo.shift();
-                }
-                tempIdArray.forEach(function (singleTempIdArray, index) {
-                    if (singleTempIdArray === id) {
-                        tempIdArray.splice(index, 1);
-                    }
-                });
-            } else {
-                alert("You are not the original owner, data can not be deleted!");
+        var share = false;
+        var deleteIndex = -1;
+        $scope.scenarios.forEach(function (obj, index) {
+            if (obj._id === id) {
+                share = obj.share;
+                deleteIndex=index;
             }
         });
+        if(deleteIndex!==-1){
+        if (share) {
+            if (confirm("The scenario is shared. Do you still want to delete it?") == true) {
+                scenarios.deleteScenario(id, $scope.user.name, function (data) {
+                    if (data) {
+                        $scope.scenarios.splice(deleteIndex, 1);
+                        $scope.pageChanged($scope.currentPage, $scope.numPerPage);
+                        tempIdArray.forEach(function (singleTempIdArray, index) {
+                            if (singleTempIdArray === id) {
+                                tempIdArray.splice(index, 1);
+                            }
+                        });
+                    } else {
+                        alert("You are not the original owner, data can not be deleted!");
+                    }
+                });
+            }
+        }
+        else {
+            scenarios.deleteScenario(id, $scope.user.name, function (data) {
+                if (data) {
+                        $scope.scenarios.splice(deleteIndex, 1);
+                        $scope.pageChanged($scope.currentPage, $scope.numPerPage);
+                        tempIdArray.forEach(function (singleTempIdArray, index) {
+                            if (singleTempIdArray === id) {
+                                tempIdArray.splice(index, 1);
+                            }
+                        });
+                }
+                else {
+                    alert("You are not the original owner, data can not be deleted!");
+                }
+            });
+        }}
     };
     $scope.share = function () {
-        analysis.objIds.current = getSelectedId($scope.scenarios);
+        analysis.objIds.current = actionObjInfo[0];
         $location.path('myscenarios/share');
     };
     $scope.compare = function () {
@@ -298,27 +326,27 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             $location.path('myscenarios/compare');
         }
         else {
-            $scope.scenarios.forEach(function (obj) {
-                if (obj.isActive) {
-                    obj.isActive = false;
-                }
-            });
-            while (actionObjInfo.length) {
-                actionObjInfo.pop();
-            }
+            resetButton();
         }
     };
     $scope.edit = function () {
-        analysis.objIds.current = getSelectedId($scope.scenarios);
-        $location.path('myscenarios/edit');
-    };
-    $scope.myStyle = function (from) {
-        if (from === 'back') {
-            return {backgroundColor: '#FFFFC0'};
+        var owner = "";
+        $scope.scenarios.forEach(function (obj, index) {
+            if (obj._id === actionObjInfo[0]) {
+                owner = obj.owner;
+            }
+        });
+        if (owner === $scope.user.name) {
+            analysis.objIds.current = actionObjInfo[0];
+            $location.path('myscenarios/edit');
         } else {
-            return {backgroundColor: '#FFE1FF'};
+
+            alert("You are not the original owner");
+            resetButton();
         }
+
     };
+
     $scope.pageChanged = function (current, numPerPage) {
         var begin = (current - 1) * numPerPage;
         var end = begin + numPerPage;
@@ -343,7 +371,8 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         return Number(Math.floor(s / 60) + 1000).toString().slice(-2) + ":" + Number(s % 60 + 1000).toString().slice(-2);
     };
 
-    //main
+    //-------------main-----------------------
+
     // get users scenarioList
     user.getUser(function (user) {
         if (!user.name) {
@@ -410,9 +439,9 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
             "Create Date," + info.createDate + ",,,,,,,,,,\n" +
             "Brand," + info.brand + ",,,,,,,,,,\n" +
             "Planned Spend," + info.spend + ",,,,,,,,,,,\n" +
-            "Begin Period," + $filter('date')(info.beginDate,'MMM-yyyy') + ",,,,,,,,,,\n" +
-            "End Period," + $filter('date')(info.endDate,'MMM-yyyy') + ",,,,,,,,,,\n" +
-            "Data Through Month," + $filter('date')(info.dataThrough,'MMM-yyyy') + ",,,,,,,,,,\n" +
+            "Begin Period," + $filter('date')(info.beginDate, 'MMM-yyyy') + ",,,,,,,,,,\n" +
+            "End Period," + $filter('date')(info.endDate, 'MMM-yyyy') + ",,,,,,,,,,\n" +
+            "Data Through Month," + $filter('date')(info.dataThrough, 'MMM-yyyy') + ",,,,,,,,,,\n" +
             "History Included?," + info.included + ",,,,,,,,,,\n" +
             ",,,,,,,,,,,\n" +
             "Portfolio Channels,Actuals,,Optimized,,Difference,\n" +
@@ -522,21 +551,21 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
                             back.history.affSR = Math.round(history.Affiliate);
                             back.history.socSR = Math.round(history.FB);
                             back.history.parSR = Math.round(history.Partners);
-                            back.history.totSR = back.history.semSR + back.history.disSR +back.history.affSR + back.history.socSR + back.history.parSR;
+                            back.history.totSR = back.history.semSR + back.history.disSR + back.history.affSR + back.history.socSR + back.history.parSR;
                             if (back.output.lmTouch === "Multi-Touch") {
                                 back.history.semPR = Math.round(history.SEM_MTA);
                                 back.history.disPR = Math.round(history.Display_MTA);
                                 back.history.affPR = Math.round(history.Affiliates_MTA);
                                 back.history.socPR = Math.round(history.FB_MTA);
                                 back.history.parPR = Math.round(history.Partners_MTA);
-                                back.history.totPR = back.history.semPR + back.history.disPR +back.history.affPR + back.history.socPR + back.history.parPR;
+                                back.history.totPR = back.history.semPR + back.history.disPR + back.history.affPR + back.history.socPR + back.history.parPR;
                             } else {
                                 back.history.semPR = Math.round(history.SEM_LTA);
                                 back.history.disPR = Math.round(history.Display_LTA);
                                 back.history.affPR = Math.round(history.Affiliates_LTA);
                                 back.history.socPR = Math.round(history.FB_LTA);
                                 back.history.parPR = Math.round(history.Partners_LTA);
-                                back.history.totPR =  back.history.semPR + back.history.disPR +back.history.affPR + back.history.socPR + back.history.parPR;
+                                back.history.totPR = back.history.semPR + back.history.disPR + back.history.affPR + back.history.socPR + back.history.parPR;
                             }
                             back.history.ROI = Math.round((back.history.totPR / back.history.totSR - 1) * 100);
 
@@ -611,7 +640,11 @@ scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarios,
         //console.log($scope.targetUsername);
         scenarios.shareScenario($scope.targetUsername, $scope.scenario._id, function (res) {
             console.log(res);
-            alert("Data is shared!");
+            scenarios.editScenario($scope.scenario.owner, $scope.scenario._id, {share: true}, function (res2) {
+                console.log(res2);
+                alert("Data is shared!");
+            });
+
         });
     };
     //main
@@ -675,7 +708,14 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenari
                 scenarios.checkFinal(name, function (res1) {
                     console.log(res1);
                     $scope.finalDisable = (res1[0] && res._id != res1[0]._id);
-                    $scope.message = $filter('name')(res1[0].owner) + " has the final scenario";
+                    user.getUserList(function (user) {
+                        if (user.name === res1[0].owner) {
+                            $scope.message = "You already  have the final scenario";
+                        }
+                        else {
+                            $scope.message = $filter('name')(res1[0].owner) + " has the final scenario";
+                        }
+                    });
                 });
             }
         });
