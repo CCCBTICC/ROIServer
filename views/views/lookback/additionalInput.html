@@ -12,8 +12,8 @@
             <label>Scenario ID:</label>&nbsp;{{dataInfo.scenarioId}} <br>
             <label>Brand</label>: {{dataInfo.brand}}
             <label>Attribution</label>: {{dataInfo.lmTouch}}
-            <label>Begin Period</label>: {{dataInfo.beginDate | date: 'MMM-dd-yyyy'}}
-            <label>End Period</label>: {{dataInfo.endDate | date: 'MMM-dd-yyyy'}}
+            <label>Begin Period</label>: {{dataInfo.beginDate | date: 'MMM-yyyy'}}
+            <label>End Period</label>: {{dataInfo.endDate | date: 'MMM-yyyy'}}
             <label>Data through</label>: {{dataInfo.dataThrough | date:'MMM-yyyy'}}
             <span ng-show="getJson && channelShow"><label>Portfolio
                 Spend</label>: {{dataInfo.spend | formatCurrency}}</span>
@@ -37,9 +37,9 @@
                     </div>
                 </div>
                 <div class="row">
-                    <span class="radio-inline col-sm-offset-3    col-sm-2 " style="font-weight: bolder; padding:7px 0;cursor:default;">Adjust Spend Constraints?</span>
+                    <span class="radio-inline col-sm-offset-3    col-sm-2 " style="font-weight: bolder; padding:7px 0;cursor:default;">Apply Constraints?</span>
                     <!--<a type="button" class="btn btn-default" ng-click="channelShow=!channelShow">Portfolio Channels</a></a>-->
-                    <span class="col-sm-4">
+                    <span class="col-sm-3">
                     <label class="radio-inline ">
                         <input type="radio" ng-model="lookBack.ControlChannelsShow" value="Yes"> Yes
                     </label>
@@ -47,6 +47,9 @@
                         <input type="radio" ng-model="lookBack.ControlChannelsShow" value="No"> No
                     </label>
                     </span>
+                    <div class="col-sm-4 help-info" style="padding-left: 0">
+                        <i class="fa fa-question-circle" tooltip-placement="right" tooltip="Apply Constraints?"></i>
+                    </div>
                 </div>
             </div>
         </form>
@@ -72,7 +75,7 @@
                         </td>
                     </tr>
                     <tr ng-repeat="x in size track by $index">
-                        <td class="disabled">-</td> <td class="disabled">-</td>
+                        <td class="disabled">&nbsp;</td> <td class="disabled">&nbsp;</td>
                     </tr>
                     </tbody>
                 </table>
@@ -107,7 +110,7 @@
                     <tr>
                         <th class="col-0-1">Impressions:</th>
                         <td class="col-1">
-                            {{lookBack.history.TVImpression}}
+                            {{lookBack.history.TVImpression | number}}
                         </td>
                     </tr>
                 </table>
@@ -126,7 +129,7 @@
                     <thead>
                     <tr>
                         <th class="col-1" rowspan="2">Portfolio Channels</th>
-                        <th class="col-0" rowspan="2">Fixed?</th>
+                        <th class="col-0" rowspan="2"><div tooltip-placement="right" tooltip="Maintain Spend">Maintain Spend?</div></th>
                         <th class="col-2" colspan="2">Actuals</th>
                     </tr>
                     <tr>
@@ -159,7 +162,7 @@
                             </label>
                         </td>
                         <td>{{lookBack.history.semBSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td class="disabled">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Card</td>
@@ -170,7 +173,7 @@
                             </label>
                         </td>
                         <td>{{lookBack.history.semCSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td class="disabled">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Photobook</td>
@@ -181,7 +184,7 @@
                                        ng-click="selectPlan.subCheck()">
                             </label>
                         <td>{{lookBack.history.semPSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td class="disabled">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Others</td>
@@ -193,7 +196,7 @@
                             </label>
                         </td>
                         <td>{{lookBack.history.semOSR | formatCurrency}}</td>
-                        <td class="disabled">-</td>
+                        <td class="disabled">&nbsp;</td>
                     </tr>
                     <tr>
                         <td class="td-title">Display</td>

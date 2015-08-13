@@ -213,6 +213,10 @@ a .running{
 /*  General  */
 .grey-tooltip + .tooltip > .tooltip-inner {background-color: #85abc1; color:#333333;}
 .grey-tooltip + .tooltip > .tooltip-arrow { border-bottom-color:#85abc1; color:#333333;}
+.fa-question-circle {
+    font-size: 22px;
+    color:grey;
+}
 
 
 .breadcrumb>li+li:before{
@@ -627,7 +631,7 @@ table.roi-table tr > .col-0-1 {
 }
 table.roi-table tr > .col-0 {
     min-width: 40px;
-    max-width: 60px;
+    max-width: 70px;
     overflow: hidden;
 }
 table.roi-table tr > .col-0-7 {
@@ -752,7 +756,8 @@ table.roi-table tr > td.check {
 
 table.roi-table tr > td.disabled {
     padding-left: 15px;
-    text-align: center;
+    padding-right:15px;
+    text-align: right;
     background-color: #e3e3e3;
 }
 table.roi-table tr > td.old ,table.roi-table tr > th.old {

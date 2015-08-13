@@ -18,10 +18,10 @@
             <label>Scenario ID:&nbsp</label>{{scenario.scenarioId}}<br>
             <label>Brand</label>: {{scenario.brand}}
             <label>Attribution</label>: {{scenario.lmTouch}}
-            <label>Begin Period</label>: {{scenario.beginDate | date: 'MMM-dd-yyyy'}}
-            <label>End Period</label>: {{scenario.endDate | date: 'MMM-dd-yyyy'}}
+            <label>Begin Period</label>: {{scenario.beginDate | date: 'MMM-yyyy'}}
+            <label>End Period</label>: {{scenario.endDate | date: 'MMM-yyyy'}}
             <label>Portfolio Spend </label>: {{scenario.spend | formatCurrency}}
-            <label>Data through</label>: {{scenario.dataThrough | date: 'MMM-dd-yyyy'}}
+            <label>Data through</label>: {{scenario.dataThrough | date: 'MMM-yyyy'}}
             <span ng-show="slideError" style="color:red">{{slideErrorValue}}</span>
         </div>
     </div>
@@ -154,7 +154,7 @@
                         <td class="col-1" ng-hide="showme">{{planForward.output.semBUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semBSF}}</td>
                         <td class="col-1">{{planForward.output.semBSR | formatCurrency}}</td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                         <!--<td>{{planForward.output.semBMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semBMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semBSF}}</td>-->
@@ -162,9 +162,9 @@
                             <range-input ng-model="planForward.output.semBSlide" min="planForward.output.semBMin"
                                          max="planForward.output.semBMax" ng-change="slideValidate()"></range-input>
                         </td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semBSD | formatCurrency}}</td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle col-1">SEM - Card</td>
@@ -174,7 +174,7 @@
                         <td class="col-1" ng-hide="showme">{{planForward.output.semCUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semCSF}}</td>
                         <td class="col-1">{{planForward.output.semCSR | formatCurrency}}</td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                         <!--<td>{{planForward.output.semCMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semCMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semCSF}}</td>-->
@@ -182,9 +182,9 @@
                             <range-input ng-model="planForward.output.semCSlide" min="planForward.output.semCMin"
                                          max="planForward.output.semCMax" ng-change="slideValidate()"></range-input>
                         </td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semCSD | formatCurrency}}</td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle col-1">SEM-Photobook</td>
@@ -194,7 +194,7 @@
                         <td class="col-1" ng-hide="showme">{{planForward.output.semPUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semPSF}}</td>
                         <td class="col-1">{{planForward.output.semPSR | formatCurrency}}</td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                         <!--<td>{{planForward.output.semPMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semPMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semPSF}}</td>-->
@@ -202,9 +202,9 @@
                             <range-input ng-model="planForward.output.semPSlide" min="planForward.output.semPMin"
                                          max="planForward.output.semPMax" ng-change="slideValidate()"></range-input>
                         </td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semPSD | formatCurrency}}</td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle col-1">SEM - Others</td>
@@ -214,7 +214,7 @@
                         <td class="col-1" ng-hide="showme">{{planForward.output.semOUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semOSF}}</td>
                         <td class="col-1">{{planForward.output.semOSR | formatCurrency}}</td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                         <!--<td>{{planForward.output.semOMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semOMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semOSF}}</td>-->
@@ -222,9 +222,9 @@
                             <range-input ng-model="planForward.output.semOSlide" min="planForward.output.semOMin"
                                          max="planForward.output.semOMax" ng-change="slideValidate()"></range-input>
                         </td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semOAS-planForward.output.semOSR | formatCurrency}}</td>
-                        <td class="disabled col-1">-</td>
+                        <td class="disabled col-1">&nbsp;</td>
                     </tr>
                     <tr>
                         <td class="td-title col-1">Display</td>
