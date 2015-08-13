@@ -26,6 +26,8 @@
             <label>Data through</label>: {{dataInfo.dataThrough | date: 'MMM-yyyy'}}
             <span ng-show="getJson && channelShow"><label>Portfolio
                 Spend</label>: {{dataInfo.spend | formatCurrency}}</span>
+            <span ng-show="getJson && channelShow && error"><label>Portfolio
+                Spend</label>: <span style="color:red">{{dataInfo.spend | formatCurrency}}</span></span>
         </div>
     </div>
     <div class="row" id="spend" ng-show="getJson&& !channelShow">
@@ -38,7 +40,7 @@
 
                     <div class="col-sm-3">
                         <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend"
-                               ng-change="error=false" format-input>
+                               ng-change="error=false" format-input ng-blur="spendValidate()">
                     </div>
                     <div class="col-sm-4 help-info" style="padding-left: 0">
                         <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
@@ -394,17 +396,16 @@
         </div>
         <div class="row form-group">
             <br/><br/>
-
             <div class="col-sm-2 col-sm-offset-3">
                 <a class="btn btn-default" ng-click="channelShow=!channelShow;reset()" style="margin-top: 20px">Prev</a>
             </div>
-            <div class="col-sm-2">
+            <div class="col-sm-7">
                 <button class="btn btn-default" ng-class="{disabled:slideError}"
                         ng-click="nextPage()" style="margin-top: 20px">Next
                 </button>
-                <span style="color:red" ng-show="errormin"> Minimum spend should be lower than portfolio Spend</span>
-                <span style="color:red" ng-show="errormax"> Maximum spend should be higher than portfolio spend</span>
+                <span style="color:red" ng-show="error"><br>{{errorMessage}}</span>
             </div>
+
         </div>
     </div>
     <div class="row" ng-show="getJson&& !channelShow" id="optional">
@@ -525,7 +526,7 @@
             </div>
             <div class="col-sm-2">
                 <button class="btn btn-default" ng-class="{disabled:slideError}"
-                        ng-click="nextPage()">Next
+                        ng-click="nextPage();">Next
                 </button>
 
             </div>
