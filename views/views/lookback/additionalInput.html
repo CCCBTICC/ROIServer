@@ -32,8 +32,8 @@
                                ng-change="error=false" ng-blur="spendValidate()" format-input>
                     </div>
                     <div class="col-sm-4 help-info" style="padding-left: 0">
-                        <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
-                        <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
+                        <div class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></div>
+                        <div style="color:red; height:34px; width:200px;float: right" ng-show="error"> Spend should be in the  range <br/>[{{min | formatCurrency}}, {{max | formatCurrency}}]</div>
                     </div>
                 </div>
                 <div class="row">
@@ -271,7 +271,7 @@
             </div>
             <!--<span ng-show="error" style="color:red">Spend should be in the range of [{{min}}, {{max}}].</span>-->
         </div>
-        <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
+        <!--<span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>-->
 
     </div>
 

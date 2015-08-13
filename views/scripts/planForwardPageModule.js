@@ -535,13 +535,13 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             Number($scope.planForward.output.parMax);
         if (Number($scope.dataInfo.spend) < $scope.min) {
             $scope.error = true;
-            $scope.errorMessage = "Your Minimum constraint is over your Portfolio Spend by " +
+            $scope.errorMessage = "Your Minimum constraint \n is over your Portfolio Spend by \n" +
                 filter('formatCurrency')($scope.min - $scope.dataInfo.spend) +
                 ". Please reduce to continue.";
         }
         if (Number($scope.dataInfo.spend) > $scope.max) {
             $scope.error = true;
-            $scope.errorMessage = "Your Maximum constraint is under your Portfolio Spend by " +
+            $scope.errorMessage = "Your Maximum constraint \n is under your Portfolio Spend by \n" +
                 filter('formatCurrency')($scope.dataInfo.spend-$scope.max) +
                 ". Please increase to continue.";
         }
@@ -873,12 +873,12 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             if (Number($scope.planForward.output.totSR) < sum) {
                 console.log(sum);
                 $scope.slideError = true;
-                $scope.slideErrorValue = "Your 'min' is over than " + filter('formatCurrency')(sum - $scope.planForward.output.totSR);
+                $scope.slideErrorValue = "Your 'min' is \n over than " + filter('formatCurrency')(sum - $scope.planForward.output.totSR);
                 return;
             }
             if (Number($scope.planForward.output.totSR) > sumMax) {
                 $scope.slideError = true;
-                $scope.slideErrorValue = "Your 'max' is lower by " + filter('formatCurrency')($scope.planForward.output.totSR - sumMax);
+                $scope.slideErrorValue = "Your 'max' is \n lower by " + filter('formatCurrency')($scope.planForward.output.totSR - sumMax);
                 return;
             }
             $scope.slideError = false;

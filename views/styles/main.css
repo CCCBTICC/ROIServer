@@ -12,6 +12,7 @@
  *****      0.7 - tooltip                    *****
  *****      0.8 - text-info                  *****
  *****      0.9 - form control               *****
+ *****      0.11- data picker setting        *****
  *****  1 - Login Page                       *****
  *****  2 - Shell Page                       *****
  *****      2.1 - Navigation bar             *****
@@ -42,10 +43,10 @@ body {
     overflow-x: hidden;
 }
 
-footer {
-    height: 100px;
-    margin-top: 60px;
-}
+/*footer {*/
+    /*height: 100px;*/
+    /*margin-top: 60px;*/
+/*}*/
 
 /*  Button settings  */
 .btn-orange, .btn-orange:focus {
@@ -247,6 +248,25 @@ form .tooltip-inner {
 .table{
     margin: 0;
 }
+
+
+/********************************************************
+*********                                         *******
+*********             data picker                 *******
+*********                                           *****
+********************************************************/
+/*.my-datepicker .form-control {*/
+    /*height: 10px;*/
+    /*padding: 11px;*/
+/*}*/
+
+.dropdown-menu .btn {
+    padding: 2px 2px;
+}
+.check .form-control{
+    height:22px;
+}
+
 
     /*************************************************
      ******                                     ******
@@ -506,6 +526,15 @@ form .tooltip-inner {
 }
 
 /*  Tables setting  */
+.table-condensed>thead>tr>th{
+    padding:2px;
+}
+.table>thead>tr>th{
+    padding:2px;
+}
+.form-group-sm .form-control{
+    height:20px;
+}
 
 .table-first-column {
     overflow-x: scroll;
@@ -603,7 +632,7 @@ table.thead-fixed-top > thead {
 }
 
 table.thead-fixed-top > tbody {
-    max-height: calc(88vh - 335px);
+    max-height: calc(88vh - 275px);
     overflow-y: scroll;
     overflow-x: hidden;
     display: block;
@@ -621,7 +650,7 @@ table.roi-table tr > th {
 }
 
 table.roi-table tr:first-child > th:first-child {
-    padding: 5px 0 5px 5px;
+    padding: 3px 0 3px 3px;
     text-align: center;
 }
 
@@ -788,8 +817,14 @@ table.roi-table tr > td.compare-chart {
     vertical-align: top;
 }
 
+.td-title .btn {
+    font-size: 10px;
+}
+.table-buttons {
+    margin-top:15px;
+}
 div.controls {
-    width: 60%;
+    width: 80%;
     min-width: 690px;
     margin: 15px auto 0 auto;
     position: relative;
@@ -890,5 +925,5 @@ div.controls > span:last-child {
 
 
 .button-bar{
-    margin-top:20px;
+    margin-top:15px;
 }

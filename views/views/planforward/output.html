@@ -20,9 +20,9 @@
             <label>Attribution</label>: {{scenario.lmTouch}}
             <label>Begin Period</label>: {{scenario.beginDate | date: 'MMM-yyyy'}}
             <label>End Period</label>: {{scenario.endDate | date: 'MMM-yyyy'}}
-            <label>Portfolio Spend </label>: {{scenario.spend | formatCurrency}}
+            <label>Portfolio Spend </label>: <span ng-show="!slideError">{{scenario.spend | formatCurrency}}</span><span ng-show="slideError" style="color:red;">{{scenario.spend | formatCurrency}}</span>
             <label>Data through</label>: {{scenario.dataThrough | date: 'MMM-yyyy'}}
-            <span ng-show="slideError" style="color:red">{{slideErrorValue}}</span>
+            <!--<span ng-show="slideError" style="color:red">{{slideErrorValue}}</span>-->
         </div>
     </div>
     <script>
@@ -366,6 +366,9 @@
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reRun()" ng-class="{disabled:slideError}">Re-run</button>
+
+                <span ng-show="slideError" style="color:red; height:34px; width:64px; float: right">{{slideErrorValue}}</span>
+
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>

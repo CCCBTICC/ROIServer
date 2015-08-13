@@ -25,9 +25,9 @@
             <label>End Period</label>: {{dataInfo.endDate | date: 'MMM-yyyy'}}
             <label>Data through</label>: {{dataInfo.dataThrough | date: 'MMM-yyyy'}}
             <span ng-show="getJson && channelShow"><label>Portfolio
-                Spend</label>: {{dataInfo.spend | formatCurrency}}</span>
-            <span ng-show="getJson && channelShow && error"><label>Portfolio
-                Spend</label>: <span style="color:red">{{dataInfo.spend | formatCurrency}}</span></span>
+                Spend</label>: <span ng-show="!error">{{dataInfo.spend | formatCurrency}}</span><span ng-show="error" style="color:red">{{dataInfo.spend | formatCurrency}}</span></span>
+            <!--<span ng-show="getJson && channelShow && error"><label>Portfolio-->
+                <!--Spend</label>: <span style="color:red">{{dataInfo.spend | formatCurrency}}</span></span>-->
         </div>
     </div>
     <div class="row" id="spend" ng-show="getJson&& !channelShow">
@@ -42,9 +42,9 @@
                         <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend"
                                ng-change="error=false" format-input ng-blur="spendValidate()">
                     </div>
-                    <div class="col-sm-4 help-info" style="padding-left: 0">
-                        <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></i>
-                        <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
+                    <div class="col-sm-3 help-info" style="padding-left: 0">
+                        <div class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.spend}}"></div>
+                        <div style="color:red; height:34px; width:200px;float: right" ng-show="error"> Spend should be in the  range <br/>[{{min | formatCurrency}}, {{max | formatCurrency}}]</div>
                     </div>
                 </div>
                 <div class="row">
@@ -399,11 +399,11 @@
             <div class="col-sm-2 col-sm-offset-3">
                 <a class="btn btn-default" ng-click="channelShow=!channelShow;reset()" style="margin-top: 20px">Prev</a>
             </div>
-            <div class="col-sm-7">
+            <div class="col-sm-4">
                 <button class="btn btn-default" ng-class="{disabled:slideError}"
                         ng-click="nextPage()" style="margin-top: 20px">Next
                 </button>
-                <span style="color:red" ng-show="error"><br>{{errorMessage}}</span>
+                <span style="color:red; height:34px; width:220px; float: right" ng-show="error"><br>{{errorMessage}}</span>
             </div>
 
         </div>
@@ -531,7 +531,6 @@
 
             </div>
         </form>
-        <span style="color:red" ng-show="error"> Spend should be in the  range [{{min | formatCurrency}}, {{max | formatCurrency}}]</span>
 
     </div>
 </div>
