@@ -1,6 +1,6 @@
-
-<div class="container-fluid" unselectable="on" style="-moz-user-select:none;-webkit-user-select:none;" onselectstart="return false;">
-<!--add unselectable attributes-->
+<div class="container-fluid" unselectable="on" style="-moz-user-select:none;-webkit-user-select:none;"
+     onselectstart="return false;">
+    <!--add unselectable attributes-->
     <!--nav bar-->
     <div class="row">
         <ol class="breadcrumb path path-myscenarios">
@@ -21,29 +21,27 @@
             <div class="table-search">
 
                 <form class="form-search form-inline">
-                    <input type="text" class="form-control search-query" placeholder="Search..." ng-model="searchText" ng-change="pageChanged(currentPage,numPerPage)"/>
+                    <input type="text" class="form-control search-query" placeholder="Search..." ng-model="searchText"
+                           ng-change="pageChanged(currentPage,numPerPage)"/>
                 </form>
 
 
-
-
-
                 <!--<div class="btn-group search-filter" dropdown>-->
-                    <!--<button class="btn btn-default" ng-class="{'disabled':true}"-->
-                            <!--ng-click="">Filter</button>-->
-                    <!--<button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>-->
-                        <!--<span class="caret"></span>-->
-                        <!--<span class="sr-only">Split button!</span>-->
-                    <!--</button>-->
-                    <!--<ul class="dropdown-menu" role="menu">-->
-                        <!--<li><a class="btn btn-default"  ng-click="">All</a></li>-->
-                        <!--<li><a class="btn btn-default"  ng-click="">ID</a></li>-->
-                        <!--<li><a class="btn btn-default"  ng-click="">Name</a></li>-->
-                        <!--<li><a class="btn btn-default"  ng-click="">Owner</a></li>-->
-                        <!--<li><a class="btn btn-default"  ng-click="">Create Date</a></li>-->
-                        <!--<li><a class="btn btn-default"  ng-click="">Planned Spend</a></li>-->
-                        <!--<li><a class="btn btn-default"  ng-click="">Data Through</a></li>-->
-                    <!--</ul>-->
+                <!--<button class="btn btn-default" ng-class="{'disabled':true}"-->
+                <!--ng-click="">Filter</button>-->
+                <!--<button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>-->
+                <!--<span class="caret"></span>-->
+                <!--<span class="sr-only">Split button!</span>-->
+                <!--</button>-->
+                <!--<ul class="dropdown-menu" role="menu">-->
+                <!--<li><a class="btn btn-default"  ng-click="">All</a></li>-->
+                <!--<li><a class="btn btn-default"  ng-click="">ID</a></li>-->
+                <!--<li><a class="btn btn-default"  ng-click="">Name</a></li>-->
+                <!--<li><a class="btn btn-default"  ng-click="">Owner</a></li>-->
+                <!--<li><a class="btn btn-default"  ng-click="">Create Date</a></li>-->
+                <!--<li><a class="btn btn-default"  ng-click="">Planned Spend</a></li>-->
+                <!--<li><a class="btn btn-default"  ng-click="">Data Through</a></li>-->
+                <!--</ul>-->
                 <!--</div>-->
 
 
@@ -52,22 +50,48 @@
                 <thead>
                 <tr>
                     <!--<th class="col-0" rowspan="1"><div></div></th>-->
-                    <th class="list-col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('scenarioId')">Scenario ID</a> <span class="sortorder" ng-show="predicate === 'scenarioId'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('name')">Name</a> <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="list-col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('owner')">Owner</a> <span class="sortorder" ng-show="predicate === 'owner'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('createDate')">Create Date</a> <span class="sortorder" ng-show="predicate === 'createDate'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('spend')">Planned Spend</a><span class="sortorder" ng-show="predicate === 'spend'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('dataThrough')" tooltip-placement="top" tooltip="Data Through">Data Through</a><span class="sortorder" ng-show="predicate === 'dataThrough'" ng-class="{reverse:reverse}"></span></th>
-                    <th class="list-col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('included')">History <span class="sortorder" ng-show="predicate === 'included'" ng-class="{reverse:reverse}"></span> Included?</a></th>
-                    <th class="list-col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('note')">Notes</a><span class="sortorder" ng-show="predicate === 'note'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-3" rowspan="1"><a href="javascript:void(0)" ng-click="order('scenarioId')">Scenario
+                        ID</a> <span class="sortorder" ng-show="predicate === 'scenarioId'"
+                                     ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('name')">Name</a>
+                        <span class="sortorder" ng-show="predicate === 'name'" ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('owner')">Owner</a>
+                        <span class="sortorder" ng-show="predicate === 'owner'" ng-class="{reverse:reverse}"></span>
+                    </th>
+                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('createDate')">Create
+                        Date</a> <span class="sortorder" ng-show="predicate === 'createDate'"
+                                       ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('spend')">Planned
+                        Spend</a><span class="sortorder" ng-show="predicate === 'spend'"
+                                       ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-2" rowspan="1"><a href="javascript:void(0)" ng-click="order('dataThrough')"
+                                                          tooltip-placement="top" tooltip="Data Through">Data
+                        Through</a><span class="sortorder" ng-show="predicate === 'dataThrough'"
+                                         ng-class="{reverse:reverse}"></span></th>
+                    <th class="list-col-1" rowspan="1"><a href="javascript:void(0)" ng-click="order('included')">History
+                        <span class="sortorder" ng-show="predicate === 'included'" ng-class="{reverse:reverse}"></span>
+                        Included?</a></th>
+                    <th class="list-col-3" rowspan="1"><a href="javascript:void(0)"
+                                                          ng-click="order('note')">Notes</a><span class="sortorder"
+                                                                                                  ng-show="predicate === 'note'"
+                                                                                                  ng-class="{reverse:reverse}"></span>
+                    </th>
                 </tr>
                 </thead>
                 <tbody class="row-2">
-                <tr ng-repeat="scenario in filteredScenarioss | filter:searchText " ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
+                <tr ng-repeat="scenario in filteredScenarioss | filter:searchText "
+                    ng-class="{'active-row':scenario.isActive}" ng-click="selectRow(scenario)">
                     <!--<td class="check non-number col-0">-->
-                        <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
+                    <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
-                    <td class="scenario-id list-col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right" tooltip="{{convertRunningTime(scenario.runningTime)}}" ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i> <i class="fa fa-check final" tooltip-placement="right" tooltip="Final" ng-show="yesOrNo(scenario.final)"></i><i class="fa fa-times stop" ng-show="runCheck(scenario.runningTime)" tooltip-placement="right" tooltip="Cancel" ng-click="delete(scenario._id)"></i> </td>
+                    <td class="scenario-id list-col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right"
+                                                              tooltip="{{convertRunningTime(scenario.runningTime)}}"
+                                                              ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i>
+                        <i class="fa fa-check final" tooltip-placement="right" tooltip="Final"
+                           ng-show="yesOrNo(scenario.final)"></i><i class="fa fa-times stop"
+                                                                    ng-show="runCheck(scenario.runningTime)"
+                                                                    tooltip-placement="right" tooltip="Cancel"
+                                                                    ng-click="delete(scenario._id)"></i></td>
                     <td class="non-number list-col-2">{{scenario.name}}</td>
                     <td class="non-number list-col-1">{{scenario.owner}}</td>
                     <td class="non-number list-col-2">{{scenario.createDate | date: 'MMM-dd-yyyy'}}</td>
@@ -83,46 +107,53 @@
     <!--end table view-->
     <!--button bar-->
     <div class="row">
-            <div class="col-sm-12 button-bar">
-                <div class="col-sm-offset-2 col-sm-2" >
-            <button class="btn btn-default" ng-class="{'disabled':operations.compare.disable}"
-                  ng-click="compare() ">compare</button>
-                </div>
-                <div class="col-sm-2">
-            <div class="btn-group dropup" dropdown>
-                <button class="btn btn-default" ng-class="{'disabled':operations.retrieve.disable}"
-                      ng-click="retrive()">retrieve</button>
-                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
-                    <span class="caret"></span>
-                    <span class="sr-only">Split button!</span>
+        <div class="col-sm-12 button-bar">
+            <div class="col-sm-offset-2 col-sm-2">
+                <button class="btn btn-default" ng-class="{'disabled':operations.compare.disable}"
+                        ng-click="compare() ">compare
                 </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a class="btn btn-default" ng-class="{'disabled':operations.edit.disable}" ng-click="edit()">edit</a></li>
-                    <li><a class="btn btn-default" ng-class="{'disabled':operations.delete.disable}" ng-click="deleteList()">delete</a></li>
-                </ul>
             </div>
+            <div class="col-sm-2">
+                <div class="btn-group dropup" dropdown>
+                    <button class="btn btn-default" ng-class="{'disabled':operations.retrieve.disable}"
+                            ng-click="retrive()">retrieve
+                    </button>
+                    <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+                        <span class="caret"></span>
+                        <span class="sr-only">Split button!</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><button class="btn btn-default" ng-class="{'disabled':operations.edit.disable}"
+                               ng-click="edit()">edit</button></li>
+                        <li><button class="btn btn-default" ng-class="{'disabled':operations.delete.disable}"
+                               ng-click="deleteList()">delete</button></li>
+                    </ul>
                 </div>
-                <div class="col-sm-2">
-            <div class="btn-group dropup" dropdown>
-                <button class="btn btn-default" ng-class="{'disabled':operations.export.disable}" ng-click="export()">export</button>
-                <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
-                    <span class="caret"></span>
-                    <span class="sr-only">Split button!</span>
-                </button>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a class="btn btn-default" ng-class="{'disabled':operations.share.disable}" ng-click="share()">share</a></li>
-                </ul>
             </div>
+            <div class="col-sm-2">
+                <div class="btn-group dropup" dropdown>
+                    <button class="btn btn-default" ng-class="{'disabled':operations.export.disable}"
+                            ng-click="export()">export
+                    </button>
+                    <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+                        <span class="caret"></span>
+                        <span class="sr-only">Split button!</span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><button class="btn btn-default" ng-class="{'disabled':operations.share.disable}"
+                               ng-click="share()">share</button></li>
+                    </ul>
+                </div>
             </div>
             <div class="col-sm-1">
-               <!--<i style="padding: 20px 0 0 0; text-align: right"> Scenario(s)-->
+                <!--<i style="padding: 20px 0 0 0; text-align: right"> Scenario(s)-->
                 <!--<br/> Pre Page-->
-               <!--</i>-->
+                <!--</i>-->
             </div>
-                <div class="col-sm-1">
-                    <!--<input style="width: 40px; padding:0;"  type="number" min="1" max="100" class="form-control everyPageNumber" ng-model="numPerPage" ng-change="pageChanged(currentPage,numPerPage)">-->
-                    </div>
-                <div class="col-sm-4">
+            <div class="col-sm-1">
+                <!--<input style="width: 40px; padding:0;"  type="number" min="1" max="100" class="form-control everyPageNumber" ng-model="numPerPage" ng-change="pageChanged(currentPage,numPerPage)">-->
+            </div>
+            <div class="col-sm-4">
                 <pagination
                         boundary-links="true"
                         total-items="filteredScenarios.length"
@@ -146,3 +177,10 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        $("button").click(function () {
+            $("this").focusout();
+        });
+    });
+</script>

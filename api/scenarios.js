@@ -142,7 +142,7 @@ function share(db, requestData, res) {
         var scenarioId = requestData.scenarioId;
         var targetUsername = requestData.targetUsername;
         db.collection('users').findOneAndUpdate({username: targetUsername}, {$push: {scenarios: new ObjectId(scenarioId)}}, function (err, result) {
-            res.send(scenarioId);
+            res.send(result);
         });
     }
 }
