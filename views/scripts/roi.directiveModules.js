@@ -48,21 +48,20 @@ angular.module("ROIClientApp")
             restrict: 'EA',
             template: "" +
             "<div class='form-group-sm'>" +
-            "   <input type='text' ng-model='ngModel' class='form-control' ng-change='ngChange()' format-input ng-blur='checkRange()'>" +
-            "   <input type='range' ng-model='ngModel' ng-change='ngChange()' min='{{min}}' max='{{max}}'>" +
+            "   <input type='text' ng-model='ngModel' class='form-control' format-input ng-blur='checkRange()'>" +
+            "   <input type='range' ng-model='ngModel' min='{{min}}' max='{{max}}'>" +
             "</div>",
             scope: {
                 min: '=',
                 max: '=',
-                ngModel: '=',
-                ngChange: '&'
+                ngModel: '='
             },
             link: function (scope, element, attrs) {
                 scope.checkRange = function () {
-                    if (Number(scope.ngModel) < Number(scope.min)) {
+                    if (Number(scope.ngModel) < scope.min) {
                         scope.ngModel = scope.min;
                     }
-                    else if (Number(scope.ngModel) > Number(scope.max)) {
+                    else if (Number(scope.ngModel) > scope.max) {
                         scope.ngModel = scope.max;
                     }
                 };

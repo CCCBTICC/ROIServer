@@ -69,7 +69,8 @@
                         <td class="col-1 old">{{lookBack.history.semBSR | formatCurrency}}</td>
                         <td class="col-1 disabled old">&nbsp;</td>
                         <td class="col-1 range-input">
-                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.semBSlide" min="lookBack.output.semBMin" max="lookBack.output.semBMax"></range-input>
+                            <range-input ng-model="lookBack.output.semBSlide" min="lookBack.output.semBMin" max="lookBack.output.semBMax"></range-input>
+                            <!--<range-input ng-model="test"></range-input>-->
                         </td>
                         <!--<td>{{lookBack.output.semBSR | formatCurrency}}</td>-->
                         <td class="col-1 disabled">&nbsp;</td>
@@ -82,7 +83,7 @@
                         <td class="col-1 disabled old">&nbsp;</td>
                         <!--<td>{{lookBack.output.semCLB | formatCurrency}}</td>-->
                         <td class="col-1 range-input">
-                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.semCSlide" min="lookBack.output.semCMin" max="lookBack.output.semCMax"></range-input>
+                            <range-input ng-model="lookBack.output.semCSlide" min="lookBack.output.semCMin" max="lookBack.output.semCMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.semCUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.semCSR | formatCurrency}}</td>-->
@@ -96,7 +97,7 @@
                         <td class="col-1 disabled old">&nbsp;</td>
                         <!--<td>{{lookBack.output.semPLB | formatCurrency}}</td>-->
                         <td class="col-1 range-input">
-                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.semPSlide" min="lookBack.output.semPMin" max="lookBack.output.semPMax"></range-input>
+                            <range-input ng-model="lookBack.output.semPSlide" min="lookBack.output.semPMin" max="lookBack.output.semPMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.semPUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.semPSR | formatCurrency}}</td>-->
@@ -110,7 +111,7 @@
                         <td class="col-1 disabled old">&nbsp;</td>
                         <!--<td>{{lookBack.output.semOLB | formatCurrency}}</td>-->
                         <td class="col-1 range-input">
-                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.semOSlide" min="lookBack.output.semOMin" max="lookBack.output.semOMax"></range-input>
+                            <range-input ng-model="lookBack.output.semOSlide" min="lookBack.output.semOMin" max="lookBack.output.semOMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.semOUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.semOSR | formatCurrency}}</td>-->
@@ -124,7 +125,7 @@
                         <td class="col-1 old">{{lookBack.history.disPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.disLB | formatCurrency}}</td>-->
                         <td class="col-1 range-input">
-                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.disSlide" min="lookBack.output.disMin" max="lookBack.output.disMax"></range-input>
+                            <range-input ng-model="lookBack.output.disSlide" min="lookBack.output.disMin" max="lookBack.output.disMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.disUB | formatCurrency}}</td>-->
 
@@ -139,7 +140,7 @@
                         <td class="col-1 old">{{lookBack.history.socPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.socLB | formatCurrency}}</td>-->
                         <td class="col-1 range-input">
-                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.socSlide" min="lookBack.output.socMin" max="lookBack.output.socMax"></range-input>
+                            <range-input ng-model="lookBack.output.socSlide" min="lookBack.output.socMin" max="lookBack.output.socMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.socUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.socSR | formatCurrency}}</td>-->
@@ -153,7 +154,7 @@
                         <td class="col-1 old">{{lookBack.history.affPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.affLB | formatCurrency}}</td>-->
                         <td class="col-1 range-input">
-                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.affSlide" min="lookBack.output.affMin" max="lookBack.output.affMax"></range-input>
+                            <range-input ng-model="lookBack.output.affSlide" min="lookBack.output.affMin" max="lookBack.output.affMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.affUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.affSR | formatCurrency}}</td>-->
@@ -167,7 +168,7 @@
                         <td class="col-1 old">{{lookBack.history.parPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.parLB | formatCurrency}}</td>-->
                         <td class="col-1 range-input">
-                            <range-input ng-change="slideValidate()" ng-model="lookBack.output.parSlide" min="lookBack.output.parMin" max="lookBack.output.parMax"></range-input>
+                            <range-input ng-model="lookBack.output.parSlide" min="lookBack.output.parMin" max="lookBack.output.parMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.parUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.parSR | formatCurrency}}</td>-->
@@ -241,4 +242,6 @@
 
         </div>
     </div>
+    <input type="range" min="0" max="100" ng-model="value" ng-change="test1()"/>
+    <button ng-click="test2()">click</button>
 </div>

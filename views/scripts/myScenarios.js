@@ -231,14 +231,14 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
 
     };
     $scope.retrive = function () {
-        analysis.objIds.current = actionObjInfo[0];
         var retriveIndex = -1;
         $scope.scenarios.forEach(function (obj, index) {
-            if (obj._id === analysis.objIds.current) {
+            if (obj._id === actionObjInfo[0]) {
                 retriveIndex = index;
             }
         });
         if ($scope.scenarios[retriveIndex].exist) {
+            analysis.objIds.current = actionObjInfo[0];
             if ($scope.scenarios[retriveIndex].from === "forward") {
                 $location.path('planforward/output');
             }
@@ -246,6 +246,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 $location.path('lookback/output')
             }
         } else {
+            analysis.objIds.current = actionObjInfo[0];
             if ($scope.scenarios[retriveIndex].from === "forward") {
                 $location.path('planforward/output');
             }
@@ -700,15 +701,13 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenari
                 var name = {
                     beginDate: $scope.scenario.beginDate,
                     endDate: $scope.scenario.endDate,
-                    included: $scope.scenario.included,
-                    lmTouch: $scope.scenario.lmTouch,
                     final: "Yes"
                 };
                 console.log(name);
                 scenarios.checkFinal(name, function (res1) {
                     console.log(res1);
                     $scope.finalDisable = (res1[0] && res._id != res1[0]._id);
-                    user.getUserList(function (user) {
+                    user.getUser(function (user) {
                         if (user.name === res1[0].owner) {
                             $scope.message = "You already  have the final scenario";
                         }

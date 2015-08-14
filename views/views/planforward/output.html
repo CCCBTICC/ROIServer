@@ -41,7 +41,6 @@
     </script>
     <div class="row" ng-show="getJson">
         <div class="{{planforwardContentSize}}">
-
             <div class="table-responsive table-container">
                 <!--<div class="table-first-column">-->
                     <!--<table class="table roi-table fixed-table">-->
@@ -160,7 +159,7 @@
                         <!--<td>{{planForward.output.semBSF}}</td>-->
                         <td class="range-input col-1">
                             <range-input ng-model="planForward.output.semBSlide" min="planForward.output.semBMin"
-                                         max="planForward.output.semBMax" ng-change="slideValidate()"></range-input>
+                                         max="planForward.output.semBMax" ></range-input>
                         </td>
                         <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semBSD | formatCurrency}}</td>
@@ -180,7 +179,7 @@
                         <!--<td>{{planForward.output.semCSF}}</td>-->
                         <td class="range-input col-1">
                             <range-input ng-model="planForward.output.semCSlide" min="planForward.output.semCMin"
-                                         max="planForward.output.semCMax" ng-change="slideValidate()"></range-input>
+                                         max="planForward.output.semCMax"></range-input>
                         </td>
                         <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semCSD | formatCurrency}}</td>
@@ -200,7 +199,7 @@
                         <!--<td>{{planForward.output.semPSF}}</td>-->
                         <td class="range-input col-1">
                             <range-input ng-model="planForward.output.semPSlide" min="planForward.output.semPMin"
-                                         max="planForward.output.semPMax" ng-change="slideValidate()"></range-input>
+                                         max="planForward.output.semPMax"></range-input>
                         </td>
                         <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semPSD | formatCurrency}}</td>
@@ -220,7 +219,7 @@
                         <!--<td>{{planForward.output.semOSF}}</td>-->
                         <td class="range-input col-1">
                             <range-input ng-model="planForward.output.semOSlide" min="planForward.output.semOMin"
-                                         max="planForward.output.semOMax" ng-change="slideValidate()"></range-input>
+                                         max="planForward.output.semOMax" ></range-input>
                         </td>
                         <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semOAS-planForward.output.semOSR | formatCurrency}}</td>
@@ -240,7 +239,7 @@
                         <!--<td>{{planForward.output.disSF}}</td>-->
                         <td class="range-input col-1">
                             <range-input ng-model="planForward.output.disSlide" min="planForward.output.disMin"
-                                         max="planForward.output.disMax" ng-change="slideValidate()"></range-input>
+                                         max="planForward.output.disMax" ></range-input>
                         </td>
                         <td class="col-1">{{planForward.output.disAR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.disSD | formatCurrency}}</td>
@@ -260,7 +259,7 @@
                         <!--<td>{{planForward.output.socSF}}</td>-->
                         <td class="range-input col-1">
                             <range-input ng-model="planForward.output.socSlide" min="planForward.output.disMin"
-                                         max="planForward.output.disMax" ng-change="slideValidate()"></range-input>
+                                         max="planForward.output.disMax" ></range-input>
                         </td>
                         <td class="col-1">{{planForward.output.socAR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.socSD | formatCurrency}}</td>
@@ -280,7 +279,7 @@
                         <!--<td>{{planForward.output.affSF}}</td>-->
                         <td class="range-input col-1">
                             <range-input ng-model="planForward.output.affSlide" min="planForward.output.affMin"
-                                         max="planForward.output.affMax" ng-change="slideValidate()" ></range-input>
+                                         max="planForward.output.affMax" ></range-input>
                         </td>
                         <td class="col-1">{{planForward.output.affAR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.affSD | formatCurrency}}</td>
@@ -300,7 +299,7 @@
                         <!--<td>{{planForward.output.parSF }}</td>-->
                         <td class="range-input col-1">
                             <range-input ng-model="planForward.output.parSlide" min="planForward.output.parMin"
-                                         max="planForward.output.parMax" ng-change="slideValidate()"></range-input>
+                                         max="planForward.output.parMax"></range-input>
                         </td>
                         <td class="col-1">{{planForward.output.parAR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.parSD | formatCurrency}}</td>
@@ -342,7 +341,6 @@
                     </tbody>
                 </table>
             </div>
-
         </div>
         <div class="col-sm-4" ng-show="showme">
             <h4 style="text-align:center">Spend Difference</h4>
@@ -366,9 +364,7 @@
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reRun()" ng-class="{disabled:slideError}">Re-run</button>
-
                 <span ng-show="slideError" style="color:red; height:34px; width:64px; float: right">{{slideErrorValue}}</span>
-
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>
