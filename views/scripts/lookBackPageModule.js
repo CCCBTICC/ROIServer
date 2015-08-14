@@ -326,10 +326,8 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
             affiliates: false,
             partners: true
         };
-        $scope.selectPlan.semTotalCheckBox = false,
-            fix();
-        $scope.errormin = false;
-        $scope.errormax = false;
+        $scope.selectPlan.semTotalCheckBox = false;
+        fix();
         $scope.error = false;
     };
     $scope.spendValidate = function () {
@@ -372,7 +370,6 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                 ". Please increase to continue.";
         }
     };
-
 
     var count;
 
@@ -450,7 +447,6 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                     //        "spend":key
                     //    }
                     //});
-
                 }
             });
         }
@@ -513,7 +509,6 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
         }
         $scope.spendValidate();
     }
-
 
     //---------------main------------------------
 
@@ -671,7 +666,6 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         location.path('myscenarios/share');
     };  // pause
     $scope.toggle = function () {
-
         if ($scope.showme == false) {
             $scope.lookbackContentSize = 'col-sm-5';
             $scope.showme = true;
@@ -779,6 +773,11 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
                     console.log("from doGet in back/output", data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
+                    $scope.test={
+                        value:$scope.lookBack.output.semBSlide*2,
+                        min:$scope.lookBack.output.semBMin,
+                        max:$scope.lookBack.output.semBMax
+                    };
                     scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
                         console.log(res);
                     });
@@ -813,6 +812,9 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
                         //console.log($scope.lookBack.history);
                         //console.log($scope.lookBack.difference);
                         calculateDifference();
+                        $scope.$watchCollection('lookBack.output',function(){
+                            $scope.slideValidate();
+                        });
                     });
                 }
             });

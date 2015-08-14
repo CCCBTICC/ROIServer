@@ -10,11 +10,9 @@
     <!--<div class="waiting" style="height: 400px;" ng-hide="getJson" id="progress">-->
     <!--<div class="jumbotron">-->
     <!--<h2>Tool is calculating the most optimal scenario for you.</h2>-->
-
     <!--<h2>Result will appear shortly!</h2>-->
     <!--&lt;!&ndash;<h3>(Average waiting time is 10min.)</h3>&ndash;&gt;-->
     <!--</div>-->
-
     <!--</div>-->
     <div class="row" id="info">
         <div class="col-sm-12 well well-sm" ng-show="getJson">
@@ -37,7 +35,6 @@
                 <div class="row">
                     <label for="lookBackSpend" class="col-sm-offset-3 col-sm-2 control-label"
                            style="text-align: left; padding-left:0">Portfolio Spend :</label>
-
                     <div class="col-sm-3">
                         <input class="form-control" id="lookBackSpend" type="text" ng-model="dataInfo.spend"
                                ng-change="error=false" format-input ng-blur="spendValidate()">
@@ -120,28 +117,23 @@
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semBrand}">
                             <div ng-hide="selectPlan.checkBox.semBrand">
                                 <range-input ng-model="planForward.output.semBMin"
-                                             ng-change="spendValidate()" min="planForward.output.semBLB"
-                                             max="planForward.output.semBMax"></range-input>
+                                             min="planForward.output.semBLB" max="planForward.output.semBMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMin |
-                                formatCurrency}}
+                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMin | formatCurrency}}
                             </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semBrand}">
                             <div ng-hide="selectPlan.checkBox.semBrand">
                                 <range-input ng-model="planForward.output.semBMax"
-                                             ng-change="spendValidate()" min="planForward.output.semBMin"
-                                             max="planForward.output.semBUB"></range-input>
+                                             min="planForward.output.semBMin" max="planForward.output.semBUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMax |
-                                formatCurrency}}
+                            <div ng-show="selectPlan.checkBox.semBrand">{{planForward.output.semBMax | formatCurrency}}
                             </div>
                         </td>
                         <td>{{planForward.output.semBUB | formatCurrency}}</td>
                         <td class="check"><input type="number" string-to-number class="form-control"
                                                  ng-model="planForward.output.semBSF"
-                                                 min="0.5"
-                                                 max="1.5" step="0.05" style="width:80px"></td>
+                                                 min="0.5" max="1.5" step="0.05" style="width:80px" /></td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="td-subtitle">SEM-Card</td>
@@ -154,18 +146,16 @@
                         <td>{{planForward.output.semCLB | formatCurrency}}</td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semCard}">
                             <div ng-hide="selectPlan.checkBox.semCard">
-                                <range-input ng-model="planForward.output.semCMin" ng-change="spendValidate()"
-                                             min="planForward.output.semCLB"
-                                             max="planForward.output.semCMax"></range-input>
+                                <range-input ng-model="planForward.output.semCMin"
+                                             min="planForward.output.semCLB" max="planForward.output.semCMax"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.semCard">{{planForward.output.semCMin | formatCurrency}}
                             </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semCard}">
                             <div ng-hide="selectPlan.checkBox.semCard">
-                                <range-input ng-model="planForward.output.semCMax" ng-change="spendValidate()"
-                                             min="planForward.output.semCMin"
-                                             max="planForward.output.semCUB"></range-input>
+                                <range-input ng-model="planForward.output.semCMax"
+                                             min="planForward.output.semCMin" max="planForward.output.semCUB"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.semCard">{{planForward.output.semCMin | formatCurrency}}
                             </div>
@@ -187,28 +177,23 @@
                         <td>{{planForward.output.semPLB | formatCurrency}}</td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semPhotobook}">
                             <div ng-hide="selectPlan.checkBox.semPhotobook">
-                                <range-input ng-model="planForward.output.semPMin" ng-change="spendValidate()"
-                                             min="planForward.output.semPLB"
-                                             max="planForward.output.semPMax"></range-input>
+                                <range-input ng-model="planForward.output.semPMin"
+                                             min="planForward.output.semPLB" max="planForward.output.semPMax"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax |
-                                formatCurrency}}
+                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax | formatCurrency}}
                             </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semPhotobook}">
                             <div ng-hide="selectPlan.checkBox.semPhotobook">
-                                <range-input ng-model="planForward.output.semPMax" ng-change="spendValidate()"
-                                             min="planForward.output.semPMin"
-                                             max="planForward.output.semPUB"></range-input>
+                                <range-input ng-model="planForward.output.semPMax"
+                                             min="planForward.output.semPMin" max="planForward.output.semPUB"></range-input>
                             </div>
-                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax |
-                                formatCurrency}}
+                            <div ng-show="selectPlan.checkBox.semPhotobook">{{planForward.output.semPMax | formatCurrency}}
                             </div>
                         </td>
                         <td>{{planForward.output.semPUB | formatCurrency}}</td>
                         <td class="check"><input type="number" string-to-number class="form-control"
-                                                 ng-model="planForward.output.semPSF"
-                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                                                 ng-model="planForward.output.semPSF" min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
@@ -223,9 +208,8 @@
                         <td>{{planForward.output.semOLB | formatCurrency}}</td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semOthers}">
                             <div ng-hide="selectPlan.checkBox.semOthers">
-                                <range-input ng-model="planForward.output.semOMin" ng-change="spendValidate()"
-                                             min="planForward.output.semOLB"
-                                             max="planForward.output.semOMax"></range-input>
+                                <range-input ng-model="planForward.output.semOMin"
+                                             min="planForward.output.semOLB" max="planForward.output.semOMax"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.semOthers">{{planForward.output.semOMin |
                                 formatCurrency}}
@@ -233,9 +217,8 @@
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.semOthers}">
                             <div ng-hide="selectPlan.checkBox.semOthers">
-                                <range-input ng-model="planForward.output.semOMax" ng-change="spendValidate()"
-                                             min="planForward.output.semOMin"
-                                             max="planForward.output.semOUB"></range-input>
+                                <range-input ng-model="planForward.output.semOMax"
+                                             min="planForward.output.semOMin" max="planForward.output.semOUB"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.semOthers">{{planForward.output.semOMin |
                                 formatCurrency}}
@@ -243,8 +226,7 @@
                         </td>
                         <td>{{planForward.output.semOUB | formatCurrency}}</td>
                         <td class="check"><input type="number" string-to-number class="form-control"
-                                                 ng-model="planForward.output.semOSF"
-                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                                                 ng-model="planForward.output.semOSF" min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
                     <tr>
@@ -258,26 +240,23 @@
                         <td>{{planForward.output.disLB | formatCurrency}}</td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.display}">
                             <div ng-hide="selectPlan.checkBox.display">
-                                <range-input ng-model="planForward.output.disMin" ng-change="spendValidate()"
-                                             min="planForward.output.disLB"
-                                             max="planForward.output.disMax"></range-input>
+                                <range-input ng-model="planForward.output.disMin"
+                                             min="planForward.output.disLB" max="planForward.output.disMax"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.display">{{planForward.output.disMin | formatCurrency}}
                             </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.display}">
                             <div ng-hide="selectPlan.checkBox.display">
-                                <range-input ng-model="planForward.output.disMax" ng-change="spendValidate()"
-                                             min="planForward.output.disMin"
-                                             max="planForward.output.disUB"></range-input>
+                                <range-input ng-model="planForward.output.disMax"
+                                             min="planForward.output.disMin" max="planForward.output.disUB"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.display">{{planForward.output.disMin | formatCurrency}}
                             </div>
                         </td>
                         <td>{{planForward.output.disUB | formatCurrency}}</td>
                         <td class="check"><input type="number" string-to-number class="form-control"
-                                                 ng-model="planForward.output.disSF"
-                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                                                 ng-model="planForward.output.disSF" min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
                     <tr>
@@ -291,26 +270,23 @@
                         <td>{{planForward.output.socLB | formatCurrency}}</td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.social}">
                             <div ng-hide="selectPlan.checkBox.social">
-                                <range-input ng-model="planForward.output.socMin" ng-change="spendValidate()"
-                                             min="planForward.output.socLB"
-                                             max="planForward.output.socMax"></range-input>
+                                <range-input ng-model="planForward.output.socMin"
+                                             min="planForward.output.socLB" max="planForward.output.socMax"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.social">{{planForward.output.socMin | formatCurrency}}
                             </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.social}">
                             <div ng-hide="selectPlan.checkBox.social">
-                                <range-input ng-model="planForward.output.socMax" ng-change="spendValidate()"
-                                             min="planForward.output.socMin"
-                                             max="planForward.output.socUB"></range-input>
+                                <range-input ng-model="planForward.output.socMax"
+                                             min="planForward.output.socMin" max="planForward.output.socUB"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.social">{{planForward.output.socMin | formatCurrency}}
                             </div>
                         </td>
                         <td>{{planForward.output.socUB | formatCurrency}}</td>
                         <td class="check"><input type="number" string-to-number class="form-control"
-                                                 ng-model="planForward.output.socSF"
-                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                                                 ng-model="planForward.output.socSF" min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
                     <tr>
@@ -324,9 +300,8 @@
                         <td>{{planForward.output.affLB | formatCurrency}}</td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.affiliates}">
                             <div ng-hide="selectPlan.checkBox.affiliates">
-                                <range-input ng-model="planForward.output.affMin" ng-change="spendValidate()"
-                                             min="planForward.output.affLB"
-                                             max="planForward.output.affMax"></range-input>
+                                <range-input ng-model="planForward.output.affMin"
+                                             min="planForward.output.affLB" max="planForward.output.affMax"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.affiliates">{{planForward.output.affMin |
                                 formatCurrency}}
@@ -334,9 +309,8 @@
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.affiliates}">
                             <div ng-hide="selectPlan.checkBox.affiliates">
-                                <range-input ng-model="planForward.output.affMax" ng-change="spendValidate()"
-                                             min="planForward.output.affMin"
-                                             max="planForward.output.affUB"></range-input>
+                                <range-input ng-model="planForward.output.affMax"
+                                             min="planForward.output.affMin" max="planForward.output.affUB"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.affiliates">{{planForward.output.affMin |
                                 formatCurrency}}
@@ -344,8 +318,7 @@
                         </td>
                         <td>{{planForward.output.affUB | formatCurrency}}</td>
                         <td class="check"><input type="number" string-to-number class="form-control"
-                                                 ng-model="planForward.output.affSF"
-                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                                                 ng-model="planForward.output.affSF" min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
                     <tr>
@@ -359,26 +332,23 @@
                         <td>{{planForward.output.parLB | formatCurrency}}</td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.partners}">
                             <div ng-hide="selectPlan.checkBox.partners">
-                                <range-input ng-model="planForward.output.parMin" ng-change="spendValidate()"
-                                             min="planForward.output.parLB"
-                                             max="planForward.output.parMax"></range-input>
+                                <range-input ng-model="planForward.output.parMin"
+                                             min="planForward.output.parLB" max="planForward.output.parMax"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.partners">{{planForward.output.parMin | formatCurrency}}
                             </div>
                         </td>
                         <td class="range-input" ng-class="{disabled:selectPlan.checkBox.partners}">
                             <div ng-hide="selectPlan.checkBox.partners">
-                                <range-input ng-model="planForward.output.parMax" ng-change="spendValidate()"
-                                             min="planForward.output.parMin"
-                                             max="planForward.output.parUB"></range-input>
+                                <range-input ng-model="planForward.output.parMax"
+                                             min="planForward.output.parMin" max="planForward.output.parUB"></range-input>
                             </div>
                             <div ng-show="selectPlan.checkBox.partners">{{planForward.output.parMin | formatCurrency}}
                             </div>
                         </td>
                         <td>{{planForward.output.parUB | formatCurrency}}</td>
                         <td class="check"><input type="number" string-to-number class="form-control"
-                                                 ng-model="planForward.output.parSF"
-                                                 min=".5" max="1.5" step="0.05" style="width:80px"/>
+                                                 ng-model="planForward.output.parSF" min=".5" max="1.5" step="0.05" style="width:80px"/>
                         </td>
                     </tr>
                     <tr>

@@ -472,7 +472,6 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     };
     //scope functions
     $scope.nextPage = function () {
-        console.log('in next');
         $scope.spendValidate();
         if (!$scope.error) {
             if ($scope.planForward.ControlChannelsShow === "No") {
@@ -553,14 +552,11 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         if ($scope.getJson === false) {
             analysis.getData(function (data) {
                 if (data) {
-                    console.log("from doGet in forward/constrict after got Data", data);
                     $scope.getJson = true;
                     $scope.planForward.output = data;
                     $scope.$watchCollection('planForward.output',function(){
-                        console.log('from watch');
                         $scope.spendValidate();
                     });
-
                     $scope.calender.initDate();
                     history.getHistoryDate(function (res) {
                         var d = new Date(res[1]);
@@ -625,8 +621,6 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                             "spend": key
                         }
                     });
-
-
                 }
             });
         }
@@ -695,7 +689,8 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     //check objId
     if (!analysis.objIds.current) {
         location.path('planforward/init')
-    } else {
+    }
+    else {
         //get output Data
         doGet();
         count = setInterval(doGet, 1000 * 0.3);
@@ -746,7 +741,6 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
         location.path('myscenarios/share');
     };
     $scope.toggle = function () {
-
         if ($scope.showme == false) {
             $scope.planforwardContentSize = 'col-sm-6';
             $scope.showme = true;
@@ -1007,6 +1001,9 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
                     $scope.planForward.output.totSlide = Number($scope.planForward.output.totAS);
 
                     calculateDifference();
+                    $scope.$watchCollection('planForward.output',function(){
+                        $scope.slideValidate();
+                    });
                 }
             });
         }
@@ -1019,13 +1016,15 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     //check objId
     if (!analysis.objIds.current) {
         location.path("/planforward/init");
-    } else {
+    }
+    else {
         user.getUser(function (user) {
             $scope.user = user;
         });
         scenarios.getScenarioById(analysis.objIds.current, function (scenario) {
             console.log(scenario);
             $scope.scenario = scenario;
+            scenarios.dataInfo=scenario;
         });
         doGet();
         count = setInterval(doGet, 1000 * 0.3); //set frequency
