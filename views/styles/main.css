@@ -264,6 +264,7 @@ form .tooltip-inner {
 
 .ng-isolate-scope .btn {
     padding: 2px 2px;
+    border:none;
 }
 .check .form-control{
     height:22px;
@@ -776,7 +777,7 @@ table.roi-table tr > td.td-subtitle {
 table.roi-table tr > td.range-input {
     /*height: 40px;*/
     min-width: 100px;
-    width: 160px;
+    /*width: 160px;*/
     padding: 0;
 }
 
