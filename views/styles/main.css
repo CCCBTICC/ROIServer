@@ -75,18 +75,20 @@ body {
     text-transform: capitalize;
     font-size:15px;
 }
-.dropdown-menu{
-    border: none;
-    padding: 0;
-}
-
+/*.dropdown-menu{*/
+    /*/!*border: none;*!/*/
+    /*padding: 0;*/
+/*}*/
+/*.dropdown-menu li{*/
+    /*color:red;*/
+/*}*/
 /*  Input type='range'  */
 /*  General  */
 input[type=range] {
     -webkit-appearance: none;
     border: 1px solid white;
     width: 100%;
-    height: 4px;
+    height: 15px;
     padding: -10px;
 }
 
@@ -260,7 +262,7 @@ form .tooltip-inner {
     /*padding: 11px;*/
 /*}*/
 
-.dropdown-menu .btn {
+.ng-isolate-scope .btn {
     padding: 2px 2px;
 }
 .check .form-control{
@@ -533,7 +535,8 @@ form .tooltip-inner {
     padding:2px;
 }
 .form-group-sm .form-control{
-    height:20px;
+    height:18px;
+    border:none;
 }
 
 .table-first-column {
@@ -749,7 +752,7 @@ table.roi-table tr > .list-col-6 {
 
 table.roi-table tr > td {
     vertical-align: middle;
-    padding: 0px 15px 0px 0;
+    padding: 0px 5px 0px 0;
     text-overflow: ellipsis;
 }
 
