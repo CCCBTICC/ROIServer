@@ -683,6 +683,18 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     //functions
     var count;
 
+    function range() {
+        $scope.lookBack.output.semBSlide++;
+        $scope.lookBack.output.semCSlide++;
+        $scope.lookBack.output.semPSlide++;
+        $scope.lookBack.output.semOSlide++;
+
+        $scope.lookBack.output.disSlide++;
+        $scope.lookBack.output.socSlide++;
+        $scope.lookBack.output.affSlide++;
+        $scope.lookBack.output.parSlide++;
+    }
+
     function calculateDifference() {
         $scope.lookBack.difference = {
             semSD: $scope.lookBack.output.semAS - $scope.lookBack.history.semSR,
@@ -773,13 +785,10 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
                     console.log("from doGet in back/output", data);
                     $scope.getJson = true;
                     $scope.lookBack.output = data;
-                    $scope.test={
-                        value:$scope.lookBack.output.semBSlide*2,
-                        min:$scope.lookBack.output.semBMin,
-                        max:$scope.lookBack.output.semBMax
-                    };
+                    range();
                     scenarios.editScenario(data.UserName, analysis.objIds.current, {exist: true}, function (res) {
                         console.log(res);
+                        $scope.reset();
                     });
                     history.getHistoryData($scope.lookBack.output.StartingTime, $scope.lookBack.output.EndingTime, function (history) {
                         $scope.lookBack.history = {
@@ -811,8 +820,9 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
                         $scope.lookBack.history.ROI = ($scope.lookBack.history.totPR / $scope.lookBack.history.totSR - 1) * 100;
                         //console.log($scope.lookBack.history);
                         //console.log($scope.lookBack.difference);
+
                         calculateDifference();
-                        $scope.$watchCollection('lookBack.output',function(){
+                        $scope.$watchCollection('lookBack.output', function () {
                             $scope.slideValidate();
                         });
                     });
@@ -844,8 +854,15 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     $scope.$on('$destroy', function () {
         clearInterval(count);
     });//stop get request
-}])
-;
+
+    $scope.value = 0;
+    $scope.test1 = function () {
+        $scope.test.value = $scope.test.value - 0 + 10000;
+    };
+    $scope.test2 = function () {
+        $scope.lookBack.output.semBSlide = $scope.lookBack.output.semBSlide - 0 + 1000;
+    }
+}]);
 
 
 function adjustScroll() {

@@ -701,15 +701,13 @@ scenariosApp.controller("scenariosEditCtrl", function ($scope, analysis, scenari
                 var name = {
                     beginDate: $scope.scenario.beginDate,
                     endDate: $scope.scenario.endDate,
-                    included: $scope.scenario.included,
-                    lmTouch: $scope.scenario.lmTouch,
                     final: "Yes"
                 };
                 console.log(name);
                 scenarios.checkFinal(name, function (res1) {
                     console.log(res1);
                     $scope.finalDisable = (res1[0] && res._id != res1[0]._id);
-                    user.getUserList(function (user) {
+                    user.getUser(function (user) {
                         if (user.name === res1[0].owner) {
                             $scope.message = "You already  have the final scenario";
                         }
