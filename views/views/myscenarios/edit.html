@@ -28,9 +28,9 @@
             <div class="col-xs-11 col-sm-4">
                 <input class="form-control" ng-model="scenario.name">
             </div>
-            <div class="col-xs-1 elp-info">
-                <i class="fa fa-question-circle" tooltip-placement="left" tooltip="tooltip"></i>
-            </div>
+            <!--<div class="col-xs-1 elp-info">-->
+                <!--<i class="fa fa-question-circle" tooltip-placement="left" tooltip="tooltip"></i>-->
+            <!--</div>-->
         </div>
         <!--textarea notes-->
         <div class="form-group">
@@ -39,16 +39,25 @@
             <div class="col-xs-11 col-sm-4">
                 <textarea class="form-control" ng-model="scenario.note"></textarea>
             </div>
-            <div class="col-xs-1 elp-info">
-                <i class="fa fa-question-circle" tooltip-placement="left" tooltip="tooltip"></i>
-            </div>
+            <!--<div class="col-xs-1 elp-info">-->
+                <!--<i class="fa fa-question-circle" tooltip-placement="left" tooltip="tooltip"></i>-->
+            <!--</div>-->
         </div>
         <!--checkbox final scenario-->
         <div class="form-group">
-            <div class="col-xs-11 col-sm-4 col-sm-offset-2">
-            <div class="checkbox">
-                <label class="control-label">
-                    <input type="checkbox" ng-disabled="finalDisable" ng-model="scenario.final" ng-true-value="'Yes'" ng-false-value="'No'"> Final scenario
+            <label class="col-xs-12 col-sm-2 control-label">Final scenario:</label>
+            <!--<span>Final scenario:</span>-->
+            <div class="col-xs-11 col-sm-4">
+            <div>
+
+                <!--<label class="control-label">-->
+                    <!--<input type="checkbox" ng-disabled="finalDisable" ng-model="scenario.final" ng-true-value="'Yes'" ng-false-value="'No'"> Final scenario-->
+                <!--</label>-->
+                <label class="radio-inline ">
+                    <input type="radio" ng-model="scenario.final" ng-disabled="finalDisable" value="Yes"> Yes
+                </label>
+                <label class="radio-inline ">
+                    <input type="radio" ng-model="scenario.final" ng-disabled="finalDisable"  value="No"> No
                 </label>
                 <br> <span ng-show="finalDisable" style="color:red">{{message}}</span>
 
@@ -61,7 +70,7 @@
         <!--button save and cancel-->
         <div class="form-group">
             <div class="col-xs-6 col-xs-offset-0 col-sm-2 col-sm-offset-2">
-                <button type="button" class="btn btn-default" ng-click="update()">Save</button>
+                <button type="button" class="btn btn-default" ng-click="update()" >Save</button>
             </div>
             <div class="col-xs-6 col-sm-2">
                 <a href="#myscenarios" type="button" class="btn btn-default">Cancel</a>

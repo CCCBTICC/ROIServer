@@ -265,6 +265,10 @@ form .tooltip-inner {
 .ng-isolate-scope .btn {
     padding: 2px 2px;
     border:none;
+
+}
+.ng-isolate-scope .btn :active:focus{
+    outline: none;
 }
 .check .form-control{
     height:22px;
@@ -777,7 +781,7 @@ table.roi-table tr > td.td-subtitle {
 table.roi-table tr > td.range-input {
     /*height: 40px;*/
     min-width: 100px;
-    /*width: 160px;*/
+    width: 120px;
     padding: 0;
 }
 
@@ -792,6 +796,8 @@ table.roi-table tr > td.disabled {
     padding-right:15px;
     text-align: right;
     background-color: #e3e3e3;
+    width:120px;
+    height:34px;
 }
 table.roi-table tr > td.old ,table.roi-table tr > th.old {
     background-color: #eeeeee;
