@@ -76,19 +76,42 @@ app.controller("loginCtrl", function ($scope, $http) {
     $scope.login = {};
     $scope.login.username = "user1";
     $scope.login.password = "test";
+    $scope.login.authResult = '';
+    $scope.login.error = {username : false, password: false};
     $scope.signIn = function () {
+        $scope.login.error = {username : false, password: false};
         console.log("signin");
         $http({
             method: 'post',
             url: "http://" + window.location.hostname + ":3001/users/",
             data: {action: 'login', data: $scope.login}
         }).success(function (res) {
-            if (res) {
-                window.sessionStorage.setItem('username', res);
-                window.location.href = ('http://' + window.location.hostname + ':3001/home.html');
-            } else {
-                console.log('uncorrect');
+            console.log(res);
+            switch  (res.authResult) {
+                case 'falseUserName':
+                    console.log('uncorrectUsername');
+                    $scope.login.error.username = true;
+                    break;
+                case 'falsePassword':
+                    console.log('uncorrectPassword');
+                    $scope.login.error.password = true;
+                    break;
+                case 'success':
+                    window.sessionStorage.setItem('username', res.username);
+                    window.location.href = ('http://' + window.location.hostname + ':3001/home.html');
+                    break;
             }
+
+            //if (!res.authResult) {
+            //    window.sessionStorage.setItem('username', res.username);
+            //    window.location.href = ('http://' + window.location.hostname + ':3001/home.html');
+            //} else {
+            //    if(res.authResult ==='falseUserName'){
+            //        console.log('uncorrectUsername');
+            //    }else{
+            //    console.log('uncorrectPassword');
+            //    }
+            //}
         });
     };
 });

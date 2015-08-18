@@ -24,17 +24,24 @@ router.post('/', function (req, res) {
 });
 
 function userLogin(db, requestData, res) {
+    //console.log(requestData);
     var username = requestData.username;
     var password = requestData.password;
+    //var authResult = requestData.authResult;
     db.collection('users').findOne({username: username}, {fields: {password: 1}}, function (err, result) {
+        //console.log(result);
         if (result === null) {
-            res.send(false);
+            requestData.authResult = 'falseUserName';
+            res.send(requestData);
             return;
-        }
+        }else{
         if (result.password === password) {
-            res.send(username);
+            requestData.authResult = 'success';
+            res.send(requestData);
         } else {
-            res.send(false);
+            requestData.authResult = 'falsePassword';
+            res.send(requestData);
+        }
         }
     });
 }
