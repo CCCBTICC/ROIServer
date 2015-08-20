@@ -545,9 +545,9 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             {title: "Portfolio Total", value: 0, string: ""}
         ],
         config: {
-            width: 800,
+            width: 500,
             barHeight: 28,
-            margin: {left: 130, top: 30, right: 200, bottom: 30}
+            margin: {left: 10, top: 10, right: 0, bottom: 0}
         }
     };
     $scope.showme = false;
@@ -667,10 +667,60 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     };  // pause
     $scope.toggle = function () {
         if ($scope.showme == false) {
-            $scope.lookbackContentSize = 'col-sm-5';
+            $scope.lookbackContentSize = 'col-sm-8';
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
             //adjustScroll();
+            var categories = ['SEM Total','SEM-Brand','SEM-Cards','SEM-Photobook','SEM-Others','Display','Social','Affiliates','Parents'];
+            $('#container').highcharts({
+                chart: { type: 'bar'},
+                title: {text: 'Spend Difference'},
+                xAxis: [{categories: categories,
+                    opposite: true,
+                    reversed: true,
+                    labels: {
+                        step: 1
+                    }
+                }],
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    labels: {
+                        formatter: function () {
+                            return Math.abs(this.value) + '%';
+                        }
+                    }
+                },
+
+                plotOptions: {
+                    series: {
+                        stacking: 'normal'
+                    }
+
+                },
+
+                tooltip: {
+                    formatter: function () {
+                        return '<b>'  + this.point.category + '</b><br/>' +
+                            'Spend: $ ' + $scope.compareChart.data[0].value;
+                    }
+                },
+
+                series: [{
+                    showInLegend: false,
+                    data: [-8.2, 0, 0, -5.5, 0, 0, -3.2,
+                        0, -3.2],
+                    color: '#f05323',
+                    negativeColor: '#a0f7a7'
+                }, {
+                    showInLegend: false,
+                    data: [0, 2.6, 6.0, 0, 2.9,
+                        3.1, 0, 5.3, 0],
+                    color: '#f05323',
+                    negativeColor: '#a0f7a7'
+                }]
+            });
         }
         else {
             $scope.lookbackContentSize = 'col-sm-12';
@@ -864,8 +914,6 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     }
 }]);
 
-
-function adjustScroll() {
-
-    $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
+function chartData(value,option){
+    return option?value:0;
 }

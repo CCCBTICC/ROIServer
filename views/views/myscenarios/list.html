@@ -16,36 +16,13 @@
         });
     </script>
     <div class="row">
-
+        <div class="table-search">
+            <form class="form-search form-inline">
+                <input type="text" class="form-control search-query" placeholder="Search..." ng-model="searchText"
+                       ng-change="pageChanged(currentPage,numPerPage)"/>
+            </form>
+        </div>
         <div class="table-responsive">
-            <div class="table-search">
-
-                <form class="form-search form-inline">
-                    <input type="text" class="form-control search-query" placeholder="Search..." ng-model="searchText"
-                           ng-change="pageChanged(currentPage,numPerPage)"/>
-                </form>
-
-
-                <!--<div class="btn-group search-filter" dropdown>-->
-                <!--<button class="btn btn-default" ng-class="{'disabled':true}"-->
-                <!--ng-click="">Filter</button>-->
-                <!--<button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>-->
-                <!--<span class="caret"></span>-->
-                <!--<span class="sr-only">Split button!</span>-->
-                <!--</button>-->
-                <!--<ul class="dropdown-menu" role="menu">-->
-                <!--<li><a class="btn btn-default"  ng-click="">All</a></li>-->
-                <!--<li><a class="btn btn-default"  ng-click="">ID</a></li>-->
-                <!--<li><a class="btn btn-default"  ng-click="">Name</a></li>-->
-                <!--<li><a class="btn btn-default"  ng-click="">Owner</a></li>-->
-                <!--<li><a class="btn btn-default"  ng-click="">Create Date</a></li>-->
-                <!--<li><a class="btn btn-default"  ng-click="">Planned Spend</a></li>-->
-                <!--<li><a class="btn btn-default"  ng-click="">Data Through</a></li>-->
-                <!--</ul>-->
-                <!--</div>-->
-
-
-            </div>
             <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                 <thead>
                 <tr>
@@ -108,7 +85,7 @@
     <!--button bar-->
     <div class="row">
         <div class="col-sm-12 button-bar">
-            <div class="col-sm-offset-2 col-sm-2">
+            <div class="col-sm-offset-1 col-sm-2">
                 <button class="btn btn-default" ng-class="{'disabled':operations.compare.disable}"
                         ng-click="compare() ">compare
                 </button>

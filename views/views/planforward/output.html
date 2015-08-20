@@ -26,11 +26,16 @@
         </div>
     </div>
     <script>
+        $('.fixed-table-container-content').scroll(function () {
+            console.log('scrolling');
+            var a = $('.fixed-table-container-content').scrollTop();
+            $('.first-body').scrollTop(a);
+        });
         $('table.thead-fixed-top').on('scroll', function () {
             $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
-//            var adjustXY = $('.table-first-column').position();
-//            adjustXY.left =  $('table.thead-fixed-top > *').position().left;
-//            adjustXY.top =  $('table.thead-fixed-top > *').position().top;
+        });
+        $('.showgraphbtn').on('click', function () {
+            $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() *2);
         });
         $(document).ready(function(){
             $('.first-cell').outerHeight($('.col-1').height());
@@ -41,67 +46,56 @@
     </script>
     <div class="row" ng-show="getJson">
         <div class="{{planforwardContentSize}}">
-            <div class="table-responsive table-container">
-                <!--<div class="table-first-column">-->
-                    <!--<table class="table roi-table fixed-table">-->
-                        <!--<thead>-->
-                        <!--<tr>-->
-                            <!--<th rowspan="2" class="col-1 first-header">Portfolio <br/> Channels</th>-->
-                        <!--</tr>-->
-                        <!--</thead>-->
-                    <!--</table>-->
-                    <!--<table class="table table-striped table-bordered table-condensed roi-table first-column">-->
-                        <!--<tbody>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title first-cell" ng-click="hideSemItems = !hideSemItems">SEM Total-->
-                                <!--<button class="btn btn-xs btn-default"> <i ng-hide="hideSemItems" class="fa fa-minus"></i> <i-->
-                                        <!--ng-show="hideSemItems" class="fa fa-plus"> </i></button>-->
-                            <!--</td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-subtitle second-cell"><span>SEM - Brand</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-subtitle second-cell"><span>SEM - Card</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-subtitle second-cell"><span>SEM - Photobook</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-subtitle second-cell"><span>SEM - Others</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title second-cell"><span>Display</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title second-cell"><span>Social</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title second-cell"><span>Affiliates</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title second-cell"><span>Partners</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title second-cell"><span>Portfolio Total</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title second-cell"><span>Portfolio ROI</span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title second-cell"><span></span></td>-->
-                        <!--</tr>-->
-                        <!--<tr>-->
-                            <!--<td class="td-title second-cell"><span>Change in Brand Total Revenue</span></td>-->
-                        <!--</tr>-->
-                        <!--</tbody>-->
-                    <!--</table>-->
-                <!--</div>-->
+            <div class=" table-container table-responsive">
+                <table class="table table-striped table-bordered table-condensed first-table"  align="center">
+                    <thead>
+                    <tr>
+                        <th class="col-h-1" rowspan="2">Portfolio <br/>Channels</th>
+                    </tr>
+                    </thead>
+                    <tbody class="first-body">
+                    <tr>
+                        <td class="col-1 td-title" ng-click="hideSemItems = !hideSemItems">SEM Total&nbsp;&nbsp;<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="col-1 td-subtitle">SEM-Brand</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="col-1 td-subtitle">SEM-Cards</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="col-1 td-subtitle">SEM-Photobook</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="col-1 td-subtitle">SEM-Others</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Display</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Social</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Affiliates</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Partners</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Portfolio Total</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Portfolio ROI</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title" style="height: 48px">Change in Brand Total Revenue</td>
+                    </tr>
+                </table>
                 <table class="table table-bordered table-hover roi-table table-striped thead-fixed-top">
                     <thead>
                     <tr>
-                        <th rowspan="2" class="col-1 first-covered-column">Portfolio <br/> Channels
-                        </th>
+                        <!--<th rowspan="2" class="col-1 first-covered-column">Portfolio <br/> Channels-->
+                        <!--</th>-->
                         <th colspan="5" class="col-5" ng-hide="showme">Input</th>
                         <th colspan="2" class="col-2">Optimized</th>
                         <th colspan="2" class="col-2">What-if</th>
@@ -124,95 +118,95 @@
                         <th class="col-1">Rev</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="fixed-table-container-content">
                     <tr>
-                        <td class="td-title col-1" ng-click="hideSemItems = !hideSemItems">SEM Total
-                            <button class="btn btn-xs btn-default"> <i ng-hide="hideSemItems" class="fa fa-minus"></i> <i
-                                    ng-show="hideSemItems" class="fa fa-plus"> </i></button>
-                        </td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semLB | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semMin | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semMax | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semUB | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semBSF }}</td>
-                        <td class="col-1">{{planForward.output.semSR | formatCurrency}}</td>
-                        <td class="col-1">{{planForward.output.semPR | formatCurrency}}</td>
+                        <!--<td class="td-title col-1" ng-click="hideSemItems = !hideSemItems">SEM Total-->
+                            <!--<button class="btn btn-xs btn-default"> <i ng-hide="hideSemItems" class="fa fa-minus"></i> <i-->
+                                    <!--ng-show="hideSemItems" class="fa fa-plus"> </i></button>-->
+                        <!--</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semLB | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semMin | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semMax | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semUB | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semBSF }}</td>
+                        <td class="col-1column-height">{{planForward.output.semSR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semPR | formatCurrency}}</td>
                         <!--<td>{{planForward.output.semMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semBSF }}</td>-->
-                        <td class="col-1">{{planForward.output.semSlide | formatCurrency}}</td>
-                        <td class="col-1">{{planForward.output.semAR | formatCurrency}}</td>
-                        <td class="col-1">{{planForward.output.semSD | formatCurrency}}</td>
-                        <td class="col-1">{{planForward.output.semRD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semSlide | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semAR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semSD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semRD | formatCurrency}}</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="td-subtitle col-1">SEM - Brand</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semBLB | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semBMin | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semBMax | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semBUB | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semBSF}}</td>
-                        <td class="col-1">{{planForward.output.semBSR | formatCurrency}}</td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <!--<td class="td-subtitle col-1">SEM - Brand</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semBLB | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semBMin | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semBMax | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semBUB | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semBSF}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semBSR | formatCurrency}}</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                         <!--<td>{{planForward.output.semBMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semBMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semBSF}}</td>-->
-                        <td class="range-input col-1">
+                        <td class="range-input col-1 column-height">
                             <range-input ng-model="planForward.output.semBSlide" min="planForward.output.semBMin"
                                          max="planForward.output.semBMax" ></range-input>
                         </td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                         <td>{{planForward.output.semBSD | formatCurrency}}</td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="td-subtitle col-1">SEM - Card</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semCLB | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semCMin | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semCMax | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semCUB | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semCSF}}</td>
-                        <td class="col-1">{{planForward.output.semCSR | formatCurrency}}</td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <!--<td class="td-subtitle col-1">SEM - Card</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semCLB | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semCMin | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semCMax | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semCUB | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semCSF}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semCSR | formatCurrency}}</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                         <!--<td>{{planForward.output.semCMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semCMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semCSF}}</td>-->
-                        <td class="range-input col-1">
+                        <td class="range-input col-1 column-height">
                             <range-input ng-model="planForward.output.semCSlide" min="planForward.output.semCMin"
                                          max="planForward.output.semCMax"></range-input>
                         </td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                         <td>{{planForward.output.semCSD | formatCurrency}}</td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="td-subtitle col-1">SEM-Photobook</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semPLB | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semPMin | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semPMax | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semPUB | formatCurrency}}</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semPSF}}</td>
-                        <td class="col-1">{{planForward.output.semPSR | formatCurrency}}</td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <!--<td class="td-subtitle col-1">SEM-Photobook</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semPLB | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semPMin | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semPMax | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semPUB | formatCurrency}}</td>
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semPSF}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semPSR | formatCurrency}}</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                         <!--<td>{{planForward.output.semPMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semPMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semPSF}}</td>-->
-                        <td class="range-input col-1">
+                        <td class="range-input col-1 column-height">
                             <range-input ng-model="planForward.output.semPSlide" min="planForward.output.semPMin"
                                          max="planForward.output.semPMax"></range-input>
                         </td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                         <td>{{planForward.output.semPSD | formatCurrency}}</td>
-                        <td class="disabled col-1">&nbsp;</td>
+                        <td class="disabled col-1 column-height">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="td-subtitle col-1">SEM - Others</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.semOLB | formatCurrency}}</td>
+                        <!--<td class="td-subtitle col-1">SEM - Others</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.semOLB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semOMin | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semOMax | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semOUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.semOSF}}</td>
-                        <td class="col-1">{{planForward.output.semOSR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.semOSR | formatCurrency}}</td>
                         <td class="disabled col-1">&nbsp;</td>
                         <!--<td>{{planForward.output.semOMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semOMax | formatCurrency}}</td>-->
@@ -226,13 +220,13 @@
                         <td class="disabled col-1">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td class="td-title col-1">Display</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.disLB | formatCurrency}}</td>
+                        <!--<td class="td-title col-1">Display</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.disLB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.disMin | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.disMax | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.disUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.disSF}}</td>
-                        <td class="col-1">{{planForward.output.disSR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.disSR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.disPR | formatCurrency}}</td>
                         <!--<td>{{planForward.output.disMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.disMax | formatCurrency}}</td>-->
@@ -246,13 +240,13 @@
                         <td class="col-1">{{planForward.output.disRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="td-title col-1">Social</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.socLB | formatCurrency}}</td>
+                        <!--<td class="td-title col-1">Social</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.socLB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.socMin | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.socMax | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.socUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.socSF}}</td>
-                        <td class="col-1">{{planForward.output.socSR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.socSR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.socPR | formatCurrency}}</td>
                         <!--<td>{{planForward.output.socMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.socMax | formatCurrency}}</td>-->
@@ -266,13 +260,13 @@
                         <td class="col-1">{{planForward.output.socRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="td-title col-1">Affiliates</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.affLB | formatCurrency}}</td>
+                        <!--<td class="td-title col-1">Affiliates</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.affLB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.affMin | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.affMax | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.affUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.affSF}}</td>
-                        <td class="col-1">{{planForward.output.affSR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.affSR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.affPR | formatCurrency}}</td>
                         <!--<td>{{planForward.output.affMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.affMax | formatCurrency}}</td>-->
@@ -286,13 +280,13 @@
                         <td class="col-1">{{planForward.output.affRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="td-title col-1">Partners</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.parLB | formatCurrency}}</td>
+                        <!--<td class="td-title col-1">Partners</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.parLB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.parMin | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.parMax | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.parUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.parSF}}</td>
-                        <td class="col-1">{{planForward.output.parSR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.parSR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.parPR | formatCurrency}}</td>
                         <!--<td>{{planForward.output.parMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.parMax | formatCurrency}}</td>-->
@@ -306,14 +300,14 @@
                         <td class="col-1">{{planForward.output.parRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="td-title col-1">Portfolio Total</td>
-                        <td class="col-1" ng-hide="showme">{{planForward.output.totLB | formatCurrency}}</td>
+                        <!--<td class="td-title col-1">Portfolio Total</td>-->
+                        <td class="col-1 column-height" ng-hide="showme">{{planForward.output.totLB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.totMin | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.totMax | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme">{{planForward.output.totUB | formatCurrency}}</td>
                         <td class="col-1" ng-hide="showme"></td>
-                        <td class="col-1">{{planForward.output.totSR | formatCurrency}}</td>
-                        <td class="col-1">{{planForward.output.totPR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{planForward.output.totSR | formatCurrency}}</td>
+                        <td class="col-1 ">{{planForward.output.totPR | formatCurrency}}</td>
                         <!--<td>{{planForward.output.totMin | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.totMax | formatCurrency}}</td>-->
                         <!--<td></td>-->
@@ -323,20 +317,20 @@
                         <td class="col-1">{{planForward.output.totRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="td-title col-1">Portfolio ROI</td>
-                        <td class="col-1" colspan="5" ng-hide="showme"></td>
-                        <td class="col-1" colspan="2">{{planForward.output.run1ProjROI}}</td>
-                        <td class="col-1" colspan="2">{{planForward.output.run2ProjROI}}</td>
-                        <td class="col-1" colspan="2">{{planForward.output.ROID}}%</td>
+                        <!--<td class="td-title col-1">Portfolio ROI</td>-->
+                        <td class="col-1 column-height" colspan="5" ng-hide="showme"></td>
+                        <td class="col-1 column-height" colspan="2">{{planForward.output.run1ProjROI}}</td>
+                        <td class="col-1 column-height" colspan="2">{{planForward.output.run2ProjROI}}</td>
+                        <td class="col-1 column-height" colspan="2">{{planForward.output.ROID}}%</td>
                     </tr>
+                    <!--<tr>-->
+                        <!--<td class="col-1 column-height" colspan="all"></td>-->
+                    <!--</tr>-->
                     <tr>
-                        <td class="col-1" colspan="all"></td>
-                    </tr>
-                    <tr>
-                        <td class="td-title col-1">Change in Brand Total Revenue</td>
-                        <td class="col-1" colspan="9" ng-hide="showme"></td>
-                        <td class="col-1" colspan="4" ng-show="showme"></td>
-                        <td class="col-1" colspan="2">{{planForward.output.changeR  | number:0}}%</td>
+                        <!--<td class="td-title col-1">Change in Brand Total Revenue</td>-->
+                        <td class="col-1 " colspan="9" ng-hide="showme"></td>
+                        <td class="col-1 " colspan="4" ng-show="showme"></td>
+                        <td class="col-1" colspan="2" style="height: 48px">{{planForward.output.changeR  | number:0}}%</td>
                     </tr>
                     </tbody>
                 </table>
@@ -370,7 +364,7 @@
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>
             </div>
             <div class="col-sm-2">
-                <button type="button" class="btn btn-default" ng-click="toggle()">{{showGraph}}</button>
+                <button type="button" class="btn btn-default showgraphbtn" ng-click="toggle()">{{showGraph}}</button>
             </div>
         </div>
     </div>

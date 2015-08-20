@@ -26,7 +26,7 @@ angular.module('CompareChart', [])
                     data.forEach(function (item) {
                         maxValue = Math.max(maxValue, Math.abs(item.value));
                     });
-                    scaleFactor = (scope.config.width - scope.config.margin.left - scope.config.margin.right) / 2 / maxValue;
+                    scaleFactor = (scope.config.width - scope.config.margin.left - scope.config.margin.right) / 3 / maxValue;
 
                     d3.select('#chart').select('svg').remove();
                     var chartSvg = d3.select('#chart')
@@ -38,13 +38,13 @@ angular.module('CompareChart', [])
                     decreaceText.text('decrease')
                         .attr('x', midX / 2 + scope.config.margin.left)
                         .attr('y', textHeight)
-                        .attr('font-size', 14)
+                        .attr('font-size', 12)
                         .attr('text-anchor', "end");
                     var increaseText = chartSvg.append('text');
                     increaseText.text('increase')
                         .attr('x', midX / 2 * 3 - scope.config.margin.left)
                         .attr('y', textHeight)
-                        .attr('font-size', 14);
+                        .attr('font-size', 12);
 
                     data.forEach(function (item, index) {
                         //draw scale
@@ -72,23 +72,27 @@ angular.module('CompareChart', [])
                             .attr("height", barHeight - 10);
                         //render title text
                         var titleText = chartSvg.append('text');
-                        titleText.text(item.title)
+                        //titleText.text(item.title +' $'+item.string)
+                        titleText.text(item.title )
                             .attr('x', 0)
                             .attr('y', barHeight * index + scope.config.margin.top + barHeight - 7)
                             //.attr('fill', 'rgba(255, 255, 255, .4)')
                             //.attr('font-weight', -50000)
-                            .attr('font-size', 14)
+                            .attr('font-size', 12)
                             .attr('text-anchor', "left");
                         //end text
                         //render value text
                         var valueText = chartSvg.append('text');
-                        valueText.text('$'+item.string+' ('+Math.abs(item.value).toFixed(2)*100+'%)')
+                        valueText.text((Math.abs(item.value)*10000+'').split('.')[0]/100+'%')
                             .attr('font-size', 12)
                             .attr('fill', '#222')
+                            //.attr('x', (scope.config.width - scope.config.margin.right-scope.config.margin.left)/2 + 55);
                             .attr('x', Number(oldData[index].value) * oldScaleFactor + midX)
+                            //.attr('x', midX)
                             .attr('y', barHeight * index + scope.config.margin.top + textHeight + textMargin-3)
                             .transition()
-                            .attr('x', Number(item.value) * scaleFactor + midX);
+                           //.attr('x', Number(item.value) * scaleFactor + midX);
+                            .attr('x', (scope.config.width - scope.config.margin.right-scope.config.margin.left)/2 + 55);
                         //end text
                         if (item.value > 0) {
                             rect.attr("x", midX)
@@ -99,10 +103,12 @@ angular.module('CompareChart', [])
                             valueText.attr('text-anchor', 'end')
                         } else {
                             rect.attr("width", Math.abs(oldData[index].value) * oldScaleFactor)
-                                .attr("x", midX + Number(oldData[index].value) * oldScaleFactor)
+                                //.attr("x", midX + Number(oldData[index].value) * oldScaleFactor)
+                                .attr("x",  Number(oldData[index].value) * oldScaleFactor)
                                 .transition()
                                 .attr("width", Math.abs(item.value) * scaleFactor)
                                 .attr("x", midX + Number(item.value) * scaleFactor)
+                                //.attr("x", midX)
                                 .style('fill', '#DADADA');
                         }
                         //end rectangle

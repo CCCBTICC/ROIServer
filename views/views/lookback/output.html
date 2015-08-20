@@ -8,7 +8,7 @@
             <li>Output</li>
         </ol>
     </div>
-    <div class="row" ng-show="getJson" id="info">
+    <div class="row info-tool" ng-show="getJson" id="info">
         <div class="well well-sm">
             <label>Scenario ID:&nbsp</label>{{scenario.scenarioId}} <br>
             <label>Brand</label>: {{scenario.brand}}
@@ -28,146 +28,198 @@
 
     </div>
     <script>
+        $('.fixed-table-container-content').scroll(function () {
+            console.log('scrolling');
+            var a = $('.fixed-table-container-content').scrollTop();
+            $('.first-body').scrollTop(a);
+        });
         $('table.thead-fixed-top').on('scroll', function () {
             $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
         });
+        $('.showgraphbtn').on('click', function () {
+            $('table.thead-fixed-top > *').width($('info-tool').width());
+        });
     </script>
     <div class="row" ng-show="getJson" id="data">
-        <div class="{{lookbackContentSize}} container-fluid">
+        <div class="{{lookbackContentSize}} container-fluid" style="margin-right: 0">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered table-condensed roi-table thead-fixed-top"  align="center" style="width:80%;">
+                <table class="table table-striped table-bordered table-condensed first-table"  align="center">
                     <thead>
                     <tr>
-                        <th class="col-1" rowspan="2">Portfolio <br/>Channels</th>
-                        <th class="col-2 old" colspan="2">Actuals</th>
-                        <th class="col-2" colspan="2"> Optimized</th>
-                        <th class="col-2" colspan="2">Difference</th>
-                    </tr>
-                    <tr>
-                        <th class="col-1 old">Spend</th>
-                        <th class="col-1 old">Revenue</th>
-                        <!--<th class="col-1">Lower</th>-->
-                        <th class="col-1">Spend</th>
-                        <!--<th class="col-1">Upper</th>-->
-                        <th class="col-1">Revenue</th>
-                        <th class="col-1">Spend</th>
-                        <th class="col-1">Revenue</th>
+                        <th class="col-h-1" rowspan="2">Portfolio <br/>Channels</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="first-body">
                     <tr>
-                        <td class="col-1 td-title" ng-click="hideSemItems = !hideSemItems">SEM Total<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
-                        <td class="col-1 old">{{lookBack.history.semSR | formatCurrency}}</td>
-                        <td class="col-1 old">{{lookBack.history.semPR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.output.semAS | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.output.semAR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.semSD | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.semRD | formatCurrency}}</td>
+                        <td class="col-1 td-title" ng-click="hideSemItems = !hideSemItems">SEM Total&nbsp;&nbsp;<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
                     </tr>
                     <tr ng-hide="hideSemItems">
                         <td class="col-1 td-subtitle">SEM-Brand</td>
-                        <td class="col-1 old">{{lookBack.history.semBSR | formatCurrency}}</td>
-                        <td class="col-1 disabled old">&nbsp;</td>
-                        <td class="col-1 range-input">
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="col-1 td-subtitle">SEM-Cards</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="col-1 td-subtitle">SEM-Photobook</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <td class="col-1 td-subtitle">SEM-Others</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Display</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Social</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Affiliates</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Partners</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Portfolio Total</td>
+                    </tr>
+                    <tr>
+                        <td class="col-1 td-title">Portfolio ROI</td>
+                    </tr>
+                    <tr>
+                        <td class="td-title" style="height: 48px">Change in Brand Total Revenue</td>
+                    </tr>
+                </table>
+                <table class="table table-striped table-bordered table-condensed roi-table thead-fixed-top"  align="center" >
+                    <thead>
+                    <tr>
+                        <!--<th class="col-1" rowspan="2">Portfolio <br/>Channels</th>-->
+                        <th class="col-2 sub-header-height old" colspan="2">Actuals</th>
+                        <th class="col-2 sub-header-height " colspan="2"> Optimized</th>
+                        <th class="col-2 sub-header-height " colspan="2">Difference</th>
+                    </tr>
+                    <tr>
+                        <th class="col-1 sub-header-height old">Spend</th>
+                        <th class="col-1 sub-header-height old">Revenue</th>
+                        <!--<th class="col-1">Lower</th>-->
+                        <th class="col-1 sub-header-height">Spend</th>
+                        <!--<th class="col-1">Upper</th>-->
+                        <th class="col-1 sub-header-height">Revenue</th>
+                        <th class="col-1 sub-header-height">Spend</th>
+                        <th class="col-1 sub-header-height">Revenue</th>
+                    </tr>
+                    </thead>
+                    <tbody class="fixed-table-container-content">
+                    <tr>
+                        <!--<td class="col-1 td-title" ng-click="hideSemItems = !hideSemItems">SEM Total<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.semSR | formatCurrency}}</td>
+                        <td class="col-1 column-height old">{{lookBack.history.semPR | formatCurrency}}</td>
+                        <td class="col-1 column-height ">{{lookBack.output.semAS | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.output.semAR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.semSD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.semRD | formatCurrency}}</td>
+                    </tr>
+                    <tr ng-hide="hideSemItems">
+                        <!--<td class="col-1 td-subtitle">SEM-Brand</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.semBSR | formatCurrency}}</td>
+                        <td class="col-1 column-height disabled old">&nbsp;</td>
+                        <td class="col-1 column-height range-input">
                             <range-input ng-model="lookBack.output.semBSlide" min="lookBack.output.semBMin" max="lookBack.output.semBMax"></range-input>
                             <!--<range-input ng-model="test"></range-input>-->
                         </td>
                         <!--<td>{{lookBack.output.semBSR | formatCurrency}}</td>-->
-                        <td class="col-1 disabled">&nbsp;</td>
-                        <td class="col-1">{{lookBack.difference.semBSD | formatCurrency}}</td>
-                        <td class="col-1 disabled">&nbsp;</td>
+                        <td class="col-1 column-height disabled">&nbsp;</td>
+                        <td class="col-1 column-height">{{lookBack.difference.semBSD | formatCurrency}}</td>
+                        <td class="col-1 column-height disabled">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="col-1 td-subtitle">SEM-Cards</td>
-                        <td class="col-1 old">{{lookBack.history.semCSR | formatCurrency}}</td>
-                        <td class="col-1 disabled old">&nbsp;</td>
+                        <!--<td class="col-1 td-subtitle">SEM-Cards</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.semCSR | formatCurrency}}</td>
+                        <td class="col-1 column-height disabled old">&nbsp;</td>
                         <!--<td>{{lookBack.output.semCLB | formatCurrency}}</td>-->
-                        <td class="col-1 range-input">
+                        <td class="col-1 column-height range-input">
                             <range-input ng-model="lookBack.output.semCSlide" min="lookBack.output.semCMin" max="lookBack.output.semCMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.semCUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.semCSR | formatCurrency}}</td>-->
-                        <td class="col-1 disabled">&nbsp;</td>
-                        <td class="col-1">{{lookBack.difference.semCSD | formatCurrency}}</td>
-                        <td class="col-1 disabled">&nbsp;</td>
+                        <td class="col-1 column-height disabled">&nbsp;</td>
+                        <td class="col-1 column-height">{{lookBack.difference.semCSD | formatCurrency}}</td>
+                        <td class="col-1 column-height disabled">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="col-1 td-subtitle">SEM-Photobook</td>
-                        <td class="col-1 old">{{lookBack.history.semPSR | formatCurrency}}</td>
-                        <td class="col-1 disabled old">&nbsp;</td>
+                        <!--<td class="col-1 td-subtitle">SEM-Photobook</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.semPSR | formatCurrency}}</td>
+                        <td class="col-1 column-height disabled old">&nbsp;</td>
                         <!--<td>{{lookBack.output.semPLB | formatCurrency}}</td>-->
-                        <td class="col-1 range-input">
+                        <td class="col-1 column-height range-input">
                             <range-input ng-model="lookBack.output.semPSlide" min="lookBack.output.semPMin" max="lookBack.output.semPMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.semPUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.semPSR | formatCurrency}}</td>-->
-                        <td class="col-1 disabled">&nbsp;</td>
-                        <td class="col-1">{{lookBack.difference.semPSD | formatCurrency}}</td>
-                        <td class="col-1 disabled">&nbsp;</td>
+                        <td class="col-1 column-height disabled">&nbsp;</td>
+                        <td class="col-1 column-height">{{lookBack.difference.semPSD | formatCurrency}}</td>
+                        <td class="col-1 column-height disabled">&nbsp;</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="col-1 td-subtitle">SEM-Others</td>
-                        <td class="col-1 old">{{lookBack.history.semOSR | formatCurrency}}</td>
-                        <td class="col-1 disabled old">&nbsp;</td>
+                        <!--<td class="col-1 td-subtitle">SEM-Others</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.semOSR | formatCurrency}}</td>
+                        <td class="col-1 column-height disabled old">&nbsp;</td>
                         <!--<td>{{lookBack.output.semOLB | formatCurrency}}</td>-->
-                        <td class="col-1 range-input">
+                        <td class="col-1 column-height range-input">
                             <range-input ng-model="lookBack.output.semOSlide" min="lookBack.output.semOMin" max="lookBack.output.semOMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.semOUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.semOSR | formatCurrency}}</td>-->
-                        <td class="col-1 disabled">&nbsp;</td>
-                        <td class="col-1">{{lookBack.difference.semOSD | formatCurrency}}</td>
-                        <td class="col-1 disabled">&nbsp;</td>
+                        <td class="col-1 column-height disabled">&nbsp;</td>
+                        <td class="col-1 column-height">{{lookBack.difference.semOSD | formatCurrency}}</td>
+                        <td class="col-1 column-height disabled">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td class="col-1 td-title">Display</td>
-                        <td class="col-1 old">{{lookBack.history.disSR | formatCurrency}}</td>
-                        <td class="col-1 old">{{lookBack.history.disPR | formatCurrency}}</td>
+                        <!--<td class="col-1 td-title">Display</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.disSR | formatCurrency}}</td>
+                        <td class="col-1 column-height old">{{lookBack.history.disPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.disLB | formatCurrency}}</td>-->
-                        <td class="col-1 range-input">
+                        <td class="col-1 column-height range-input">
                             <range-input ng-model="lookBack.output.disSlide" min="lookBack.output.disMin" max="lookBack.output.disMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.disUB | formatCurrency}}</td>-->
 
                         <!--<td>{{lookBack.output.disSR | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.disAR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.disSD | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.disRD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.output.disAR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.disSD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.disRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="col-1 td-title">Social</td>
-                        <td class="col-1 old">{{lookBack.history.socSR | formatCurrency}}</td>
-                        <td class="col-1 old">{{lookBack.history.socPR | formatCurrency}}</td>
+                        <!--<td class="col-1 td-title">Social</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.socSR | formatCurrency}}</td>
+                        <td class="col-1 column-height old">{{lookBack.history.socPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.socLB | formatCurrency}}</td>-->
-                        <td class="col-1 range-input">
+                        <td class="col-1 column-height range-input">
                             <range-input ng-model="lookBack.output.socSlide" min="lookBack.output.socMin" max="lookBack.output.socMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.socUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.socSR | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.socAR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.socSD | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.socRD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.output.socAR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.socSD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.socRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="col-1 td-title">Affiliates</td>
-                        <td class="col-1 old">{{lookBack.history.affSR | formatCurrency}}</td>
-                        <td class="col-1 old">{{lookBack.history.affPR | formatCurrency}}</td>
+                        <!--<td class="col-1 td-title">Affiliates</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.affSR | formatCurrency}}</td>
+                        <td class="col-1 column-height old">{{lookBack.history.affPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.affLB | formatCurrency}}</td>-->
-                        <td class="col-1 range-input">
+                        <td class="col-1 column-height range-input">
                             <range-input ng-model="lookBack.output.affSlide" min="lookBack.output.affMin" max="lookBack.output.affMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.affUB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.affSR | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.affAR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.affSD | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.affRD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.output.affAR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.affSD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.affRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="col-1 td-title">Partners</td>
-                        <td class="col-1 old">{{lookBack.history.parSR | formatCurrency}}</td>
-                        <td class="col-1 old">{{lookBack.history.parPR | formatCurrency}}</td>
+                        <!--<td class="col-1 td-title">Partners</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.parSR | formatCurrency}}</td>
+                        <td class="col-1 column-height old">{{lookBack.history.parPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.parLB | formatCurrency}}</td>-->
-                        <td class="col-1 range-input">
+                        <td class="col-1 column-height range-input">
                             <range-input ng-model="lookBack.output.parSlide" min="lookBack.output.parMin" max="lookBack.output.parMax"></range-input>
                         </td>
                         <!--<td>{{lookBack.output.parUB | formatCurrency}}</td>-->
@@ -177,39 +229,37 @@
                         <td class="col-1">{{lookBack.difference.parRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="col-1 td-title">Portfolio Total</td>
-                        <td class="col-1 old">{{lookBack.history.totSR | formatCurrency}}</td>
-                        <td class="col-1 old">{{lookBack.history.totPR | formatCurrency}}</td>
+                        <!--<td class="col-1 td-title">Portfolio Total</td>-->
+                        <td class="col-1 column-height old">{{lookBack.history.totSR | formatCurrency}}</td>
+                        <td class="col-1 column-height old">{{lookBack.history.totPR | formatCurrency}}</td>
                         <!--<td>{{lookBack.output.totLB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.input.totSB | formatCurrency}}</td>-->
                         <!--<td>{{lookBack.output.totUB | formatCurrency}}</td>-->
-                        <td class="col-1">{{lookBack.output.totAS | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.output.totAR | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.totSD | formatCurrency}}</td>
-                        <td class="col-1">{{lookBack.difference.totRD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.output.totAS | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.output.totAR | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.totSD | formatCurrency}}</td>
+                        <td class="col-1 column-height">{{lookBack.difference.totRD | formatCurrency}}</td>
                     </tr>
                     <tr>
-                        <td class="col-1 td-title">Portfolio ROI</td>
-                        <td colspan="2" class="old col-2">{{lookBack.history.ROI | number:0}}%</td>
-                        <td colspan="2" class="col-2">{{lookBack.output.run1ProjROI}}</td>
-                        <td colspan="2" class="col-1">{{lookBack.difference.ROID | number:0}}%</td>
+                        <!--<td class="col-1 td-title">Portfolio ROI</td>-->
+                        <td colspan="2" class="old column-height col-2 column-height">{{lookBack.history.ROI | number:0}}%</td>
+                        <td colspan="2" class="col-2 column-height">{{lookBack.output.run1ProjROI}}</td>
+                        <td colspan="2" class="col-1 column-height">{{lookBack.difference.ROID | number:0}}%</td>
                     </tr>
                     <tr>
-                        <td colspan="7"></td>
-                    </tr>
-                    <tr>
-                        <td class="col-1 td-title">Change in Brand Total Revenue</td>
-                        <td colspan="4"></td>
-                        <td colspan="2">{{lookBack.difference.changeR | number:0}}%</td>
+                        <!--<td class="col-1 td-title">Change in Brand Total Revenue</td>-->
+                        <td colspan="4" rowspan="2"></td>
+                        <td colspan="2" style="height: 48px">{{lookBack.difference.changeR | number:0}}%</td>
                     </tr>
                     </tbody>
-                </table>
+                </table style>
             </div>
         </div>
-        <div class="col-sm-4" ng-show="showme">
-            <h4 style="text-align:center">Spend Difference</h4>
-            <compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>
+        <div class="col-sm-4" ng-show="showme" style="padding:0;">
+            <!--<h4 style="text-align:center">Spend Difference</h4>-->
+            <!--<compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>-->
             <!--<h4 style="text-align:center">(-)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(+)</h4>-->
+            <div id="container" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
         </div>
 
     </div>
@@ -237,11 +287,11 @@
                 <button type="button" class="btn btn-default" ng-click="reset()">Reset</button>
             </div>
             <div class="col-sm-2">
-                <button type="button" class="btn btn-default" ng-click="toggle()">{{showGraph}}</button>
+                <button type="button" class="btn btn-default showgraphbtn" ng-click="toggle()">{{showGraph}}</button>
             </div>
 
         </div>
     </div>
-    <input type="range" min="0" max="100" ng-model="value" ng-change="test1()"/>
-    <button ng-click="test2()">click</button>
+    <!--<input type="range" min="0" max="100" ng-model="value" ng-change="test1()"/>-->
+    <!--<button ng-click="test2()">click</button>-->
 </div>
