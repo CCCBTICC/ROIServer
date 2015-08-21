@@ -94,7 +94,6 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
         owner: ""
     };
     $scope.lookBack = {init: {}};
-
     //scope functions
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
@@ -553,7 +552,17 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     $scope.showme = false;
     $scope.lookbackContentSize = 'col-sm-12';
     $scope.showGraph = 'Show Graph';
-
+    $scope.hideSemItems=false;
+    $scope.showSem = {
+        showSemBtn : function(){
+            $scope.hideSemItems = !$scope.hideSemItems;
+            if($scope.hideSemItems){
+                insertChartData('part');
+            }else{
+                insertChartData('full');
+            }
+        }
+    };
     //scope functions
     $scope.slideValidate = function () {
         $scope.slideError = false;
@@ -605,7 +614,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
         if (Number($scope.lookBack.output.totSR) < sum) {
             console.log(sum);
             $scope.slideError = true;
-            $scope.slideErrorValue = "Your 'min' is over than " + filter('formatCurrency')(sum - $scope.lookBack.output.totSR);
+            $scope.slideErrorValue = "Your 'min' is over by " + filter('formatCurrency')(sum - $scope.lookBack.output.totSR);
         }
         if (Number($scope.lookBack.output.totSR) > sumMax) {
             $scope.slideError = true;
@@ -671,56 +680,7 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
             //adjustScroll();
-            var categories = ['SEM Total','SEM-Brand','SEM-Cards','SEM-Photobook','SEM-Others','Display','Social','Affiliates','Parents'];
-            $('#container').highcharts({
-                chart: { type: 'bar'},
-                title: {text: 'Spend Difference'},
-                xAxis: [{categories: categories,
-                    opposite: true,
-                    reversed: true,
-                    labels: {
-                        step: 1
-                    }
-                }],
-                yAxis: {
-                    title: {
-                        text: null
-                    },
-                    labels: {
-                        formatter: function () {
-                            return Math.abs(this.value) + '%';
-                        }
-                    }
-                },
-
-                plotOptions: {
-                    series: {
-                        stacking: 'normal'
-                    }
-
-                },
-
-                tooltip: {
-                    formatter: function () {
-                        return '<b>'  + this.point.category + '</b><br/>' +
-                            'Spend: $ ' + $scope.compareChart.data[0].value;
-                    }
-                },
-
-                series: [{
-                    showInLegend: false,
-                    data: [-8.2, 0, 0, -5.5, 0, 0, -3.2,
-                        0, -3.2],
-                    color: '#f05323',
-                    negativeColor: '#a0f7a7'
-                }, {
-                    showInLegend: false,
-                    data: [0, 2.6, 6.0, 0, 2.9,
-                        3.1, 0, 5.3, 0],
-                    color: '#f05323',
-                    negativeColor: '#a0f7a7'
-                }]
-            });
+            insertChartData('full');
         }
         else {
             $scope.lookbackContentSize = 'col-sm-12';
@@ -729,6 +689,143 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             //adjustScroll();
         }
     };  // show&hide graph
+
+
+    //function for the toggles btns
+
+     function insertChartData (option) {
+         if(option === 'full'){
+             console.log($scope.compareChart.data);
+         var categories = [];
+         var dataPositive =[];
+         var dataNegative = [];
+             $scope.compareChart.data.forEach(function(singleData,index){
+                 categories[index] = singleData.title;
+             dataPositive[index] = chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,true);
+             dataNegative[index] = chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,false);
+         });
+             console.log(categories);
+             console.log(dataPositive);
+             console.log(dataNegative);
+
+             $('#container').highcharts({
+             credits: {enabled: false},
+             chart: { type: 'bar',backgroundColor:'#fafafa'},
+             title: {text: 'Spend Difference (%)'},
+             subtitle: {
+                 useHTML: true,
+                 text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                 align: 'center',
+                 x:-50,
+                 y:50
+             },
+             xAxis: [{categories: categories,opposite: true,reversed: true,
+                 labels: { step: 1}
+             }],
+             yAxis: {
+                 title: {text: null},
+                 labels: {
+                     formatter: function () {
+                         return Math.abs(this.value) + '%';
+                     }
+                 }
+             },
+             plotOptions: {
+                 series: {
+                     stacking: 'normal'
+                 }
+             },
+             tooltip: {
+                 formatter: function () {
+                     console.log(this.point);
+                     return '<b>'  + this.point.stackTotal+ '%</b><br/>' ;
+                 }
+             },
+             series: [{
+                 showInLegend: false,
+                 data: dataNegative,
+                 color: '#a0f7a7',
+                 negativeColor: '#f05323'
+             }, {
+                 showInLegend: false,
+                 data:dataPositive,
+                 color: '#a0f7a7',
+                 negativeColor: '#f05323'
+             }]
+         });
+         }else{
+             console.log($scope.compareChart.data);
+             var categories = [];
+             var dataPositive =[];
+             var dataNegative = [];
+             $scope.compareChart.data.forEach(function(singleData,index){
+                 if( ["SEM-Brand", "SEM-Card", "SEM-Photobook", "SEM-Others"].indexOf(singleData.title)>=0){
+
+                 }else{
+                 categories.push( singleData.title);
+                 dataPositive.push(chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,true));
+                 dataNegative.push(chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,false));
+                 } });
+             console.log(categories);
+             console.log(dataPositive);
+             console.log(dataNegative);
+
+             $('#container').highcharts({
+                 credits: {enabled: false},
+                 chart: { type: 'bar',backgroundColor:'#fafafa'},
+                 title: {text: 'Spend Difference (%)'},
+                 subtitle: {
+                     useHTML: true,
+                     text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                     align: 'center',
+                     x:-50,
+                     y:50
+                 },
+                 xAxis: [{categories: categories,opposite: true,reversed: true,
+                     labels: { step: 1}
+                 }],
+                 yAxis: {
+                     title: {text: null},
+                     labels: {
+                         formatter: function () {
+                             return Math.abs(this.value) + '%';
+                         }
+                     }
+                 },
+                 plotOptions: {
+                     series: {
+                         stacking: 'normal'
+                     }
+                 },
+                 tooltip: {
+                     formatter: function () {
+                         console.log(this.point);
+                         return '<b>'  + this.point.stackTotal+ '%</b><br/>' ;
+                     }
+                 },
+                 series: [{
+                     showInLegend: false,
+                     data: dataNegative,
+                     color: '#a0f7a7',
+                     negativeColor: '#f05323'
+                 }, {
+                     showInLegend: false,
+                     data:dataPositive,
+                     color: '#a0f7a7',
+                     negativeColor: '#f05323'
+                 }]
+             });
+         }
+         function chartDataSeparate(value,option){
+             if(option){
+                 return value>0?value:0;
+             }else{
+                 return value>0?0:value;
+             }
+         }
+
+     }
+
 
     //functions
     var count;
@@ -914,6 +1011,3 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
     }
 }]);
 
-function chartData(value,option){
-    return option?value:0;
-}

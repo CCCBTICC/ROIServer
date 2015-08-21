@@ -729,6 +729,156 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     $scope.showme = false;
     $scope.planforwardContentSize = 'col-sm-12';
     $scope.showGraph = 'Show Graph';
+    $scope.hideSemItems=false;
+    $scope.showSem = {
+        showSemBtn : function(){
+            $scope.hideSemItems = !$scope.hideSemItems;
+            if($scope.hideSemItems){
+                insertChartData('part');
+            }else{
+                insertChartData('full');
+            }
+        }
+    };
+
+
+
+    //function for the toggles btns
+
+    function insertChartData (option) {
+        if(option === 'full'){
+            console.log($scope.compareChart.data);
+            var categories = [];
+            var dataPositive =[];
+            var dataNegative = [];
+            $scope.compareChart.data.forEach(function(singleData,index){
+                categories[index] = singleData.title;
+                dataPositive[index] = chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,true);
+                dataNegative[index] = chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,false);
+            });
+            console.log(categories);
+            console.log(dataPositive);
+            console.log(dataNegative);
+
+            $('#container').highcharts({
+                credits: {enabled: false},
+                chart: { type: 'bar',backgroundColor:'#fafafa'},
+                title: {text: 'Spend Difference (%)'},
+                subtitle: {
+                    useHTML: true,
+                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                    align: 'center',
+                    x:-50,
+                    y:50
+                },
+                xAxis: [{categories: categories,opposite: true,reversed: true,
+                    labels: { step: 1}
+                }],
+                yAxis: {
+                    title: {text: null},
+                    labels: {
+                        formatter: function () {
+                            return Math.abs(this.value) + '%';
+                        }
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        console.log(this.point);
+                        return '<b>'  + this.point.stackTotal+ '%</b><br/>' ;
+                    }
+                },
+                series: [{
+                    showInLegend: false,
+                    data: dataNegative,
+                    color: '#a0f7a7',
+                    negativeColor: '#f05323'
+                }, {
+                    showInLegend: false,
+                    data:dataPositive,
+                    color: '#a0f7a7',
+                    negativeColor: '#f05323'
+                }]
+            });
+        }else{
+            console.log($scope.compareChart.data);
+            var categories = [];
+            var dataPositive =[];
+            var dataNegative = [];
+            $scope.compareChart.data.forEach(function(singleData,index){
+                if( ["SEM-Brand", "SEM-Card", "SEM-Photobook", "SEM-Others"].indexOf(singleData.title)>=0){
+
+                }else{
+                    categories.push( singleData.title);
+                    dataPositive.push(chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,true));
+                    dataNegative.push(chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,false));
+                } });
+            console.log(categories);
+            console.log(dataPositive);
+            console.log(dataNegative);
+
+            $('#container').highcharts({
+                credits: {enabled: false},
+                chart: { type: 'bar',backgroundColor:'#fafafa'},
+                title: {text: 'Spend Difference (%)'},
+                subtitle: {
+                    useHTML: true,
+                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                    align: 'center',
+                    x:-50,
+                    y:50
+                },
+                xAxis: [{categories: categories,opposite: true,reversed: true,
+                    labels: { step: 1}
+                }],
+                yAxis: {
+                    title: {text: null},
+                    labels: {
+                        formatter: function () {
+                            return Math.abs(this.value) + '%';
+                        }
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        console.log(this.point);
+                        return '<b>'  + this.point.stackTotal+ '%</b><br/>' ;
+                    }
+                },
+                series: [{
+                    showInLegend: false,
+                    data: dataNegative,
+                    color: '#a0f7a7',
+                    negativeColor: '#f05323'
+                }, {
+                    showInLegend: false,
+                    data:dataPositive,
+                    color: '#a0f7a7',
+                    negativeColor: '#f05323'
+                }]
+            });
+        }
+        function chartDataSeparate(value,option){
+            if(option){
+                return value>0?value:0;
+            }else{
+                return value>0?0:value;
+            }
+        }
+
+    }
+
+
 
     //scope functions
     $scope.edit = function () {
@@ -742,9 +892,10 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
     };
     $scope.toggle = function () {
         if ($scope.showme == false) {
-            $scope.planforwardContentSize = 'col-sm-6';
+            $scope.planforwardContentSize = 'col-sm-8';
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
+            insertChartData('full');
         }
         else {
             $scope.planforwardContentSize = 'col-sm-12';

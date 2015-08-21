@@ -768,18 +768,21 @@ table.roi-table tr > .col-6 {
 table.roi-table tr > .list-col-0 {
     min-width: 40px;
     max-width: 60px;
+    width:40px;
     overflow: hidden;
 }
 
 table.roi-table tr > .list-col-1 {
     min-width: 80px;
     max-width: 80px;
+    width:80px;
     overflow: hidden;
 }
 
 table.roi-table tr > .list-col-2 {
     min-width: 120px;
     max-width: 160px;
+    width:120px;
     overflow: hidden;
     padding:5px;
 }
@@ -787,6 +790,7 @@ table.roi-table tr > .list-col-2 {
 table.roi-table tr > .list-col-3 {
     min-width: 240px;
     max-width: 300px;
+    width:240px;
     overflow: hidden;
     padding:0;
 }
@@ -794,18 +798,21 @@ table.roi-table tr > .list-col-3 {
 table.roi-table tr > .list-col-4 {
     min-width: 480px;
     max-width: 520px;
+    width: 480px;
     overflow: hidden;
 }
 
 table.roi-table tr > .list-col-5 {
     min-width: 600px;
     max-width: 640px;
+    width: 600px;
     overflow: hidden;
 }
 
 table.roi-table tr > .list-col-6 {
     min-width: 720px;
     max-width: 760px;
+    width: 720px;
     overflow: hidden;
 }
 

@@ -13,7 +13,7 @@
 
         </div>
     </div>
-    <div class="row" ng-show="getJson">
+    <div class="row info-tool" ng-show="getJson">
         <div class="well well-sm">
             <label>Scenario ID:&nbsp</label>{{scenario.scenarioId}}<br>
             <label>Brand</label>: {{scenario.brand}}
@@ -35,7 +35,7 @@
             $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
         });
         $('.showgraphbtn').on('click', function () {
-            $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() *2);
+            $('table.thead-fixed-top > *').width($('info-tool').width() );
         });
         $(document).ready(function(){
             $('.first-cell').outerHeight($('.col-1').height());
@@ -55,19 +55,19 @@
                     </thead>
                     <tbody class="first-body">
                     <tr>
-                        <td class="col-1 td-title" ng-click="hideSemItems = !hideSemItems">SEM Total&nbsp;&nbsp;<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
+                        <td class="col-1 td-title" ng-click="showSem.showSemBtn()">SEM Total&nbsp;&nbsp;<button class="btn btn-xs btn-default"><i ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems" class="fa fa-plus"></i></button></td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="col-1 td-subtitle">SEM-Brand</td>
+                        <td class="col-1 td-subtitle">&nbsp;&nbsp;SEM-Brand</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="col-1 td-subtitle">SEM-Cards</td>
+                        <td class="col-1 td-subtitle">&nbsp;&nbsp;SEM-Cards</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="col-1 td-subtitle">SEM-Photobook</td>
+                        <td class="col-1 td-subtitle">&nbsp;&nbsp;SEM-Photobook</td>
                     </tr>
                     <tr ng-hide="hideSemItems">
-                        <td class="col-1 td-subtitle">SEM-Others</td>
+                        <td class="col-1 td-subtitle">&nbsp;&nbsp;SEM-Others</td>
                     </tr>
                     <tr>
                         <td class="col-1 td-title">Display</td>
@@ -337,8 +337,11 @@
             </div>
         </div>
         <div class="col-sm-4" ng-show="showme">
-            <h4 style="text-align:center">Spend Difference</h4>
-            <compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>
+            <!--<h4 style="text-align:center">Spend Difference</h4>-->
+            <!--<compare-chart compare-data="compareChart.data" config="compareChart.config"></compare-chart>-->
+
+            <div id="container" style="min-width: 400px; max-width: 800px; height: 380px; margin: 0 auto"></div>
+
         </div>
     </div>
     <div class="row table-buttons"  ng-show="getJson">

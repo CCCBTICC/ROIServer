@@ -23,7 +23,7 @@
                         <th colspan="2" class="col-2">{{compareChart.actionObjInfo[0].scenarioId}}</th>
                         <th colspan="2" class="col-2">{{compareChart.actionObjInfo[1].scenarioId}}</th>
                         <th colspan="2" class="col-2">Difference</th>
-                        <th rowspan="2" class="col-6">Spend Difference</th>
+                        <th rowspan="2" class="col-6">Spend Difference (%)</th>
                     </tr>
                     <tr>
                         <th class="col-1">Spend</th>
@@ -37,7 +37,7 @@
                     <tbody style="max-height: 500px">
                     <tr>
                         <td class="td-title col-1">SEM Total
-                            <button class="btn btn-xs btn-default" ng-click="hideSemItems = !hideSemItems"><i
+                            <button class="btn btn-xs btn-default" ng-click="showSem.showSemBtn()"><i
                                     ng-hide="hideSemItems" class="fa fa-minus"></i><i ng-show="hideSemItems"
                                                                                       class="fa fa-plus"></i></button>
                         </td>
@@ -48,8 +48,10 @@
                         <td class="col-1">{{compareObj.difference.semAS | formatCurrency}}</td>
                         <td class="col-1">{{compareObj.difference.semAR | formatCurrency}}</td>
                         <td rowspan="100" class="compare-chart col-6">
-                            <compare-chart compare-data="compareChart.data"
-                                           config="compareChart.config"></compare-chart>
+                            <!--<compare-chart compare-data="compareChart.data"-->
+                                           <!--config="compareChart.config"></compare-chart>-->
+                            <div id="container" style="min-width: 400px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+
                         </td>
                     </tr>
                     <tr ng-hide="hideSemItems">
@@ -137,6 +139,7 @@
                         <td class="td-title">Portfolio ROI</td>
                         <td colspan="2">{{compareObj.first.run2ProjROI}}</td>
                         <td colspan="2">{{compareObj.second.run2ProjROI}}</td>
+                        <!--<td colspan="2">{{compareObj.difference.run2ProjROI | number:0}}%</td>-->
                         <td colspan="2">{{compareObj.difference.run2ProjROI | number:0}}%</td>
                     </tr>
                     <tr>
@@ -145,7 +148,7 @@
                     <tr>
                         <td class="col-1 td-title">Change in Brand Total Revenue</td>
                         <td colspan="4"></td>
-                        <td colspan="2">{{compareObj.difference.changeR | number:0}}%</td>
+                        <td colspan="2">{{compareObj.difference.changeR*100 | number:0}}%</td>
                     </tr>
                     </tbody>
                 </table>

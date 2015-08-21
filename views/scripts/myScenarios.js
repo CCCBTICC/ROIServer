@@ -753,7 +753,152 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
     $scope.firstGot = false;
     $scope.secondGot = false;
 
+    $scope.hideSemItems=false;
+    $scope.showSem = {
+        showSemBtn : function(){
+            $scope.hideSemItems = !$scope.hideSemItems;
+            if($scope.hideSemItems){
+                insertChartData('part');
+            }else{
+                insertChartData('full');
+            }
+        }
+    };
     //scope functions
+  setTimeout(function(){ insertChartData('full'); },1500);
+    function insertChartData (option) {
+        if(option === 'full'){
+            console.log($scope.compareChart.data);
+            var categories = [];
+            var dataPositive =[];
+            var dataNegative = [];
+            $scope.compareChart.data.forEach(function(singleData,index){
+                categories[index] = singleData.title;
+                dataPositive[index] = chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,true);
+                dataNegative[index] = chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,false);
+            });
+            console.log(categories);
+            console.log(dataPositive);
+            console.log(dataNegative);
+
+            $('#container').highcharts({
+                credits: {enabled: false},
+                chart: { type: 'bar',backgroundColor:'#fafafa'},
+                title: {text: null},
+                subtitle: {
+                    useHTML: true,
+                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                    align: 'center',
+                    x:-0,
+                    y:10
+                },
+                xAxis: [{categories: categories,opposite: true,reversed: true,
+                    labels: { step: 1}
+                }],
+                yAxis: {
+                    title: {text: null},
+                    labels: {
+                        formatter: function () {
+                            return Math.abs(this.value) + '%';
+                        }
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        console.log(this.point);
+                        return '<b>'  + this.point.stackTotal+ '%</b><br/>' ;
+                    }
+                },
+                series: [{
+                    showInLegend: false,
+                    data: dataNegative,
+                    color: '#a0f7a7',
+                    negativeColor: '#f05323'
+                }, {
+                    showInLegend: false,
+                    data:dataPositive,
+                    color: '#a0f7a7',
+                    negativeColor: '#f05323'
+                }]
+            });
+        }else{
+            console.log($scope.compareChart.data);
+            var categories = [];
+            var dataPositive =[];
+            var dataNegative = [];
+            $scope.compareChart.data.forEach(function(singleData,index){
+                if( ["SEM-Brand", "SEM-Card", "SEM-Photobook", "SEM-Others"].indexOf(singleData.title)>=0){
+
+                }else{
+                    categories.push( singleData.title);
+                    dataPositive.push(chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,true));
+                    dataNegative.push(chartDataSeparate((singleData.value*10000+'').split('.')[0]/100,false));
+                } });
+            console.log(categories);
+            console.log(dataPositive);
+            console.log(dataNegative);
+
+            $('#container').highcharts({
+                credits: {enabled: false},
+                chart: { type: 'bar',backgroundColor:'#fafafa'},
+                title: {text: null},
+                subtitle: {
+                    useHTML: true,
+                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                    align: 'center',
+                    x:-0,
+                    y:10
+                },
+                xAxis: [{categories: categories,opposite: true,reversed: true,
+                    labels: { step: 1}
+                }],
+                yAxis: {
+                    title: {text: null},
+                    labels: {
+                        formatter: function () {
+                            return Math.abs(this.value) + '%';
+                        }
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal'
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        console.log(this.point);
+                        return '<b>'  + this.point.stackTotal+ '%</b><br/>' ;
+                    }
+                },
+                series: [{
+                    showInLegend: false,
+                    data: dataNegative,
+                    color: '#a0f7a7',
+                    negativeColor: '#f05323'
+                }, {
+                    showInLegend: false,
+                    data:dataPositive,
+                    color: '#a0f7a7',
+                    negativeColor: '#f05323'
+                }]
+            });
+        }
+        function chartDataSeparate(value,option){
+            if(option){
+                return value>0?value:0;
+            }else{
+                return value>0?0:value;
+            }
+        }
+
+    }
+
 
     //main
     if (actionObjInfo.length === 2) {
@@ -774,6 +919,8 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
                 });
                 $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.second.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
                 $scope.compareObj.difference.changeR = $scope.compareObj.difference.run2ProjROI / Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
+               console.log($scope.compareObj.difference.run2ProjROI );
+                console.log($scope.compareObj.difference.changeR );
                 $scope.compareChart.data = [
                     {
                         title: "SEM",
@@ -823,7 +970,7 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
                     {
                         title: "Portfolio Total",
                         value: $scope.compareObj.difference.totAS / $scope.compareObj.first.totAS,
-                        string: filter('number')(Math.abs($scope.compareObj.difference.totAS), 0)
+                        string: $filter('number')(Math.abs($scope.compareObj.difference.totAS), 0)
                     }
                 ];
             }
@@ -839,6 +986,8 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
                 });
                 $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
                 $scope.compareObj.difference.changeR = $scope.compareObj.difference.run2ProjROI / Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
+                console.log($scope.compareObj.difference.run2ProjROI );
+                console.log($scope.compareObj.difference.changeR );
                 $scope.compareChart.data = [
                     {
                         title: "SEM",
