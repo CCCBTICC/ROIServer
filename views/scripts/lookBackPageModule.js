@@ -91,7 +91,8 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
         included: 'Yes',
         dataThrough: null,
         from: "",
-        owner: ""
+        owner: "",
+        IncludeDataForThePeriod:""
     };
     $scope.lookBack = {init: {}};
     //scope functions
@@ -105,6 +106,7 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
         analysis.postData($scope.lookBack.init, $scope.dataInfo, function (res) {
             console.log(res);
             location.path('lookback/add');
+            console.log($scope.lookBack.init);
         });
     };
 
@@ -123,6 +125,7 @@ back.controller('backInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', 'his
         //$scope.lookBack.init.Spend = $scope.dataInfo.spend;
         $scope.lookBack.init.PlanMonths = length;
         $scope.lookBack.init.Algorithm = 1;
+        $scope.lookBack.init.IncludeDataForThePeriod = $scope.dataInfo.included;
     }
 
     function completeDataInfo() {
@@ -680,7 +683,11 @@ back.controller('backOutputCtrl', ['$scope', 'analysis', '$location', 'history',
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
             //adjustScroll();
-            insertChartData('full');
+            if($scope.hideSemItems){
+                insertChartData('part');
+            }else{
+                insertChartData('full');
+            }
         }
         else {
             $scope.lookbackContentSize = 'col-sm-12';

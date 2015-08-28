@@ -33,9 +33,14 @@
         });
         $('table.thead-fixed-top').on('scroll', function () {
             $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
+            console.log($('table.thead-fixed-top').scrollLeft());
         });
-        $('.showgraphbtn').on('click', function () {
-            $('table.thead-fixed-top > *').width($('info-tool').width() );
+        $('#showgraphbtn').click( function () {
+            //$('table.thead-fixed-top > *').width($('info-tool').width() );
+            $('table.thead-fixed-top > *').width($('table.thead-fixed-top').width() + $('table.thead-fixed-top').scrollLeft());
+            console.log($('table.thead-fixed-top').scrollLeft());
+            var b = $('info-tool').width();
+            $('.fixed-table-container-content').scrollLeft(b);
         });
         $(document).ready(function(){
             $('.first-cell').outerHeight($('.col-1').height());
@@ -367,7 +372,7 @@
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>
             </div>
             <div class="col-sm-2">
-                <button type="button" class="btn btn-default showgraphbtn" ng-click="toggle()">{{showGraph}}</button>
+                <button type="button" class="btn btn-default" ng-click="toggle()" id="showgraphbtn">{{showGraph}}</button>
             </div>
         </div>
     </div>

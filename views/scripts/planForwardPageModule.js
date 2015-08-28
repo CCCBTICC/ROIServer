@@ -62,6 +62,9 @@ forward.factory('analysis', function ($http) {
         "dirSpendM1": "",
         "dirSpendM2": "",
         "dirSpendM3": "",
+        "dirSpendM4": "",
+        "dirSpendM5": "",
+        "dirSpendM6": "",
         "tvBeginDate": "",
         "tvEndDate": "",
         "tvImpressions": "",
@@ -145,7 +148,8 @@ forward.factory('analysis', function ($http) {
         "affAR": "",
         "parAR": "",
         "totAR": "",
-        "run2ProjROI": ""
+        "run2ProjROI": "",
+        "IncludeDataForThePeriod":""
     };
     var objIds = {current: ''};
     var url = "http://" + window.location.hostname + ":3001/analysis/";
@@ -554,6 +558,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                 if (data) {
                     $scope.getJson = true;
                     $scope.planForward.output = data;
+                    console.log(data);
                     $scope.$watchCollection('planForward.output', function () {
                         $scope.spendValidate();
                     });
@@ -621,6 +626,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                             "spend": key
                         }
                     });
+                    $scope.planForward.ControlChannelsDM = [];
                 }
             });
         }
@@ -895,7 +901,11 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             $scope.planforwardContentSize = 'col-sm-8';
             $scope.showme = true;
             $scope.showGraph = 'Hide Graph';
-            insertChartData('full');
+            if($scope.hideSemItems){
+                insertChartData('part');
+            }else{
+                insertChartData('full');
+            }
         }
         else {
             $scope.planforwardContentSize = 'col-sm-12';

@@ -44,10 +44,14 @@ body {
 }
 .table{
     width: auto;
+    border:none;
     margin: 0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+}
+.table>thead:first-child>tr:first-child>th{
+    border-top: 1px solid #E3E3E3;
 }
 /*footer {*/
     /*height: 100px;*/
@@ -765,11 +769,13 @@ table.roi-table tr > .col-6 {
     width:600px;
     overflow: hidden;
 }
+
 table.roi-table tr > .list-col-0 {
     min-width: 40px;
-    max-width: 60px;
+    max-width: 40px;
     width:40px;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 table.roi-table tr > .list-col-1 {
@@ -777,43 +783,49 @@ table.roi-table tr > .list-col-1 {
     max-width: 80px;
     width:80px;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 table.roi-table tr > .list-col-2 {
     min-width: 120px;
-    max-width: 160px;
+    max-width: 120px;
     width:120px;
     overflow: hidden;
     padding:5px;
+    text-overflow: ellipsis;
 }
 
 table.roi-table tr > .list-col-3 {
     min-width: 240px;
-    max-width: 300px;
+    max-width: 240px;
     width:240px;
     overflow: hidden;
+    text-overflow: ellipsis;
     padding:0;
 }
 
 table.roi-table tr > .list-col-4 {
     min-width: 480px;
-    max-width: 520px;
+    max-width: 480px;
     width: 480px;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 table.roi-table tr > .list-col-5 {
     min-width: 600px;
-    max-width: 640px;
+    max-width: 600px;
     width: 600px;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 table.roi-table tr > .list-col-6 {
     min-width: 720px;
-    max-width: 760px;
+    max-width: 720px;
     width: 720px;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 table.roi-table tr > td {
