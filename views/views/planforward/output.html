@@ -104,7 +104,7 @@
                         <th colspan="5" class="col-5" ng-hide="showme">Input</th>
                         <th colspan="2" class="col-2">Optimized</th>
                         <th colspan="2" class="col-2">What-if</th>
-                        <th colspan="2" class="col-2">Different</th>
+                        <th colspan="2" class="col-2">Difference</th>
                     </tr>
                     <tr>
                         <th class="col-1" ng-hide="showme">Lower</th>
@@ -157,8 +157,12 @@
                         <!--<td>{{planForward.output.semBMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semBSF}}</td>-->
                         <td class="range-input col-1 column-height">
-                            <range-input ng-model="planForward.output.semBSlide" min="planForward.output.semBMin"
-                                         max="planForward.output.semBMax" ></range-input>
+                            <div ng-if="planForward.output.semBMin == planForward.output.semBMax" class="disabled">
+                                {{planForward.output.semBSlide| formatCurrency}}
+                            </div>
+                            <div ng-if="planForward.output.semBMin != planForward.output.semBMax">
+                                <range-input ng-model="planForward.output.semBSlide" min="planForward.output.semBMin" max="planForward.output.semBMax"></range-input>
+                            </div>
                         </td>
                         <td class="disabled col-1 column-height">&nbsp;</td>
                         <td>{{planForward.output.semBSD | formatCurrency}}</td>
@@ -177,8 +181,12 @@
                         <!--<td>{{planForward.output.semCMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semCSF}}</td>-->
                         <td class="range-input col-1 column-height">
-                            <range-input ng-model="planForward.output.semCSlide" min="planForward.output.semCMin"
-                                         max="planForward.output.semCMax"></range-input>
+                            <div ng-if="planForward.output.semCMin == planForward.output.semCMax" class="disabled">
+                                {{planForward.output.semCSlide| formatCurrency}}
+                            </div>
+                            <div ng-if="planForward.output.semCMin != planForward.output.semCMax">
+                                <range-input ng-model="planForward.output.semCSlide" min="planForward.output.semCMin" max="planForward.output.semCMax"></range-input>
+                            </div>
                         </td>
                         <td class="disabled col-1 column-height">&nbsp;</td>
                         <td>{{planForward.output.semCSD | formatCurrency}}</td>
@@ -197,8 +205,12 @@
                         <!--<td>{{planForward.output.semPMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semPSF}}</td>-->
                         <td class="range-input col-1 column-height">
-                            <range-input ng-model="planForward.output.semPSlide" min="planForward.output.semPMin"
-                                         max="planForward.output.semPMax"></range-input>
+                            <div ng-if="planForward.output.semPMin == planForward.output.semPMax" class="disabled">
+                                {{planForward.output.semPSlide| formatCurrency}}
+                            </div>
+                            <div ng-if="planForward.output.semPMin != planForward.output.semPMax">
+                                <range-input ng-model="planForward.output.semPSlide" min="planForward.output.semPMin" max="planForward.output.semPMax"></range-input>
+                            </div>
                         </td>
                         <td class="disabled col-1 column-height">&nbsp;</td>
                         <td>{{planForward.output.semPSD | formatCurrency}}</td>
@@ -217,8 +229,12 @@
                         <!--<td>{{planForward.output.semOMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.semOSF}}</td>-->
                         <td class="range-input col-1">
-                            <range-input ng-model="planForward.output.semOSlide" min="planForward.output.semOMin"
-                                         max="planForward.output.semOMax" ></range-input>
+                            <div ng-if="planForward.output.semOMin == planForward.output.semOMax" class="disabled">
+                                {{planForward.output.semOSlide| formatCurrency}}
+                            </div>
+                            <div ng-if="planForward.output.semOMin != planForward.output.semOMax">
+                                <range-input ng-model="planForward.output.semOSlide" min="planForward.output.semOMin" max="planForward.output.semOMax"></range-input>
+                            </div>
                         </td>
                         <td class="disabled col-1">&nbsp;</td>
                         <td>{{planForward.output.semOAS-planForward.output.semOSR | formatCurrency}}</td>
@@ -237,8 +253,12 @@
                         <!--<td>{{planForward.output.disMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.disSF}}</td>-->
                         <td class="range-input col-1">
-                            <range-input ng-model="planForward.output.disSlide" min="planForward.output.disMin"
-                                         max="planForward.output.disMax" ></range-input>
+                            <div ng-if="planForward.output.disMin == planForward.output.disMax" class="disabled">
+                                {{planForward.output.disSlide| formatCurrency}}
+                            </div>
+                            <div ng-if="planForward.output.disMin != planForward.output.disMax">
+                                <range-input ng-model="planForward.output.disSlide" min="planForward.output.disMin" max="planForward.output.disMax"></range-input>
+                            </div>
                         </td>
                         <td class="col-1">{{planForward.output.disAR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.disSD | formatCurrency}}</td>
@@ -257,8 +277,12 @@
                         <!--<td>{{planForward.output.socMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.socSF}}</td>-->
                         <td class="range-input col-1">
-                            <range-input ng-model="planForward.output.socSlide" min="planForward.output.disMin"
-                                         max="planForward.output.disMax" ></range-input>
+                            <div ng-if="planForward.output.socMin == planForward.output.socMax" class="disabled">
+                                {{planForward.output.socSlide| formatCurrency}}
+                            </div>
+                            <div ng-if="planForward.output.socMin != planForward.output.socMax">
+                                <range-input ng-model="planForward.output.socSlide" min="planForward.output.socMin" max="planForward.output.socMax"></range-input>
+                            </div>
                         </td>
                         <td class="col-1">{{planForward.output.socAR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.socSD | formatCurrency}}</td>
@@ -277,8 +301,12 @@
                         <!--<td>{{planForward.output.affMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.affSF}}</td>-->
                         <td class="range-input col-1">
-                            <range-input ng-model="planForward.output.affSlide" min="planForward.output.affMin"
-                                         max="planForward.output.affMax" ></range-input>
+                            <div ng-if="planForward.output.affMin == planForward.output.affMax" class="disabled">
+                                {{planForward.output.affSlide| formatCurrency}}
+                            </div>
+                            <div ng-if="planForward.output.affMin != planForward.output.affMax">
+                                <range-input ng-model="planForward.output.affSlide" min="planForward.output.affMin" max="planForward.output.affMax"></range-input>
+                            </div>
                         </td>
                         <td class="col-1">{{planForward.output.affAR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.affSD | formatCurrency}}</td>
@@ -297,8 +325,12 @@
                         <!--<td>{{planForward.output.parMax | formatCurrency}}</td>-->
                         <!--<td>{{planForward.output.parSF }}</td>-->
                         <td class="range-input col-1">
-                            <range-input ng-model="planForward.output.parSlide" min="planForward.output.parMin"
-                                         max="planForward.output.parMax"></range-input>
+                            <div ng-if="planForward.output.parMin == planForward.output.parMax" class="disabled">
+                                {{planForward.output.parSlide| formatCurrency}}
+                            </div>
+                            <div ng-if="planForward.output.parMin != planForward.output.parMax">
+                                <range-input ng-model="planForward.output.parSlide" min="planForward.output.parMin" max="planForward.output.parMax"></range-input>
+                            </div>
                         </td>
                         <td class="col-1">{{planForward.output.parAR | formatCurrency}}</td>
                         <td class="col-1">{{planForward.output.parSD | formatCurrency}}</td>
@@ -335,7 +367,7 @@
                         <!--<td class="td-title col-1">Change in Brand Total Revenue</td>-->
                         <td class="col-1 " colspan="9" ng-hide="showme"></td>
                         <td class="col-1 " colspan="4" ng-show="showme"></td>
-                        <td class="col-1" colspan="2" style="height: 48px">{{planForward.output.changeR  | number:0}}%</td>
+                        <td class="col-1" colspan="2" style="height: 48px">{{planForward.output.PercentageChangeInTotalRev  | number:0}}%</td>
                     </tr>
                     </tbody>
                 </table>
@@ -366,7 +398,7 @@
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reRun()" ng-class="{disabled:slideError}">Re-run</button>
-                <span ng-show="slideError" style="color:red; height:34px; width:64px; float: right">{{slideErrorValue}}</span>
+                <span ng-show="slideError" style="color:red; height:34px; width:304px; float: right">{{slideErrorValue}}</span>
             </div>
             <div class="col-sm-3">
                 <button type="button" class="btn btn-default" ng-click="reSet()">Reset</button>

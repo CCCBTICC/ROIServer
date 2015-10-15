@@ -194,12 +194,13 @@ forward.factory('analysis', function ($http) {
 forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', '$location', '$filter', 'history', 'actionObjInfo', function ($scope, analysis, scenarios, user, location, filter, history, actionObjInfo) {
     //scope vars
     $scope.tooltips = {
-        brand: "Please choose one of the brands from the list.",
-        attr: "Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.",
-        beginPeriod: "Please choose the begin time.",
-        endPeriod: "Please choose the end time.",
-        spend: "Portfolio Spend",
-        included: "Do you need to include the data through the end time?"
+        brand: "This is the drop down for selecting the Brand for which you are planning your marketing spend. The default value is Shutterfly.",
+        attr: "This is where you select the Revenue attribution method you want the tool to use for Channel Revenue forecast. The options are: LTA -- Last Touch Attribution and MTA -- Multi-Touch Attribution.",
+        beginPeriod: "The first month of the planning period. \n By default, it is first month after the last data refresh in the tool database. You can skip 6 months ahead and plan a future quarter. Click on the calendar icon to select.",
+        endPeriod: "The last month of the planning period. \n It is set based on the Begin Period. Default equals to Begin Period. But you can choose up to Begin Period value + 5 or last month of historical data+8, whichever is earlier",
+        spend: "The amount you want to plan. For look back analysis, the actual spend for the period is pre-filled. You can override this number.",
+        included: "This tells the tool whether you want to perform a post-mortem or simulate a planning scenario going back to past. It tells the tool how much of history to use. For post-mortem, data through the end period is used. For simulation, data till the month prior to begin period is used.",
+        Constraints: "If you want to apply constraints on individual channel spend boundaries, select Yes. Default is No. Unconstrained, system fixes the spend level for SEM-Brand and Partnership to the actual spend for these two channels and then optimizes the rest of the portfolio spend among the rest of the channels and SEM sub-channels."
     };
     $scope.calender = {
         minDate: null,
@@ -315,7 +316,7 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
             $scope.dataInfo.lmTouch.charAt(0) + "-000";
         //$scope.dataInfo.dataThrough = filter('date')(new Date($scope.calender.minDate.getFullYear(),$scope.calender.minDate.getMonth(),0), 'yyyy-MM');
         $scope.dataInfo.from = "forward";
-        $scope.dataInfo.included = 'No';
+        $scope.dataInfo.included = 'N/A';
     }
 
     // main
@@ -344,12 +345,16 @@ forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user'
 forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '$location', '$filter', 'history', function ($scope, analysis, scenarios, location, filter, history) {
     //scope vars
     $scope.tooltips = {
-        brand: "Please choose one of the brands from the list.",
-        attr: "Please choose either Last Touch Attribution or Multi Touch Attribution for your calculation.",
-        beginPeriod: "Please choose the begin time.",
-        endPeriod: "Please choose the end time.",
-        spend: "Portfolio Spend",
-        included: "Do you need to include the data through the end time?"
+        brand: "This is the drop down for selecting the Brand for which you are planning your marketing spend. The default value is Shutterfly.",
+        attr: "This is where you select the Revenue attribution method you want the tool to use for Channel Revenue forecast. The options are: LTA -- Last Touch Attribution and MTA -- Multi-Touch Attribution.",
+        beginPeriod: "The first month of the planning period. \n By default, it is first month after the last data refresh in the tool database. You can skip 6 months ahead and plan a future quarter. Click on the calendar icon to select.",
+        endPeriod: "The last month of the planning period. \n It is set based on the Begin Period. Default equals to Begin Period. But you can choose up to Begin Period value + 5 or last month of historical data+8, whichever is earlier",
+        spend: "The spend budget for the channels in portfolio (SEM, Display, Social, Affiliates and Partnership) for the chosen planning period. It is pre-filled with the prior year's actual spend for the same period. You can override this number.",
+        included: "This tells the tool whether you want to perform a post-mortem or simulate a planning scenario going back to past. It tells the tool how much of history to use. For post-mortem, data through the end period is used. For simulation, data till the month prior to begin period is used.",
+        Constraints: "If you want to apply constraints on individual channel spend boundaries, select Yes. Default is No. Unconstrained, system fixes the spend level for SEM-Brand and Partnership to the actual spend for these two channels and then optimizes the rest of the portfolio spend among the rest of the channels and SEM sub-channels.",
+        applyConstraints:"Included in the Portfolio spend are SEM, Display, Social, Affiliates and Partnership channels. Control channels are TV and Direct Mail and not included as part of the optimization mix.",
+        scalingFactor: 'A method to adjust for situations when ad buying efficiency has changed from historical cost structure (CPC/CPM). Default value of 1.0 assumes no change in buying efficiency. It is inverse to cost efficiency. If cost goes up, lower it and vice versa. See User Guide for illustration.',
+        maintainSpend: 'If you want to keep spend level constant for any channel, check this box. By default, SEM-Brand and Partners are checked. The spend level used is last year actual for the equivalent period.'
     };
     $scope.dataInfo = {};
     $scope.planForward = {
@@ -358,7 +363,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         ControlChannelsDM: [],
         ControlChannels: [],
         ChontrolChannelsData: [],
-        ControlChannelsShow: "No"
+        ControlChannelsShow: "Yes"
     };
     $scope.getJson = false;
     $scope.channelShow = false;
@@ -470,7 +475,10 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
             }
 
             if (!$scope.planForward.output.tvEndDate || $scope.planForward.output.tvEndDate < $scope.dataInfo.beginDate || $scope.planForward.output.tvEndDate > $scope.calender.maxDate) {
-                $scope.planForward.output.tvEndDate = $scope.planForward.output.tvBeginDate;
+                $scope.planForward.output.tvEndDate = $scope.calender.maxDate;
+            }
+            if($scope.planForward.output.tvBeginDate>$scope.planForward.output.tvEndDate){
+            $scope.planForward.output.tvBeginDate = $scope.planForward.output.tvEndDate;
             }
         }
     };
@@ -636,11 +644,15 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
     }
 
     function passInfoToData() {
+        var month = ['dirSpendM1', 'dirSpendM2', 'dirSpendM3', 'dirSpendM4', 'dirSpendM5', 'dirSpendM6'];
         $scope.planForward.output.Algorithm = 2;
         $scope.planForward.output.AlgStartingTime = "";
         $scope.planForward.output.AlgEndingTime = "";
         $scope.planForward.output.AlgDuration = "";
         $scope.planForward.output.Spend = $scope.dataInfo.spend;
+        $scope.planForward.ChontrolChannelsData.forEach(function(singleData, index){
+            $scope.planForward.output[month[index]] = singleData.spend;
+        });
     }
 
     function fix() {
@@ -768,14 +780,19 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
 
             $('#container').highcharts({
                 credits: {enabled: false},
+                    navigation: {
+                        buttonOptions: {
+                            align: 'left'
+                        }
+                    },
                 chart: { type: 'bar',backgroundColor:'#fafafa'},
                 title: {text: 'Spend Difference (%)'},
                 subtitle: {
                     useHTML: true,
-                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
-                    align: 'center',
-                    x:-50,
-                    y:50
+                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span><br/><span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                    align: 'left',
+                    x:0,
+                    y:45
                 },
                 xAxis: [{categories: categories,opposite: true,reversed: true,
                     labels: { step: 1}
@@ -810,6 +827,16 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
                     color: '#a0f7a7',
                     negativeColor: '#f05323'
                 }]
+            }
+                ,function(chart) { // on complete
+
+                chart.renderer.text('<span>'+$scope.scenario.scenarioId+'</span><br/><span>Portfolio Spend: '+ filter('formatCurrency')($scope.scenario.spend) +'</span><br/><span>Data through: '+ filter('date')($scope.scenario.dataThrough,'MMM-yyyy')+'</span>', 110, 50)
+                    .css({
+                        color: 'grey',
+                        fontSize: '11px'
+                    })
+                    .add();
+
             });
         }else{
             console.log($scope.compareChart.data);
@@ -830,14 +857,19 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
 
             $('#container').highcharts({
                 credits: {enabled: false},
+                    navigation: {
+                        buttonOptions: {
+                            align: 'left'
+                        }
+                    },
                 chart: { type: 'bar',backgroundColor:'#fafafa'},
                 title: {text: 'Spend Difference (%)'},
                 subtitle: {
                     useHTML: true,
-                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
-                    align: 'center',
-                    x:-50,
-                    y:50
+                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span><br/><span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                    align: 'left',
+                    x:0,
+                    y:45
                 },
                 xAxis: [{categories: categories,opposite: true,reversed: true,
                     labels: { step: 1}
@@ -872,7 +904,17 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
                     color: '#a0f7a7',
                     negativeColor: '#f05323'
                 }]
-            });
+            }
+            ,function(chart) { // on complete
+
+                    chart.renderer.text('<span>'+$scope.scenario.scenarioId+'</span><br/><span>Portfolio Spend: '+ filter('formatCurrency')($scope.scenario.spend) +'</span><br/><span>Data through: '+ filter('date')($scope.scenario.dataThrough,'MMM-yyyy')+'</span>', 110, 50)
+                        .css({
+                            color: 'grey',
+                            fontSize: '11px'
+                        })
+                        .add();
+
+                });
         }
         function chartDataSeparate(value,option){
             if(option){
@@ -888,7 +930,7 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
 
     //scope functions
     $scope.edit = function () {
-        location.path('planforward/edit');
+        location.path('myscenarios/edit');
     };
     $scope.export = function () {
         location.path('myscenarios/export');
@@ -1033,12 +1075,12 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             if (Number($scope.planForward.output.totSR) < sum) {
                 console.log(sum);
                 $scope.slideError = true;
-                $scope.slideErrorValue = "Your 'min' is \n over than " + filter('formatCurrency')(sum - $scope.planForward.output.totSR);
+                $scope.slideErrorValue = "Lower  \n your spend constraints by\n" + filter('formatCurrency')(sum - $scope.planForward.output.totSR);
                 return;
             }
             if (Number($scope.planForward.output.totSR) > sumMax) {
                 $scope.slideError = true;
-                $scope.slideErrorValue = "Your 'max' is \n lower by " + filter('formatCurrency')($scope.planForward.output.totSR - sumMax);
+                $scope.slideErrorValue = "Increase \n your spend constraints by\n " + filter('formatCurrency')($scope.planForward.output.totSR - sumMax);
                 return;
             }
             $scope.slideError = false;

@@ -179,6 +179,7 @@ input[type=range]::-ms-thumb {
 /*  General  */
 input[type=text]{
     padding:3px;
+    font-size:12px;
 }
 input[type=text]:enabled{
 
@@ -236,15 +237,17 @@ a .running{
     content: "\203A";
     font-size: 16px;
 }
-form .tooltip-inner {
+ form .tooltip-inner {
     /* If max-width does not work, try using width instead */
     width:180px;
     text-align: left;
     padding-left:17px;
 }
-
 .text-info {
     color: #3c3c3c;
+}
+.form-group-sm .form-control{
+    padding:0 3px 0 3px;
 }
 .form-control{
     padding:0 3px 0 3px;
@@ -871,6 +874,12 @@ table.roi-table tr > td.disabled {
     background-color: #e3e3e3;
     width:120px;
     height:34px;
+}
+table.roi-table .disabled {
+    padding-right:17px;
+    padding-top:5px;
+    text-align: right;
+    height:100%;
 }
 table.roi-table tr > td.old ,table.roi-table tr > th.old {
     background-color: #eeeeee;

@@ -22,8 +22,7 @@
             <label>Begin Period</label>: {{dataInfo.beginDate | date: 'MMM-yyyy'}}
             <label>End Period</label>: {{dataInfo.endDate | date: 'MMM-yyyy'}}
             <label>Data through</label>: {{dataInfo.dataThrough | date: 'MMM-yyyy'}}
-            <span ng-show="getJson && channelShow"><label>Portfolio
-                Spend</label>: <span ng-show="!error">{{dataInfo.spend | formatCurrency}}</span><span ng-show="error" style="color:red">{{dataInfo.spend | formatCurrency}}</span></span>
+            <span ng-show="getJson && channelShow"><label>Portfolio Spend</label>: <span ng-show="!error">{{dataInfo.spend | formatCurrency}}</span><span ng-show="error" style="color:red">{{dataInfo.spend | formatCurrency}}</span></span>
             <!--<span ng-show="getJson && channelShow && error"><label>Portfolio-->
                 <!--Spend</label>: <span style="color:red">{{dataInfo.spend | formatCurrency}}</span></span>-->
         </div>
@@ -57,7 +56,7 @@
                     </label>
                     </span>
                     <div class="col-sm-4 help-info" style="padding-left: 0">
-                        <i class="fa fa-question-circle" tooltip-placement="right" tooltip="Apply Constraints?"></i>
+                        <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.Constraints}}"></i>
                     </div>
                 </div>
             </div>
@@ -71,11 +70,11 @@
                     <thead>
                     <tr>
                         <th class="col-1" rowspan="2" style="width:150px">Portfolio Channels</th>
-                        <th class="col-0" rowspan="2"><div tooltip-placement="right" tooltip="Maintain Spend"> Maintain Spend? </div></th>
+                        <th class="col-0" rowspan="2"><div tooltip-placement="bottom" tooltip="{{tooltips.maintainSpend}}">Maintain Spend ?</div></th>
                         <th class="col-1" rowspan="2">Lower Bound</th>
                         <th class="col-2" colspan="2">Spend Constraints</th>
                         <th class="col-1" rowspan="2">Upper Bound</th>
-                        <th class="col-0" rowspan="2" style="width: 80px">Scaling Factor</th>
+                        <th class="col-0" rowspan="2" tooltip-placement="bottom" tooltip="{{tooltips.scalingFactor}}" style="width: 80px">Scaling Factor</th>
                     </tr>
                     <tr>
                         <th class="col-1">Minimum</th>
@@ -367,7 +366,7 @@
         <div class="row form-group">
             <br/><br/>
             <div class="col-sm-2 col-sm-offset-3">
-                <a class="btn btn-default" ng-click="channelShow=!channelShow;reset()" style="margin-top: 20px">Prev</a>
+                <a class="btn btn-default" ng-click="channelShow=!channelShow;reset();planForward.ControlChannelsShow='Yes'" style="margin-top: 20px">Prev</a>
             </div>
             <div class="col-sm-4">
                 <button class="btn btn-default" ng-class="{disabled:slideError}"
@@ -424,8 +423,8 @@
                                        ng-model="planForward.output.tvBeginDate" is-open="calender.opened.beginPeriod"
                                        ng-change="calender.modifyDate()" show-button-bar=false
                                        datepicker-append-to-body=true
-                                       min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
-                                       datepicker-mode="'day'" disabled max-date="calender.eMaxDate" show-weeks="false";
+                                       min-date="calender.minDate" datepicker-options="calender.dateOptions"
+                                       datepicker-mode="'day'" disabled max-date="calender.maxDate" show-weeks="false";
                                        ng-required="true"
                                        close-text="Close">
                                 <span class="input-group-btn">
@@ -449,8 +448,8 @@
                                        ng-model="planForward.output.tvEndDate" is-open="calender.opened.endPeriod"
                                        ng-change="calender.modifyDate()" show-button-bar=false
                                        datepicker-append-to-body=true
-                                       min-date="dataInfo.beginDate" datepicker-options="calender.dateOptions"
-                                       datepicker-mode="'day'" disabled max-date="calender.eMaxDate" show-weeks="false";
+                                       min-date="calender.minDate" datepicker-options="calender.dateOptions"
+                                       datepicker-mode="'day'" disabled max-date="calender.maxDate" show-weeks="false";
                                        ng-required="true"
                                        close-text="Close">
                                 <span class="input-group-btn">

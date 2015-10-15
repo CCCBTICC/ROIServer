@@ -125,7 +125,8 @@ app.controller("indexCtrl", function ($scope, user) {
     };
     $scope.help=function(){
         var link = document.createElement('a');
-        link.href = 'http://tinyurl.com/sfly-roi-fback';
+        //link.href = 'http://tinyurl.com/sfly-roi-fback';
+        link.href = 'https://docs.google.com/document/d/1c6mq7FlHA69d23tmB7Q4jnDbzbSSinp1dTSbrPyj3gY/edit?usp=sharing';
         link.target="_blank";
         link.click();
     };

@@ -1,7 +1,7 @@
 
 ###################################################################################################################
 ###################### Run_1_Optimization: Function of Optimization of Total Revenue ##############################         
-###################################################################################################################                                                                                     #
+###################################################################################################################                                                                                      #
 
 
 Run_1_Optimization <- function(
@@ -60,25 +60,25 @@ Start_Date   = as.Date(Beg_Date)
 Duration     = as.numeric(inJsonData$PlanMonths)
 
 Min_Spend = list(			             #### unit = dollar
-SEM_Brand = as.numeric(inJsonData$semBMin),			           #### Put NA if missing
-SEM_Card  = as.numeric(inJsonData$semCMin), 
-SEM_PBook = as.numeric(inJsonData$semPMin), 
-SEM_Other = as.numeric(inJsonData$semOMin), 
-Display   = as.numeric(inJsonData$disMin), 
-Affiliates= as.numeric(inJsonData$affMin), 
-FB        = as.numeric(inJsonData$socMin), 
-Partner   = as.numeric(inJsonData$parMin)
+  SEM_Brand = as.numeric(inJsonData$semBMin),			           #### Put NA if missing
+  SEM_Card  = as.numeric(inJsonData$semCMin), 
+  SEM_PBook = as.numeric(inJsonData$semPMin), 
+  SEM_Other = as.numeric(inJsonData$semOMin), 
+  Display   = as.numeric(inJsonData$disMin), 
+  Affiliates= as.numeric(inJsonData$affMin), 
+  FB        = as.numeric(inJsonData$socMin), 
+  Partner   = as.numeric(inJsonData$parMin)
 )
 
 Max_Spend = list(				           #### unit = dollar
-SEM_Brand = as.numeric(inJsonData$semBMax),			           #### Put NA if missing
-SEM_Card  = as.numeric(inJsonData$semCMax), 
-SEM_PBook = as.numeric(inJsonData$semPMax), 
-SEM_Other = as.numeric(inJsonData$semOMax), 
-Display   = as.numeric(inJsonData$disMax), 
-Affiliates= as.numeric(inJsonData$affMax), 
-FB        = as.numeric(inJsonData$socMax), 
-Partner   = as.numeric(inJsonData$parMax)
+  SEM_Brand = as.numeric(inJsonData$semBMax),			           #### Put NA if missing
+  SEM_Card  = as.numeric(inJsonData$semCMax), 
+  SEM_PBook = as.numeric(inJsonData$semPMax), 
+  SEM_Other = as.numeric(inJsonData$semOMax), 
+  Display   = as.numeric(inJsonData$disMax), 
+  Affiliates= as.numeric(inJsonData$affMax),
+  FB        = as.numeric(inJsonData$socMax), 
+  Partner   = as.numeric(inJsonData$parMax)
 )
 
 
@@ -99,10 +99,19 @@ Partner   = as.numeric(inJsonData$parSF)
 DM_Month1  = as.numeric(gsub(",", "",inJsonData$dirSpendM1))             #### Input DM spend for each of 3 months in Duration. If Duration = 1, then ignore month2 and month3.
 DM_Month2  = as.numeric(gsub(",", "",inJsonData$dirSpendM2))            #### If Duration = 2, then ignore month3.
 DM_Month3  = as.numeric(gsub(",", "",inJsonData$dirSpendM3)) 
+DM_Month4  = as.numeric(gsub(",", "",inJsonData$dirSpendM4)) 
+DM_Month5  = as.numeric(gsub(",", "",inJsonData$dirSpendM5)) 
+DM_Month6  = as.numeric(gsub(",", "",inJsonData$dirSpendM6)) 
+if(length(DM_Month4)==0){DM_Month4<-NA}
+if(length(DM_Month5)==0){DM_Month5<-NA}
+if(length(DM_Month6)==0){DM_Month6<-NA}
 
 if (is.na(DM_Month1)| DM_Month1==0) DM_Month1 = 1      
 if (is.na(DM_Month2)| DM_Month2==0) DM_Month2 = 1
 if (is.na(DM_Month3)| DM_Month3==0) DM_Month3 = 1
+if (is.na(DM_Month4)| DM_Month4==0) DM_Month4 = 1      
+if (is.na(DM_Month5)| DM_Month5==0) DM_Month5 = 1
+if (is.na(DM_Month6)| DM_Month6==0) DM_Month6 = 1
 
 if (Duration == 1)
 {
@@ -110,11 +119,19 @@ if (Duration == 1)
 } else if (Duration == 2)
 {
   dm = c(DM_Month1, DM_Month2)
-} else
+} else if (Duration == 3)
 {
   dm = c(DM_Month1, DM_Month2, DM_Month3)
+} else if (Duration == 4)
+{
+  dm = c(DM_Month1, DM_Month2, DM_Month3, DM_Month4)
+} else if (Duration == 5)
+{
+  dm = c(DM_Month1, DM_Month2, DM_Month3, DM_Month4, DM_Month5)
+} else if (Duration == 6)
+{
+  dm = c(DM_Month1, DM_Month2, DM_Month3, DM_Month4, DM_Month5, DM_Month6)
 }
-
 
 
 TV_ON = (!is.na(as.numeric(inJsonData$tvImpressions)) && as.numeric(inJsonData$tvImpressions)!=0)     #### 1/0 according to TV ON/OFF. If ON, then the user should choose the Date and Total Impressions. 
@@ -216,6 +233,7 @@ inJsonData[ paste0(ChannelOut, 'Slide' )] = gsub(" ", "", inJsonData[ paste0(Cha
 #-------------------------------------------------------------------------------------------
 
 data = read.csv(file = Inputfile, as.is = T)
+data = read.csv(file = "RROI_input_data_for_optimization.csv", as.is = T)
 data$Date = as.Date(data$Date, "%m/%d/%Y")
 #data = data[data$Date < as.Date(Beg_Date),]
 
@@ -264,11 +282,21 @@ Channel = rep(c("Display", "SEM_Brand", "SEM_Card", "SEM_PBook","SEM_Other","Par
 
 #### Used in the Revenue Function
 OneWeekPrior = data[data$Date >= Start_Date-7 & data$Date < Start_Date, c('Display', 'SEMBrand', 'SEMCard', 'SEMOther', 'Partners', 'TV')]
-OneWeekPrior$TV = OneWeekPrior$TV+1
+# ModelV2. added
+OneWeekPrior[1:7,][is.na(OneWeekPrior)]<-1
+OneWeekPrior$TV = OneWeekPrior$TV+1  
 OneWeekPrior = as.matrix(OneWeekPrior)
-TwoMonthPriorDM = DM_Monthly[(DM_Monthly$month == month(Start_Date-45) & DM_Monthly$year == year(Start_Date-45)) | 
-                               (DM_Monthly$month == month(Start_Date-15) & DM_Monthly$year == year(Start_Date-15)), ]$DM
-
+# In implementing skipping months, last two month data is not necessarily available. In such cases, we replace previous year spending for the same period. 
+TwoMonthPriorDM = DM_Monthly[c(
+                               ifelse(length(which(DM_Monthly$month == month(Start_Date-45) & DM_Monthly$year == year(Start_Date-45)))==0
+                                  , which(DM_Monthly$month == month(Start_Date-45-365) & DM_Monthly$year == year(Start_Date-45-365))
+                                  , which(DM_Monthly$month == month(Start_Date-45) & DM_Monthly$year == year(Start_Date-45)))
+                               ,
+                               ifelse(length(which(DM_Monthly$month == month(Start_Date-15) & DM_Monthly$year == year(Start_Date-15)))==0
+                                      , which(DM_Monthly$month == month(Start_Date-15-365) & DM_Monthly$year == year(Start_Date-15-365))
+                                      , which(DM_Monthly$month == month(Start_Date-15) & DM_Monthly$year == year(Start_Date-15)))
+                               ), ]$DM
+# End:ModelV2. added
 
 #### Used in the Revnue Function; Calculate DM; Always Use 30 Days for TwoMonthPriorDM for simplicity...
 tmpDM = runmean(x = rep(c(TwoMonthPriorDM, dm), times = c(30, 30, dayOfMonth)), k=30, alg="fast", endrule="trim")
@@ -331,7 +359,37 @@ Weekday7 <- Saturday
 Estimate = read.csv(file = Estfile, as.is = T)
 if (any(is.na(as.Date(Estimate$Beg_Date, "%m/%d/%Y")))) Estimate$Beg_Date = as.Date(Estimate$Beg_Date, "%Y-%m-%d")
 if (any(!is.na(as.Date(Estimate$Beg_Date, "%m/%d/%Y")))) Estimate$Beg_Date = as.Date(Estimate$Beg_Date, "%m/%d/%Y")
-Estimate = as.list(Estimate[Estimate$Beg_Date==as.Date(Beg_Date),])
+
+#########################################################################
+##### ModevlV2
+#########################################################################
+IncludeDataForThePeriod <- ifelse( is.null(inJsonData$IncludeDataForThePeriod), "NO",
+                                   ifelse(tolower(inJsonData$IncludeDataForThePeriod)=="yes", "YES", "NO")  ) 
+MaxDate_InputData = max(na.omit(as.Date(data[-which(is.na(data$Revenue)),]$Date, "%m/%d/%Y"))) #Last Date data available(max date with non-NA 'Revenue' )
+PlanFW_LookB <- ifelse(MaxDate_InputData < as.Date(Beg_Date), "PlanForward", "LookBack") 
+if(PlanFW_LookB=="PlanForward"){SkipMonths <- length(seq(from=as.Date(MaxDate_InputData), to=as.Date(Beg_Date), by='month')) - 1
+                               }else{SkipMonths <- 0}                                
+
+#1. Planforawd: 
+#       a. skipping month==0 : Same as ModelV1
+#       b. skiiping month>0  : Same as ModelV1, other than calling coef. for latest parameter.  
+#2. lookback:
+#       a.IncludeDataForThePeriod==NO : Same as ModelV1
+#       b.IncludeDataForThePeriod==YES: Same as ModelV1, other than calling coef. for end period. 
+if(PlanFW_LookB=="PlanForward" & SkipMonths==0){
+       Estimate = as.list(Estimate[Estimate$Beg_Date==as.Date(Beg_Date),])
+}else if(PlanFW_LookB=="PlanForward" & SkipMonths>0){
+       Estimate = as.list(Estimate[nrow(Estimate),])
+}else if(PlanFW_LookB=="LookBack" & IncludeDataForThePeriod=="NO"){
+       Estimate = as.list(Estimate[Estimate$Beg_Date==as.Date(Beg_Date),])
+}else{
+       Estimate = as.list(Estimate[Estimate$Beg_Date==as.Date(End_Date)+1,]) 
+}
+#########################################################################
+##### End: ModevlV2
+#########################################################################
+
+
 
 
 Estimate$OD   = (Estimate$lOD   + Q2*Estimate$lOD_Q2   + Q3*Estimate$lOD_Q3   + Q4*Estimate$lOD_Q4)[choose_CurrentYear]
@@ -664,11 +722,11 @@ OptSpend <- data.frame(matrix(optimal$par[1:templength], nrow=ndays),
                    TVImpression=c(rep(0,tvWindow[1]-1), optimal$par[(templength+1):length(optimal$par)], rep(0,ndays-tvWindow[2])))
 names(OptSpend)<- paste0("Opt_", tempchannel)
 
-temp <-data.frame( OptTotalRevenue = Revenue2(optimal$par),
-                   RealTotalRevenue = data_CurrentYear$Revenue, 
-                   FittedRevenue = Revenue2(Spend_CurrentYear),
-                   OptSpend,
-                   RealSpend)
+#temp <-data.frame( OptTotalRevenue = Revenue2(optimal$par),
+#                   RealTotalRevenue = data_CurrentYear$Revenue, 
+#                   FittedRevenue = Revenue2(Spend_CurrentYear),
+#                   OptSpend,
+#                   RealSpend)
 
 #write.csv(temp,   paste0("Optimization_", Beg_Date, "_to_", End_Date, ".csv"), row.names=F)
 
@@ -770,7 +828,7 @@ SR[1]= sum(SR[2:5])  #semSR
 
 print(SR)
 
-return(SR)
+return(list(SR=SR, OptTotalRevenue=OptTotalRevenue))
 
 
 }#Run_1_Optimization

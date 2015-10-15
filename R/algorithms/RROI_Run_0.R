@@ -74,10 +74,17 @@ print(paste0("sum of UB: $",  format(sum(UB),  big.mark=",", big.interval=3)))
 dirSpendM1 <-NULL
 dirSpendM2 <-NULL
 dirSpendM3 <-NULL
+dirSpendM4 <-NULL
+dirSpendM5 <-NULL
+dirSpendM6 <-NULL
 dirSpend <- aggregate(data[choose_LastYear,"DM"], by=list(MONTH_LastYear), FUN=function(x) mean(x, na.rm=T))
 if(nMon==1) {dirSpendM1 <- dirSpend[,2][1]}
 if(nMon==2) {dirSpendM1 <- dirSpend[,2][1];dirSpendM2 <- dirSpend[,2][2]}
 if(nMon==3) {dirSpendM1 <- dirSpend[,2][1];dirSpendM2 <- dirSpend[,2][2];dirSpendM3 <- dirSpend[,2][3]}
+if(nMon==4) {dirSpendM1 <- dirSpend[,2][1];dirSpendM2 <- dirSpend[,2][2];dirSpendM3 <- dirSpend[,2][3];dirSpendM4 <- dirSpend[,2][4]}
+if(nMon==5) {dirSpendM1 <- dirSpend[,2][1];dirSpendM2 <- dirSpend[,2][2];dirSpendM3 <- dirSpend[,2][3];dirSpendM4 <- dirSpend[,2][4];dirSpendM5 <- dirSpend[,2][5]}
+if(nMon==6) {dirSpendM1 <- dirSpend[,2][1];dirSpendM2 <- dirSpend[,2][2];dirSpendM3 <- dirSpend[,2][3];dirSpendM4 <- dirSpend[,2][4];dirSpendM5 <- dirSpend[,2][5];dirSpendM6 <- dirSpend[,2][6]}
+
 
 #TV
 tvImpressions <- sum(data[choose_LastYear,]$TVImpression)
@@ -124,6 +131,7 @@ commafmt <- function(x)  format(x,  big.mark=",", big.interval=3)
   #cat(paste('"AlgEndingTime"',":",'"',0.0, '"',",\n",sep=""))
   #cat(paste('"AlgDuration"',":",'"',0.0, '"',",\n",sep=""))
   
+  cat(paste0('"IncludeDataForThePeriod":',      '"', inJsonData$IncludeDataForThePeriod, '",\n'))
 
   cat(paste0('"', paste0(ChannelOut, 'LB' ),  '": "', round(as.numeric(LB[ paste0(ChannelOut, 'LB' )]), roDgt), '",\n'))
   cat(paste0('"', 'SpendLB' ,                 '": "', round(sum(LB)+sum(dirSpend[,2]), roDgt), '",\n'))
@@ -137,7 +145,9 @@ commafmt <- function(x)  format(x,  big.mark=",", big.interval=3)
   cat(paste0('"dirSpendM1":',      '"', round(as.numeric(dirSpendM1), roDgt),      '",\n'))
   cat(paste0('"dirSpendM2":',      '"', round(as.numeric(dirSpendM2), roDgt),      '",\n'))
   cat(paste0('"dirSpendM3":',      '"', round(as.numeric(dirSpendM3), roDgt),      '",\n'))
-
+  cat(paste0('"dirSpendM4":',      '"', round(as.numeric(dirSpendM4), roDgt),      '",\n'))
+  cat(paste0('"dirSpendM5":',      '"', round(as.numeric(dirSpendM5), roDgt),      '",\n'))
+  cat(paste0('"dirSpendM6":',      '"', round(as.numeric(dirSpendM6), roDgt),      '",\n'))
   
   cat(paste0('"tvBeginDate":"',   inJsonData$tvBeginDate,                       '",\n'))
   cat(paste0('"tvEndDate":"',     inJsonData$tvEndDate,                         '",\n'))
@@ -146,6 +156,7 @@ commafmt <- function(x)  format(x,  big.mark=",", big.interval=3)
 
 
   cat(paste0('"', paste0(SRChannel,  'SR' ),  '": "",\n'))
+  cat(paste0('"OptTotalRevenue": ', '"",\n'))## added for optimizedTotalRevenue  for Run_1  
   cat(paste0('"', paste0(PRChannel,  'PR' ),  '": "",\n'))
   
   cat(paste0('"run1RevRange": "",\n'))
@@ -158,6 +169,8 @@ commafmt <- function(x)  format(x,  big.mark=",", big.interval=3)
   cat(paste0('"', paste0(ChannelOut,    'SlideDivMin'       ),  '": "",\n'))
   cat(paste0('"', paste0(ChannelOut,    'SlideDivMax'       ),  '": "",\n'))
   cat(paste0('"', paste0(ASChannel,     'AS'                ),  '": "",\n'))
+  cat(paste0('"OptTotalRevenue_Run2": ', '"",\n')) 
+  cat(paste0('"PercentageChangeInTotalRev": ', '"",\n'))
   cat(paste0('"', paste0(ARChannel,     'AR'                ),  '": "",\n'))
   
   cat(paste0('"run2ProjROI": ""\n'))  # no comma before \n

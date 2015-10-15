@@ -169,7 +169,8 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         editText: "'Edit' should be 1 item",
         deleteText: "'Delete' should be more than 1 items",
         exportText: "'Export' should be 1 item",
-        shareText: "'Share' should be 1 item"
+        shareText: "'Share' should be 1 item",
+        finalText:"There can be only one final scenario per planning period. Select Yes, if you want to mark this scenario as final."
     };
 
     //scope functions
@@ -254,7 +255,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             //else {
             //    $location.path('lookback/output')
             //}
-            alert('You can not retrive work-in-progress scenario(s)');
+            alert('You can not retrieve work-in-progress scenario(s)');
             resetButton();
         }
     };
@@ -311,6 +312,60 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
             });
         }}
     };
+    $scope.cancel = function (obj){
+        var id = obj._id;
+        var from = obj.from;
+        var goto = from==='back'?'lookback/init':'planforward/init';
+        user.getUser(function (user) {
+            $scope.user = user;
+        });
+        var share = false;
+        var deleteIndex = -1;
+        $scope.scenarios.forEach(function (obj, index) {
+            if (obj._id === id) {
+                share = obj.share;
+                deleteIndex=index;
+            }
+        });
+        if(deleteIndex!==-1){
+            if (share) {
+                if (confirm("The scenario is shared. Do you still want to delete it?") == true) {
+                    scenarios.deleteScenario(id, $scope.user.name, function (data) {
+                        if (data) {
+                            $scope.scenarios.splice(deleteIndex, 1);
+                            $scope.pageChanged($scope.currentPage, $scope.numPerPage);
+                            tempIdArray.forEach(function (singleTempIdArray, index) {
+                                if (singleTempIdArray === id) {
+                                    tempIdArray.splice(index, 1);
+                                }
+                            });
+                            $location.path(goto);
+                        } else {
+                            alert("You are not the original owner, data can not be deleted!");
+                        }
+                    });
+                }
+            }
+            else {
+                scenarios.deleteScenario(id, $scope.user.name, function (data) {
+                    if (data) {
+                        $scope.scenarios.splice(deleteIndex, 1);
+                        $scope.pageChanged($scope.currentPage, $scope.numPerPage);
+                        tempIdArray.forEach(function (singleTempIdArray, index) {
+                            if (singleTempIdArray === id) {
+                                tempIdArray.splice(index, 1);
+                            }
+                        });
+                        $location.path(goto);
+                    }
+                    else {
+                        alert("You are not the original owner, data can not be deleted!");
+                    }
+                });
+            }}
+    };
+
+
     $scope.share = function () {
         analysis.objIds.current = actionObjInfo[0];
         $location.path('myscenarios/share');
@@ -371,11 +426,42 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
     $scope.runCheck = function (s) {
         return (s !== "0");
     };
-    $scope.convertRunningTime = function (t) {
-        var s = Number(Math.floor(t / 1000));
-        return Number(Math.floor(s / 60) + 1000).toString().slice(-2) + ":" + Number(s % 60 + 1000).toString().slice(-2);
+    $scope.convertRunningTime = function (obj) {
+        //console.log(obj);
+        var months = checkMonthsOfScenario(obj);
+        var totalRunningTime = 5;
+        switch(months) {
+            case 0:
+                totalRunningTime = 5;
+                break;
+            case 1:
+                totalRunningTime = 12;
+                break;
+            case 2:
+                totalRunningTime = 15;
+                break;
+            case 3:
+                totalRunningTime = 25;
+                break;
+            case 4:
+                totalRunningTime = 40;
+                break;
+            case 5:
+                totalRunningTime = 55;
+                break;
+        }
+        var s = Number(Math.floor(obj.runningTime / 1000));
+        return "Time Elapsed: " +Number(Math.floor(s / 60) + 1000).toString().slice(-2) + ":" + Number(s % 60 + 1000).toString().slice(-2) + "  , "+ Math.floor(100-s/(totalRunningTime*60)*100).toString() + "% Left";
     };
-
+    function checkMonthsOfScenario(obj){
+        var beginDate = new Date(obj.beginDate+'');
+        var endDate  = new Date(obj.endDate+'');
+        var Nomonths = 0;
+        Nomonths= (endDate.getFullYear() - beginDate.getFullYear()) * 12;
+        Nomonths-= beginDate.getMonth() + 1;
+        Nomonths+= endDate.getMonth();
+        return Nomonths <= 0 ? 0 : Nomonths;
+    }
     //-------------main-----------------------
 
     // get users scenarioList
@@ -410,7 +496,9 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
 
     //functions
     function convertPlan(info, data) {
-        return "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
+        console.log(info);
+        return "Name," + info.note + ",,,,,,,,,,\n" +
+            "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
             "Owner," + $filter('name')(info.owner) + ",,,,,,,,,,\n" +
             "Create Date," + info.createDate + ",,,,,,,,,,\n" +
             "Brand," + info.brand + ",,,,,,,,,,\n" +
@@ -428,7 +516,7 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
             "SEM-Pbook," + data.semPLB + "," + data.semPMin + "," + data.semPMax + "," + data.semPUB + "," + data.semPSF + "," + data.semPSR + ",," + data.semPAS + ",," + data.semPSD + ",\n" +
             "SEM-Others," + data.semOLB + "," + data.semOMin + "," + data.semOMax + "," + data.semOUB + "," + data.semOSF + "," + data.semOSR + ",," + data.semOAS + ",," + data.semOSD + ",\n" +
             "Display," + data.disLB + "," + data.disMin + "," + data.disMax + "," + data.disUB + "," + data.disSF + "," + data.disSR + "," + data.disPR + "," + data.disAS + "," + data.disAR + "," + data.disSD + "," + data.disRD + "\n" +
-            "Social (FB)," + data.socLB + "," + data.socMin + "," + data.socMax + "," + data.socUB + "," + data.socSF + "," + data.socSR + "," + data.socPR + "," + data.socAS + "," + data.socAR + "," + data.socSD + "," + data.socRD + "\n" +
+            "Social," + data.socLB + "," + data.socMin + "," + data.socMax + "," + data.socUB + "," + data.socSF + "," + data.socSR + "," + data.socPR + "," + data.socAS + "," + data.socAR + "," + data.socSD + "," + data.socRD + "\n" +
             "Affiliates," + data.affLB + "," + data.affMin + "," + data.affMax + "," + data.affUB + "," + data.affSF + "," + data.affSR + "," + data.affPR + "," + data.affAS + "," + data.affAR + "," + data.affSD + "," + data.affRD + "\n" +
             "Partners," + data.parLB + "," + data.parMin + "," + data.parMax + "," + data.parUB + "," + data.parSF + "," + data.parSR + "," + data.parPR + "," + data.parAS + "," + data.parAR + "," + data.parSD + "," + data.parRD + "\n" +
             "Portfolio Total," + data.totLB + "," + data.totMin + "," + data.totMax + "," + data.totUB + "," + "" + "," + data.totSR + "," + data.totPR + "," + data.totAS + "," + data.totAR + "," + data.totSD + "," + data.totRD + "\n" +
@@ -439,7 +527,9 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
     }
 
     function convertLook(info, data) {
-        return "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
+        console.log(info);
+        return "Name," + info.note + ",,,,,,,,,,\n" +
+            "Scenario ID," + info.scenarioId + ",,,,,,,,,,\n" +
             "Owner," + info.owner + ",,,,,,,,,,\n" +
             "Create Date," + info.createDate + ",,,,,,,,,,\n" +
             "Brand," + info.brand + ",,,,,,,,,,\n" +
@@ -451,13 +541,13 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
             ",,,,,,,,,,,\n" +
             "Portfolio Channels,Actuals,,Optimized,,Difference,\n" +
             ",Spend,Revenue,Spend,Revenue,Spend,Revenue\n" +
-            "SEM Total," + data.history.semSR + ",," + data.history.semPR + "," + data.output.semAS + "," + data.output.semAR + "," + data.output.semSD + "," + data.output.semRD + "\n" +
+            "SEM Total," + data.history.semSR + "," + data.history.semPR + "," + data.output.semAS + "," + data.output.semAR + "," + data.output.semSD + "," + data.output.semRD + "\n" +
             "SEM-Brand," + data.history.semBSR + ",," + data.output.semBAS + ",," + data.output.semBSD + ",\n" +
             "SEM-Cards," + data.history.semCSR + ",," + data.output.semCAS + ",," + data.output.semCSD + ",\n" +
             "SEM-Pbook," + data.history.semPSR + ",," + data.output.semPAS + ",," + data.output.semPSD + ",\n" +
             "SEM-Others," + data.history.semOSR + ",," + data.output.semOAS + ",," + data.output.semOSD + ",\n" +
             "Display," + data.history.disSR + "," + data.history.disPR + "," + data.output.disAS + "," + data.output.disAR + "," + data.output.disSD + "," + data.output.disRD + "\n" +
-            "Social (FB)," + data.history.socSR + "," + data.history.socPR + "," + data.output.socAS + "," + data.output.socAR + "," + data.output.socSD + "," + data.output.socRD + "\n" +
+            "Social," + data.history.socSR + "," + data.history.socPR + "," + data.output.socAS + "," + data.output.socAR + "," + data.output.socSD + "," + data.output.socRD + "\n" +
             "Affiliates," + data.history.affSR + "," + data.history.affPR + "," + data.output.affAS + "," + data.output.affAR + "," + data.output.affSD + "," + data.output.affRD + "\n" +
             "Partners," + data.history.parSR + "," + data.history.parPR + "," + data.output.parAS + "," + data.output.parAR + "," + data.output.parSD + "," + data.output.parRD + "\n" +
             "Total Portfolio," + data.history.totSR + "," + data.history.totPR + "," + data.output.totAS + "," + data.output.totAR + "," + data.output.totSD + "," + data.output.totRD + "\n" +
@@ -467,7 +557,7 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
     }
 
     //scope vars
-    $scope.fileName = "my";
+    $scope.fileName = "my scenario";
     $scope.format = 'Excel';
 
     //scope functions
@@ -534,7 +624,8 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
                             $scope.data.parRD = Number($scope.data.parAR) - Number($scope.data.parPR);
                             $scope.data.totRD = Number($scope.data.totAR) - Number($scope.data.totPR);
                             $scope.data.ROID = Number($scope.data.run2ProjROI.substr(0, 3)) - Number($scope.data.run1ProjROI.substr(0, 3));
-                            $scope.data.changeR = Math.round($scope.data.ROID / Number($scope.data.run1ProjROI.substr(0, 3)) * 100);
+                            //$scope.data.changeR = Math.round($scope.data.ROID / Number($scope.data.run1ProjROI.substr(0, 3)) * 100);
+                            $scope.data.changeR = $filter('number')($scope.data.PercentageChangeInTotalRev,0) ;
                         };
                         modify();
                         $scope.output = convertPlan($scope.scenario, $scope.data);
@@ -591,7 +682,8 @@ scenariosApp.controller("scenariosExportCtrl", function ($scope, analysis, scena
                             back.output.parRD = back.output.parAR - back.history.parPR;
                             back.output.totRD = back.output.totAR - back.history.totPR;
                             back.output.ROID = back.output.run2ProjROI.slice(0, -1) - back.history.ROI;
-                            back.output.changeR = Math.round(back.output.ROID / back.history.ROI * 100);
+                            //back.output.changeR = Math.round(back.output.ROID / back.history.ROI * 100);
+                            back.output.changeR = $filter('number')(back.output.PercentageChangeInTotalRev,0);
                             $scope.output = convertLook($scope.scenario, back);
                             $scope.csvContent = encodeURI("data:text/" + format[$scope.format] + ";charset=utf-8," + $scope.output);
                         });
@@ -647,7 +739,7 @@ scenariosApp.controller("scenariosShareCtrl", function ($scope, user, scenarios,
             console.log(res);
             scenarios.editScenario($scope.scenario.owner, $scope.scenario._id, {share: true}, function (res2) {
                 console.log(res2);
-                alert("Data is shared!");
+                alert("Your scenario has been shared. Recipient will see it in their My Scenarios listing.");
                 $location.path("myscenarios");
             });
 
@@ -787,13 +879,18 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
 
             $('#container').highcharts({
                 credits: {enabled: false},
+                navigation: {
+                    buttonOptions: {
+                        align: 'left'
+                    }
+                },
                 chart: { type: 'bar',backgroundColor:'#fafafa'},
                 title: {text: null},
                 subtitle: {
                     useHTML: true,
-                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
-                    align: 'center',
-                    x:-0,
+                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span><br/><span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                    align: 'left',
+                    x:40,
                     y:10
                 },
                 xAxis: [{categories: categories,opposite: true,reversed: true,
@@ -849,13 +946,18 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
 
             $('#container').highcharts({
                 credits: {enabled: false},
+                navigation: {
+                    buttonOptions: {
+                        align: 'left'
+                    }
+                },
                 chart: { type: 'bar',backgroundColor:'#fafafa'},
                 title: {text: null},
                 subtitle: {
                     useHTML: true,
-                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color: #5bd363;font-weight: bolder"> Increase</span>',
-                    align: 'center',
-                    x:-0,
+                    text: '<span style="color: #ff6c3c;font-weight: bolder">Decrease</span><br/><span style="color: #5bd363;font-weight: bolder"> Increase</span>',
+                    align: 'left',
+                    x:40,
                     y:10
                 },
                 xAxis: [{categories: categories,opposite: true,reversed: true,
@@ -982,72 +1084,6 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
 
         }, actionObjInfo[0]);
 
-        //analysis.getData(function (data) {
-        //    $scope.compareObj.second = data;
-        //
-        //    $scope.secondGot = true;
-        //    if ($scope.firstGot && $scope.secondGot) {
-        //        Object.keys($scope.compareObj.first).forEach(function (key) {
-        //            $scope.compareObj.difference[key] = $scope.compareObj.second[key] - $scope.compareObj.first[key];
-        //        });
-        //        $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
-        //        $scope.compareObj.difference.changeR = $scope.compareObj.difference.run2ProjROI / Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
-        //        console.log($scope.compareObj.difference.run2ProjROI );
-        //        console.log($scope.compareObj.difference.changeR );
-        //        $scope.compareChart.data = [
-        //            {
-        //                title: "SEM",
-        //                value: $scope.compareObj.difference.semAS / $scope.compareObj.first.semAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.semAS), 0)
-        //            },
-        //            {
-        //                title: "SEM-Brand",
-        //                value: $scope.compareObj.difference.semBAS / $scope.compareObj.first.semBAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.semBAS), 0)
-        //            },
-        //            {
-        //                title: "SEM-Card",
-        //                value: $scope.compareObj.difference.semCAS / $scope.compareObj.first.semCAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.semCAS), 0)
-        //            },
-        //            {
-        //                title: "SEM-Photobook",
-        //                value: $scope.compareObj.difference.semPAS / $scope.compareObj.first.semPAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.semPAS), 0)
-        //            },
-        //            {
-        //                title: "SEM-Others",
-        //                value: $scope.compareObj.difference.semOAS / $scope.compareObj.first.semOAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.semOAS), 0)
-        //            },
-        //            {
-        //                title: "Display",
-        //                value: $scope.compareObj.difference.disAS / $scope.compareObj.first.disAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.disAS), 0)
-        //            },
-        //            {
-        //                title: "Social",
-        //                value: $scope.compareObj.difference.socAS / $scope.compareObj.first.socAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.socAS), 0)
-        //            },
-        //            {
-        //                title: "Affiliates",
-        //                value: $scope.compareObj.difference.affAS / $scope.compareObj.first.affAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.affAS), 0)
-        //            },
-        //            {
-        //                title: "Partners",
-        //                value: $scope.compareObj.difference.parAS / $scope.compareObj.first.parAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.parAS), 0)
-        //            },
-        //            {
-        //                title: "Portfolio Total",
-        //                value: $scope.compareObj.difference.totAS / $scope.compareObj.first.totAS,
-        //                string: $filter('number')(Math.abs($scope.compareObj.difference.totAS), 0)
-        //            }
-        //        ];
-        //    }
-        //}, actionObjInfo[1]);
     } else {
         $location.path('myscenarios');
     }

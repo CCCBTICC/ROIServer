@@ -4,7 +4,7 @@
             <li><a href="#/">Home</a></li>
             <li>Look Back</li>
             <li><a href="#/lookback/init">Initial Input</a></li>
-            <li>Additional Input</li>
+            <li> Constraint Input</li>
         </ol>
     </div>
     <div class="row" id="info">
@@ -15,8 +15,7 @@
             <label>Begin Period</label>: {{dataInfo.beginDate | date: 'MMM-yyyy'}}
             <label>End Period</label>: {{dataInfo.endDate | date: 'MMM-yyyy'}}
             <label>Data through</label>: {{dataInfo.dataThrough | date:'MMM-yyyy'}}
-              <span ng-show="getJson && channelShow"><label>Portfolio
-                  Spend</label>: {{dataInfo.spend | formatCurrency}}</span>
+              <span ng-show="getJson && channelShow"><label>Portfolio Spend</label>: {{dataInfo.spend | formatCurrency}}</span>
         </div>
     </div>
     <div class="row" id="spend" ng-show="getJson&& !channelShow">
@@ -48,7 +47,7 @@
                     </label>
                     </span>
                     <div class="col-sm-4 help-info" style="padding-left: 0">
-                        <i class="fa fa-question-circle" tooltip-placement="right" tooltip="Apply Constraints?"></i>
+                        <i class="fa fa-question-circle" tooltip-placement="right" tooltip="{{tooltips.Constraints}}"></i>
                     </div>
                 </div>
             </div>
@@ -129,7 +128,7 @@
                     <thead>
                     <tr>
                         <th class="col-1" rowspan="2">Portfolio Channels</th>
-                        <th class="col-0" rowspan="2"><div tooltip-placement="right" tooltip="Maintain Spend">Maintain Spend?</div></th>
+                        <th class="col-0" rowspan="2" id="tooltipConstaints"><div tooltip-placement="bottom" tooltip="{{tooltips.maintainSpend}}">Maintain Spend ?</div></th>
                         <th class="col-2" colspan="2">Actuals</th>
                     </tr>
                     <tr>
@@ -249,7 +248,7 @@
                 <br/><br/>
 
                 <div class="col-sm-2 col-sm-offset-3">
-                    <a class="btn btn-default" ng-click="channelShow=!channelShow;reset();" style="margin-top: 20px">Prev</a>
+                    <a class="btn btn-default" ng-click="channelShow=!channelShow;reset();lookBack.ControlChannelsShow='Yes'" style="margin-top: 20px">Prev</a>
                 </div>
                 <div class="col-sm-2">
                     <button class="btn btn-default" ng-class="{disabled:slideError}"
