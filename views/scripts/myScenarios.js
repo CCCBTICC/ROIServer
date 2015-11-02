@@ -170,7 +170,7 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         deleteText: "'Delete' should be more than 1 items",
         exportText: "'Export' should be 1 item",
         shareText: "'Share' should be 1 item",
-        finalText:"There can be only one final scenario per planning period. Select Yes, if you want to mark this scenario as final."
+        finalText:"Select 'Yes' if you want to mark this scenario as final."
     };
 
     //scope functions
@@ -432,13 +432,13 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         var totalRunningTime = 5;
         switch(months) {
             case 0:
-                totalRunningTime = 5;
+                totalRunningTime = 10;
                 break;
             case 1:
-                totalRunningTime = 12;
+                totalRunningTime = 24;
                 break;
             case 2:
-                totalRunningTime = 15;
+                totalRunningTime = 25;
                 break;
             case 3:
                 totalRunningTime = 25;
@@ -451,7 +451,26 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
                 break;
         }
         var s = Number(Math.floor(obj.runningTime / 1000));
-        return "Time Elapsed: " +Number(Math.floor(s / 60) + 1000).toString().slice(-2) + ":" + Number(s % 60 + 1000).toString().slice(-2) + "  , "+ Math.floor(100-s/(totalRunningTime*60)*100).toString() + "% Left";
+        var con = Math.floor(100-s/(totalRunningTime*60)*100) ;
+        if(con< -200){
+            return {
+                text: "Scenario taking longer than average, may want to delete it.",
+                status: 'red'
+            }
+        }else{
+            if(con >0){
+                    return {
+                        text: "Time Elapsed: " + Number(Math.floor(s / 60) + 1000).toString().slice(-2) + ":" + Number(s % 60 + 1000).toString().slice(-2) + "  , " + Math.floor(100 - s / (totalRunningTime * 60) * 100).toString() + "% Left",
+                        status:'green'
+                    }
+            }else{
+                    return {
+                        text: "Time Elapsed: " + Number(Math.floor(s / 60) + 1000).toString().slice(-2) + ":" + Number(s % 60 + 1000).toString().slice(-2) ,
+                        status:'yellow'
+                    }
+            }
+        }
+
     };
     function checkMonthsOfScenario(obj){
         var beginDate = new Date(obj.beginDate+'');

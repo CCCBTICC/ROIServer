@@ -12,7 +12,7 @@
         <div class="well well-sm">
             <label>Scenario ID:&nbsp</label>{{scenario.scenarioId}} <br>
             <label>Brand</label>: {{scenario.brand}}
-            <label>Attribution</label>: {{scenario.lmTouch}}
+            <label>Attribution</label>: {{lookBack.output.lmTouch}}
             <label>Begin Period</label>: {{scenario.beginDate | date:'MMM-yyyy'}}
             <label>End Period</label>: {{scenario.endDate | date:'MMM-yyyy'}}
             <label>Portfolio Spend </label>: <span ng-show="!slideError">{{scenario.spend | formatCurrency}}</span><span ng-show="slideError" style="color:red;">{{scenario.spend | formatCurrency}}</span>

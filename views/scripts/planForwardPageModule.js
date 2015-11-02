@@ -194,12 +194,12 @@ forward.factory('analysis', function ($http) {
 forward.controller('forwardInitCtrl', ['$scope', 'analysis', 'scenarios', 'user', '$location', '$filter', 'history', 'actionObjInfo', function ($scope, analysis, scenarios, user, location, filter, history, actionObjInfo) {
     //scope vars
     $scope.tooltips = {
-        brand: "This is the drop down for selecting the Brand for which you are planning your marketing spend. The default value is Shutterfly.",
-        attr: "This is where you select the Revenue attribution method you want the tool to use for Channel Revenue forecast. The options are: LTA -- Last Touch Attribution and MTA -- Multi-Touch Attribution.",
-        beginPeriod: "The first month of the planning period. \n By default, it is first month after the last data refresh in the tool database. You can skip 6 months ahead and plan a future quarter. Click on the calendar icon to select.",
-        endPeriod: "The last month of the planning period. \n It is set based on the Begin Period. Default equals to Begin Period. But you can choose up to Begin Period value + 5 or last month of historical data+8, whichever is earlier",
+        brand: "Select the Brand. The default value is Shutterfly.",
+        attr: "Select the revenue attribution method for the channel revenue forecast. The options are LTA (Last Touch Attribution) or MTA (Multi-Touch Attribution).",
+        beginPeriod: "Select the first month of the planning cycle. By default, it is the next month of historical data available with the ability to skip 6 months ahead.",
+        endPeriod: "Select the last month of the planning cycle. You can choose up to 6 months ahead with the ability to skip months if needed.",
         spend: "The amount you want to plan. For look back analysis, the actual spend for the period is pre-filled. You can override this number.",
-        included: "This tells the tool whether you want to perform a post-mortem or simulate a planning scenario going back to past. It tells the tool how much of history to use. For post-mortem, data through the end period is used. For simulation, data till the month prior to begin period is used.",
+        included: "Select 'Yes' if you want all data optimization thru the End Period for post-mortem analysis or 'No' if you want data optimization thru the month before the Begin Period for planning scenario analysis.",
         Constraints: "If you want to apply constraints on individual channel spend boundaries, select Yes. Default is No. Unconstrained, system fixes the spend level for SEM-Brand and Partnership to the actual spend for these two channels and then optimizes the rest of the portfolio spend among the rest of the channels and SEM sub-channels."
     };
     $scope.calender = {
@@ -349,12 +349,12 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
         attr: "This is where you select the Revenue attribution method you want the tool to use for Channel Revenue forecast. The options are: LTA -- Last Touch Attribution and MTA -- Multi-Touch Attribution.",
         beginPeriod: "The first month of the planning period. \n By default, it is first month after the last data refresh in the tool database. You can skip 6 months ahead and plan a future quarter. Click on the calendar icon to select.",
         endPeriod: "The last month of the planning period. \n It is set based on the Begin Period. Default equals to Begin Period. But you can choose up to Begin Period value + 5 or last month of historical data+8, whichever is earlier",
-        spend: "The spend budget for the channels in portfolio (SEM, Display, Social, Affiliates and Partnership) for the chosen planning period. It is pre-filled with the prior year's actual spend for the same period. You can override this number.",
+        spend: "Input total spend for portfolio (SEM, Display, Social, Affiliates and Partners) for the planning cycle.  By default, the pre-filled value represents the prior year's actual spend for the planning cycle with the ability to override value.",
         included: "This tells the tool whether you want to perform a post-mortem or simulate a planning scenario going back to past. It tells the tool how much of history to use. For post-mortem, data through the end period is used. For simulation, data till the month prior to begin period is used.",
-        Constraints: "If you want to apply constraints on individual channel spend boundaries, select Yes. Default is No. Unconstrained, system fixes the spend level for SEM-Brand and Partnership to the actual spend for these two channels and then optimizes the rest of the portfolio spend among the rest of the channels and SEM sub-channels.",
-        applyConstraints:"Included in the Portfolio spend are SEM, Display, Social, Affiliates and Partnership channels. Control channels are TV and Direct Mail and not included as part of the optimization mix.",
+        Constraints: "Select 'Yes' if you want to apply channel spend constraints or 'No' if you want to keep SEM Brand and Partners fixed to prior year's actual spend for the planning cycle.",
+        applyConstraints:"Select 'Yes' if you want to apply channel spend constraints or 'No' if you want to keep SEM Brand and Partners fixed to prior year's actual spend for the planning cycle.",
         scalingFactor: 'A method to adjust for situations when ad buying efficiency has changed from historical cost structure (CPC/CPM). Default value of 1.0 assumes no change in buying efficiency. It is inverse to cost efficiency. If cost goes up, lower it and vice versa. See User Guide for illustration.',
-        maintainSpend: 'If you want to keep spend level constant for any channel, check this box. By default, SEM-Brand and Partners are checked. The spend level used is last year actual for the equivalent period.'
+        maintainSpend: "Click box if you want the prior year's actual spend to be fixed for the planning cycle.  Unclick box allows the tool to optimize a given channel spend within the upper and lower limits."
     };
     $scope.dataInfo = {};
     $scope.planForward = {
@@ -830,7 +830,8 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             }
                 ,function(chart) { // on complete
 
-                chart.renderer.text('<span>'+$scope.scenario.scenarioId+'</span><br/><span>Portfolio Spend: '+ filter('formatCurrency')($scope.scenario.spend) +'</span><br/><span>Data through: '+ filter('date')($scope.scenario.dataThrough,'MMM-yyyy')+'</span>', 110, 50)
+                //chart.renderer.text('<span>'+$scope.scenario.scenarioId+'</span><br/><span>Portfolio Spend: '+ filter('formatCurrency')($scope.scenario.spend) +'</span><br/><span>Data through: '+ filter('date')($scope.scenario.dataThrough,'MMM-yyyy')+'</span>', 110, 50)
+                    chart.renderer.text('<span>Scenario ID: '+$scope.scenario.scenarioId+'<br>From '+filter('date')($scope.scenario.beginDate,'MMM-yyyy')+' To '+filter('date')($scope.scenario.endDate,'MMM-yyyy')+'  '+$scope.planForward.output.lmTouch+'</span><br/><span>Portfolio Spend: '+ filter('formatCurrency')($scope.scenario.spend) +'</span><br/><span>Data through: '+ filter('date')($scope.scenario.dataThrough,'MMM-yyyy')+'</span>', 90, 40)
                     .css({
                         color: 'grey',
                         fontSize: '11px'
@@ -907,7 +908,8 @@ forward.controller('forwardOutputCtrl', ['$scope', 'analysis', 'scenarios', '$lo
             }
             ,function(chart) { // on complete
 
-                    chart.renderer.text('<span>'+$scope.scenario.scenarioId+'</span><br/><span>Portfolio Spend: '+ filter('formatCurrency')($scope.scenario.spend) +'</span><br/><span>Data through: '+ filter('date')($scope.scenario.dataThrough,'MMM-yyyy')+'</span>', 110, 50)
+                    //chart.renderer.text('<span>'+$scope.scenario.scenarioId+'</span><br/><span>Portfolio Spend: '+ filter('formatCurrency')($scope.scenario.spend) +'</span><br/><span>Data through: '+ filter('date')($scope.scenario.dataThrough,'MMM-yyyy')+'</span>', 110, 50)
+                    chart.renderer.text('<span>Scenario ID: '+$scope.scenario.scenarioId+'<br>From '+filter('date')($scope.scenario.beginDate,'MMM-yyyy')+' To '+filter('date')($scope.scenario.endDate,'MMM-yyyy')+'  '+$scope.planForward.output.lmTouch+'</span><br/><span>Portfolio Spend: '+ filter('formatCurrency')($scope.scenario.spend) +'</span><br/><span>Data through: '+ filter('date')($scope.scenario.dataThrough,'MMM-yyyy')+'</span>', 90, 40)
                         .css({
                             color: 'grey',
                             fontSize: '11px'

@@ -27,17 +27,26 @@ function userLogin(db, requestData, res) {
     //console.log(requestData);
     var username = requestData.username;
     var password = requestData.password;
+    //var loginedTime = new Date();
     //var authResult = requestData.authResult;
     db.collection('users').findOne({username: username}, {fields: {password: 1}}, function (err, result) {
-        //console.log(result);
+        //console.log(result.loginedTime);
         if (result === null) {
             requestData.authResult = 'falseUserName';
             res.send(requestData);
             return;
         }else{
         if (result.password === password) {
-            requestData.authResult = 'success';
-            res.send(requestData);
+            var loginedTime = new Date();
+            db.collection('users').findOne({username: username}, {fields: {password: 1, loginedTime:1}}, function (err, result) {
+            db.collection('users').update({username:username},{'$set':{'loginedTime':loginedTime}}, function(err, timeResult){
+                    requestData.loginedTime = result.loginedTime;
+                    requestData.authResult = 'success';
+                    res.send(requestData);
+                    console.log(requestData);
+                });
+            });
+
         } else {
             requestData.authResult = 'falsePassword';
             res.send(requestData);

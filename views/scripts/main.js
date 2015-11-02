@@ -74,8 +74,18 @@ app.config(function ($routeProvider) {
 
 app.controller("loginCtrl", function ($scope, $http) {
     $scope.login = {};
-    $scope.login.username = "user1";
-    $scope.login.password = "test";
+    $scope.login.remember=false;
+    if(localStorage.getItem('ROIUserName')){
+        console.log('set the localStorage');
+        $scope.login.username = localStorage.getItem('ROIUserName');
+        $scope.login.password = localStorage.getItem('ROIPassword');
+        $scope.login.remember=true;
+    }else{
+        console.log('dont have  the localStorage copy');
+        $scope.login.username = '';
+        $scope.login.password = '';
+    }
+
     $scope.login.authResult = '';
     $scope.login.error = {username : false, password: false};
     $scope.signIn = function () {
@@ -98,6 +108,8 @@ app.controller("loginCtrl", function ($scope, $http) {
                     break;
                 case 'success':
                     window.sessionStorage.setItem('username', res.username);
+                    window.sessionStorage.setItem('loginedTime', res.loginedTime);
+                    $scope.rememberCheck();
                     window.location.href = ('http://' + window.location.hostname + ':3001/home.html');
                     break;
             }
@@ -114,19 +126,32 @@ app.controller("loginCtrl", function ($scope, $http) {
             //}
         });
     };
+    $scope.rememberCheck = function (){
+        console.log($scope.login);
+        if ($scope.login.remember) {
+            localStorage.setItem('ROIUserName',$scope.login.username) ;
+            localStorage.setItem('ROIPassword',$scope.login.password) ;
+        } else {
+            localStorage.removeItem('ROIUserName');
+            localStorage.removeItem('ROIPassword');
+        }
+    }
 });
 app.controller("indexCtrl", function ($scope, user) {
+    console.log(window.sessionStorage);
     //var
     var username = window.sessionStorage.getItem('username');
     //function declare
     $scope.logout = function () {
         window.sessionStorage.removeItem('username');
+        window.sessionStorage.removeItem('loginedTime');
         window.location.href = ('http://' + window.location.hostname + ':3001/index.html');
     };
     $scope.help=function(){
         var link = document.createElement('a');
         //link.href = 'http://tinyurl.com/sfly-roi-fback';
-        link.href = 'https://docs.google.com/document/d/1c6mq7FlHA69d23tmB7Q4jnDbzbSSinp1dTSbrPyj3gY/edit?usp=sharing';
+       // link.href = 'https://docs.google.com/document/d/1c6mq7FlHA69d23tmB7Q4jnDbzbSSinp1dTSbrPyj3gY/edit?usp=sharing';
+       link.href='https://drive.google.com/file/d/0B1H50Y7riNUyRnF2YXNNNEhJU1k/view?usp=sharing';
         link.target="_blank";
         link.click();
     };
@@ -145,8 +170,8 @@ app.controller("indexCtrl", function ($scope, user) {
 });
 app.factory('user', function ($http) {
     var user = {};
-    user.recentlyLoginDate = new Date();
     var userUrl = "http://" + window.location.hostname + ":3001/users";
+    var loginedTime = window.sessionStorage.getItem('loginedTime');
     var post = function (data, callback) {
         $http({
             method: 'post',
@@ -160,7 +185,7 @@ app.factory('user', function ($http) {
         },
         setUser: function (name) {
             user.name = name;
-            user.recentlyLoginDate = new Date();
+            user.recentlyLoginDate = loginedTime;
             console.log(user);
         },
         getUserList: function (username, cb) {

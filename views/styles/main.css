@@ -209,6 +209,12 @@ a, a:visited, a:focus, a:active, a:hover{
 }
 /*  final  */
 /*  General  */
+.runOutOfTime{
+    color:#BB6622;
+}
+.runErr{
+    color:red;
+}
 .final{
     color:#04723b;
     font-size:18px;

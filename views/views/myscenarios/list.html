@@ -62,7 +62,8 @@
                     <!--<input type="checkbox" ng-click="selectRow(scenario)" ng-model="scenario.isActive">-->
                     <!--</td>-->
                     <td class="scenario-id list-col-3"></i><i class="fa fa-cog fa-spin" tooltip-placement="right"
-                                                              tooltip="{{convertRunningTime(scenario)}}"
+                                                              ng-class="{runOutOfTime:convertRunningTime(scenario).status=='yellow',runErr:convertRunningTime(scenario).status=='red'}"
+                                                              tooltip="{{convertRunningTime(scenario).text}}"
                                                               ng-show="runCheck(scenario.runningTime)"></i> <i>{{scenario.scenarioId}}</i>
                         <i class="fa fa-check final" tooltip-placement="right" tooltip="Final"
                            ng-show="yesOrNo(scenario.final)"></i><i class="fa fa-times stop"
