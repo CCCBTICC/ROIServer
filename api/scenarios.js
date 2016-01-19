@@ -83,6 +83,9 @@ router.post('/', function (req, res) {
         case "remove":
             remove(req.db, requestData, res);
             break;
+        case "checkOwner":
+            checkOwner(req.db, requestData, res);
+            break;
         case "checkFinal":
             checkFinal(req.db, requestData, res);
             break;
@@ -233,5 +236,25 @@ function remove(db, requestData, res) {
         });
     }
 }
+
+function checkOwner(db, requestData, res) {
+    if (requestData) {
+        var scenarioId = requestData.scenarioId;
+        db.collection('scenarios').findOne({_id: new ObjectId(scenarioId)}, {
+            owner: 1,
+            _id: 1
+        }, function (err, scenario) {
+            if (scenario) {
+                if (scenario.owner === requestData.username) {
+                        res.send(true);
+                } else {
+                    res.send(false);
+                }
+            }
+        });
+    }
+}
+
+
 
 module.exports = router;

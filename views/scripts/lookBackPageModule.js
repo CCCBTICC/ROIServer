@@ -237,6 +237,7 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                     $scope.selectPlan.disable.semTotal = true;
                 }
             }
+            /*
             if (count > 5) {
                 Object.keys($scope.selectPlan.checkBox).forEach(function (key) {
                     if (!$scope.selectPlan.checkBox[key]) {
@@ -244,6 +245,7 @@ back.controller('backAddCtrl', ['$scope', 'analysis', 'scenarios', '$location', 
                     }
                 });
             }
+            */
             fix();
         },
         totCheck: function () {

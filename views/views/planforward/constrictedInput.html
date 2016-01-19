@@ -423,7 +423,7 @@
 
                                 <input type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                        ng-model="planForward.output.tvBeginDate" is-open="calender.opened.beginPeriod"
-                                       ng-change="calender.modifyDate()" show-button-bar=false
+                                       ng-change="calender.modifyDateBegin()" show-button-bar=false
                                        datepicker-append-to-body=true
                                        min-date="calender.minDate" datepicker-options="calender.dateOptions"
                                        datepicker-mode="'day'" disabled max-date="calender.maxDate" show-weeks="false";
@@ -448,7 +448,7 @@
 
                                 <input type="text" class="form-control" datepicker-popup="{{calender.format}}"
                                        ng-model="planForward.output.tvEndDate" is-open="calender.opened.endPeriod"
-                                       ng-change="calender.modifyDate()" show-button-bar=false
+                                       ng-change="calender.modifyDateEnd()" show-button-bar=false
                                        datepicker-append-to-body=true
                                        min-date="calender.minDate" datepicker-options="calender.dateOptions"
                                        datepicker-mode="'day'" disabled max-date="calender.maxDate" show-weeks="false";

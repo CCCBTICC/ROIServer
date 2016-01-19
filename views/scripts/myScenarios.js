@@ -44,6 +44,13 @@ scenariosApp.factory('scenarios', function ($http) {
             };
             post(data, cb);
         },
+        checkOwner: function (id, user, cb){
+            var data = {
+                action: 'checkOwner',
+                data: {scenarioId: id, username: user}
+            };
+            post(data, cb);
+        },
         shareScenario: function (username, id, cb) {
             var data = {
                 action: 'share',
@@ -279,21 +286,41 @@ scenariosApp.controller("scenariosCtrl", function ($scope, $location, $http, act
         });
         if(deleteIndex!==-1){
         if (share) {
-            if (confirm("The scenario is shared. Do you still want to delete it?") == true) {
-                scenarios.deleteScenario(id, $scope.user.name, function (data) {
-                    if (data) {
-                        $scope.scenarios.splice(deleteIndex, 1);
-                        $scope.pageChanged($scope.currentPage, $scope.numPerPage);
-                        tempIdArray.forEach(function (singleTempIdArray, index) {
-                            if (singleTempIdArray === id) {
-                                tempIdArray.splice(index, 1);
+            scenarios.checkOwner(id, $scope.user.name, function (data) {
+                if(data){
+                    if (confirm("You've shared this Scenario. Do you still want to delete it?") == true) {
+                        scenarios.deleteScenario(id, $scope.user.name, function (data) {
+                            if (data) {
+                                $scope.scenarios.splice(deleteIndex, 1);
+                                $scope.pageChanged($scope.currentPage, $scope.numPerPage);
+                                tempIdArray.forEach(function (singleTempIdArray, index) {
+                                    if (singleTempIdArray === id) {
+                                        tempIdArray.splice(index, 1);
+                                    }
+                                });
                             }
                         });
-                    } else {
-                        alert("You are not the original owner, data can not be deleted!");
                     }
-                });
-            }
+                }else{
+                    alert("This scenario is shared with you. You can't delete it!");
+                }
+                //if (confirm("The scenario is shared. Do you still want to delete it?") == true) {
+                //scenarios.deleteScenario(id, $scope.user.name, function (data) {
+                //    if (data) {
+                //        $scope.scenarios.splice(deleteIndex, 1);
+                //        $scope.pageChanged($scope.currentPage, $scope.numPerPage);
+                //        tempIdArray.forEach(function (singleTempIdArray, index) {
+                //            if (singleTempIdArray === id) {
+                //                tempIdArray.splice(index, 1);
+                //            }
+                //        });
+                //    } else {
+                //        // alert("You are not the original owner, data can not be deleted!");
+                //        alert("This scenario is shared with you. you can't delete it!");
+                //    }
+                //});
+            });
+           // }
         }
         else {
             scenarios.deleteScenario(id, $scope.user.name, function (data) {
@@ -1040,10 +1067,12 @@ scenariosApp.controller("scenariosCompareCtrl", function ($scope, $http, actionO
             analysis.getData(function (data2) {
                 $scope.compareObj.second=data2;
                 Object.keys($scope.compareObj.first).forEach(function (key) {
-                    $scope.compareObj.difference[key] = $scope.compareObj.second[key] - $scope.compareObj.first[key];
+                    $scope.compareObj.difference[key] = $scope.compareObj.first[key] - $scope.compareObj.second[key];
                 });
-                $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.second.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.first.run2ProjROI.substr(0, 3));
-                $scope.compareObj.difference.changeR = $scope.compareObj.difference.run2ProjROI / Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
+                $scope.compareObj.difference.run2ProjROI = Number($scope.compareObj.first.run2ProjROI.substr(0, 3)) - Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
+                //$scope.compareObj.difference.changeR = $scope.compareObj.difference.run2ProjROI / Number($scope.compareObj.second.run2ProjROI.substr(0, 3));
+                $scope.compareObj.difference.changeR = Math.round((Number($scope.compareObj.second.OptTotalRevenue_Run2)-Number($scope.compareObj.first.OptTotalRevenue_Run2))*100 / Number($scope.compareObj.first.OptTotalRevenue_Run2))/100;
+                console.log($scope.compareObj.first.OptTotalRevenue_Run2,$scope.compareObj.second.OptTotalRevenue_Run2);
                 console.log($scope.compareObj.difference.run2ProjROI );
                 console.log($scope.compareObj.difference.changeR );
                 $scope.compareChart.data = [

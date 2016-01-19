@@ -131,7 +131,7 @@ function importCollection(collectionName){
         var exec = require('child_process').exec;
         var last = exec(cmd);
         last.stdout.on('data', function (data) {
-            console.log('output�?' + data);
+            console.log('output' + data);
         });
         last.on('exit', function (code) {
             //code 0 --> success    code >1  --> fail

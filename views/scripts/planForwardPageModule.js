@@ -416,6 +416,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                     $scope.selectPlan.disable.semTotal = true;
                 }
             }
+            /*
             if (count > 5) {
                 Object.keys($scope.selectPlan.checkBox).forEach(function (key) {
                     if (!$scope.selectPlan.checkBox[key]) {
@@ -423,6 +424,7 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                     }
                 });
             }
+            */
             fix();
         },
         totCheck: function () {
@@ -478,7 +480,10 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                 $scope.planForward.output.tvEndDate = $scope.calender.maxDate;
             }
             if($scope.planForward.output.tvBeginDate>$scope.planForward.output.tvEndDate){
-            $scope.planForward.output.tvBeginDate = $scope.planForward.output.tvEndDate;
+            $scope.planForward.output.tvEndDate = $scope.planForward.output.tvBeginDate;
+            }
+            if($scope.planForward.output.tvBeginDate<$scope.planForward.output.tvEndDate){
+                $scope.planForward.output.tvBeginDate = $scope.planForward.output.tvEndDate;
             }
         }
     };
@@ -572,9 +577,16 @@ forward.controller('forwardConstrictCtrl', ['$scope', 'analysis', 'scenarios', '
                     });
                     $scope.calender.initDate();
                     history.getHistoryDate(function (res) {
+                        var start = $scope.planForward.output.StartingTime;
+                        var end = $scope.planForward.output.EndingTime;
+                        start = Number(start.substr(0,4)-1)+start.substr(4,start.length);
+                        end = Number(end.substr(0,4)-1)+end.substr(4,end.length);
+                        /*
                         var d = new Date(res[1]);
                         d = new Date(d.getFullYear(), d.getMonth() + 2 - $scope.planForward.output.PlanMonths, 1);
                         history.getHistoryData(filter('date')(d, 'yyyy-MM'), res[1], function (history) {
+                        */
+                        history.getHistoryData(start, end, function (history) {
                             $scope.planForward.history = {
                                 semSR: history.SEM,
                                 semBSR: history.SEMBrand,
